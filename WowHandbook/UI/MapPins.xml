@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <!-- 大地图飞行点图钉：继承暴雪自己的飞行点图钉模板，外观与原生一致；单独的模板名让它有独立的对象池，
+         不和暴雪自带的飞行点图层互相清除。由 Modules/WorldMap.lua 的数据提供者放置。 -->
+    <Frame name="WowHandbookFlightPinTemplate" inherits="FlightPointPinTemplate" virtual="true"/>
+</Ui>

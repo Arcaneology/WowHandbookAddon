@@ -1,0 +1,31 @@
+# 公开仓库的发布副本（由 tools/publish-public.sh 维护，是另一个 Git 仓库）
+.public/
+
+# 研究素材、抓取结果、截图等本地资料，不进仓库
+assets/
+
+# 打包产物
+dist/
+*.zip
+
+# 本机工具缓存
+__pycache__/
+*.pyc
+.luacheckcache
+node_modules/
+
+# 游戏客户端写出的数据（SavedVariables、日志），可能含角色信息
+WTF/
+Logs/
+*.bak
+
+# 系统与编辑器
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# 密钥
+.env
+.env.*
+!.env.example
