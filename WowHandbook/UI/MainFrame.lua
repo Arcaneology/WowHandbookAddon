@@ -44,90 +44,7 @@ function MainFrame:HasTab(id)
     return tabsByID[id] ~= nil
 end
 
---------------------------------------------------------------------------------
--- 概览页（内置）
---------------------------------------------------------------------------------
-
--- 概览页的功能卡片：tab 为打开的页面；hint 为没有页面时的说明
-local FEATURES = {
-    { "Dungeon guide", "Quests, quest chains and loot for every dungeon, with one-click NPC waypoints.", tab = "dungeons" },
-    { "Spells by level", "Your full spellbook by level: what to learn now and where to train it.", tab = "spellbook" },
-    { "World map", "Zone level ranges, flight paths you still need, and a larger map.", hint = "Open your world map" },
-    { "Travel", "Boats, zeppelins and the fastest way to get where you are going.", hint = "Coming soon" },
-}
-
-local function CreateHomePage(parent)
-    local page = CreateFrame("Frame", nil, parent)
-
-    local eyebrow = UI:Text(page, "Accent", L["World of Warcraft: Forever"])
-    eyebrow:SetPoint("TOPLEFT", 28, -28)
-
-    local title = UI:Text(page, "Title", L["Your companion for World of Warcraft: Forever."])
-    title:SetPoint("TOPLEFT", eyebrow, "BOTTOMLEFT", 0, -8)
-
-    local subtitle = UI:Text(page, "Small", L["Dungeon guide, spells by level and more are on the way."])
-    subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
-
-    local heading = UI:Text(page, "Heading", L["Features"])
-    heading:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -28)
-
-    -- 2 x 2 功能卡片（内容区宽 762，左右各留 28）
-    local CARD_WIDTH, CARD_HEIGHT, GAP = 347, 96, 12
-    for index, item in ipairs(FEATURES) do
-        local card = UI:Panel(page, "panel", "lineSoft")
-        card:SetSize(CARD_WIDTH, CARD_HEIGHT)
-        local column = (index - 1) % 2
-        local rowIndex = floor((index - 1) / 2)
-        card:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", column * (CARD_WIDTH + GAP), -12 - rowIndex * (CARD_HEIGHT + GAP))
-        local accent = card:CreateTexture(nil, "ARTWORK")
-        accent:SetPoint("TOPLEFT", 1, -1)
-        accent:SetPoint("BOTTOMLEFT", 1, 1)
-        accent:SetWidth(2)
-        accent:SetColorTexture(unpack(Theme.colors[item.tab and "gold" or "goldDim"]))
-        local cardTitle = UI:Text(card, "Heading", L[item[1]])
-        cardTitle:SetPoint("TOPLEFT", 16, -14)
-        local cardBody = UI:Text(card, "Small", L[item[2]])
-        cardBody:SetPoint("TOPLEFT", cardTitle, "BOTTOMLEFT", 0, -8)
-        cardBody:SetWidth(CARD_WIDTH - 32)
-        cardBody:SetJustifyV("TOP")
-        if item.tab then
-            local open = UI:Button(card, L["Open"], 70, 22, "primary")
-            open:SetPoint("BOTTOMRIGHT", -12, 10)
-            open:SetScript("OnClick", function()
-                MainFrame:SelectTab(item.tab)
-            end)
-        else
-            local hint = UI:Text(card, "Muted", L[item.hint])
-            hint:SetPoint("BOTTOMRIGHT", -14, 12)
-        end
-    end
-
-    local extrasKey = "Also on: spell ranks upgrade on your action bars, new spells go to an empty slot, "
-        .. "and gray items sell at vendors. Change these in Settings."
-    local extras = UI:Text(page, "Muted", L[extrasKey])
-    extras:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -12 - 2 * (CARD_HEIGHT + GAP) - 4)
-    extras:SetWidth(706)
-
-    -- 网站区（链接规范见 docs/05-site-link-policy.md）
-    local site = UI:Panel(page, "raised", "lineSoft")
-    site:SetPoint("BOTTOMLEFT", 28, 24)
-    site:SetPoint("BOTTOMRIGHT", -28, 24)
-    site:SetHeight(64)
-    local siteTitle = UI:Text(site, "Heading", "wowhandbook.com")
-    siteTitle:SetPoint("TOPLEFT", 16, -14)
-    local siteBody = UI:Text(site, "Small", L["Full guides, changes from Classic and planning tools on the website:"])
-    siteBody:SetPoint("TOPLEFT", siteTitle, "BOTTOMLEFT", 0, -6)
-    local copyButton = UI:Button(site, L["Copy website link"], 150, 26, "primary")
-    copyButton:SetPoint("RIGHT", -16, 0)
-    copyButton:SetScript("OnClick", function()
-        ns.Links:ShowCopyDialog(ns.Links:Build("home"))
-    end)
-    siteBody:SetPoint("RIGHT", copyButton, "LEFT", -16, 0)
-
-    return page
-end
-
-MainFrame:RegisterTab({ id = "home", title = L["Home"], order = 0, create = CreateHomePage })
+-- 首页（“今日面板”）在 UI/Home.lua
 
 --------------------------------------------------------------------------------
 -- 窗口、导航
@@ -321,6 +238,10 @@ WowHandbookAPI = {
     end,
     Open = function(id)
         MainFrame:Open(id)
+    end,
+    -- 在地图上标记一个坐标（0–100）并打开大地图，规则与插件自己的“地图标记”一致
+    ShowOnMap = function(uiMapID, x, y, title)
+        return ns.Waypoints:ShowOnMap(uiMapID, x, y, title)
     end,
     -- 共用的主题与控件，让其他页面与主窗口风格一致
     Theme = Theme,

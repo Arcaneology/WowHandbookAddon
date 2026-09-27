@@ -22,7 +22,11 @@ local page
 --------------------------------------------------------------------------------
 
 local function DungeonName(dungeon)
-    return ns.Name(dungeon.name)
+    local name = ns.Name(dungeon.name)
+    if dungeon.aggregateOnly then
+        return (L["Other quests for %s"]):format(name or L["Dungeon"])
+    end
+    return name
 end
 
 local function FactionOK(dungeon)
@@ -31,13 +35,14 @@ local function FactionOK(dungeon)
         or (dungeon.faction == "alliance" and faction == "A") or (dungeon.faction == "horde" and faction == "H")
 end
 
--- 本阵营（或通用）的任务：总数、已完成数、现在可接或已接的数量
+-- 本阵营（或通用）的任务：总数、已完成数、现在可接或已接的数量。
+-- 只来自其他插件、尚未在游戏里确认的任务（unverified）不计数，只在任务列表里列出。
 local function QuestSummary(dungeon)
     local faction = ns.PlayerFaction()
     local total, done, available = 0, 0, 0
     for _, questID in ipairs(dungeon.quests or {}) do
         local quest = ns.Data.quests[questID]
-        if quest and not (quest.faction and faction and quest.faction ~= faction) then
+        if quest and not quest.unverified and not (quest.faction and faction and quest.faction ~= faction) then
             total = total + 1
             local kind = Classify(questID)
             if kind == "done" then
@@ -59,12 +64,25 @@ local function LootCount(dungeon)
 end
 
 -- 推荐：等级区间覆盖玩家等级（前后各放宽 2 级）的副本，按离区间中点的距离排序，有可接任务的优先
+-- 值得推荐：本阵营进得去、有掉落或任务数据（“数据待补”的新副本不推荐）；团本只在满级时推荐
+local function Recommendable(dungeon)
+    if dungeon.aggregateOnly or dungeon.dataPending or not FactionOK(dungeon) then
+        return false
+    end
+    if LootCount(dungeon) == 0 and #(dungeon.quests or {}) == 0 then
+        return false
+    end
+    local maxLevel = GetMaxPlayerLevel and GetMaxPlayerLevel() or 60
+    return dungeon.kind ~= "raid" or ns.PlayerLevel() >= maxLevel
+end
+
 local function Recommended(count)
     local level = ns.PlayerLevel()
     local scored = {}
     for index, dungeon in ipairs(ns.Data.dungeons) do
         local levels = dungeon.levels
-        if levels and FactionOK(dungeon) and level >= levels[1] - 2 and level <= levels[2] + 2 then
+        if levels and Recommendable(dungeon)
+            and level >= levels[1] - 2 and level <= levels[2] + 2 then
             local _, _, available = QuestSummary(dungeon)
             local distance = math.abs((levels[1] + levels[2]) / 2 - level)
             tinsert(scored, { index = index, score = distance - (available > 0 and 1 or 0) })
@@ -80,7 +98,7 @@ local function Recommended(count)
     -- 等级超过全部副本时，推荐等级最高的几个
     if #result == 0 then
         for index = #ns.Data.dungeons, 1, -1 do
-            if FactionOK(ns.Data.dungeons[index]) then
+            if Recommendable(ns.Data.dungeons[index]) then
                 tinsert(result, index)
             end
             if #result >= count then
@@ -120,7 +138,11 @@ local function FillCard(card, index)
     if total > 0 then
         tinsert(facts, (L["Quests %d/%d"]):format(done, total))
     end
-    tinsert(facts, (L["%d bosses"]):format(#(dungeon.bosses or {})))
+    if dungeon.dataPending then
+        tinsert(facts, L["Data coming soon"])
+    elseif not dungeon.aggregateOnly then
+        tinsert(facts, (L["%d bosses"]):format(#(dungeon.bosses or {})))
+    end
     local loot = LootCount(dungeon)
     if loot > 0 then
         tinsert(facts, (L["%d items"]):format(loot))
@@ -440,7 +462,9 @@ local function QuestEntries(dungeon)
         if ka ~= kb then
             return ka < kb
         end
-        local la, lb = ns.Data.quests[a].level or 0, ns.Data.quests[b].level or 0
+        -- 同一状态内按最低可接等级排序（没有时用任务等级）
+        local qa, qb = ns.Data.quests[a], ns.Data.quests[b]
+        local la, lb = qa.min or qa.level or 0, qb.min or qb.level or 0
         if la ~= lb then
             return la < lb
         end
@@ -461,7 +485,7 @@ local function QuestEntries(dungeon)
         end
         tinsert(entries, {
             id = questID,
-            text = ("%s|cff8a8374%s|r %s"):format(toggle, quest.level and ("[" .. quest.level .. "]") or "",
+            text = ("%s|cff8a8374%s|r %s"):format(toggle, (quest.min or quest.level) and ("[" .. (quest.min or quest.level) .. "]") or "",
                 ns.QuestTitle(questID)),
             tags = tag,
             chainOwner = hasChain and questID or nil,
@@ -535,6 +559,19 @@ local function RewardsSection(stack, rewards)
         stack:Text(L["Choose one of:"], "Small", 0, 4)
         stack:Items(ItemIDs(rewards.choices), 0, 34)
     end
+    -- 其他插件数据里多出来的奖励（待验证）与后续任务的奖励
+    local possible, followUp = {}, {}
+    for _, item in ipairs(rewards.referenceItems or {}) do
+        tinsert(item.followUp and followUp or possible, item.id)
+    end
+    if #possible > 0 then
+        stack:Text(L["Other possible rewards (unverified):"], "Small", 0, 4)
+        stack:Items(possible, 0, 34)
+    end
+    if #followUp > 0 then
+        stack:Text(L["Rewards from the follow-up quest:"], "Small", 0, 4)
+        stack:Items(followUp, 0, 34)
+    end
     for _, reputation in ipairs(rewards.reputation or {}) do
         stack:Text(("|cff8a8374%s|r %s +%d"):format(L["Reputation:"], ns.Name(reputation.name) or "?", reputation.value or 0),
             "Small", 0, 3)
@@ -555,13 +592,17 @@ local function RenderQuestDetail(view, questID, item)
     local kind = item.kind or Classify(questID)
     local group = GROUP_BY_KEY[kind]
     stack:Text(ns.QuestTitle(questID), "Title", 0, 4)
-
-    local meta = { ("|c%s%s|r"):format(group.color, L[group.tag]) }
-    if quest.level then
-        tinsert(meta, (L["Level %d"]):format(quest.level))
+    if quest.unverified then
+        stack:Text(L["Collected from other sources; not yet confirmed in game."], "Muted", 0, 6)
     end
+
+    -- 最低可接等级是给玩家的主要信息；任务等级（难度、经验）只作参考，放在后面并用暗色
+    local meta = { ("|c%s%s|r"):format(group.color, L[group.tag]) }
     if quest.min then
-        tinsert(meta, (L["min. level %d"]):format(quest.min))
+        tinsert(meta, (L["Accept at level %d"]):format(quest.min))
+    end
+    if quest.level then
+        tinsert(meta, "|cff8a8374" .. (L["Quest level %d"]):format(quest.level) .. "|r")
     end
     stack:Text(table.concat(meta, "  ·  "), "Small", 0, 8)
 
@@ -725,21 +766,23 @@ local function RenderLoot(detail, dungeon)
     local stack = detail.stack
     local bosses = dungeon.bosses or {}
     if LootCount(dungeon) == 0 then
-        stack:Text(L["No loot data yet."], "Muted")
+        stack:Text(dungeon.dataPending and L["Data coming soon"] or L["No loot data yet."], "Muted")
         return
     end
     local filter = LootFilter()
     local shown = 0
     for order, boss in ipairs(bosses) do
         local items = {}
-        for _, itemID in ipairs(boss.items or {}) do
+        for _, entry in ipairs(boss.items or {}) do
+            local itemID = type(entry) == "table" and entry.id or entry
             if ns.ItemFilter.Matches(itemID, filter) then
-                tinsert(items, itemID)
+                tinsert(items, entry)
             end
         end
         if #items > 0 then
             shown = shown + #items
-            stack:Text(("|cff8a8374%d.|r  %s  |cff8a8374(%d)|r"):format(order, ns.Name(boss.name) or "?", #items),
+            local level = boss.level and ("  |cff8a8374" .. (L["Level %s"]):format(tostring(boss.level)) .. "|r") or ""
+            stack:Text(("|cff8a8374%d.|r  %s%s  |cff8a8374(%d)|r"):format(order, ns.BossName(boss) or "?", level, #items),
                 "Heading", 0, 6)
             stack:Items(items, 18, 34)
             stack:Spacer(4)
@@ -809,6 +852,9 @@ local function RefreshDetail()
             ns.LevelRange(dungeon.levels)))
     end
     tinsert(meta, dungeon.kind == "raid" and L["Raid"] or L["Dungeon"])
+    if dungeon.dataPending then
+        tinsert(meta, L["Data coming soon"])
+    end
     local total, done = QuestSummary(dungeon)
     if total > 0 then
         tinsert(meta, (L["Quests %d/%d"]):format(done, total))
@@ -827,6 +873,7 @@ local function RefreshDetail()
     local questTab = state.tab == "quests"
     detail.questView:SetShown(questTab)
     detail.scroll:SetShown(not questTab)
+    detail.lootFilters:SetShown(state.tab == "loot") -- 筛选条只属于掉落页
     if questTab then
         detail.questView.detail, detail.questView.dungeon = detail, dungeon
         RefreshQuestView(detail, dungeon)
@@ -867,7 +914,7 @@ local function CreateDetail(parent)
     guide:SetPoint("TOPRIGHT", -PAD, -46)
     guide:SetScript("OnClick", function()
         local dungeon = ns.Data.dungeons[state.selected]
-        CopyLink(dungeon.kind == "raid" and "raid" or "dungeon", dungeon.slug)
+        CopyLink(dungeon.kind == "raid" and "raid" or "dungeon", dungeon.siteSlug or dungeon.slug)
     end)
     detail.markEntrance = UI:Button(detail, L["Show entrance on map"], 150, 26, "primary")
     detail.markEntrance:SetPoint("RIGHT", guide, "LEFT", -8, 0)
@@ -944,6 +991,7 @@ local function CreatePage(parent)
     UI = ns.UI
     local p = CreateFrame("Frame", nil, parent)
     page = p
+    Module.page = p -- 供测试使用
     p.home = CreateHome(p)
     p.detail = CreateDetail(p)
     p:SetScript("OnShow", Refresh)
@@ -962,6 +1010,113 @@ function Module:Select(target, tab)
     end
     return false
 end
+
+--------------------------------------------------------------------------------
+-- 首页用的摘要
+--------------------------------------------------------------------------------
+
+local function DungeonIndexOf(slug)
+    for index, dungeon in ipairs(ns.Data.dungeons) do
+        if dungeon.slug == slug then
+            return index
+        end
+    end
+    return nil
+end
+
+-- 任务所属的副本：副本任务直接看 instances；任务链上的非副本步骤找包含它的副本任务链
+local function DungeonOfQuest(questID)
+    local quest = ns.Data.quests[questID]
+    if quest and quest.instances then
+        for _, parentSlug in ipairs(quest.instances) do
+            for _, sectionSlug in ipairs(quest.sectionSlugs or {}) do
+                local target = sectionSlug == "unassigned" and parentSlug or (parentSlug .. "-" .. sectionSlug)
+                local index = DungeonIndexOf(target)
+                if index then
+                    return index
+                end
+            end
+        end
+        -- 老数据没有分区标记时，根据导出的任务归属寻找分区。
+        for index, dungeon in ipairs(ns.Data.dungeons) do
+            if IndexOf(dungeon.quests or {}, questID) then
+                return index
+            end
+        end
+        return DungeonIndexOf(quest.instances[1])
+    end
+    for index, dungeon in ipairs(ns.Data.dungeons) do
+        for _, owner in ipairs(dungeon.quests or {}) do
+            if IndexOf(ChainOf(owner), questID) then
+                return index
+            end
+        end
+    end
+    return nil
+end
+
+-- 返回 {
+--   recommended = { {index, name, levels, total, done, available} },
+--   prep = { {quest = 任务ID, dungeon = 序号, step = 链上第几步或 nil, steps = 链长} }：推荐副本里现在就能在副本外接的任务
+--          （任务链没开始或中断时给出该接的那一步），
+--   active = { {quest, dungeon, complete} }：任务日志里的副本任务（含任务链步骤），
+--   upcoming = { [等级] = { 副本名… } }：之后 levelsAhead 级以内开放的副本 }
+function Module.Summary(recommendCount, levelsAhead)
+    local summary = { recommended = {}, prep = {}, active = {}, upcoming = {} }
+    local seen = {}
+    for _, index in ipairs(Recommended(recommendCount or 3)) do
+        local dungeon = ns.Data.dungeons[index]
+        local total, done, available = QuestSummary(dungeon)
+        local entry = { index = index, name = DungeonName(dungeon), levels = dungeon.levels,
+            total = total, done = done, available = available, prep = 0 }
+        tinsert(summary.recommended, entry)
+        local faction = ns.PlayerFaction()
+        for _, questID in ipairs(dungeon.quests or {}) do
+            local quest = ns.Data.quests[questID]
+            if quest and not quest.unverified and not (quest.faction and faction and quest.faction ~= faction) then
+                local kind, chain, nextStep = Classify(questID)
+                local target
+                if kind == "ready" and not quest.inside then
+                    target = questID
+                elseif kind == "chain" and nextStep and ns.QuestStatus(nextStep) == "available" then
+                    local step = ns.Data.quests[nextStep]
+                    if step and not step.inside then
+                        target = nextStep
+                    end
+                end
+                if target and not seen[target] and not (ns.Data.quests[target] or {}).unverified then
+                    seen[target] = true
+                    entry.prep = entry.prep + 1
+                    local stepIndex = #chain > 1 and IndexOf(chain, target) or nil
+                    tinsert(summary.prep, { quest = target, dungeon = index, step = stepIndex, steps = #chain })
+                end
+            end
+        end
+    end
+    for questID in pairs(ns.Data.quests) do
+        if ns.QuestStatus(questID) == "active" then
+            local index = DungeonOfQuest(questID)
+            local complete = C_QuestLog.IsComplete and C_QuestLog.IsComplete(questID) or false
+            tinsert(summary.active, { quest = questID, dungeon = index, complete = complete and true or false })
+        end
+    end
+    table.sort(summary.active, function(a, b)
+        if a.complete ~= b.complete then
+            return a.complete
+        end
+        return a.quest < b.quest
+    end)
+    local level = ns.PlayerLevel()
+    for _, dungeon in ipairs(ns.Data.dungeons) do
+        local first = dungeon.levels and dungeon.levels[1]
+        if first and Recommendable(dungeon) and first > level and first <= level + (levelsAhead or 4) then
+            summary.upcoming[first] = summary.upcoming[first] or {}
+            tinsert(summary.upcoming[first], DungeonName(dungeon))
+        end
+    end
+    return summary
+end
+Module.PlaceText = PlaceText
 
 function Module:OnEnable()
     ns.MainFrame:RegisterTab({ id = "dungeons", title = L["Dungeon guide"], order = 10, create = CreatePage, onShow = Refresh })

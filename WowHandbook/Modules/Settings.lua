@@ -7,8 +7,15 @@ local UI
 
 local SECTIONS = {
     { module = "Dungeons", title = "Dungeon guide", options = {} },
+    { module = "ItemSource", title = "Item sources", options = {} },
+    { module = "MinimapButton", title = "Minimap button", options = {
+        { key = "hidden", label = "Show minimap button", inverted = true },
+    } },
     { module = "Spellbook", title = "Spellbook", options = {
         { key = "levelUpNotice", label = "Tell me which spells to train when I level up" },
+    } },
+    { module = "SpellbookPanel", title = "Unlearned spells", options = {
+        { key = "collapsed", label = "Show the panel next to the game spellbook", inverted = true },
     } },
     { module = "ActionBars", title = "Action bars", options = {
         { key = "upgradeRanks", label = "Replace lower spell ranks on my bars with the highest rank" },
@@ -21,8 +28,50 @@ local SECTIONS = {
         { key = "levelLabel", label = "Show zone level ranges under the zone name" },
         { key = "flightPins", label = "Show flight paths; ones not unlocked yet are grayed out" },
         { key = "revealMap", label = "Show the full map, including areas not explored yet" },
+        { key = "dungeonPins", label = "Show dungeon and raid entrances" },
+        { key = "spiritHealers", label = "Spirit healers", choices = {
+            { id = "dead", label = "When I am dead" },
+            { id = "always", label = "Always" },
+            { id = "off", label = "Never" },
+        } },
     } },
 }
+
+-- 勾选框选项；inverted 表示存档里存的是相反的意思（如 hidden）。返回下一行的纵坐标
+local function AddCheckbox(panel, settings, option, rowY, onChange)
+    local check = UI:Checkbox(panel, L[option.label], function(checked)
+        if option.inverted then
+            settings[option.key] = not checked
+        else
+            settings[option.key] = checked
+        end
+        onChange()
+    end)
+    check:SetPoint("TOPLEFT", 14, rowY)
+    if option.inverted then
+        check:SetChecked(settings[option.key] ~= true)
+    else
+        check:SetChecked(settings[option.key] ~= false)
+    end
+    return rowY - 24
+end
+
+-- 多选一选项：左侧标签，右侧下拉框。返回下一行的纵坐标
+local function AddChoice(panel, settings, option, rowY, onChange)
+    local label = UI:Text(panel, "Small", L[option.label])
+    label:SetPoint("TOPLEFT", 14, rowY - 4)
+    local items = {}
+    for _, choice in ipairs(option.choices) do
+        tinsert(items, { id = choice.id, label = L[choice.label] })
+    end
+    local dropdown = UI:Dropdown(panel, items, function(id)
+        settings[option.key] = id
+        onChange()
+    end, 150)
+    dropdown:SetPoint("TOPLEFT", 160, rowY)
+    dropdown:SetValue(settings[option.key] or option.choices[1].id)
+    return rowY - 28
+end
 
 local function CreatePage(parent)
     UI = ns.UI
@@ -61,16 +110,17 @@ local function CreatePage(parent)
             enabled:SetPoint("TOPRIGHT", -14, -9)
             enabled:SetChecked(settings.enabled ~= false)
             local rowY = -38
+            local function Changed()
+                if module.Refresh then
+                    module:Refresh()
+                end
+            end
             for _, option in ipairs(section.options) do
-                local check = UI:Checkbox(panel, L[option.label], function(checked)
-                    settings[option.key] = checked
-                    if module.Refresh then
-                        module:Refresh()
-                    end
-                end)
-                check:SetPoint("TOPLEFT", 14, rowY)
-                check:SetChecked(settings[option.key] ~= false)
-                rowY = rowY - 24
+                if option.choices then
+                    rowY = AddChoice(panel, settings, option, rowY, Changed)
+                else
+                    rowY = AddCheckbox(panel, settings, option, rowY, Changed)
+                end
             end
             if section.module == "WorldMap" then
                 local scaleLabel = UI:Text(panel, "Small")

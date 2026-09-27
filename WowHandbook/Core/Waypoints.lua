@@ -27,16 +27,21 @@ function Waypoints:Set(uiMapID, x, y, title)
     return true
 end
 
--- 设好标记后打开游戏大地图并定位到该地图，同时收起插件窗口以免挡住地图
-function Waypoints:ShowOnMap(uiMapID, x, y, title)
-    if not self:Set(uiMapID, x, y, title) then
-        return false
-    end
+-- 打开游戏大地图并定位到该地图，同时收起插件窗口以免挡住地图
+function Waypoints:OpenMap(uiMapID)
     ns.MainFrame:Hide()
     if OpenWorldMap then
         OpenWorldMap(uiMapID)
     elseif C_Map.OpenWorldMap then
         C_Map.OpenWorldMap(uiMapID)
     end
+end
+
+-- 设好标记后打开游戏大地图并定位到该地图
+function Waypoints:ShowOnMap(uiMapID, x, y, title)
+    if not self:Set(uiMapID, x, y, title) then
+        return false
+    end
+    self:OpenMap(uiMapID)
     return true
 end

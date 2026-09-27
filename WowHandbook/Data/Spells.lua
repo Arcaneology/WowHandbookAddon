@@ -18,6 +18,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 1,
+                    id = 2457,
                 },
             },
         },
@@ -35,38 +36,47 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 78,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 284,
                 },
                 {
                     rank = "Rank 3",
                     level = 16,
+                    id = 285,
                 },
                 {
                     rank = "Rank 4",
                     level = 24,
+                    id = 1608,
                 },
                 {
                     rank = "Rank 5",
                     level = 32,
+                    id = 11564,
                 },
                 {
                     rank = "Rank 6",
                     level = 40,
+                    id = 11565,
                 },
                 {
                     rank = "Rank 7",
                     level = 48,
+                    id = 11566,
                 },
                 {
                     rank = "Rank 8",
                     level = 56,
+                    id = 11567,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 25286,
                 },
             },
         },
@@ -84,14 +94,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 100,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 6178,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 11578,
                 },
             },
         },
@@ -109,30 +122,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 772,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 6546,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 6547,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 6548,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 11572,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 11573,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 11574,
                 },
             },
         },
@@ -150,26 +170,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 6343,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 8198,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 8204,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 8205,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 11580,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 11581,
                 },
             },
         },
@@ -187,14 +213,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 1715,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 7372,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
+                    id = 7373,
                 },
             },
         },
@@ -212,18 +241,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 7384,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 7887,
                 },
                 {
                     rank = "Rank 3",
                     level = 44,
+                    id = 11584,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 11585,
                 },
             },
         },
@@ -241,22 +274,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 694,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 7400,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 7402,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 20559,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 20560,
                 },
             },
         },
@@ -274,6 +312,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 20230,
                 },
             },
         },
@@ -291,6 +330,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 402927,
                 },
             },
         },
@@ -308,30 +348,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 6673,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 5242,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 6192,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 11549,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 11550,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 11551,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 25289,
                 },
             },
         },
@@ -349,22 +396,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 1160,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 6190,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 11554,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 11555,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 11556,
                 },
             },
         },
@@ -382,22 +434,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 845,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 7369,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 11608,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 11609,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 20569,
                 },
             },
         },
@@ -415,22 +472,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1240193,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 1464,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 8820,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 11604,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 11605,
                 },
             },
         },
@@ -448,6 +510,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 5246,
                 },
             },
         },
@@ -465,22 +528,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 5308,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 20658,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 20660,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 20661,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 20662,
                 },
             },
         },
@@ -498,6 +566,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 1161,
                 },
             },
         },
@@ -515,6 +584,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 2458,
                 },
             },
         },
@@ -532,14 +602,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 20252,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 20616,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 20617,
                 },
             },
         },
@@ -557,6 +630,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 18499,
                 },
             },
         },
@@ -574,6 +648,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 36,
+                    id = 1680,
                 },
             },
         },
@@ -591,10 +666,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 38,
+                    id = 6552,
                 },
                 {
                     rank = "Rank 2",
                     level = 58,
+                    id = 6554,
                 },
             },
         },
@@ -612,6 +689,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 50,
+                    id = 1719,
                 },
             },
         },
@@ -629,6 +707,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 2687,
                 },
             },
         },
@@ -646,6 +725,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 71,
                 },
             },
         },
@@ -663,22 +743,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 7386,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 7405,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 8380,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 11596,
                 },
                 {
                     rank = "Rank 5",
                     level = 58,
+                    id = 11597,
                 },
             },
         },
@@ -696,6 +781,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 355,
                 },
             },
         },
@@ -713,14 +799,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 72,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 1671,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 1672,
                 },
             },
         },
@@ -738,26 +827,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 6572,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 6574,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 7379,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 11600,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 11601,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 25288,
                 },
             },
         },
@@ -775,6 +870,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 16,
+                    id = 2565,
                 },
             },
         },
@@ -792,6 +888,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 18,
+                    id = 676,
                 },
             },
         },
@@ -809,6 +906,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 28,
+                    id = 871,
                 },
             },
         },
@@ -829,18 +927,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 635,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 639,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 647,
                 },
                 {
                     rank = "Rank 4",
                     level = 22,
+                    id = 1026,
                 },
                 {
                     rank = "Rank 5",
@@ -849,18 +951,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 6",
                     level = 38,
+                    id = 3472,
                 },
                 {
                     rank = "Rank 7",
                     level = 46,
+                    id = 10328,
                 },
                 {
                     rank = "Rank 8",
                     level = 54,
+                    id = 10329,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 25292,
                 },
             },
         },
@@ -878,34 +984,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 20154,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 20287,
                 },
                 {
                     rank = "Rank 3",
                     level = 18,
+                    id = 20288,
                 },
                 {
                     rank = "Rank 4",
                     level = 26,
+                    id = 20289,
                 },
                 {
                     rank = "Rank 5",
                     level = 34,
+                    id = 20290,
                 },
                 {
                     rank = "Rank 6",
                     level = 42,
+                    id = 20291,
                 },
                 {
                     rank = "Rank 7",
                     level = 50,
+                    id = 20292,
                 },
                 {
                     rank = "Rank 8",
                     level = 58,
+                    id = 20293,
                 },
             },
         },
@@ -923,6 +1037,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 8,
+                    id = 1152,
                 },
             },
         },
@@ -940,14 +1055,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 633,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 2800,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 10310,
                 },
             },
         },
@@ -965,22 +1083,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 7328,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 10322,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 10324,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 20772,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 20773,
                 },
             },
         },
@@ -998,26 +1121,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 19742,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 19850,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 19852,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 19853,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 19854,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 25290,
                 },
             },
         },
@@ -1035,22 +1164,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 26573,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 20116,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 20922,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 20923,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 20924,
                 },
             },
         },
@@ -1068,26 +1202,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 879,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 5614,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 5615,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 10312,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 10313,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10314,
                 },
             },
         },
@@ -1105,26 +1245,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 19750,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 19939,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 19940,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 19941,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 19942,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 19943,
                 },
             },
         },
@@ -1142,6 +1288,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 5502,
                 },
             },
         },
@@ -1159,14 +1306,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 2878,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 5627,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 10326,
                 },
             },
         },
@@ -1184,18 +1334,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 20165,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 20347,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 20348,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 20349,
                 },
             },
         },
@@ -1213,14 +1367,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 38,
+                    id = 20166,
                 },
                 {
                     rank = "Rank 2",
                     level = 48,
+                    id = 20356,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 20357,
                 },
             },
         },
@@ -1238,14 +1395,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 19977,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 19978,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 19979,
                 },
             },
         },
@@ -1263,6 +1423,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 42,
+                    id = 4987,
                 },
             },
         },
@@ -1280,14 +1441,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 44,
+                    id = 24275,
                 },
                 {
                     rank = "Rank 2",
                     level = 52,
+                    id = 24274,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 24239,
                 },
             },
         },
@@ -1305,10 +1469,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 50,
+                    id = 2812,
                 },
                 {
                     rank = "Rank 2",
                     level = 60,
+                    id = 10318,
                 },
             },
         },
@@ -1326,10 +1492,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 54,
+                    id = 25894,
                 },
                 {
                     rank = "Rank 2",
                     level = 60,
+                    id = 25918,
                 },
             },
         },
@@ -1347,6 +1515,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 25890,
                 },
             },
         },
@@ -1364,30 +1533,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 465,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 10290,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 643,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 10291,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 1032,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 10292,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 10293,
                 },
             },
         },
@@ -1405,10 +1581,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 498,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 5573,
                 },
             },
         },
@@ -1426,18 +1604,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 853,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 5588,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 5589,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 10308,
                 },
             },
         },
@@ -1455,14 +1637,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 1022,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 5599,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 10278,
                 },
             },
         },
@@ -1480,30 +1665,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 1311649,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 1311656,
                 },
                 {
                     rank = "Rank 3",
                     level = 25,
+                    id = 20163,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 20419,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 20421,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 20422,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 20423,
                 },
             },
         },
@@ -1521,6 +1713,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 16,
+                    id = 25780,
                 },
             },
         },
@@ -1538,6 +1731,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 18,
+                    id = 1044,
                 },
             },
         },
@@ -1555,6 +1749,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 20217,
                 },
             },
         },
@@ -1572,6 +1767,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 19746,
                 },
             },
         },
@@ -1589,6 +1785,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 20164,
                 },
             },
         },
@@ -1606,6 +1803,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 1038,
                 },
             },
         },
@@ -1623,14 +1821,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 28,
+                    id = 19876,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 19895,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 19896,
                 },
             },
         },
@@ -1648,6 +1849,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 19752,
                 },
             },
         },
@@ -1665,14 +1867,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 19888,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
+                    id = 19897,
                 },
                 {
                     rank = "Rank 3",
                     level = 56,
+                    id = 19898,
                 },
             },
         },
@@ -1690,10 +1895,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 34,
+                    id = 642,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 1020,
                 },
             },
         },
@@ -1711,14 +1918,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 36,
+                    id = 19891,
                 },
                 {
                     rank = "Rank 2",
                     level = 48,
+                    id = 19899,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 19900,
                 },
             },
         },
@@ -1736,6 +1946,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 407632,
                 },
             },
         },
@@ -1753,10 +1964,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 46,
+                    id = 6940,
                 },
                 {
                     rank = "Rank 2",
                     level = 54,
+                    id = 20729,
                 },
             },
         },
@@ -1774,6 +1987,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 25898,
                 },
             },
         },
@@ -1791,6 +2005,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 25895,
                 },
             },
         },
@@ -1808,30 +2023,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 19740,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 19834,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 19835,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 19836,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 19837,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 19838,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 25291,
                 },
             },
         },
@@ -1849,6 +2071,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 4,
+                    id = 20271,
                 },
             },
         },
@@ -1866,34 +2089,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 679,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 678,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 1866,
                 },
                 {
                     rank = "Rank 4",
                     level = 28,
+                    id = 680,
                 },
                 {
                     rank = "Rank 5",
                     level = 36,
+                    id = 2495,
                 },
                 {
                     rank = "Rank 6",
                     level = 44,
+                    id = 5569,
                 },
                 {
                     rank = "Rank 7",
                     level = 52,
+                    id = 10332,
                 },
                 {
                     rank = "Rank 8",
                     level = 60,
+                    id = 10333,
                 },
             },
         },
@@ -1911,26 +2142,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 21082,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 20162,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 20305,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 20306,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 20307,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 20308,
                 },
             },
         },
@@ -1948,22 +2185,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 7294,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 10298,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 10299,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 10300,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 10301,
                 },
             },
         },
@@ -1981,10 +2223,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 52,
+                    id = 25782,
                 },
                 {
                     rank = "Rank 2",
                     level = 60,
+                    id = 25916,
                 },
             },
         },
@@ -2004,6 +2248,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 4,
+                    id = 13163,
                 },
             },
         },
@@ -2021,30 +2266,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 13165,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 14318,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 14319,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 14320,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 14321,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 14322,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 25296,
                 },
             },
         },
@@ -2062,6 +2314,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 883,
                 },
             },
         },
@@ -2079,6 +2332,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 2641,
                 },
             },
         },
@@ -2096,6 +2350,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 6991,
                 },
             },
         },
@@ -2113,6 +2368,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 982,
                 },
             },
         },
@@ -2130,6 +2386,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 1515,
                 },
             },
         },
@@ -2147,30 +2404,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 136,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 3111,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 3661,
                 },
                 {
                     rank = "Rank 4",
                     level = 36,
+                    id = 3662,
                 },
                 {
                     rank = "Rank 5",
                     level = 44,
+                    id = 13542,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 13543,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 13544,
                 },
             },
         },
@@ -2188,6 +2452,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 14,
+                    id = 6197,
                 },
             },
         },
@@ -2205,6 +2470,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 14,
+                    id = 1002,
                 },
             },
         },
@@ -2222,14 +2488,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 1513,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 14326,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 14327,
                 },
             },
         },
@@ -2247,6 +2516,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 5118,
                 },
             },
         },
@@ -2264,6 +2534,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 24,
+                    id = 1462,
                 },
             },
         },
@@ -2281,18 +2552,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 13161,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 1299445,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 1299446,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 1299447,
                 },
             },
         },
@@ -2310,6 +2585,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 13159,
                 },
             },
         },
@@ -2327,10 +2603,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 46,
+                    id = 20043,
                 },
                 {
                     rank = "Rank 2",
                     level = 56,
+                    id = 20190,
                 },
             },
         },
@@ -2348,6 +2626,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 19801,
                 },
             },
         },
@@ -2365,6 +2644,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 1,
+                    id = 75,
                 },
             },
         },
@@ -2382,38 +2662,47 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 1978,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 13549,
                 },
                 {
                     rank = "Rank 3",
                     level = 18,
+                    id = 13550,
                 },
                 {
                     rank = "Rank 4",
                     level = 26,
+                    id = 13551,
                 },
                 {
                     rank = "Rank 5",
                     level = 34,
+                    id = 13552,
                 },
                 {
                     rank = "Rank 6",
                     level = 42,
+                    id = 13553,
                 },
                 {
                     rank = "Rank 7",
                     level = 50,
+                    id = 13554,
                 },
                 {
                     rank = "Rank 8",
                     level = 58,
+                    id = 13555,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 25295,
                 },
             },
         },
@@ -2431,34 +2720,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 3044,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 14281,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 14282,
                 },
                 {
                     rank = "Rank 4",
                     level = 28,
+                    id = 14283,
                 },
                 {
                     rank = "Rank 5",
                     level = 36,
+                    id = 14284,
                 },
                 {
                     rank = "Rank 6",
                     level = 44,
+                    id = 14285,
                 },
                 {
                     rank = "Rank 7",
                     level = 52,
+                    id = 14286,
                 },
                 {
                     rank = "Rank 8",
                     level = 60,
+                    id = 14287,
                 },
             },
         },
@@ -2476,18 +2773,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 1130,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 14323,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 14324,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 14325,
                 },
             },
         },
@@ -2505,6 +2806,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 8,
+                    id = 5116,
                 },
             },
         },
@@ -2522,26 +2824,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 20736,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 14274,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 15629,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 15630,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 15631,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 15632,
                 },
             },
         },
@@ -2559,6 +2867,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 18,
+                    id = 2643,
                 },
             },
         },
@@ -2613,6 +2922,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 3043,
                 },
             },
         },
@@ -2630,6 +2940,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 3045,
                 },
             },
         },
@@ -2647,6 +2958,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 1221404,
                 },
             },
         },
@@ -2664,6 +2976,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 1543,
                 },
             },
         },
@@ -2681,14 +2994,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 36,
+                    id = 3034,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 14279,
                 },
                 {
                     rank = "Rank 3",
                     level = 56,
+                    id = 14280,
                 },
             },
         },
@@ -2706,14 +3022,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 1510,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 14294,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 14295,
                 },
             },
         },
@@ -2731,34 +3050,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 2973,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 14260,
                 },
                 {
                     rank = "Rank 3",
                     level = 16,
+                    id = 14261,
                 },
                 {
                     rank = "Rank 4",
                     level = 24,
+                    id = 14262,
                 },
                 {
                     rank = "Rank 5",
                     level = 32,
+                    id = 14263,
                 },
                 {
                     rank = "Rank 6",
                     level = 40,
+                    id = 14264,
                 },
                 {
                     rank = "Rank 7",
                     level = 48,
+                    id = 14265,
                 },
                 {
                     rank = "Rank 8",
                     level = 56,
+                    id = 14266,
                 },
             },
         },
@@ -2776,6 +3103,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 1,
+                    id = 1494,
                 },
             },
         },
@@ -2793,6 +3121,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 19883,
                 },
             },
         },
@@ -2810,14 +3139,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 2974,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 14267,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 14268,
                 },
             },
         },
@@ -2835,22 +3167,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 13795,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 14302,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 14303,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 14304,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 14305,
                 },
             },
         },
@@ -2868,18 +3205,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 1495,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 14269,
                 },
                 {
                     rank = "Rank 3",
                     level = 44,
+                    id = 14270,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 14271,
                 },
             },
         },
@@ -2897,6 +3238,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 18,
+                    id = 19884,
                 },
             },
         },
@@ -2914,14 +3256,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 781,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 14272,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 14273,
                 },
             },
         },
@@ -2939,14 +3284,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1499,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 14310,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 14311,
                 },
             },
         },
@@ -2964,6 +3312,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 24,
+                    id = 19885,
                 },
             },
         },
@@ -2981,6 +3330,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 19880,
                 },
             },
         },
@@ -2998,6 +3348,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 28,
+                    id = 13809,
                 },
             },
         },
@@ -3015,6 +3366,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 5384,
                 },
             },
         },
@@ -3061,6 +3413,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 19878,
                 },
             },
         },
@@ -3078,14 +3431,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 34,
+                    id = 13813,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
+                    id = 14316,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
+                    id = 14317,
                 },
             },
         },
@@ -3103,6 +3459,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 19882,
                 },
             },
         },
@@ -3120,6 +3477,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 50,
+                    id = 19879,
                 },
             },
         },
@@ -3139,38 +3497,47 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 2098,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 6760,
                 },
                 {
                     rank = "Rank 3",
                     level = 16,
+                    id = 6761,
                 },
                 {
                     rank = "Rank 4",
                     level = 24,
+                    id = 6762,
                 },
                 {
                     rank = "Rank 5",
                     level = 32,
+                    id = 8623,
                 },
                 {
                     rank = "Rank 6",
                     level = 40,
+                    id = 8624,
                 },
                 {
                     rank = "Rank 7",
                     level = 48,
+                    id = 11299,
                 },
                 {
                     rank = "Rank 8",
                     level = 56,
+                    id = 11300,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 31016,
                 },
             },
         },
@@ -3188,10 +3555,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 5171,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 6774,
                 },
             },
         },
@@ -3209,22 +3578,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 8647,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 8649,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 8650,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 11197,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 11198,
                 },
             },
         },
@@ -3242,26 +3616,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 703,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 8631,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 8632,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 8633,
                 },
                 {
                     rank = "Rank 5",
                     level = 46,
+                    id = 11289,
                 },
                 {
                     rank = "Rank 6",
                     level = 54,
+                    id = 11290,
                 },
             },
         },
@@ -3279,26 +3659,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 8676,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 8724,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 8725,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 11267,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 11268,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 11269,
                 },
             },
         },
@@ -3316,26 +3702,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1943,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 8639,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 8640,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 11273,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 11274,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 11275,
                 },
             },
         },
@@ -3353,6 +3745,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 1833,
                 },
             },
         },
@@ -3370,10 +3763,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 408,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 8643,
                 },
             },
         },
@@ -3391,34 +3786,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 1752,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 1757,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 1758,
                 },
                 {
                     rank = "Rank 4",
                     level = 22,
+                    id = 1759,
                 },
                 {
                     rank = "Rank 5",
                     level = 30,
+                    id = 1760,
                 },
                 {
                     rank = "Rank 6",
                     level = 38,
+                    id = 8621,
                 },
                 {
                     rank = "Rank 7",
                     level = 46,
+                    id = 11293,
                 },
                 {
                     rank = "Rank 8",
                     level = 54,
+                    id = 11294,
                 },
             },
         },
@@ -3436,38 +3839,47 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 53,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 2589,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 2590,
                 },
                 {
                     rank = "Rank 4",
                     level = 28,
+                    id = 2591,
                 },
                 {
                     rank = "Rank 5",
                     level = 36,
+                    id = 8721,
                 },
                 {
                     rank = "Rank 6",
                     level = 44,
+                    id = 11279,
                 },
                 {
                     rank = "Rank 7",
                     level = 52,
+                    id = 11280,
                 },
                 {
                     rank = "Rank 8",
                     level = 60,
+                    id = 11281,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 25300,
                 },
             },
         },
@@ -3485,22 +3897,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 1776,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 1777,
                 },
                 {
                     rank = "Rank 3",
                     level = 32,
+                    id = 8629,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 11285,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 11286,
                 },
             },
         },
@@ -3518,6 +3935,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 8,
+                    id = 5277,
                 },
             },
         },
@@ -3535,14 +3953,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 2983,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 8696,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 11305,
                 },
             },
         },
@@ -3560,18 +3981,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 1766,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 1767,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 1768,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 1769,
                 },
             },
         },
@@ -3589,22 +4014,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 1966,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 6768,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 8637,
                 },
                 {
                     rank = "Rank 4",
                     level = 52,
+                    id = 11303,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 25302,
                 },
             },
         },
@@ -3622,18 +4052,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 1784,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 1785,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 1786,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 1787,
                 },
             },
         },
@@ -3651,6 +4085,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 4,
+                    id = 921,
                 },
             },
         },
@@ -3668,14 +4103,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 6770,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 2070,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 11297,
                 },
             },
         },
@@ -3693,6 +4131,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 1725,
                 },
             },
         },
@@ -3710,10 +4149,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 1856,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 1857,
                 },
             },
         },
@@ -3731,6 +4172,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 1842,
                 },
             },
         },
@@ -3748,6 +4190,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 34,
+                    id = 2094,
                 },
             },
         },
@@ -3765,6 +4208,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 3420,
                 },
             },
         },
@@ -3782,6 +4226,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 8681,
                 },
             },
         },
@@ -3799,6 +4244,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 5763,
                 },
             },
         },
@@ -3816,6 +4262,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 2835,
                 },
             },
         },
@@ -3833,6 +4280,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 13220,
                 },
             },
         },
@@ -3850,6 +4298,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 2",
                     level = 60,
+                    id = 1214168,
                 },
             },
         },
@@ -3869,26 +4318,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 1243,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 1244,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 1245,
                 },
                 {
                     rank = "Rank 4",
                     level = 36,
+                    id = 2791,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 10937,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10938,
                 },
             },
         },
@@ -3906,42 +4361,52 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 17,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 592,
                 },
                 {
                     rank = "Rank 3",
                     level = 18,
+                    id = 600,
                 },
                 {
                     rank = "Rank 4",
                     level = 24,
+                    id = 3747,
                 },
                 {
                     rank = "Rank 5",
                     level = 30,
+                    id = 6065,
                 },
                 {
                     rank = "Rank 6",
                     level = 36,
+                    id = 6066,
                 },
                 {
                     rank = "Rank 7",
                     level = 42,
+                    id = 10898,
                 },
                 {
                     rank = "Rank 8",
                     level = 48,
+                    id = 10899,
                 },
                 {
                     rank = "Rank 9",
                     level = 54,
+                    id = 10900,
                 },
                 {
                     rank = "Rank 10",
                     level = 60,
+                    id = 10901,
                 },
             },
         },
@@ -3960,6 +4425,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 1277455,
                 },
             },
         },
@@ -3978,30 +4444,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 10797,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 19296,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 19299,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 19302,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 19303,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 19304,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 19305,
                 },
             },
         },
@@ -4019,26 +4492,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 588,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 7128,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 602,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 1006,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 10951,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10952,
                 },
             },
         },
@@ -4056,10 +4535,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 527,
                 },
                 {
                     rank = "Rank 2",
                     level = 36,
+                    id = 988,
                 },
             },
         },
@@ -4078,22 +4559,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1277462,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 1277634,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 1277638,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 1277639,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 1277640,
                 },
             },
         },
@@ -4112,6 +4598,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 2651,
                 },
             },
         },
@@ -4130,22 +4617,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 13896,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 19271,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 19273,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 19274,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 19275,
                 },
             },
         },
@@ -4163,14 +4655,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 9484,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 9485,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 10955,
                 },
             },
         },
@@ -4188,22 +4683,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 8129,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 8131,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 10874,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 10875,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 10876,
                 },
             },
         },
@@ -4221,18 +4721,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 14752,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 14818,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 14819,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 27841,
                 },
             },
         },
@@ -4250,6 +4754,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 34,
+                    id = 1706,
                 },
             },
         },
@@ -4267,10 +4772,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 48,
+                    id = 21562,
                 },
                 {
                     rank = "Rank 2",
                     level = 60,
+                    id = 21564,
                 },
             },
         },
@@ -4288,6 +4795,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 60,
+                    id = 27681,
                 },
             },
         },
@@ -4305,14 +4813,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 2050,
                 },
                 {
                     rank = "Rank 2",
                     level = 4,
+                    id = 2052,
                 },
                 {
                     rank = "Rank 3",
                     level = 10,
+                    id = 2053,
                 },
             },
         },
@@ -4330,34 +4841,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 585,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 591,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 598,
                 },
                 {
                     rank = "Rank 4",
                     level = 22,
+                    id = 984,
                 },
                 {
                     rank = "Rank 5",
                     level = 30,
+                    id = 1004,
                 },
                 {
                     rank = "Rank 6",
                     level = 38,
+                    id = 6060,
                 },
                 {
                     rank = "Rank 7",
                     level = 46,
+                    id = 10933,
                 },
                 {
                     rank = "Rank 8",
                     level = 54,
+                    id = 10934,
                 },
             },
         },
@@ -4375,42 +4894,52 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 139,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 6074,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 6075,
                 },
                 {
                     rank = "Rank 4",
                     level = 26,
+                    id = 6076,
                 },
                 {
                     rank = "Rank 5",
                     level = 32,
+                    id = 6077,
                 },
                 {
                     rank = "Rank 6",
                     level = 38,
+                    id = 6078,
                 },
                 {
                     rank = "Rank 7",
                     level = 44,
+                    id = 10927,
                 },
                 {
                     rank = "Rank 8",
                     level = 50,
+                    id = 10928,
                 },
                 {
                     rank = "Rank 9",
                     level = 56,
+                    id = 10929,
                 },
                 {
                     rank = "Rank 10",
                     level = 60,
+                    id = 25315,
                 },
             },
         },
@@ -4429,30 +4958,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 13908,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 19236,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 19238,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 19240,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 19241,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 19242,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 19243,
                 },
             },
         },
@@ -4471,30 +5007,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 1277370,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 1277371,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 1277372,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 1277374,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 1277376,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 1277377,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 1277378,
                 },
             },
         },
@@ -4512,22 +5055,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 2006,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 2010,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 10880,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 10881,
                 },
                 {
                     rank = "Rank 5",
                     level = 58,
+                    id = 20770,
                 },
             },
         },
@@ -4545,6 +5093,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 14,
+                    id = 528,
                 },
             },
         },
@@ -4562,18 +5111,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 2054,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 2055,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 6063,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 6064,
                 },
             },
         },
@@ -4592,22 +5145,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1277331,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 1277332,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 1277333,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 1277334,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 1277335,
                 },
             },
         },
@@ -4625,6 +5183,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 6346,
                 },
             },
         },
@@ -4642,30 +5201,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 2061,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 9472,
                 },
                 {
                     rank = "Rank 3",
                     level = 32,
+                    id = 9473,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 9474,
                 },
                 {
                     rank = "Rank 5",
                     level = 44,
+                    id = 10915,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 10916,
                 },
                 {
                     rank = "Rank 7",
                     level = 56,
+                    id = 10917,
                 },
             },
         },
@@ -4683,34 +5249,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 14914,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 15262,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 15263,
                 },
                 {
                     rank = "Rank 4",
                     level = 36,
+                    id = 15264,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 15265,
                 },
                 {
                     rank = "Rank 6",
                     level = 48,
+                    id = 15266,
                 },
                 {
                     rank = "Rank 7",
                     level = 54,
+                    id = 15267,
                 },
                 {
                     rank = "Rank 8",
                     level = 60,
+                    id = 15261,
                 },
             },
         },
@@ -4728,22 +5302,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 596,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 996,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 10960,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 10961,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 25316,
                 },
             },
         },
@@ -4761,6 +5340,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 552,
                 },
             },
         },
@@ -4778,22 +5358,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 2060,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 10963,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 10964,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 10965,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 25314,
                 },
             },
         },
@@ -4811,14 +5396,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 724,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 27870,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 27871,
                 },
             },
         },
@@ -4836,34 +5424,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 589,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 594,
                 },
                 {
                     rank = "Rank 3",
                     level = 18,
+                    id = 970,
                 },
                 {
                     rank = "Rank 4",
                     level = 26,
+                    id = 992,
                 },
                 {
                     rank = "Rank 5",
                     level = 34,
+                    id = 2767,
                 },
                 {
                     rank = "Rank 6",
                     level = 42,
+                    id = 10892,
                 },
                 {
                     rank = "Rank 7",
                     level = 50,
+                    id = 10893,
                 },
                 {
                     rank = "Rank 8",
                     level = 58,
+                    id = 10894,
                 },
             },
         },
@@ -4881,26 +5477,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 586,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 9578,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 9579,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 9592,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 10941,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10942,
                 },
             },
         },
@@ -4919,26 +5521,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 9035,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 19281,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 19282,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 19283,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 19284,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 19285,
                 },
             },
         },
@@ -4956,38 +5564,47 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 8092,
                 },
                 {
                     rank = "Rank 2",
                     level = 16,
+                    id = 8102,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 8103,
                 },
                 {
                     rank = "Rank 4",
                     level = 28,
+                    id = 8104,
                 },
                 {
                     rank = "Rank 5",
                     level = 34,
+                    id = 8105,
                 },
                 {
                     rank = "Rank 6",
                     level = 40,
+                    id = 8106,
                 },
                 {
                     rank = "Rank 7",
                     level = 46,
+                    id = 10945,
                 },
                 {
                     rank = "Rank 8",
                     level = 52,
+                    id = 10946,
                 },
                 {
                     rank = "Rank 9",
                     level = 58,
+                    id = 10947,
                 },
             },
         },
@@ -5006,26 +5623,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 2652,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 19249,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 19251,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 19252,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 19253,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 19254,
                 },
             },
         },
@@ -5043,18 +5666,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 8122,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 8124,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 10888,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 10890,
                 },
             },
         },
@@ -5073,22 +5700,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1277324,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 1277325,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 1277326,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 1277327,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 1277328,
                 },
             },
         },
@@ -5106,26 +5738,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 2944,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 19276,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 19277,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 19278,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 19279,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 19280,
                 },
             },
         },
@@ -5143,14 +5781,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 453,
                 },
                 {
                     rank = "Rank 2",
                     level = 36,
+                    id = 8192,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 10953,
                 },
             },
         },
@@ -5169,26 +5810,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 18137,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 19308,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 19309,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 19310,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 19311,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 19312,
                 },
             },
         },
@@ -5206,10 +5853,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 2096,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
+                    id = 10909,
                 },
             },
         },
@@ -5227,14 +5876,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 605,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
+                    id = 10911,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 10912,
                 },
             },
         },
@@ -5252,14 +5904,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 976,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 10957,
                 },
                 {
                     rank = "Rank 3",
                     level = 56,
+                    id = 10958,
                 },
             },
         },
@@ -5306,6 +5961,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 56,
+                    id = 27683,
                 },
             },
         },
@@ -5325,42 +5981,52 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 403,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 529,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 548,
                 },
                 {
                     rank = "Rank 4",
                     level = 20,
+                    id = 915,
                 },
                 {
                     rank = "Rank 5",
                     level = 26,
+                    id = 943,
                 },
                 {
                     rank = "Rank 6",
                     level = 32,
+                    id = 6041,
                 },
                 {
                     rank = "Rank 7",
                     level = 38,
+                    id = 10391,
                 },
                 {
                     rank = "Rank 8",
                     level = 44,
+                    id = 10392,
                 },
                 {
                     rank = "Rank 9",
                     level = 50,
+                    id = 15207,
                 },
                 {
                     rank = "Rank 10",
                     level = 56,
+                    id = 15208,
                 },
             },
         },
@@ -5378,30 +6044,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 8042,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 8044,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 8045,
                 },
                 {
                     rank = "Rank 4",
                     level = 24,
+                    id = 8046,
                 },
                 {
                     rank = "Rank 5",
                     level = 36,
+                    id = 10412,
                 },
                 {
                     rank = "Rank 6",
                     level = 48,
+                    id = 10413,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 10414,
                 },
             },
         },
@@ -5419,6 +6092,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 6,
+                    id = 2484,
                 },
             },
         },
@@ -5436,26 +6110,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 5730,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 6390,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 6391,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 6392,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 10427,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 10428,
                 },
             },
         },
@@ -5473,26 +6153,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 8050,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 8052,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 8053,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 10447,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 10448,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 29228,
                 },
             },
         },
@@ -5510,26 +6196,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 3599,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 6363,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 6364,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 6365,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 10437,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10438,
                 },
             },
         },
@@ -5547,22 +6239,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 408341,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 408342,
                 },
                 {
                     rank = "Rank 3",
                     level = 32,
+                    id = 408343,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 408344,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 408345,
                 },
             },
         },
@@ -5580,10 +6277,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 370,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 8012,
                 },
             },
         },
@@ -5601,6 +6300,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 66842,
                 },
             },
         },
@@ -5618,18 +6318,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 8056,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 8058,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 10472,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 10473,
                 },
             },
         },
@@ -5647,18 +6351,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 26,
+                    id = 8190,
                 },
                 {
                     rank = "Rank 2",
                     level = 36,
+                    id = 10585,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 10586,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 10587,
                 },
             },
         },
@@ -5676,6 +6384,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 66843,
                 },
             },
         },
@@ -5693,18 +6402,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 421,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 930,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 2860,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 10605,
                 },
             },
         },
@@ -5722,6 +6435,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 66844,
                 },
             },
         },
@@ -5739,30 +6453,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 8017,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 8018,
                 },
                 {
                     rank = "Rank 3",
                     level = 16,
+                    id = 8019,
                 },
                 {
                     rank = "Rank 4",
                     level = 24,
+                    id = 10399,
                 },
                 {
                     rank = "Rank 5",
                     level = 34,
+                    id = 16314,
                 },
                 {
                     rank = "Rank 6",
                     level = 44,
+                    id = 16315,
                 },
                 {
                     rank = "Rank 7",
                     level = 54,
+                    id = 16316,
                 },
             },
         },
@@ -5780,26 +6501,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 8071,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 8154,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 8155,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 10406,
                 },
                 {
                     rank = "Rank 5",
                     level = 44,
+                    id = 10407,
                 },
                 {
                     rank = "Rank 6",
                     level = 54,
+                    id = 10408,
                 },
             },
         },
@@ -5817,30 +6544,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 324,
                 },
                 {
                     rank = "Rank 2",
                     level = 16,
+                    id = 325,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 905,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 945,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 8134,
                 },
                 {
                     rank = "Rank 6",
                     level = 48,
+                    id = 10431,
                 },
                 {
                     rank = "Rank 7",
                     level = 56,
+                    id = 10432,
                 },
             },
         },
@@ -5858,26 +6592,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 8024,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 8027,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 8030,
                 },
                 {
                     rank = "Rank 4",
                     level = 36,
+                    id = 16339,
                 },
                 {
                     rank = "Rank 5",
                     level = 46,
+                    id = 16341,
                 },
                 {
                     rank = "Rank 6",
                     level = 56,
+                    id = 16342,
                 },
             },
         },
@@ -5895,22 +6635,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 8075,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 8160,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 8161,
                 },
                 {
                     rank = "Rank 4",
                     level = 52,
+                    id = 10442,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 25361,
                 },
             },
         },
@@ -5928,22 +6673,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 8033,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 8038,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 10456,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 16355,
                 },
                 {
                     rank = "Rank 5",
                     level = 58,
+                    id = 16356,
                 },
             },
         },
@@ -5961,6 +6711,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 2645,
                 },
             },
         },
@@ -5978,6 +6729,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 437009,
                 },
             },
         },
@@ -5995,6 +6747,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 131,
                 },
             },
         },
@@ -6012,14 +6765,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 8181,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 10478,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
+                    id = 10479,
                 },
             },
         },
@@ -6037,6 +6793,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 6196,
                 },
             },
         },
@@ -6054,14 +6811,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 28,
+                    id = 8184,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 10537,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 10538,
                 },
             },
         },
@@ -6079,18 +6839,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 28,
+                    id = 8227,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 8249,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 10526,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 16387,
                 },
             },
         },
@@ -6108,6 +6872,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 28,
+                    id = 546,
                 },
             },
         },
@@ -6125,6 +6890,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 556,
                 },
             },
         },
@@ -6142,6 +6908,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 8177,
                 },
             },
         },
@@ -6159,14 +6926,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 10595,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
+                    id = 10600,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 10601,
                 },
             },
         },
@@ -6184,18 +6954,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 8232,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 8235,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 10486,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 16362,
                 },
             },
         },
@@ -6213,14 +6987,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 8512,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 10613,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 10614,
                 },
             },
         },
@@ -6238,6 +7015,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 34,
+                    id = 6495,
                 },
             },
         },
@@ -6255,14 +7033,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 36,
+                    id = 15107,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 15111,
                 },
                 {
                     rank = "Rank 3",
                     level = 56,
+                    id = 15112,
                 },
             },
         },
@@ -6280,14 +7061,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 42,
+                    id = 8835,
                 },
                 {
                     rank = "Rank 2",
                     level = 56,
+                    id = 10627,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 25359,
                 },
             },
         },
@@ -6305,42 +7089,52 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 331,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 332,
                 },
                 {
                     rank = "Rank 3",
                     level = 12,
+                    id = 547,
                 },
                 {
                     rank = "Rank 4",
                     level = 18,
+                    id = 913,
                 },
                 {
                     rank = "Rank 5",
                     level = 24,
+                    id = 939,
                 },
                 {
                     rank = "Rank 6",
                     level = 32,
+                    id = 959,
                 },
                 {
                     rank = "Rank 7",
                     level = 40,
+                    id = 8005,
                 },
                 {
                     rank = "Rank 8",
                     level = 48,
+                    id = 10395,
                 },
                 {
                     rank = "Rank 9",
                     level = 56,
+                    id = 10396,
                 },
                 {
                     rank = "Rank 10",
                     level = 60,
+                    id = 25357,
                 },
             },
         },
@@ -6358,22 +7152,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 2008,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 20609,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 20610,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 20776,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 20777,
                 },
             },
         },
@@ -6391,6 +7190,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 16,
+                    id = 526,
                 },
             },
         },
@@ -6408,6 +7208,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 18,
+                    id = 8143,
                 },
             },
         },
@@ -6425,22 +7226,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 5394,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 6375,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 6377,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 10462,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 10463,
                 },
             },
         },
@@ -6458,26 +7264,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 8004,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 8008,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 8010,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 10466,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 10467,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10468,
                 },
             },
         },
@@ -6495,6 +7307,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 2870,
                 },
             },
         },
@@ -6512,6 +7325,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 22,
+                    id = 8166,
                 },
             },
         },
@@ -6529,18 +7343,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 26,
+                    id = 5675,
                 },
                 {
                     rank = "Rank 2",
                     level = 36,
+                    id = 10495,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 10496,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 10497,
                 },
             },
         },
@@ -6558,6 +7376,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 21169,
                 },
             },
         },
@@ -6575,6 +7394,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 38,
+                    id = 8170,
                 },
             },
         },
@@ -6592,14 +7412,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 1064,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 10622,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
+                    id = 10623,
                 },
             },
         },
@@ -6619,22 +7442,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 1459,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 1460,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 1461,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 10156,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
+                    id = 10157,
                 },
             },
         },
@@ -6652,34 +7480,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 5504,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 5505,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 5506,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 6127,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 10138,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 10139,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 10140,
                 },
                 {
                     rank = "Rank 8",
                     level = 60,
+                    id = 468766,
                 },
             },
         },
@@ -6697,30 +7533,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 587,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 597,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 990,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 6129,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 10144,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 10145,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 28612,
                 },
             },
         },
@@ -6738,34 +7581,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 5143,
                 },
                 {
                     rank = "Rank 2",
                     level = 16,
+                    id = 5144,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 5145,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 8416,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 8417,
                 },
                 {
                     rank = "Rank 6",
                     level = 48,
+                    id = 10211,
                 },
                 {
                     rank = "Rank 7",
                     level = 56,
+                    id = 10212,
                 },
                 {
                     rank = "Rank 8",
                     level = 56,
+                    id = 25345,
                 },
             },
         },
@@ -6783,18 +7634,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 118,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 12824,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 12825,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 12826,
                 },
                 {
                     rank = "",
@@ -6816,22 +7671,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 604,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 8450,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 8451,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 10173,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 10174,
                 },
             },
         },
@@ -6849,6 +7709,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 12,
+                    id = 130,
                 },
             },
         },
@@ -6866,26 +7727,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 1449,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 8437,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 8438,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 8439,
                 },
                 {
                     rank = "Rank 5",
                     level = 46,
+                    id = 10201,
                 },
                 {
                     rank = "Rank 6",
                     level = 54,
+                    id = 10202,
                 },
             },
         },
@@ -6903,18 +7770,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 1008,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 8455,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 10169,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 10170,
                 },
             },
         },
@@ -6932,6 +7803,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 18,
+                    id = 475,
                 },
             },
         },
@@ -6949,6 +7821,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 1953,
                 },
             },
         },
@@ -6983,26 +7856,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1463,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 8494,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 8495,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 10191,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 10192,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10193,
                 },
             },
         },
@@ -7021,6 +7900,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 3562,
                 },
             },
         },
@@ -7039,6 +7919,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 3567,
                 },
             },
         },
@@ -7057,6 +7938,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 3561,
                 },
             },
         },
@@ -7075,6 +7957,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 3563,
                 },
             },
         },
@@ -7092,6 +7975,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 24,
+                    id = 2139,
                 },
             },
         },
@@ -7109,6 +7993,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 28,
+                    id = 759,
                 },
             },
         },
@@ -7127,6 +8012,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 3565,
                 },
             },
         },
@@ -7145,6 +8031,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 30,
+                    id = 3566,
                 },
             },
         },
@@ -7162,14 +8049,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 34,
+                    id = 6117,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 22782,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 22783,
                 },
             },
         },
@@ -7187,6 +8077,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 38,
+                    id = 3552,
                 },
             },
         },
@@ -7205,6 +8096,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 11416,
                 },
             },
         },
@@ -7223,6 +8115,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 11417,
                 },
             },
         },
@@ -7241,6 +8134,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 10059,
                 },
             },
         },
@@ -7259,6 +8153,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
+                    id = 11418,
                 },
             },
         },
@@ -7276,6 +8171,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 48,
+                    id = 10053,
                 },
             },
         },
@@ -7294,6 +8190,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 50,
+                    id = 11419,
                 },
             },
         },
@@ -7312,6 +8209,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 50,
+                    id = 11420,
                 },
             },
         },
@@ -7330,6 +8228,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 50,
+                    id = 1297659,
                 },
             },
         },
@@ -7347,6 +8246,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 56,
+                    id = 23028,
                 },
             },
         },
@@ -7364,6 +8264,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 58,
+                    id = 10054,
                 },
             },
         },
@@ -7381,6 +8282,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 28270,
                 },
             },
         },
@@ -7398,50 +8300,62 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 133,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 143,
                 },
                 {
                     rank = "Rank 3",
                     level = 12,
+                    id = 145,
                 },
                 {
                     rank = "Rank 4",
                     level = 18,
+                    id = 3140,
                 },
                 {
                     rank = "Rank 5",
                     level = 24,
+                    id = 8400,
                 },
                 {
                     rank = "Rank 6",
                     level = 30,
+                    id = 8401,
                 },
                 {
                     rank = "Rank 7",
                     level = 36,
+                    id = 8402,
                 },
                 {
                     rank = "Rank 8",
                     level = 42,
+                    id = 10148,
                 },
                 {
                     rank = "Rank 9",
                     level = 48,
+                    id = 10149,
                 },
                 {
                     rank = "Rank 10",
                     level = 54,
+                    id = 10150,
                 },
                 {
                     rank = "Rank 11",
                     level = 60,
+                    id = 10151,
                 },
                 {
                     rank = "Rank 12",
                     level = 60,
+                    id = 25306,
                 },
             },
         },
@@ -7459,30 +8373,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 2136,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 2137,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 2138,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 8412,
                 },
                 {
                     rank = "Rank 5",
                     level = 38,
+                    id = 8413,
                 },
                 {
                     rank = "Rank 6",
                     level = 46,
+                    id = 10197,
                 },
                 {
                     rank = "Rank 7",
                     level = 54,
+                    id = 10199,
                 },
             },
         },
@@ -7500,26 +8421,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 2120,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 2121,
                 },
                 {
                     rank = "Rank 3",
                     level = 32,
+                    id = 8422,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 8423,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 10215,
                 },
                 {
                     rank = "Rank 6",
                     level = 56,
+                    id = 10216,
                 },
             },
         },
@@ -7537,22 +8464,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 543,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 8457,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 8458,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 10223,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 10225,
                 },
             },
         },
@@ -7570,30 +8502,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 2948,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 8444,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 8445,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 8446,
                 },
                 {
                     rank = "Rank 5",
                     level = 46,
+                    id = 10205,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 10206,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 10207,
                 },
             },
         },
@@ -7611,14 +8550,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 401502,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 1237312,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 1237313,
                 },
             },
         },
@@ -7636,14 +8578,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 168,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 7300,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 7301,
                 },
             },
         },
@@ -7661,46 +8606,57 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 116,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 205,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 837,
                 },
                 {
                     rank = "Rank 4",
                     level = 20,
+                    id = 7322,
                 },
                 {
                     rank = "Rank 5",
                     level = 26,
+                    id = 8406,
                 },
                 {
                     rank = "Rank 6",
                     level = 32,
+                    id = 8407,
                 },
                 {
                     rank = "Rank 7",
                     level = 38,
+                    id = 8408,
                 },
                 {
                     rank = "Rank 8",
                     level = 44,
+                    id = 10179,
                 },
                 {
                     rank = "Rank 9",
                     level = 50,
+                    id = 10180,
                 },
                 {
                     rank = "Rank 10",
                     level = 56,
+                    id = 10181,
                 },
                 {
                     rank = "Rank 11",
                     level = 60,
+                    id = 25304,
                 },
             },
         },
@@ -7718,18 +8674,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 122,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 865,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 6131,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 10230,
                 },
             },
         },
@@ -7747,26 +8707,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 10,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 6141,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 8427,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 10185,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 10186,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 10187,
                 },
             },
         },
@@ -7784,22 +8750,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 6143,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 8461,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 8462,
                 },
                 {
                     rank = "Rank 4",
                     level = 52,
+                    id = 10177,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 28609,
                 },
             },
         },
@@ -7817,22 +8788,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 26,
+                    id = 120,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 8492,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 10159,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 10160,
                 },
                 {
                     rank = "Rank 5",
                     level = 58,
+                    id = 10161,
                 },
             },
         },
@@ -7850,18 +8826,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 7302,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 7320,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 10219,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 10220,
                 },
             },
         },
@@ -7881,30 +8861,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 172,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 6222,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 6223,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 7648,
                 },
                 {
                     rank = "Rank 5",
                     level = 44,
+                    id = 11671,
                 },
                 {
                     rank = "Rank 6",
                     level = 54,
+                    id = 11672,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 25311,
                 },
             },
         },
@@ -7922,26 +8909,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 702,
                 },
                 {
                     rank = "Rank 2",
                     level = 12,
+                    id = 1108,
                 },
                 {
                     rank = "Rank 3",
                     level = 22,
+                    id = 6205,
                 },
                 {
                     rank = "Rank 4",
                     level = 32,
+                    id = 7646,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 11707,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 11708,
                 },
             },
         },
@@ -7959,26 +8952,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 1454,
                 },
                 {
                     rank = "Rank 2",
                     level = 16,
+                    id = 1455,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 1456,
                 },
                 {
                     rank = "Rank 4",
                     level = 36,
+                    id = 11687,
                 },
                 {
                     rank = "Rank 5",
                     level = 46,
+                    id = 11688,
                 },
                 {
                     rank = "Rank 6",
                     level = 56,
+                    id = 11689,
                 },
             },
         },
@@ -7996,6 +8995,7 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 980,
                 },
                 {
                     rank = "Rank 2",
@@ -8004,18 +9004,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 6217,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 11711,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 11712,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 11713,
                 },
             },
         },
@@ -8033,14 +9037,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 5782,
                 },
                 {
                     rank = "Rank 2",
                     level = 32,
+                    id = 6213,
                 },
                 {
                     rank = "Rank 3",
                     level = 56,
+                    id = 6215,
                 },
             },
         },
@@ -8058,18 +9065,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 1120,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 8288,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 8289,
                 },
                 {
                     rank = "Rank 4",
                     level = 52,
+                    id = 11675,
                 },
             },
         },
@@ -8087,18 +9098,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 704,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 7658,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 7659,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 11717,
                 },
             },
         },
@@ -8116,26 +9131,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 689,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 699,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 709,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 7651,
                 },
                 {
                     rank = "Rank 5",
                     level = 46,
+                    id = 11699,
                 },
                 {
                     rank = "Rank 6",
                     level = 54,
+                    id = 11700,
                 },
             },
         },
@@ -8182,18 +9203,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 5138,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 6226,
                 },
                 {
                     rank = "Rank 3",
                     level = 44,
+                    id = 11703,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 11704,
                 },
             },
         },
@@ -8211,10 +9236,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 26,
+                    id = 1714,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 11719,
                 },
             },
         },
@@ -8232,10 +9259,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 5484,
                 },
                 {
                     rank = "Rank 2",
                     level = 54,
+                    id = 17928,
                 },
             },
         },
@@ -8253,14 +9282,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 42,
+                    id = 6789,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 17925,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 17926,
                 },
             },
         },
@@ -8278,6 +9310,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 603,
                 },
             },
         },
@@ -8295,10 +9328,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 687,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 696,
                 },
             },
         },
@@ -8333,22 +9368,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 6201,
                 },
                 {
                     rank = "Rank 2",
                     level = 22,
+                    id = 6202,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 5699,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 11729,
                 },
                 {
                     rank = "Rank 5",
                     level = 58,
+                    id = 11730,
                 },
             },
         },
@@ -8383,30 +9423,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 755,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 3698,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 3699,
                 },
                 {
                     rank = "Rank 4",
                     level = 36,
+                    id = 3700,
                 },
                 {
                     rank = "Rank 5",
                     level = 44,
+                    id = 11693,
                 },
                 {
                     rank = "Rank 6",
                     level = 52,
+                    id = 11694,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 11695,
                 },
             },
         },
@@ -8424,6 +9471,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 16,
+                    id = 5697,
                 },
             },
         },
@@ -8441,22 +9489,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 693,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 20752,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 20755,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 20756,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 20757,
                 },
             },
         },
@@ -8474,22 +9527,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 706,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 1086,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 11733,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 11734,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 11735,
                 },
             },
         },
@@ -8507,6 +9565,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 20,
+                    id = 698,
                 },
             },
         },
@@ -8575,6 +9634,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 24,
+                    id = 5500,
                 },
             },
         },
@@ -8592,14 +9652,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 26,
+                    id = 132,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 2970,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 11743,
                 },
             },
         },
@@ -8617,10 +9680,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 28,
+                    id = 710,
                 },
                 {
                     rank = "Rank 2",
                     level = 48,
+                    id = 18647,
                 },
             },
         },
@@ -8638,18 +9703,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 28,
+                    id = 6366,
                 },
                 {
                     rank = "Rank 2",
                     level = 36,
+                    id = 17951,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 17952,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 17953,
                 },
             },
         },
@@ -8667,14 +9736,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 1098,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
+                    id = 11725,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 11726,
                 },
             },
         },
@@ -8709,18 +9781,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 6229,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 11739,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 11740,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 28610,
                 },
             },
         },
@@ -8738,14 +9814,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 36,
+                    id = 2362,
                 },
                 {
                     rank = "Rank 2",
                     level = 48,
+                    id = 17727,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 17728,
                 },
             },
         },
@@ -8780,6 +9859,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 437169,
                 },
             },
         },
@@ -8797,6 +9877,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 60,
+                    id = 18540,
                 },
             },
         },
@@ -8814,34 +9895,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 348,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 707,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 1094,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 2941,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 11665,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 11667,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 11668,
                 },
                 {
                     rank = "Rank 8",
                     level = 60,
+                    id = 25309,
                 },
             },
         },
@@ -8859,42 +9948,52 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 686,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 695,
                 },
                 {
                     rank = "Rank 3",
                     level = 12,
+                    id = 705,
                 },
                 {
                     rank = "Rank 4",
                     level = 20,
+                    id = 1088,
                 },
                 {
                     rank = "Rank 5",
                     level = 28,
+                    id = 1106,
                 },
                 {
                     rank = "Rank 6",
                     level = 36,
+                    id = 7641,
                 },
                 {
                     rank = "Rank 7",
                     level = 44,
+                    id = 11659,
                 },
                 {
                     rank = "Rank 8",
                     level = 52,
+                    id = 11660,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 11661,
                 },
                 {
                     rank = "Rank 10",
                     level = 60,
+                    id = 25307,
                 },
             },
         },
@@ -8912,26 +10011,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 5676,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 17919,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 17920,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 17921,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 17922,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 17923,
                 },
             },
         },
@@ -8949,18 +10054,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 5740,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 6219,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 11677,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 11678,
                 },
             },
         },
@@ -8978,14 +10087,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 1949,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 11683,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
+                    id = 11684,
                 },
             },
         },
@@ -9003,10 +10115,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 48,
+                    id = 6353,
                 },
                 {
                     rank = "Rank 2",
                     level = 56,
+                    id = 17924,
                 },
             },
         },
@@ -9028,23 +10142,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 19505,
                     innate = true,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 19731,
                     book = 16381,
                     price = 10000,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 19734,
                     book = 16382,
                     price = 13000,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 19736,
                     book = 16383,
                     price = 20000,
                 },
@@ -9068,24 +10186,28 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 19478,
                     book = 16384,
                     price = 7000,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 19655,
                     book = 16385,
                     price = 11000,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 19656,
                     book = 16386,
                     price = 14000,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 19660,
                     book = 16387,
                     price = 22000,
                 },
@@ -9109,12 +10231,14 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 36,
+                    id = 19244,
                     book = 16388,
                     price = 9000,
                 },
                 {
                     rank = "Rank 2",
                     level = 52,
+                    id = 19647,
                     book = 16389,
                     price = 18000,
                 },
@@ -9138,6 +10262,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 42,
+                    id = 19480,
                     book = 16390,
                     price = 11000,
                 },
@@ -9161,41 +10286,48 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 3110,
                     innate = true,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 7799,
                     book = 16302,
                     price = 100,
                 },
                 {
                     rank = "Rank 3",
                     level = 18,
+                    id = 7800,
                     book = 16316,
                     price = 1500,
                 },
                 {
                     rank = "Rank 4",
                     level = 28,
+                    id = 7801,
                     book = 16317,
                     price = 5000,
                 },
                 {
                     rank = "Rank 5",
                     level = 38,
+                    id = 7802,
                     book = 16318,
                     price = 10000,
                 },
                 {
                     rank = "Rank 6",
                     level = 48,
+                    id = 11762,
                     book = 16319,
                     price = 14000,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 11763,
                     book = 16320,
                     price = 24000,
                 },
@@ -9219,30 +10351,35 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 6307,
                     book = 16321,
                     price = 100,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 7804,
                     book = 16322,
                     price = 900,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 7805,
                     book = 16323,
                     price = 4000,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 11766,
                     book = 16324,
                     price = 10000,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 11767,
                     book = 16325,
                     price = 15000,
                 },
@@ -9266,6 +10403,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 12,
+                    id = 4511,
                     book = 16331,
                     price = 600,
                 },
@@ -9289,30 +10427,35 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 2947,
                     book = 16326,
                     price = 900,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 8316,
                     book = 16327,
                     price = 3000,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 8317,
                     book = 16328,
                     price = 8000,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 11770,
                     book = 16329,
                     price = 12000,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 11771,
                     book = 16330,
                     price = 20000,
                 },
@@ -9336,35 +10479,41 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 7814,
                     innate = true,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 7815,
                     book = 16368,
                     price = 5000,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 7816,
                     book = 16371,
                     price = 9000,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 11778,
                     book = 16372,
                     price = 12000,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 11779,
                     book = 16373,
                     price = 18000,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 11780,
                     book = 16374,
                     price = 26000,
                 },
@@ -9388,24 +10537,28 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 6360,
                     book = 16375,
                     price = 2500,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 7813,
                     book = 16376,
                     price = 8000,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 11784,
                     book = 16377,
                     price = 13000,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 11785,
                     book = 16378,
                     price = 24000,
                 },
@@ -9429,6 +10582,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 6358,
                     book = 16379,
                     price = 4000,
                 },
@@ -9452,6 +10606,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 7870,
                     book = 16380,
                     price = 7000,
                 },
@@ -9475,35 +10630,41 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 3716,
                     innate = true,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 7809,
                     book = 16346,
                     price = 2000,
                 },
                 {
                     rank = "Rank 3",
                     level = 30,
+                    id = 7810,
                     book = 16347,
                     price = 6000,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 7811,
                     book = 16348,
                     price = 11000,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 11774,
                     book = 16349,
                     price = 15000,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 11775,
                     book = 16350,
                     price = 26000,
                 },
@@ -9527,36 +10688,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 7812,
                     book = 16351,
                     price = 1200,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 19438,
                     book = 16352,
                     price = 3000,
                 },
                 {
                     rank = "Rank 3",
                     level = 32,
+                    id = 19440,
                     book = 16353,
                     price = 7000,
                 },
                 {
                     rank = "Rank 4",
                     level = 40,
+                    id = 19441,
                     book = 16354,
                     price = 11000,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 19442,
                     book = 16355,
                     price = 14000,
                 },
                 {
                     rank = "Rank 6",
                     level = 56,
+                    id = 19443,
                     book = 16356,
                     price = 22000,
                 },
@@ -9580,36 +10747,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 17767,
                     book = 16357,
                     price = 1500,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 17850,
                     book = 16358,
                     price = 4000,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 17851,
                     book = 16359,
                     price = 8000,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 17852,
                     book = 16360,
                     price = 11000,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 17853,
                     book = 16361,
                     price = 15000,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 17854,
                     book = 16362,
                     price = 24000,
                 },
@@ -9633,24 +10806,28 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 17735,
                     book = 16363,
                     price = 3000,
                 },
                 {
                     rank = "Rank 2",
                     level = 36,
+                    id = 17750,
                     book = 16364,
                     price = 9000,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 17751,
                     book = 16365,
                     price = 14000,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 17752,
                     book = 16366,
                     price = 26000,
                 },
@@ -9672,34 +10849,42 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 5176,
                 },
                 {
                     rank = "Rank 2",
                     level = 6,
+                    id = 5177,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 5178,
                 },
                 {
                     rank = "Rank 4",
                     level = 22,
+                    id = 5179,
                 },
                 {
                     rank = "Rank 5",
                     level = 30,
+                    id = 5180,
                 },
                 {
                     rank = "Rank 6",
                     level = 38,
+                    id = 6780,
                 },
                 {
                     rank = "Rank 7",
                     level = 46,
+                    id = 8905,
                 },
                 {
                     rank = "Rank 8",
                     level = 54,
+                    id = 9912,
                 },
             },
         },
@@ -9717,42 +10902,52 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 8921,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 8924,
                 },
                 {
                     rank = "Rank 3",
                     level = 16,
+                    id = 8925,
                 },
                 {
                     rank = "Rank 4",
                     level = 22,
+                    id = 8926,
                 },
                 {
                     rank = "Rank 5",
                     level = 28,
+                    id = 8927,
                 },
                 {
                     rank = "Rank 6",
                     level = 34,
+                    id = 8928,
                 },
                 {
                     rank = "Rank 7",
                     level = 40,
+                    id = 8929,
                 },
                 {
                     rank = "Rank 8",
                     level = 46,
+                    id = 9833,
                 },
                 {
                     rank = "Rank 9",
                     level = 52,
+                    id = 9834,
                 },
                 {
                     rank = "Rank 10",
                     level = 58,
+                    id = 9835,
                 },
             },
         },
@@ -9770,26 +10965,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 6,
+                    id = 467,
                 },
                 {
                     rank = "Rank 2",
                     level = 14,
+                    id = 782,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 1075,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 8914,
                 },
                 {
                     rank = "Rank 5",
                     level = 44,
+                    id = 9756,
                 },
                 {
                     rank = "Rank 6",
                     level = 54,
+                    id = 9910,
                 },
             },
         },
@@ -9807,26 +11008,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 8,
+                    id = 339,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 1062,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 5195,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 5196,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 9852,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 9853,
                 },
             },
         },
@@ -9844,26 +11051,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 16689,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 16810,
                 },
                 {
                     rank = "Rank 3",
                     level = 28,
+                    id = 16811,
                 },
                 {
                     rank = "Rank 4",
                     level = 38,
+                    id = 16812,
                 },
                 {
                     rank = "Rank 5",
                     level = 48,
+                    id = 16813,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 17329,
                 },
             },
         },
@@ -9881,6 +11094,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 18960,
                 },
             },
         },
@@ -9898,18 +11112,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 770,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 778,
                 },
                 {
                     rank = "Rank 3",
                     level = 42,
+                    id = 9749,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 9907,
                 },
             },
         },
@@ -9927,14 +11145,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 18,
+                    id = 2637,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 18657,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 18658,
                 },
             },
         },
@@ -9952,30 +11173,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 2912,
                 },
                 {
                     rank = "Rank 2",
                     level = 26,
+                    id = 8949,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 8950,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 8951,
                 },
                 {
                     rank = "Rank 5",
                     level = 50,
+                    id = 9875,
                 },
                 {
                     rank = "Rank 6",
                     level = 58,
+                    id = 9876,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 25298,
                 },
             },
         },
@@ -9993,14 +11221,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 2908,
                 },
                 {
                     rank = "Rank 2",
                     level = 38,
+                    id = 8955,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
+                    id = 9901,
                 },
             },
         },
@@ -10018,14 +11249,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 40,
+                    id = 16914,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 17401,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 17402,
                 },
             },
         },
@@ -10043,6 +11277,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 44,
+                    id = 22812,
                 },
             },
         },
@@ -10060,6 +11295,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 36,
+                    id = 22842,
                 },
             },
         },
@@ -10094,22 +11330,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 99,
                 },
                 {
                     rank = "Rank 2",
                     level = 20,
+                    id = 1735,
                 },
                 {
                     rank = "Rank 3",
                     level = 32,
+                    id = 9490,
                 },
                 {
                     rank = "Rank 4",
                     level = 42,
+                    id = 9747,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 9898,
                 },
             },
         },
@@ -10127,6 +11368,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 10,
+                    id = 6795,
                 },
             },
         },
@@ -10144,30 +11386,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 10,
+                    id = 6807,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 6808,
                 },
                 {
                     rank = "Rank 3",
                     level = 26,
+                    id = 6809,
                 },
                 {
                     rank = "Rank 4",
                     level = 34,
+                    id = 8972,
                 },
                 {
                     rank = "Rank 5",
                     level = 42,
+                    id = 9745,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 9880,
                 },
                 {
                     rank = "Rank 7",
                     level = 58,
+                    id = 9881,
                 },
             },
         },
@@ -10185,14 +11434,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 14,
+                    id = 5211,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 6798,
                 },
                 {
                     rank = "Rank 3",
                     level = 46,
+                    id = 8983,
                 },
             },
         },
@@ -10227,22 +11479,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 16,
+                    id = 779,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 780,
                 },
                 {
                     rank = "Rank 3",
                     level = 34,
+                    id = 769,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 9754,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 9908,
                 },
             },
         },
@@ -10277,22 +11534,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1082,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 3029,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 5201,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 9849,
                 },
                 {
                     rank = "Rank 5",
                     level = 58,
+                    id = 9850,
                 },
             },
         },
@@ -10310,14 +11572,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 5215,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 6783,
                 },
                 {
                     rank = "Rank 3",
                     level = 60,
+                    id = 9913,
                 },
             },
         },
@@ -10335,26 +11600,32 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 1079,
                 },
                 {
                     rank = "Rank 2",
                     level = 28,
+                    id = 9492,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 9493,
                 },
                 {
                     rank = "Rank 4",
                     level = 44,
+                    id = 9752,
                 },
                 {
                     rank = "Rank 5",
                     level = 52,
+                    id = 9894,
                 },
                 {
                     rank = "Rank 6",
                     level = 60,
+                    id = 9896,
                 },
             },
         },
@@ -10372,22 +11643,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 22,
+                    id = 5221,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 6800,
                 },
                 {
                     rank = "Rank 3",
                     level = 38,
+                    id = 8992,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
+                    id = 9829,
                 },
                 {
                     rank = "Rank 5",
                     level = 54,
+                    id = 9830,
                 },
             },
         },
@@ -10405,18 +11681,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 24,
+                    id = 1822,
                 },
                 {
                     rank = "Rank 2",
                     level = 34,
+                    id = 1823,
                 },
                 {
                     rank = "Rank 3",
                     level = 44,
+                    id = 1824,
                 },
                 {
                     rank = "Rank 4",
                     level = 54,
+                    id = 9904,
                 },
             },
         },
@@ -10434,6 +11714,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 24,
+                    id = 5217,
                 },
             },
         },
@@ -10451,10 +11732,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 26,
+                    id = 1850,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 9821,
                 },
             },
         },
@@ -10472,6 +11755,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 28,
+                    id = 5209,
                 },
             },
         },
@@ -10489,14 +11773,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 28,
+                    id = 8998,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 9000,
                 },
                 {
                     rank = "Rank 3",
                     level = 52,
+                    id = 9892,
                 },
             },
         },
@@ -10531,22 +11818,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 22568,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 22827,
                 },
                 {
                     rank = "Rank 3",
                     level = 48,
+                    id = 22828,
                 },
                 {
                     rank = "Rank 4",
                     level = 56,
+                    id = 22829,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 31018,
                 },
             },
         },
@@ -10564,18 +11856,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 32,
+                    id = 6785,
                 },
                 {
                     rank = "Rank 2",
                     level = 42,
+                    id = 6787,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 9866,
                 },
                 {
                     rank = "Rank 4",
                     level = 58,
+                    id = 9867,
                 },
             },
         },
@@ -10593,6 +11889,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 32,
+                    id = 5225,
                 },
             },
         },
@@ -10610,14 +11907,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 36,
+                    id = 9005,
                 },
                 {
                     rank = "Rank 2",
                     level = 46,
+                    id = 9823,
                 },
                 {
                     rank = "Rank 3",
                     level = 56,
+                    id = 9827,
                 },
             },
         },
@@ -10652,14 +11952,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 42,
+                    id = 414644,
                 },
                 {
                     rank = "Rank 2",
                     level = 50,
+                    id = 1235826,
                 },
                 {
                     rank = "Rank 3",
                     level = 58,
+                    id = 1235827,
                 },
             },
         },
@@ -10677,46 +11980,57 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 5185,
                 },
                 {
                     rank = "Rank 2",
                     level = 8,
+                    id = 5186,
                 },
                 {
                     rank = "Rank 3",
                     level = 14,
+                    id = 5187,
                 },
                 {
                     rank = "Rank 4",
                     level = 20,
+                    id = 5188,
                 },
                 {
                     rank = "Rank 5",
                     level = 26,
+                    id = 5189,
                 },
                 {
                     rank = "Rank 6",
                     level = 32,
+                    id = 6778,
                 },
                 {
                     rank = "Rank 7",
                     level = 38,
+                    id = 8903,
                 },
                 {
                     rank = "Rank 8",
                     level = 44,
+                    id = 9758,
                 },
                 {
                     rank = "Rank 9",
                     level = 50,
+                    id = 9888,
                 },
                 {
                     rank = "Rank 10",
                     level = 56,
+                    id = 9889,
                 },
                 {
                     rank = "Rank 11",
                     level = 60,
+                    id = 25297,
                 },
             },
         },
@@ -10734,30 +12048,37 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 1,
+                    id = 1126,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 5232,
                 },
                 {
                     rank = "Rank 3",
                     level = 20,
+                    id = 6756,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 5234,
                 },
                 {
                     rank = "Rank 5",
                     level = 40,
+                    id = 8907,
                 },
                 {
                     rank = "Rank 6",
                     level = 50,
+                    id = 9884,
                 },
                 {
                     rank = "Rank 7",
                     level = 60,
+                    id = 9885,
                 },
             },
         },
@@ -10775,46 +12096,57 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 4,
+                    id = 774,
                 },
                 {
                     rank = "Rank 2",
                     level = 10,
+                    id = 1058,
                 },
                 {
                     rank = "Rank 3",
                     level = 16,
+                    id = 1430,
                 },
                 {
                     rank = "Rank 4",
                     level = 22,
+                    id = 2090,
                 },
                 {
                     rank = "Rank 5",
                     level = 28,
+                    id = 2091,
                 },
                 {
                     rank = "Rank 6",
                     level = 34,
+                    id = 3627,
                 },
                 {
                     rank = "Rank 7",
                     level = 40,
+                    id = 8910,
                 },
                 {
                     rank = "Rank 8",
                     level = 46,
+                    id = 9839,
                 },
                 {
                     rank = "Rank 9",
                     level = 52,
+                    id = 9840,
                 },
                 {
                     rank = "Rank 10",
                     level = 58,
+                    id = 9841,
                 },
                 {
                     rank = "Rank 11",
                     level = 60,
+                    id = 25299,
                 },
             },
         },
@@ -10832,38 +12164,47 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 8936,
                 },
                 {
                     rank = "Rank 2",
                     level = 18,
+                    id = 8938,
                 },
                 {
                     rank = "Rank 3",
                     level = 24,
+                    id = 8939,
                 },
                 {
                     rank = "Rank 4",
                     level = 30,
+                    id = 8940,
                 },
                 {
                     rank = "Rank 5",
                     level = 36,
+                    id = 8941,
                 },
                 {
                     rank = "Rank 6",
                     level = 42,
+                    id = 9750,
                 },
                 {
                     rank = "Rank 7",
                     level = 48,
+                    id = 9856,
                 },
                 {
                     rank = "Rank 8",
                     level = 54,
+                    id = 9857,
                 },
                 {
                     rank = "Rank 9",
                     level = 60,
+                    id = 9858,
                 },
             },
         },
@@ -10881,22 +12222,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 12,
+                    id = 437138,
                 },
                 {
                     rank = "Rank 2",
                     level = 24,
+                    id = 1237948,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
+                    id = 1237949,
                 },
                 {
                     rank = "Rank 4",
                     level = 48,
+                    id = 1237950,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 1237951,
                 },
             },
         },
@@ -10914,6 +12260,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 14,
+                    id = 8946,
                 },
             },
         },
@@ -10931,22 +12278,27 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 20,
+                    id = 20484,
                 },
                 {
                     rank = "Rank 2",
                     level = 30,
+                    id = 20739,
                 },
                 {
                     rank = "Rank 3",
                     level = 40,
+                    id = 20742,
                 },
                 {
                     rank = "Rank 4",
                     level = 50,
+                    id = 20747,
                 },
                 {
                     rank = "Rank 5",
                     level = 60,
+                    id = 20748,
                 },
             },
         },
@@ -10964,6 +12316,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 24,
+                    id = 2782,
                 },
             },
         },
@@ -10981,6 +12334,7 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 26,
+                    id = 2893,
                 },
             },
         },
@@ -10998,18 +12352,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 30,
+                    id = 740,
                 },
                 {
                     rank = "Rank 2",
                     level = 40,
+                    id = 8918,
                 },
                 {
                     rank = "Rank 3",
                     level = 50,
+                    id = 9862,
                 },
                 {
                     rank = "Rank 4",
                     level = 60,
+                    id = 9863,
                 },
             },
         },
@@ -11044,10 +12402,12 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 50,
+                    id = 21849,
                 },
                 {
                     rank = "Rank 2",
                     level = 60,
+                    id = 21850,
                 },
             },
         },

@@ -2,4 +2,7 @@
     <!-- 大地图飞行点图钉：继承暴雪自己的飞行点图钉模板，外观与原生一致；单独的模板名让它有独立的对象池，
          不和暴雪自带的飞行点图层互相清除。由 Modules/WorldMap.lua 的数据提供者放置。 -->
     <Frame name="WowHandbookFlightPinTemplate" inherits="FlightPointPinTemplate" virtual="true"/>
+    <!-- 副本入口与灵魂医者图钉：暴雪地图的基础图钉模板，图标、悬停与点击在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookDungeonPinTemplate" inherits="MapCanvasPinTemplate" virtual="true"/>
+    <Frame name="WowHandbookGraveyardPinTemplate" inherits="MapCanvasPinTemplate" virtual="true"/>
 </Ui>

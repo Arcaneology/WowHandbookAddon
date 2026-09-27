@@ -478,8 +478,15 @@ function UI:List(parent, rowHeight, onSelect)
             if self:IsEnabled() and self.entryID ~= list.selectedID then
                 SetColor(self.background, "raised")
             end
+            -- 可选：list.onEntryEnter(行, 条目ID) 用来显示鼠标提示
+            if list.onEntryEnter and self.entryID then
+                list.onEntryEnter(self, self.entryID)
+            end
         end)
         row:SetScript("OnLeave", function()
+            if list.onEntryEnter then
+                GameTooltip_Hide()
+            end
             list:Refresh()
         end)
         return row
@@ -612,7 +619,13 @@ end
 
 local function ItemButtonOnEnter(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:SetItemByID(self.itemID)
+    GameTooltip:ClearLines()
+    local name = C_Item.GetItemInfo(self.itemID)
+    if name then
+        GameTooltip:SetItemByID(self.itemID)
+    else
+        GameTooltip:AddLine(ns.L["Item information not yet unlocked"])
+    end
     GameTooltip:Show()
 end
 
@@ -645,6 +658,55 @@ function UI:ItemButton(parent, size)
             self:SetBackdropBorderColor(unpack(C.line))
         end
     end
+    return button
+end
+
+-- 小地图入口：与小地图上其他按钮一致，采用暴雪原生的圆形边框、圆形底和悬停高亮（主题规则的例外，
+-- 用户指定）；图标为网站徽标。不依赖第三方库。
+local MINIMAP_ICON = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\MinimapIcon"
+
+function UI:MinimapButton(parent, onClick)
+    local button = CreateFrame("Button", "WowHandbookMinimapButton", parent)
+    button:SetSize(31, 31)
+    button:SetFrameStrata("MEDIUM")
+    button:SetFrameLevel(8)
+    button:RegisterForClicks("LeftButtonUp")
+    button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+
+    local background = button:CreateTexture(nil, "BACKGROUND")
+    background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
+    background:SetSize(24, 24)
+    background:SetPoint("CENTER", 0, 0)
+
+    local icon = button:CreateTexture(nil, "ARTWORK")
+    icon:SetTexture(MINIMAP_ICON)
+    icon:SetSize(22, 22)
+    icon:SetPoint("CENTER", 0, 0)
+    button.icon = icon
+
+    -- 边框贴图的圆环在贴图左上部，按暴雪小地图按钮的惯例左上对齐
+    local border = button:CreateTexture(nil, "OVERLAY")
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    border:SetSize(53, 53)
+    border:SetPoint("TOPLEFT", 0, 0)
+
+    -- 按下时图标略向右下移，松开复位
+    button:SetScript("OnMouseDown", function()
+        icon:SetPoint("CENTER", 1, -1)
+    end)
+    button:SetScript("OnMouseUp", function()
+        icon:SetPoint("CENTER", 0, 0)
+    end)
+    button:SetScript("OnClick", function()
+        onClick()
+    end)
+    button:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:AddLine(ns.L["WoW Handbook"])
+        GameTooltip:AddLine(ns.L["Left-click: open or close. Drag: move."], 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    button:SetScript("OnLeave", GameTooltip_Hide)
     return button
 end
 
@@ -749,21 +811,39 @@ function UI:Stack(parent)
         return fontString
     end
 
-    -- 物品图标行：自动换行
+    -- 物品行：可传 ID 或 {id, rate, unverified}；未解锁时显示可读占位。
     function stack:Items(itemIDs, indent, size)
         size = size or 30
-        local x, perRow = indent or 0, math.max(1, floor((self:Width() - (indent or 0)) / (size + 4)))
-        for index, itemID in ipairs(itemIDs) do
+        for _, entry in ipairs(itemIDs) do
+            local itemID = type(entry) == "table" and entry.id or entry
+            local name = C_Item.GetItemInfo(itemID)
+            if not name and C_Item.RequestLoadItemDataByID then
+                C_Item.RequestLoadItemDataByID(itemID)
+            end
             local button = Take("item", function()
                 return UI:ItemButton(self.parent, size)
             end)
-            local column = (index - 1) % perRow
-            local row = floor((index - 1) / perRow)
-            button:SetPoint("TOPLEFT", x + column * (size + 4), -(self.y + row * (size + 4)))
+            button:SetPoint("TOPLEFT", indent or 0, -self.y)
             button:SetItem(itemID)
+            local label = Take("text", function()
+                return self.parent:CreateFontString(nil, "OVERLAY")
+            end)
+            label:SetFontObject(Theme.fonts.Small)
+            label:SetPoint("LEFT", button, "RIGHT", 8, 0)
+            label:SetWidth(math.max(40, self:Width() - (indent or 0) - size - 12))
+            label:SetJustifyH("LEFT")
+            local description = name or ns.L["Item information not yet unlocked"]
+            if type(entry) == "table" and entry.rate then
+                description = description .. "  " .. (ns.L["Drop rate: %s%%"]):format(tostring(entry.rate))
+            end
+            if type(entry) == "table" and entry.unverified then
+                description = description .. " " .. ns.L["Unverified"]
+            end
+            label:SetText(description)
+            self.y = self.y + math.max(size, label:GetStringHeight()) + 4
         end
         if #itemIDs > 0 then
-            self.y = self.y + math.ceil(#itemIDs / perRow) * (size + 4) + 4
+            self.y = self.y + 4
         end
     end
 

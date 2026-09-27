@@ -33,6 +33,10 @@ C_Item = {
     GetItemQualityColor = function() return 1, 1, 1, "ffa335ee" end,
     GetItemNameByID = function() return nil end,
 }
+local loadedItemRequests = {}
+C_Item.RequestLoadItemDataByID = function(id) loadedItemRequests[id] = true end
+local tooltipItemCallback
+TooltipDataProcessor = { AddTooltipPostCall = function(_, callback) tooltipItemCallback = callback end }
 C_TooltipInfo = { GetItemByID = function() return nil end }
 C_Map = {
     GetBestMapForUnit = function() return 1411 end,
@@ -55,11 +59,18 @@ UnitExists = function(unit) return unit == "pet" or unit == "player" end
 UnitRace = function() return "Orc", "Orc" end
 local playerLevel = 20
 UnitLevel = function(unit) return unit == "player" and playerLevel or 10 end
-Enum = { SpellBookSpellBank = { Player = 0 }, ItemQuality = { Poor = 0 } }
+UnitXP = function() return 1500 end
+UnitXPMax = function() return 6000 end
+GetXPExhaustion = function() return 900 end
+GetMaxPlayerLevel = function() return 60 end
+RAID_CLASS_COLORS = { MAGE = { colorStr = "ff3fc7eb" }, WARLOCK = { colorStr = "ff8788ee" } }
+Enum = { SpellBookSpellBank = { Player = 0 }, ItemQuality = { Poor = 0 }, TooltipDataType = { Item = 0 } }
 local completedQuests, activeQuests = { [5722] = true }, {}
 C_QuestLog.IsQuestFlaggedCompleted = function(id) return completedQuests[id] == true end
 C_QuestLog.GetLogIndexForQuestID = function(id) return activeQuests[id] and 1 or nil end
 C_QuestLog.RequestLoadQuestByID = function() end
+local completeQuests = {}
+C_QuestLog.IsComplete = function(id) return completeQuests[id] == true end
 C_Map.CanSetUserWaypointOnMap = function() return true end
 local waypoint
 C_Map.SetUserWaypoint = function(point) waypoint = point end
@@ -124,6 +135,7 @@ local function newObject(kind, name)
     end })
 end
 frameMethods.CreateTexture = function() return newObject("Texture") end
+frameMethods.SetTexture = function(self, path) self.texture = path end
 frameMethods.CreateFontString = function() return newObject("FontString") end
 frameMethods.SetScript = function(self, name, fn) self.scripts[name] = fn end
 frameMethods.HookScript = function(self, name, fn) self.scripts[name] = self.scripts[name] or fn end
@@ -144,6 +156,7 @@ frameMethods.GetStringHeight = function() return 12 end
 frameMethods.GetStringWidth = function() return 40 end
 frameMethods.GetTop = function() return 100 end
 frameMethods.GetEffectiveScale = function() return 1 end
+frameMethods.GetCenter = function() return 500, 500 end
 frameMethods.GetFrameLevel = function() return 1 end
 frameMethods.GetScale = function() return 1 end
 frameMethods.GetVerticalScroll = function() return 0 end
@@ -173,6 +186,7 @@ for _, name in ipairs({ "GameFontNormalLarge", "GameFontNormal", "GameFontHighli
     _G[name] = newObject("Font", name)
 end
 UIParent = newObject("Frame", "UIParent")
+Minimap = newObject("Frame", "Minimap")
 WorldMapFrame = newObject("Frame", "WorldMapFrame")
 WorldMapFrame.ScrollContainer = newObject("Frame")
 WorldMapFrame.GetMapID = function() return 1413 end
@@ -198,7 +212,9 @@ local fakeMap = {
     DenormalizeVerticalSize = function() return 668 end,
     RemoveAllPinsByTemplate = function(_, template) for i = #pins, 1, -1 do if pins[i].template == template then table.remove(pins, i) end end end,
     AcquirePin = function(_, template, node)
-        local pin = { template = template, poiInfo = node, Texture = newObject("Texture") }
+        local pin = newObject("Frame")
+        pin.template, pin.poiInfo, pin.Texture = template, node, newObject("Texture")
+        pin.SetPosition = function(self, x, y) self.x, self.y = x, y end
         pins[#pins + 1] = pin
         return pin
     end,
@@ -223,6 +239,11 @@ WorldMapFrame.AddDataProvider = function(self, provider)
     self.provider = rawget(self, "provider") or provider -- 第一个是飞行点图层
 end
 GameTooltip = newObject("GameTooltip", "GameTooltip")
+GameTooltip.AddLine = function(self, line)
+    self.lines = rawget(self, "lines") or {}
+    tinsert(self.lines, line)
+end
+GameTooltip.SetSpellByID = function(self, id) self.spellID = id end
 GameTooltip_Hide = function() end
 
 local function fireAll(event, ...)
@@ -267,6 +288,68 @@ check("addon loaded events", function()
     fireAll("ADDON_LOADED", "WowHandbook_Collector")
     fireAll("PLAYER_LOGIN")
 end)
+check("item source index and tooltip callback", function()
+    local sourceModule = main.modules.ItemSource
+    local target, expected
+    for _, dungeon in ipairs(main.Data.dungeons) do
+        for _, boss in ipairs(dungeon.bosses or {}) do
+            local entry = boss.items and boss.items[1]
+            if entry then
+                target = type(entry) == "table" and entry.id or entry
+                expected = main.Name(dungeon.name)
+                break
+            end
+        end
+        if target then break end
+    end
+    assert(target and sourceModule.Lookup(target):find(expected, 1, true), "source index missing")
+    assert(tooltipItemCallback, "tooltip callback not registered")
+    tooltipItemCallback(GameTooltip, { id = target, dataInstanceID = 1 })
+    assert(GameTooltip.lines and GameTooltip.lines[#GameTooltip.lines]:find(expected, 1, true), "source tooltip missing")
+    local before = #GameTooltip.lines
+    tooltipItemCallback(GameTooltip, { id = target, dataInstanceID = 1 })
+    assert(#GameTooltip.lines == before, "duplicate tooltip source")
+end)
+check("minimap button opens window and can be hidden", function()
+    local module = main.modules.MinimapButton
+    assert(module.enabled, "button module not enabled")
+    local button
+    for _, f in ipairs(allFrames) do
+        if f.parent == Minimap and f.scripts.OnDragStart then button = f; break end
+    end
+    assert(button and button.shown, "minimap button missing")
+    assert(button.icon and tostring(button.icon.texture):find("Media\\MinimapIcon$"), "minimap icon is not the site emblem")
+    local previous = WowHandbookMainFrame and WowHandbookMainFrame.shown
+    button:Click()
+    assert(WowHandbookMainFrame.shown ~= previous, "button did not toggle window")
+    button:Click()
+    assert(not WowHandbookMainFrame.shown, "button did not close window")
+    button.scripts.OnDragStart(button)
+    assert(button.scripts.OnUpdate, "drag not active")
+    button.scripts.OnDragStop(button)
+    assert(not button.scripts.OnUpdate, "drag not stopped")
+    main.db.modules.MinimapButton.hidden = true
+    module:Refresh()
+    assert(not button.shown, "hidden setting ignored")
+    main.db.modules.MinimapButton.hidden = false
+    module:Refresh()
+    local count = #allFrames
+    main:DisableModule(module)
+    assert(not button.shown, "disabled button still visible")
+    main:EnableModule(module)
+    assert(#allFrames == count and button.shown, "reenable should reuse button")
+end)
+check("unlocked item placeholder and drop rate row", function()
+    assert(main.ItemLink(999999) == main.L["Item information not yet unlocked"])
+    assert(loadedItemRequests[999999], "item load not requested")
+    local host = newObject("Frame")
+    local stack = main.UI:Stack(host)
+    stack:Items({ { id = 999999, rate = 12.5, unverified = true } }, 0, 30)
+    local row = stack.pools.text[1].text
+    assert(row:find(main.L["Item information not yet unlocked"], 1, true), "placeholder missing")
+    assert(row:find("12.5", 1, true), "drop rate missing")
+    assert(row:find(main.L["Unverified"], 1, true), "unverified marker missing")
+end)
 
 -- 放一些采集数据，让详情与列表走完整路径
 collectorCheck("seed collected data", function()
@@ -300,6 +383,22 @@ collectorCheck("hyperlink jump from detail", function()
     collector.Browser:Select("items", 902)
     collector.Browser:Select("quests", 5723)
 end)
+collectorCheck("pending tasks page: categories, map link marks the spot", function()
+    SlashCmdList.WOWHANDBOOKCOLLECTOR("todo")
+    local T = collector.Tasks
+    local npcID, v = next(collector.targets.verify.npcs)
+    assert(npcID, "no NPC in verify table")
+    local detail = T.Detail("npcs", npcID)
+    assert(detail:find("待确认坐标"), "detail not in Chinese")
+    local link = detail:match("|H(whmap:[^|]+)|h")
+    assert(link and T.OnMapLink(link), "no clickable coordinate")
+    for _, category in ipairs({ "quests", "bosses", "loot", "npcs" }) do
+        assert(#T.BuildEntries(category, false) > 0, "empty category " .. category)
+    end
+    T:Refresh()
+    T:OnDataChanged()
+    assert(v.map, "NPC has no website map")
+end)
 collectorCheck("no runtime errors recorded by the collector", function()
     assert(#collector.db.errors == 0, collector.db.errors[1] and collector.db.errors[1].message)
 end)
@@ -326,6 +425,38 @@ check("every dungeon renders on every tab", function()
         end
     end
     main.modules.Dungeons:ShowHome()
+end)
+check("sections use their own range; unassigned quests stay visible outside recommendations", function()
+    local dungeons = main.Data.dungeons
+    local section = { slug = "test-parent-east", parentSlug = "test-parent", siteSlug = "test-parent",
+        name = { enUS = "East Wing", zhCN = "东区" }, kind = "dungeon", levels = { 20, 25 },
+        bosses = { { name = { enUS = "Test Boss", zhCN = "测试首领" }, items = { { id = 999999, rate = 12.5 } } } },
+        quests = { 999998 } }
+    local fallback = { slug = "test-parent", name = { enUS = "Test Parent", zhCN = "测试副本" },
+        aggregateOnly = true, kind = "dungeon", levels = { 20, 25 }, quests = {}, bosses = {} }
+    tinsert(dungeons, section)
+    tinsert(dungeons, fallback)
+    main.Data.quests[999998] = { name = { enUS = "Test Quest", zhCN = "测试任务" },
+        instances = { "test-parent" }, sectionSlugs = { "east" } }
+    activeQuests[999998] = true
+    local ok, err = pcall(function()
+        assert(main.LevelRange(section.levels) == "20-25", "range lost")
+        assert(main.modules.Dungeons:Select(section.slug, "loot"), "section not selectable")
+        assert(main.modules.Dungeons:Select(fallback.slug, "quests"), "fallback quests not selectable")
+        for _, recommendation in ipairs(main.modules.Dungeons.Summary(100).recommended) do
+            assert(recommendation.name ~= "测试副本的其他任务", "fallback entered recommendations")
+        end
+        local found
+        for _, active in ipairs(main.modules.Dungeons.Summary(3).active) do
+            if active.quest == 999998 then found = active.dungeon end
+        end
+        assert(found == #dungeons - 1, "quest did not map to section")
+    end)
+    activeQuests[999998] = nil
+    main.Data.quests[999998] = nil
+    table.remove(dungeons)
+    table.remove(dungeons)
+    assert(ok, err)
 end)
 check("quest table classifies chain states", function()
     local Classify = main.modules.Dungeons.Classify
@@ -368,8 +499,67 @@ check("waypoint for a quest giver", function()
     main.Waypoints:Set(1411, 45.5, 12.3, "Kargal")
     assert(waypoint and waypoint.map == 1411 and math.abs(waypoint.x - 0.455) < 1e-6, "waypoint not set")
 end)
-check("spellbook page renders both filters", function()
+check("unlearned spells panel follows the game spellbook", function()
+    -- 模拟按需加载的暴雪技能书（无限版为 PlayerSpellsFrame.SpellBookFrame）
+    PlayerSpellsFrame = CreateFrame("Frame", "PlayerSpellsFrame", UIParent)
+    PlayerSpellsFrame.SpellBookFrame = CreateFrame("Frame", nil, PlayerSpellsFrame)
+    local book = PlayerSpellsFrame.SpellBookFrame
+    book.shown = false
+    fireAll("ADDON_LOADED", "Blizzard_PlayerSpells")
+    assert(book.scripts.OnShow and book.scripts.OnHide, "game spellbook not hooked")
+    local module = main.modules.SpellbookPanel
+    book.shown = true
+    book.scripts.OnShow(book)
+    assert(module.panel and module.panel.shown, "panel not shown with the spellbook")
+    local entries = module.Entries()
+    assert(#entries > 0, "no unlearned spells listed")
+    local later = false
+    for _, entry in ipairs(entries) do
+        assert(entry.row.status ~= "known" and entry.row.status ~= "innate", "learned spell listed")
+        if entry.row.status == "later" then
+            later = true
+        else
+            assert(not later, "a spell to learn now is listed after later ones")
+        end
+    end
+    local withID = 0
+    for _, entry in ipairs(entries) do
+        if entry.row.id then withID = withID + 1 end
+    end
+    assert(withID > 0, "no spell IDs for tooltips")
+    module.panel.list.onEntryEnter(module.panel.list.rows[1], entries[1].id)
+    main.db.modules.SpellbookPanel.collapsed = true
+    module:Refresh()
+    assert(not module.panel.shown and module.tab.shown, "collapse should leave the small button")
+    module.tab.scripts.OnClick(module.tab)
+    assert(module.panel.shown and not module.tab.shown, "button should expand the panel")
+    book.shown = false
+    book.scripts.OnHide(book)
+    assert(not module.panel.shown and not module.tab.shown, "panel should hide with the spellbook")
+end)
+check("spellbook page renders", function()
     main.MainFrame:SelectTab("spellbook")
+end)
+check("spellbook is one full table; hovering a row shows the spell tooltip", function()
+    main.MainFrame:SelectTab("home")
+    main.MainFrame:SelectTab("spellbook")
+    local page = main.modules.Spellbook.page
+    assert(rawget(page, "filter") == nil, "the recent-levels filter should be gone")
+    local header, spells, hovered = page.tableRows[1], 0, nil
+    assert(header.cells.spell:GetText():find(main.L["Spell"], 1, true) and not header.entry, "no table header")
+    for _, row in ipairs(page.tableRows) do
+        if row:IsShown() and row.entry then
+            spells = spells + 1
+            if row.entry.id and not hovered then
+                hovered = row
+            end
+        end
+    end
+    assert(spells == #main.modules.Spellbook.Rows(), ("table shows %d of %d spells"):format(spells, #main.modules.Spellbook.Rows()))
+    assert(hovered, "no row with a spell ID")
+    hovered.scripts.OnEnter(hovered)
+    assert(GameTooltip.spellID == hovered.entry.id, "row hover did not show the spell tooltip")
+    hovered.scripts.OnLeave(hovered)
 end)
 check("warlock spellbook shows demon abilities with grimoires and innate ranks", function()
     playerClass = { "Warlock", "WARLOCK" }
@@ -381,9 +571,38 @@ check("warlock spellbook shows demon abilities with grimoires and innate ranks",
         end
     end
     assert(innate == 4 and books == 59, ("innate %d books %d"):format(innate, books))
+    -- 召唤出的小鬼会火焰箭 2 级（技能 ID 7799）：按 ID 记进角色存档；没召唤过的恶魔不能报“购买魔典”
+    main.charDB.petSpells = nil
+    local rows = main.modules.Spellbook.Rows(true)
+    local imp = main.charDB.petSpells and main.charDB.petSpells.Imp
+    assert(imp and imp.firebolt == 2, "imp spells not recorded by spell ID")
+    local unchecked = 0
+    for _, row in ipairs(rows) do
+        if row.spell.pet.enUS ~= "Imp" then
+            assert(row.status ~= "book" and row.status ~= "known", "unsummoned demon judged: " .. row.spell.name.enUS)
+            if row.status == "unchecked" then unchecked = unchecked + 1 end
+        elseif row.spell.name.enUS == "Firebolt" and row.rankNumber == 2 then
+            assert(row.status == "known", "imp Firebolt rank 2 should be known, got " .. row.status)
+        end
+    end
+    assert(unchecked > 0, "no demon marked as unchecked")
+    -- 事件：召唤或更换恶魔后 1 秒内合并读取
+    main.modules.Spellbook.OnPetChanged("UNIT_PET", "player")
+    main.modules.Spellbook.OnPetChanged("PET_BAR_UPDATE")
     main.MainFrame:SelectTab("home")
     main.MainFrame:SelectTab("spellbook")
     fireAll("PLAYER_LEVEL_UP", 8)
+    -- 首页“现在可学”卡片：可买魔典的恶魔技能和普通技能一样逐行列出，带技能 ID（悬停显示技能提示）
+    local summary = main.modules.Spellbook.Summary(4)
+    assert(#summary.grimoires > 0, "no grimoire to buy in this test")
+    main.Home.Refresh()
+    local card = main.Home.page.cards.spells
+    assert(card.count:GetText() == tostring(#summary.ready + #summary.grimoires), "grimoires not counted on the home card")
+    local total = #summary.ready + #summary.grimoires
+    if total <= #card.lines then
+        local line = card.lines[#summary.ready + 1]
+        assert(line:IsShown() and line.spellID == summary.grimoires[1].id and line.tooltip[2], "grimoire line missing")
+    end
     playerClass = { "Mage", "MAGE" }
 end)
 check("settings page renders", function()
@@ -401,6 +620,95 @@ end)
 check("vendor sells junk", function()
     fireAll("MERCHANT_SHOW")
     assert(soldJunk, "junk not sold")
+end)
+check("quest list leads with the level a quest can be accepted at", function()
+    for _, dungeon in ipairs(main.Data.dungeons) do
+        if dungeon.slug == "ruins-of-lordaeron" then
+            local found = false
+            for _, entry in ipairs(main.modules.Dungeons.QuestEntries(dungeon)) do
+                if entry.id == 97288 then
+                    found = true
+                    assert(entry.text:find("[16]", 1, true), "row should show accept level 16: " .. entry.text)
+                end
+            end
+            assert(found, "Unending Torment not listed")
+        end
+    end
+end)
+check("world map: dungeon entrances on zone maps, click opens the dungeon", function()
+    local provider = WorldMapFrame.providers[3]
+    assert(provider, "dungeon provider not added")
+    provider:RefreshAllData()
+    local found = 0
+    for _, pin in ipairs(pins) do
+        if pin.template == "WowHandbookDungeonPinTemplate" then
+            found = found + 1
+            assert(pin.x >= 0 and pin.x <= 1 and pin.y >= 0 and pin.y <= 1, "pin outside the map")
+            assert(pin.whLines[1] and pin.whLines[1] ~= "?", "pin has no name")
+        end
+    end
+    local expected = 0
+    for _, dungeon in ipairs(main.Data.dungeons) do
+        local faction = dungeon.faction
+        if dungeon.entrance and dungeon.entrance.map == 1413 and dungeon.entrance.x
+            and (not faction or faction == "both" or faction == "horde") then
+            expected = expected + 1
+        end
+    end
+    assert(expected > 0 and found == expected, ("%d dungeon pins, expected %d"):format(found, expected))
+    for _, pin in ipairs(pins) do
+        if pin.template == "WowHandbookDungeonPinTemplate" then
+            pin:OnMouseEnter()
+            pin:OnMouseClickAction("LeftButton")
+            break
+        end
+    end
+    assert(WowHandbookMainFrame.shown, "clicking a dungeon pin should open the handbook")
+    main.db.modules.WorldMap.dungeonPins = false
+    provider:RefreshAllData()
+    for _, pin in ipairs(pins) do
+        assert(pin.template ~= "WowHandbookDungeonPinTemplate", "dungeon pins shown while turned off")
+    end
+    main.db.modules.WorldMap.dungeonPins = true
+    provider:RemoveAllData()
+end)
+check("world map: spirit healers when dead, always or never", function()
+    local provider = WorldMapFrame.providers[4]
+    assert(provider, "graveyard provider not added")
+    local function count()
+        provider:RefreshAllData()
+        local n, first = 0, nil
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookGraveyardPinTemplate" then
+                n = n + 1
+                first = first or pin
+            end
+        end
+        return n, first
+    end
+    local expected = #(main.Data.graveyards[1413] or {})
+    assert(expected > 0, "no spirit healers for the test map")
+    local dead = false
+    UnitIsDeadOrGhost = function() return dead end
+    local settings = main.db.modules.WorldMap
+    assert((settings.spiritHealers or "dead") == "dead", "default should be: when dead")
+    assert(count() == 0, "shown while alive")
+    dead = true
+    local n, pin = count()
+    assert(n == expected, ("%d spirit healers, expected %d"):format(n, expected))
+    waypoint = nil
+    pin:OnMouseClickAction("LeftButton")
+    assert(waypoint, "clicking a spirit healer should set a waypoint")
+    fireAll("PLAYER_ALIVE")
+    dead = false
+    settings.spiritHealers = "always"
+    assert(count() == expected, "always: not shown while alive")
+    settings.spiritHealers = "off"
+    dead = true
+    assert(count() == 0, "never: still shown")
+    settings.spiritHealers = nil
+    dead = false
+    provider:RemoveAllData()
 end)
 check("world map: native-style flight pins", function()
     assert(WorldMapFrame.provider, "data provider not added")
@@ -479,6 +787,18 @@ check("loot filter: categories, armor types and class usability", function()
     C_Item.GetItemInfoInstant = original
     assert(ok, err)
 end)
+check("loot filters only show on the loot tab", function()
+    local D = main.modules.Dungeons
+    local shown = {}
+    local bar
+    assert(D:Select(1, "loot"))
+    bar = D.page and D.page.detail and D.page.detail.lootFilters
+    assert(bar, "detail page not created")
+    shown.loot = bar:IsShown()
+    assert(D:Select(1, "quests"))
+    shown.quests = bar:IsShown()
+    assert(shown.loot and not shown.quests, "filter bar visible on the quest tab")
+end)
 check("quest list: flat, no quest shown twice", function()
     local D = main.modules.Dungeons
     for _, dungeon in ipairs(main.Data.dungeons) do
@@ -538,6 +858,69 @@ check("level-up notice lists spells", function()
 end)
 check("no main addon errors in modules", function()
     main.MainFrame:SelectTab("home")
+end)
+check("home dashboard: status, cards and upcoming", function()
+    local Home = main.Home
+    main.MainFrame:SelectTab("home")
+    local p = Home.page
+    assert(p and p.cards, "home page not created")
+    -- 部落 13 级：怒焰裂谷（13 级）应在推荐里，并有进本前先接的任务
+    local savedLevel = playerLevel
+    playerLevel = 13
+    local rfc
+    for index, dungeon in ipairs(main.Data.dungeons) do
+        if dungeon.slug == "ragefire-chasm" then rfc = index end
+    end
+    local summary = main.modules.Dungeons.Summary(3, 4)
+    local recommended = false
+    for _, item in ipairs(summary.recommended) do
+        if item.index == rfc then recommended = true end
+    end
+    assert(recommended, "Ragefire Chasm not recommended at level 13")
+    assert(#summary.prep > 0, "nothing to prepare at level 13")
+    for _, item in ipairs(summary.prep) do
+        assert(not main.Data.quests[item.quest].inside, "prep lists an inside quest")
+    end
+    -- 任务日志里有一个已完成的副本任务
+    local questID
+    for _, id in ipairs(main.Data.dungeons[rfc].quests) do
+        if not completedQuests[id] and main.Data.quests[id].faction ~= "A" then questID = id break end
+    end
+    activeQuests[questID], completeQuests[questID] = true, true
+    Home.Refresh()
+    local line = p.cards.quests.lines[1]
+    assert(line:IsShown() and line.note:GetText():find(main.L["Ready to turn in"], 1, true), "turn-in not shown")
+    assert(p.cards.quests.title:GetText() == main.L["Dungeon quests in your log"], "quest card should show the log")
+    assert(p.character:GetText():find("13"), "level missing: " .. tostring(p.character:GetText()))
+    assert(p.xpText:GetText():find("25"), "xp percent missing: " .. tostring(p.xpText:GetText()))
+    activeQuests[questID], completeQuests[questID] = nil, nil
+    Home.Refresh()
+    assert(p.cards.quests.title:GetText() == main.L["Pick up before you go"], "quest card should fall back to prep")
+    -- 练级区域：13 级有匹配区域，且不含主城与另一阵营的领地
+    local zones = Home.RecommendedZones(4)
+    assert(#zones > 0, "no zones recommended at level 13")
+    for _, item in ipairs(zones) do
+        assert(item.zone.kind == "zone", "city recommended")
+        assert(item.zone.faction ~= "alliance", "enemy territory recommended: " .. item.zone.slug)
+        assert(13 >= item.zone.levels[1] - 1 and 13 <= item.zone.levels[2], "zone level out of range")
+    end
+    assert(p.cards.zones.lines[1]:IsShown(), "zone card empty")
+    -- 推荐副本：不推荐“数据待补”与没有数据的副本，满级前不推荐团本
+    for _, testLevel in ipairs({ 37, 45, 59 }) do
+        playerLevel = testLevel
+        for _, item in ipairs(main.modules.Dungeons.Summary(4, 4).recommended) do
+            local dungeon = main.Data.dungeons[item.index]
+            assert(not dungeon.dataPending, "data-pending dungeon recommended: " .. dungeon.slug)
+            assert(dungeon.kind ~= "raid", "raid recommended before max level: " .. dungeon.slug)
+        end
+    end
+    -- 领主大厅只对联盟显示：部落角色的推荐里不应出现
+    playerLevel = 14
+    for _, item in ipairs(main.modules.Dungeons.Summary(4, 4).recommended) do
+        assert(main.Data.dungeons[item.index].slug ~= "hall-of-thanes", "Hall of Thanes shown to Horde")
+    end
+    playerLevel = savedLevel
+    Home.Refresh()
 end)
 check("switch back to home page", function()
     main.MainFrame:SelectTab("home")

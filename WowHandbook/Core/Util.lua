@@ -11,6 +11,16 @@ function ns.Name(names)
     return names[ns.locale] or names.enUS or select(2, next(names))
 end
 
+-- 首领名：数据里的掉落分组（小怪、配方、书籍）用插件自己的本地化文字，其余按语言取名
+local LOOT_GROUPS = { ["Trash mobs"] = true, ["Plans and patterns"] = true, ["Books"] = true }
+function ns.BossName(boss)
+    local english = boss and boss.name and boss.name.enUS
+    if english and LOOT_GROUPS[english] then
+        return ns.L[english]
+    end
+    return boss and ns.Name(boss.name)
+end
+
 -- "A" / "H"
 function ns.PlayerFaction()
     local faction = UnitFactionGroup("player")
@@ -79,7 +89,10 @@ end
 -- 物品链接（客户端还没缓存时显示“物品 ID”，数据到了会在下一次刷新时补上）
 function ns.ItemLink(itemID)
     local _, link = C_Item.GetItemInfo(itemID)
-    return link or ("|cff9d9d9d[" .. L["Item"] .. " " .. itemID .. "]|r")
+    if not link and C_Item.RequestLoadItemDataByID then
+        C_Item.RequestLoadItemDataByID(itemID)
+    end
+    return link or L["Item information not yet unlocked"]
 end
 
 -- 任务标题：优先用客户端（按客户端语言），没有就请求加载并先用数据里的名字

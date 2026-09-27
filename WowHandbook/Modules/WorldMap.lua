@@ -10,7 +10,10 @@ local L = ns.L
 -- · F8 地图缩放：设置里可调大地图缩放比例（1.0 表示不改动）。
 -- · 完整地图：补画尚未探索的区域（贴图来自客户端表导出的 Data/MapOverlays.lua），颜色略暗以区分已探索区域；
 --   设置里可关闭。
-local Module = ns:NewModule("WorldMap", { levelLabel = true, flightPins = true, revealMap = true, mapScale = 1 })
+-- · 副本入口：区域地图与大陆地图上标出副本与团队副本入口，悬停看等级区间，点击在手册里打开。
+-- · 灵魂医者：默认死亡时显示（可改为始终或不显示），点击设为导航。
+local Module = ns:NewModule("WorldMap", { levelLabel = true, flightPins = true, revealMap = true, mapScale = 1,
+    dungeonPins = true, spiritHealers = "dead" })
 
 local PIN_TEMPLATE = "WowHandbookFlightPinTemplate"
 local BLIZZARD_PIN_TEMPLATE = "FlightPointPinTemplate"
@@ -288,6 +291,200 @@ end
 --------------------------------------------------------------------------------
 -- 地图缩放与挂载
 --------------------------------------------------------------------------------
+-- 副本入口与灵魂医者图钉：继承暴雪地图的基础图钉模板（MapCanvasPinTemplate），图标与悬停提示在这里设置。
+-- 图标优先用客户端自带的图集，没有时用通用贴图。
+--------------------------------------------------------------------------------
+
+local DUNGEON_PIN = "WowHandbookDungeonPinTemplate"
+local GRAVEYARD_PIN = "WowHandbookGraveyardPinTemplate"
+local ICONS = {
+    dungeon = { atlas = "Dungeon", texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 22 },
+    raid = { atlas = "Raid", texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 24 },
+    graveyard = { atlas = "poi-graveyard-neutral", texture = "Interface\\Icons\\Spell_Holy_Resurrection", size = 18 },
+}
+
+local function HasAtlas(name)
+    return C_Texture and C_Texture.GetAtlasInfo and C_Texture.GetAtlasInfo(name) ~= nil
+end
+
+local function SetupPin(pin, iconKey)
+    local icon = ICONS[iconKey]
+    if not rawget(pin, "whTexture") then
+        pin.whTexture = pin:CreateTexture(nil, "OVERLAY")
+        pin.whTexture:SetAllPoints()
+        pin.whHighlight = pin:CreateTexture(nil, "HIGHLIGHT")
+        pin.whHighlight:SetAllPoints()
+        pin.whHighlight:SetBlendMode("ADD")
+        if pin.SetScalingLimits then
+            pin:SetScalingLimits(1, 1.0, 1.2)
+        end
+    end
+    pin:SetSize(icon.size, icon.size)
+    for _, texture in ipairs({ pin.whTexture, pin.whHighlight }) do
+        if HasAtlas(icon.atlas) then
+            texture:SetAtlas(icon.atlas)
+        else
+            texture:SetTexture(icon.texture)
+        end
+    end
+    pin.whHighlight:SetAlpha(0.35)
+end
+
+-- 图钉的悬停与点击：lines 为提示行（第一行是标题），onClick 为点击动作
+local function SetPinBehavior(pin, lines, onClick)
+    pin.whLines, pin.whClick = lines, onClick
+    pin.OnMouseEnter = function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(self.whLines[1], 1, 0.82, 0)
+        for index = 2, #self.whLines do
+            GameTooltip:AddLine(self.whLines[index], 1, 1, 1, true)
+        end
+        GameTooltip:Show()
+    end
+    pin.OnMouseLeave = function()
+        GameTooltip_Hide()
+    end
+    pin.OnMouseClickAction = function(self, button)
+        if button == "LeftButton" and self.whClick then
+            self.whClick()
+        end
+    end
+end
+
+-- 区域地图上的坐标（0–100）换到当前显示的地图（0–1）：同一张图直接换算；大陆图经世界坐标换算
+local function ToMapPosition(fromMapID, x, y, toMapID)
+    if fromMapID == toMapID then
+        return x / 100, y / 100
+    end
+    local info = C_Map.GetMapInfo(toMapID)
+    local continent = Enum and Enum.UIMapType and Enum.UIMapType.Continent
+    if not (info and continent and info.mapType == continent and C_Map.GetWorldPosFromMapPos
+        and C_Map.GetMapPosFromWorldPos and CreateVector2D) then
+        return nil
+    end
+    local continentID, worldPos = C_Map.GetWorldPosFromMapPos(fromMapID, CreateVector2D(x / 100, y / 100))
+    if not (continentID and worldPos) then
+        return nil
+    end
+    local _, position = C_Map.GetMapPosFromWorldPos(continentID, worldPos, toMapID)
+    if not position then
+        return nil
+    end
+    local px, py = position:GetXY()
+    if px < 0 or px > 1 or py < 0 or py > 1 then
+        return nil
+    end
+    return px, py
+end
+
+local function DungeonVisible(dungeon)
+    local faction = UnitFactionGroup("player")
+    return not dungeon.faction or dungeon.faction == "both" or dungeon.faction:lower() == (faction or ""):lower()
+end
+
+local dungeonProvider
+
+local function CreateDungeonProvider()
+    dungeonProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function dungeonProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(DUNGEON_PIN)
+    end
+    function dungeonProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        if not (mapID and Settings().dungeonPins) then
+            return
+        end
+        for index, dungeon in ipairs(ns.Data.dungeons or {}) do
+            local entrance = dungeon.entrance
+            if entrance and entrance.x and DungeonVisible(dungeon) then
+                local px, py = ToMapPosition(entrance.map, entrance.x, entrance.y, mapID)
+                if px then
+                    local pin = map:AcquirePin(DUNGEON_PIN)
+                    SetupPin(pin, dungeon.kind == "raid" and "raid" or "dungeon")
+                    local levels = dungeon.levels
+                    local color = levels and ns.LevelColor(levels[1], levels[2]) or "ffffffff"
+                    SetPinBehavior(pin, {
+                        ns.Name(dungeon.name) or "?",
+                        levels and ("|c%s%s %s|r"):format(color, L["Level"], ns.LevelRange(levels)) or nil,
+                        L["Click to open it in WoW Handbook."],
+                    }, function()
+                        local module = ns.modules.Dungeons
+                        if module and ns:GetModuleSettings(module).enabled ~= false then
+                            module:Select(index, "quests")
+                        end
+                    end)
+                    pin:SetPosition(px, py)
+                end
+            end
+        end
+    end
+    return dungeonProvider
+end
+
+--------------------------------------------------------------------------------
+-- 灵魂医者：显示时机可设为死亡时（默认）、始终或不显示。先用游戏给的墓地列表
+-- （C_DeathInfo.GetGraveyardsForMap），游戏不给时用插件自带的位置（Data/Graveyards.lua）。
+--------------------------------------------------------------------------------
+
+local function SpiritHealersWanted()
+    local mode = Settings().spiritHealers or "dead"
+    if mode == "always" then
+        return true
+    elseif mode == "dead" then
+        return UnitIsDeadOrGhost("player") and true or false
+    end
+    return false
+end
+
+-- { {x, y, name} }，坐标 0–100
+local function GraveyardsForMap(mapID)
+    local spots = {}
+    local fromGame = C_DeathInfo and C_DeathInfo.GetGraveyardsForMap and C_DeathInfo.GetGraveyardsForMap(mapID)
+    for _, graveyard in ipairs(fromGame or {}) do
+        if graveyard.position then
+            local x, y = graveyard.position:GetXY()
+            tinsert(spots, { x * 100, y * 100, graveyard.name })
+        end
+    end
+    if #spots == 0 then
+        for _, point in ipairs(ns.Data.graveyards and ns.Data.graveyards[mapID] or {}) do
+            tinsert(spots, { point[1], point[2] })
+        end
+    end
+    return spots
+end
+Module.GraveyardsForMap = GraveyardsForMap -- 供测试使用
+
+local graveyardProvider
+
+local function CreateGraveyardProvider()
+    graveyardProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function graveyardProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(GRAVEYARD_PIN)
+    end
+    function graveyardProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        if not (mapID and SpiritHealersWanted()) then
+            return
+        end
+        for _, spot in ipairs(GraveyardsForMap(mapID)) do
+            local pin = map:AcquirePin(GRAVEYARD_PIN)
+            SetupPin(pin, "graveyard")
+            local title = spot[3] and spot[3] ~= "" and spot[3] or L["Spirit Healer"]
+            SetPinBehavior(pin, { title, L["Click to set a waypoint here."] }, function()
+                ns.Waypoints:Set(mapID, spot[1], spot[2], title)
+            end)
+            pin:SetPosition(spot[1] / 100, spot[2] / 100)
+        end
+    end
+    return graveyardProvider
+end
+
+--------------------------------------------------------------------------------
 
 function Module:ApplyScale()
     if WorldMapFrame and not InCombatLockdown() then
@@ -299,7 +496,7 @@ function Module:ApplyScale()
 end
 
 function Module:Refresh()
-    for _, dataProvider in ipairs({ provider, revealProvider }) do
+    for _, dataProvider in ipairs({ provider, revealProvider, dungeonProvider, graveyardProvider }) do
         if dataProvider and dataProvider.GetMap and dataProvider:GetMap() then
             dataProvider:RefreshAllData()
         end
@@ -314,6 +511,8 @@ local function Attach()
     attached = true
     WorldMapFrame:AddDataProvider(CreateProvider())
     WorldMapFrame:AddDataProvider(CreateRevealProvider())
+    WorldMapFrame:AddDataProvider(CreateDungeonProvider())
+    WorldMapFrame:AddDataProvider(CreateGraveyardProvider())
     local label = FindAreaLabel()
     if label then
         HookAreaLabel(label)
@@ -334,6 +533,14 @@ function Module:OnEnable()
     ns:RegisterEvent("TAXIMAP_OPENED", function()
         Module:Refresh()
     end)
+    -- 死亡、释放灵魂、复活：刷新灵魂医者（只在地图打开时）
+    for _, event in ipairs({ "PLAYER_DEAD", "PLAYER_ALIVE", "PLAYER_UNGHOST" }) do
+        ns:RegisterEvent(event, function()
+            if WorldMapFrame and WorldMapFrame:IsShown() and graveyardProvider and graveyardProvider:GetMap() then
+                graveyardProvider:RefreshAllData()
+            end
+        end)
+    end
     -- 探索了新区域：该区域改由暴雪自带图层显示，这里不再补画
     ns:RegisterEvent("MAP_EXPLORATION_UPDATED", function()
         if WorldMapFrame and WorldMapFrame:IsShown() then
