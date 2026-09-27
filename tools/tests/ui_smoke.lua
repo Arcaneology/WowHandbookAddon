@@ -348,7 +348,7 @@ check("unlocked item placeholder and drop rate row", function()
     local row = stack.pools.text[1].text
     assert(row:find(main.L["Item information not yet unlocked"], 1, true), "placeholder missing")
     assert(row:find("12.5", 1, true), "drop rate missing")
-    assert(row:find(main.L["Unverified"], 1, true), "unverified marker missing")
+    assert(not row:find("nverified", 1, true) and not row:find("未验证", 1, true), "item rows must not show an unverified marker")
 end)
 
 -- 放一些采集数据，让详情与列表走完整路径

@@ -364,7 +364,6 @@ def build_dungeons(zones: list, zh_names: dict, boss_loot: dict, quests: dict, z
                          item if isinstance(item, dict) else {
                              "id": item,
                              "rate": ((details.get(name) or {}).get(str(item)) or {}).get("rate"),
-                             "unverified": ((details.get(name) or {}).get(str(item)) or {}).get("unverified"),
                              "newInForever": ((details.get(name) or {}).get(str(item)) or {}).get("newInForever"),
                          }
                          for item in loot.get(name, [])

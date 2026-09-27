@@ -811,7 +811,7 @@ function UI:Stack(parent)
         return fontString
     end
 
-    -- 物品行：可传 ID 或 {id, rate, unverified}；未解锁时显示可读占位。
+    -- 物品行：可传 ID 或 {id, rate}；未解锁时显示可读占位。
     function stack:Items(itemIDs, indent, size)
         size = size or 30
         for _, entry in ipairs(itemIDs) do
@@ -835,9 +835,6 @@ function UI:Stack(parent)
             local description = name or ns.L["Item information not yet unlocked"]
             if type(entry) == "table" and entry.rate then
                 description = description .. "  " .. (ns.L["Drop rate: %s%%"]):format(tostring(entry.rate))
-            end
-            if type(entry) == "table" and entry.unverified then
-                description = description .. " " .. ns.L["Unverified"]
             end
             label:SetText(description)
             self.y = self.y + math.max(size, label:GetStringHeight()) + 4

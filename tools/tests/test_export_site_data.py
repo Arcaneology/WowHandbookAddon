@@ -145,7 +145,8 @@ class DungeonSectionsTest(unittest.TestCase):
         self.assertEqual(dungeon["quests"], [1])
         self.assertEqual(dungeon["bosses"][0]["items"][0]["id"], 111)
         self.assertEqual(dungeon["bosses"][0]["items"][0]["rate"], 12.5)
-        self.assertTrue(dungeon["bosses"][0]["items"][0]["unverified"])
+        # 未验证只进采集插件的待核验清单，主插件数据不带这个标记
+        self.assertNotIn("unverified", dungeon["bosses"][0]["items"][0])
         self.assertTrue(dungeon["bosses"][0]["items"][0]["newInForever"])
         self.assertEqual(dungeon["bosses"][0]["items"][1]["id"], 222)
         fallback = next(d for d in result if d.get("aggregateOnly"))

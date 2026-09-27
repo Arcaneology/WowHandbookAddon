@@ -559,13 +559,13 @@ local function RewardsSection(stack, rewards)
         stack:Text(L["Choose one of:"], "Small", 0, 4)
         stack:Items(ItemIDs(rewards.choices), 0, 34)
     end
-    -- 其他插件数据里多出来的奖励（待验证）与后续任务的奖励
+    -- 其他插件数据里多出来的奖励与后续任务的奖励（待核验的条目只进采集插件的清单，这里不标未验证）
     local possible, followUp = {}, {}
     for _, item in ipairs(rewards.referenceItems or {}) do
         tinsert(item.followUp and followUp or possible, item.id)
     end
     if #possible > 0 then
-        stack:Text(L["Other possible rewards (unverified):"], "Small", 0, 4)
+        stack:Text(L["Other possible rewards:"], "Small", 0, 4)
         stack:Items(possible, 0, 34)
     end
     if #followUp > 0 then
@@ -592,9 +592,6 @@ local function RenderQuestDetail(view, questID, item)
     local kind = item.kind or Classify(questID)
     local group = GROUP_BY_KEY[kind]
     stack:Text(ns.QuestTitle(questID), "Title", 0, 4)
-    if quest.unverified then
-        stack:Text(L["Collected from other sources; not yet confirmed in game."], "Muted", 0, 6)
-    end
 
     -- 最低可接等级是给玩家的主要信息；任务等级（难度、经验）只作参考，放在后面并用暗色
     local meta = { ("|c%s%s|r"):format(group.color, L[group.tag]) }
