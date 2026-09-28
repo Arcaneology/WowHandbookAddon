@@ -170,8 +170,24 @@ local STATUS = {
 local STATUS_LABEL = { known = "Learned", innate = "Innate", ready = "Train now", book = "Buy the grimoire",
     unchecked = "Summon this demon once to check", later = "Not yet" }
 
-local function Icon(spell)
-    return spell.icon and ("|TInterface\\Icons\\%s:16:16:0:0:64:64:5:59:5:59|t "):format(spell.icon) or ""
+-- 整行按三档区分：现在可学高亮（淡金底、金条、名字加亮），
+-- 已学会正常显示，还不能学整行低亮度（名字、图标、状态都调暗）
+local STATUS_GROUP = { known = "learned", innate = "learned", ready = "ready", book = "ready",
+    later = "locked", unchecked = "locked" }
+local GROUP_STYLE = {
+    learned = { name = "fff4e8cc" },
+    ready = { tint = "goldTint", bar = "gold", name = "ffffe7a8" },
+    locked = { name = "ff8a8374", dim = true, alpha = 0.55 },
+}
+Module.STATUS_GROUP = STATUS_GROUP -- 供测试使用
+
+-- 技能图标；还不能学的调暗（图标转义末尾的 RGB 乘数）
+local function Icon(spell, dim)
+    if not spell.icon then
+        return ""
+    end
+    local shade = dim and ":110:110:110" or ""
+    return ("|TInterface\\Icons\\%s:16:16:0:0:64:64:5:59:5:59%s|t "):format(spell.icon, shade)
 end
 
 --------------------------------------------------------------------------------
@@ -224,6 +240,12 @@ local function CreateRow(parent)
     row.stripe = row:CreateTexture(nil, "BACKGROUND")
     row.stripe:SetAllPoints()
     row.stripe:SetColorTexture(unpack(ns.Theme.colors.stripe))
+    row.tint = row:CreateTexture(nil, "BACKGROUND", nil, 1)
+    row.tint:SetAllPoints()
+    row.bar = row:CreateTexture(nil, "ARTWORK")
+    row.bar:SetPoint("TOPLEFT")
+    row.bar:SetPoint("BOTTOMLEFT")
+    row.bar:SetWidth(3)
     row.highlight = row:CreateTexture(nil, "BORDER")
     row.highlight:SetAllPoints()
     row.highlight:SetColorTexture(unpack(ns.Theme.colors.raised))
@@ -301,6 +323,10 @@ local function Table(p)
         row.entry = false
         row:EnableMouse(false)
         row.stripe:Hide()
+        row.tint:Hide()
+        row.bar:Hide()
+        row:SetAlpha(1)
+        row.group = nil
         for _, column in ipairs(columns) do
             row.cells[column.key]:SetText(("|cffe0b458%s|r"):format(L[column.label]))
         end
@@ -312,6 +338,16 @@ local function Table(p)
         row.entry = data
         row:EnableMouse(true)
         row.stripe:SetShown(striped)
+        local group = STATUS_GROUP[data.status] or "locked"
+        local style = GROUP_STYLE[group]
+        row.group = group
+        row.tint:SetShown(style.tint ~= nil)
+        row.bar:SetShown(style.bar ~= nil)
+        row:SetAlpha(style.alpha or 1)
+        if style.tint then
+            row.tint:SetColorTexture(unpack(ns.Theme.colors[style.tint]))
+            row.bar:SetColorTexture(unpack(ns.Theme.colors[style.bar]))
+        end
         for _, column in ipairs(columns) do
             row.cells[column.key]:SetText(cells[column.key] or "")
         end
@@ -345,12 +381,17 @@ local function LevelCell(row, previous, playerLevel)
     return ("|cff%s%d|r"):format(color, row.level)
 end
 
+local function SpellCell(row)
+    local style = GROUP_STYLE[STATUS_GROUP[row.status] or "locked"]
+    return Icon(row.spell, style.dim) .. ("|c%s%s|r"):format(style.name, ns.Name(row.spell.name) or "?")
+end
+
 local function RankCell(row)
     return row.rank ~= "" and (L["Rank %d"]):format(row.rankNumber) or "-"
 end
 
 local function Refresh()
-    if not (page and page:IsShown()) then
+    if not (page and page:IsVisible()) then
         return
     end
     local rows = Rows()
@@ -385,7 +426,7 @@ local function Refresh()
         end
         t:Row(COLUMNS.class, row, {
             level = LevelCell(row, previous, level),
-            spell = Icon(row.spell) .. (ns.Name(row.spell.name) or "?"),
+            spell = SpellCell(row),
             rank = RankCell(row),
             status = STATUS[row.status]:format(L[STATUS_LABEL[row.status]]),
         }, stripe)
@@ -410,7 +451,7 @@ local function Refresh()
             end
             t:Row(COLUMNS.pet, row, {
                 level = LevelCell(row, previous, level),
-                spell = Icon(row.spell) .. (ns.Name(row.spell.name) or "?"),
+                spell = SpellCell(row),
                 rank = RankCell(row),
                 pet = (previous and previous.pet == row.pet) and "" or (row.pet or "?"),
                 status = STATUS[row.status]:format(L[STATUS_LABEL[row.status]]),
@@ -435,11 +476,26 @@ local function CreatePage(parent)
     p.summary = UI:Text(p, "Muted")
     p.summary:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
 
-    local siteButton = UI:Button(p, L["Full spellbook on the website"], 190, 24)
-    siteButton:SetPoint("TOPRIGHT", -PAD, -20)
-    siteButton:SetScript("OnClick", function()
-        ns.Links:ShowCopyDialog(ns.Links:Build("spellbook", ns.PlayerClass()))
-    end)
+
+    -- 图例：与表格行的底色、色条一致
+    local anchor
+    for _, item in ipairs({
+        { label = "Can't learn yet", color = "lineSoft", text = "ff8a8374" },
+        { label = "Learned", color = "textDim", text = "fff4e8cc" },
+        { label = "Train now", color = "gold", text = "ffe0b458" },
+    }) do
+        local label = UI:Text(p, "Small", ("|c%s%s|r"):format(item.text, L[item.label]))
+        if anchor then
+            label:SetPoint("RIGHT", anchor, "LEFT", -14, 0)
+        else
+            label:SetPoint("TOPRIGHT", -PAD, -50)
+        end
+        local swatch = p:CreateTexture(nil, "ARTWORK")
+        swatch:SetSize(10, 10)
+        swatch:SetPoint("RIGHT", label, "LEFT", -5, 0)
+        swatch:SetColorTexture(unpack(ns.Theme.colors[item.color]))
+        anchor = swatch
+    end
 
     local panel = UI:Panel(p, "panel", "lineSoft")
     panel:SetPoint("TOPLEFT", PAD, -66)
@@ -522,7 +578,7 @@ function Module:OnEnable()
     -- 页面打开期间，技能变化、魔典物品信息到达时刷新（节流 0.3 秒，期间重复事件合并）
     local pending = false
     local function OnChange()
-        if pending or not (page and page:IsShown()) then
+        if pending or not (page and page:IsVisible()) then
             return
         end
         pending = true
@@ -531,11 +587,8 @@ function Module:OnEnable()
             Refresh()
         end)
     end
-    ns:RegisterEvent("SPELLS_CHANGED", function()
-        ns.InvalidateKnownSpells()
-        OnChange()
-    end)
-    ns:RegisterEvent("GET_ITEM_INFO_RECEIVED", OnChange)
+    ns:RegisterEvent("SPELLS_CHANGED", OnChange)
+    ns.OnItemLoaded(OnChange)
     ns:RegisterEvent("UNIT_PET", Module.OnPetChanged)
     ns:RegisterEvent("PET_BAR_UPDATE", Module.OnPetChanged)
 end

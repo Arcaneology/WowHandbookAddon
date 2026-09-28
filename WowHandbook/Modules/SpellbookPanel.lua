@@ -101,7 +101,7 @@ local function ShowTooltip(button, entryID)
 end
 
 local function Refresh()
-    if not (panel and panel:IsShown()) then
+    if not (panel and panel:IsVisible()) then
         return
     end
     local entries, now = Entries()
@@ -212,7 +212,7 @@ function Module:OnEnable()
     -- 学会新技能、升级时刷新（节流 0.3 秒；面板没打开时不做任何事）
     local pending = false
     local function OnChange()
-        if pending or not (panel and panel:IsShown()) then
+        if pending or not (panel and panel:IsVisible()) then
             return
         end
         pending = true

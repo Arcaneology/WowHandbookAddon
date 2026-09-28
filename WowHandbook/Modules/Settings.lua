@@ -4,6 +4,7 @@ local L = ns.L
 -- 设置页：各功能开关与选项、关于（网站与非官方声明）。
 -- 功能模块的整体开关在重载界面后生效；模块内的选项立即生效。
 local UI
+local CONTENT_WIDTH = 762 -- 主窗口内容区宽度
 
 local SECTIONS = {
     { module = "Dungeons", title = "Dungeon guide", options = {} },
@@ -18,8 +19,11 @@ local SECTIONS = {
         { key = "collapsed", label = "Show the panel next to the game spellbook", inverted = true },
     } },
     { module = "ActionBars", title = "Action bars", options = {
-        { key = "upgradeRanks", label = "Replace lower spell ranks on my bars with the highest rank" },
+        { key = "upgradeRanks", label = "When I learn a new rank, replace that spell's lower ranks on my bars" },
         { key = "placeNewSpells", label = "Put newly learned spells on an empty main bar slot" },
+    } },
+    { module = "InstanceTracker", title = "Instance tracker", options = {
+        { key = "autoShow", label = "Show boss and quest progress when I enter an instance" },
     } },
     { module = "Vendor", title = "Vendor", options = {
         { key = "sellJunk", label = "Sell gray items automatically when I open a vendor" },
@@ -89,17 +93,22 @@ local function CreatePage(parent)
         C_UI.Reload()
     end)
 
-    local y = -64
+    -- 设置主体放在滚动区域里：模块和选项再多也不会越出窗口或与“关于”重叠
+    local scroll = UI:ScrollArea(p)
+    scroll:SetPoint("TOPLEFT", PAD, -60)
+    scroll:SetPoint("BOTTOMRIGHT", -PAD - 10, 12)
+    local body = scroll.child
+    local GAP = 16
+    local columnWidth = (CONTENT_WIDTH - PAD * 2 - 10 - GAP) / 2
     local column = 0
-    local columnWidth = (762 - PAD * 2 - 20) / 2
-    local columnY = { y, y }
+    local columnY = { 0, 0 }
     for _, section in ipairs(SECTIONS) do
         local module = ns.modules[section.module]
         if module then
             local settings = ns:GetModuleSettings(module)
-            local x = PAD + column * (columnWidth + 20)
+            local x = column * (columnWidth + GAP)
             local top = columnY[column + 1]
-            local panel = UI:Panel(p, "panel", "lineSoft")
+            local panel = UI:Panel(body, "panel", "lineSoft")
             panel:SetPoint("TOPLEFT", x, top)
             panel:SetWidth(columnWidth)
             local heading = UI:Text(panel, "Heading", L[section.title])
@@ -141,6 +150,15 @@ local function CreatePage(parent)
                 plus:SetScript("OnClick", function() Step(0.1) end)
                 ShowScale()
                 rowY = rowY - 28
+            elseif section.module == "ActionBars" then
+                -- 整条动作条一次升级到最高等级，以及撤销最近一次改动（自动或手动）
+                local upgradeAll = UI:Button(panel, L["Upgrade all now"], 140, 22)
+                upgradeAll:SetPoint("TOPLEFT", 14, rowY - 2)
+                upgradeAll:SetScript("OnClick", function() module:UpgradeAll() end)
+                local undo = UI:Button(panel, L["Undo last change"], 120, 22, "ghost")
+                undo:SetPoint("LEFT", upgradeAll, "RIGHT", 6, 0)
+                undo:SetScript("OnClick", function() module:Undo() end)
+                rowY = rowY - 30
             end
             local height = -rowY + 8
             panel:SetHeight(height)
@@ -149,10 +167,11 @@ local function CreatePage(parent)
         end
     end
 
-    -- 关于：网站与非官方声明（见 docs/05-site-link-policy.md）
-    local about = UI:Panel(p, "raised", "lineSoft")
-    about:SetPoint("BOTTOMLEFT", PAD, 20)
-    about:SetPoint("BOTTOMRIGHT", -PAD, 20)
+    -- 关于：网站与非官方声明，接在两列设置之后
+    local aboutTop = math.min(columnY[1], columnY[2])
+    local about = UI:Panel(body, "raised", "lineSoft")
+    about:SetPoint("TOPLEFT", 0, aboutTop)
+    about:SetWidth(columnWidth * 2 + GAP)
     about:SetHeight(76)
     local aboutTitle = UI:Text(about, "Heading", L["About"])
     aboutTitle:SetPoint("TOPLEFT", 14, -12)
@@ -166,6 +185,9 @@ local function CreatePage(parent)
     copy:SetScript("OnClick", function()
         ns.Links:ShowCopyDialog(ns.Links:Build("home"))
     end)
+    p.contentHeight = -aboutTop + 76 + 8 -- 供测试使用
+    scroll:SetContentHeight(p.contentHeight)
+    p.scroll, p.about = scroll, about
     return p
 end
 

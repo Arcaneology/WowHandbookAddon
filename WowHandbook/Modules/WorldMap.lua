@@ -140,6 +140,20 @@ local function ExploredKeys(mapID)
     return keys
 end
 
+-- 贴图文件的实际边长：中间的格子是完整的 tileSize；最右一列 / 最下一行只剩 remaining 像素，
+-- 文件边长是从 16 起不小于 remaining 的 2 的幂（与游戏自带地图探索图层的算法一致）。
+local function TileFileSize(remaining, tileSize)
+    if remaining >= tileSize then
+        return tileSize
+    end
+    local size = 16
+    while size < remaining do
+        size = size * 2
+    end
+    return size
+end
+Module.TileFileSize = TileFileSize -- 供测试使用
+
 -- 按贴图的宽高切成与地图图层相同大小的格子（通常 256），逐格放到地图画布的像素位置上
 local function DrawOverlay(overlay, tileWidth, tileHeight)
     local width, height, left, top = overlay[1], overlay[2], overlay[3], overlay[4]
@@ -154,7 +168,8 @@ local function DrawOverlay(overlay, tileWidth, tileHeight)
                 local texture = RevealTexture()
                 texture:SetTexture(fileID)
                 texture:SetSize(pixelWidth, pixelHeight)
-                texture:SetTexCoord(0, pixelWidth / tileWidth, 0, pixelHeight / tileHeight)
+                texture:SetTexCoord(0, pixelWidth / TileFileSize(pixelWidth, tileWidth),
+                    0, pixelHeight / TileFileSize(pixelHeight, tileHeight))
                 texture:ClearAllPoints()
                 texture:SetPoint("TOPLEFT", left + column * tileWidth, -(top + row * tileHeight))
                 texture:SetVertexColor(UNEXPLORED_SHADE, UNEXPLORED_SHADE, UNEXPLORED_SHADE)
@@ -291,20 +306,48 @@ end
 --------------------------------------------------------------------------------
 -- 地图缩放与挂载
 --------------------------------------------------------------------------------
--- 副本入口与灵魂医者图钉：继承暴雪地图的基础图钉模板（MapCanvasPinTemplate），图标与悬停提示在这里设置。
+-- 副本入口与灵魂医者图钉：模板（UI/MapPins.xml）创建时混入暴雪的基础图钉方法，图标与悬停提示在这里设置。
 -- 图标优先用客户端自带的图集，没有时用通用贴图。
 --------------------------------------------------------------------------------
 
 local DUNGEON_PIN = "WowHandbookDungeonPinTemplate"
 local GRAVEYARD_PIN = "WowHandbookGraveyardPinTemplate"
 local ICONS = {
-    dungeon = { atlas = "Dungeon", texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 22 },
-    raid = { atlas = "Raid", texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 24 },
-    graveyard = { atlas = "poi-graveyard-neutral", texture = "Interface\\Icons\\Spell_Holy_Resurrection", size = 18 },
+    dungeon = { level = "PIN_FRAME_LEVEL_DUNGEON_ENTRANCE", atlas = "Dungeon",
+        texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 22 },
+    raid = { level = "PIN_FRAME_LEVEL_DUNGEON_ENTRANCE", atlas = "Raid",
+        texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 24 },
+    -- 灵魂医者：死亡后“返回墓地”按钮用的守护之魂图标，做成圆形徽章
+    graveyard = { level = "PIN_FRAME_LEVEL_SELECTABLE_GRAVEYARD", texture = "Interface\\Icons\\spell_holy_guardianspirit",
+        size = 24, round = true },
 }
 
 local function HasAtlas(name)
     return C_Texture and C_Texture.GetAtlasInfo and C_Texture.GetAtlasInfo(name) ~= nil
+end
+
+-- 圆形徽章：与小地图按钮同样的拼法——暗色圆底、裁掉边角的方形图标、暴雪金属圆环，悬停时小地图按钮的高亮。
+-- 不用遮罩：这个客户端里用遮罩裁圆的图钉整个不显示（图钉在、悬停有提示，但看不到图标）。
+-- 尺寸按小地图按钮（31 宽、圆底 24、圆环 53 左上对齐）等比缩放到图钉大小。
+local BADGE_BASE = 31
+local function MakeBadge(pin, size)
+    local k = size / BADGE_BASE
+    local background = pin:CreateTexture(nil, "BACKGROUND")
+    background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
+    background:SetSize(24 * k, 24 * k)
+    background:SetPoint("CENTER", pin, "CENTER")
+    pin.whTexture:ClearAllPoints()
+    pin.whTexture:SetSize(17 * k, 17 * k)
+    pin.whTexture:SetPoint("CENTER", pin, "CENTER")
+    pin.whTexture:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    local border = pin:CreateTexture(nil, "OVERLAY", nil, 1)
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    border:SetSize(53 * k, 53 * k)
+    border:SetPoint("TOPLEFT", pin, "TOPLEFT")
+    pin.whHighlight:ClearAllPoints()
+    pin.whHighlight:SetAllPoints(pin)
+    pin.whHighlight:SetTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+    pin.whRing, pin.whBackground = border, background
 end
 
 local function SetupPin(pin, iconKey)
@@ -315,13 +358,22 @@ local function SetupPin(pin, iconKey)
         pin.whHighlight = pin:CreateTexture(nil, "HIGHLIGHT")
         pin.whHighlight:SetAllPoints()
         pin.whHighlight:SetBlendMode("ADD")
+        if icon.round then
+            MakeBadge(pin, icon.size) -- 每种图钉有自己的对象池，徽章只需在创建时做一次
+        end
         if pin.SetScalingLimits then
             pin:SetScalingLimits(1, 1.0, 1.2)
         end
     end
+    -- 图钉层级：不指定时落在最底的默认层级，会被“已探索区域”的地图贴图盖住——探索过的地方看不到图标，
+    -- 但鼠标移上去仍有提示。与暴雪同类图标同层（层级名在这个客户端不存在时暴雪会回退到默认层级）。
+    if pin.UseFrameLevelType then
+        pin:UseFrameLevelType(icon.level)
+    end
     pin:SetSize(icon.size, icon.size)
-    for _, texture in ipairs({ pin.whTexture, pin.whHighlight }) do
-        if HasAtlas(icon.atlas) then
+    -- 徽章的高亮是固定的小地图按钮高亮，只换中间的图标
+    for _, texture in ipairs(icon.round and { pin.whTexture } or { pin.whTexture, pin.whHighlight }) do
+        if icon.atlas and HasAtlas(icon.atlas) then
             texture:SetAtlas(icon.atlas)
         else
             texture:SetTexture(icon.texture)
@@ -344,6 +396,9 @@ local function SetPinBehavior(pin, lines, onClick)
     pin.OnMouseLeave = function()
         GameTooltip_Hide()
     end
+    -- 地图框架在创建图钉时就把当时的 OnMouseEnter / OnMouseLeave 绑成脚本，换了函数要重新绑定
+    pin:SetScript("OnEnter", pin.OnMouseEnter)
+    pin:SetScript("OnLeave", pin.OnMouseLeave)
     pin.OnMouseClickAction = function(self, button)
         if button == "LeftButton" and self.whClick then
             self.whClick()
@@ -384,6 +439,25 @@ end
 
 local dungeonProvider
 
+local function AddDungeonPin(map, index, px, py)
+    local dungeon = ns.Data.dungeons[index]
+    local pin = map:AcquirePin(DUNGEON_PIN)
+    SetupPin(pin, dungeon.kind == "raid" and "raid" or "dungeon")
+    local levels = dungeon.levels
+    local color = levels and ns.LevelColor(levels[1], levels[2]) or "ffffffff"
+    SetPinBehavior(pin, {
+        ns.Name(dungeon.name) or "?",
+        levels and ("|c%s%s %s|r"):format(color, L["Level"], ns.LevelRange(levels)) or nil,
+        L["Click to open it in WoW Handbook."],
+    }, function()
+        local module = ns.modules.Dungeons
+        if module and ns:GetModuleSettings(module).enabled ~= false then
+            module:Select(index, "quests")
+        end
+    end)
+    pin:SetPosition(px, py)
+end
+
 local function CreateDungeonProvider()
     dungeonProvider = CreateFromMixins(MapCanvasDataProviderMixin)
     function dungeonProvider:RemoveAllData()
@@ -396,26 +470,20 @@ local function CreateDungeonProvider()
         if not (mapID and Settings().dungeonPins) then
             return
         end
+        -- 先画客户端给出的这张地图上的入口；客户端没给的副本再用插件数据的坐标（大陆图经世界坐标换算）
+        local drawn = {}
+        for _, spot in ipairs(ns.ClientDungeonEntrances(mapID)) do
+            if not drawn[spot.index] and DungeonVisible(ns.Data.dungeons[spot.index]) then
+                drawn[spot.index] = true
+                AddDungeonPin(map, spot.index, spot.x, spot.y)
+            end
+        end
         for index, dungeon in ipairs(ns.Data.dungeons or {}) do
             local entrance = dungeon.entrance
-            if entrance and entrance.x and DungeonVisible(dungeon) then
+            if not drawn[index] and entrance and entrance.x and DungeonVisible(dungeon) then
                 local px, py = ToMapPosition(entrance.map, entrance.x, entrance.y, mapID)
                 if px then
-                    local pin = map:AcquirePin(DUNGEON_PIN)
-                    SetupPin(pin, dungeon.kind == "raid" and "raid" or "dungeon")
-                    local levels = dungeon.levels
-                    local color = levels and ns.LevelColor(levels[1], levels[2]) or "ffffffff"
-                    SetPinBehavior(pin, {
-                        ns.Name(dungeon.name) or "?",
-                        levels and ("|c%s%s %s|r"):format(color, L["Level"], ns.LevelRange(levels)) or nil,
-                        L["Click to open it in WoW Handbook."],
-                    }, function()
-                        local module = ns.modules.Dungeons
-                        if module and ns:GetModuleSettings(module).enabled ~= false then
-                            module:Select(index, "quests")
-                        end
-                    end)
-                    pin:SetPosition(px, py)
+                    AddDungeonPin(map, index, px, py)
                 end
             end
         end
@@ -424,8 +492,8 @@ local function CreateDungeonProvider()
 end
 
 --------------------------------------------------------------------------------
--- 灵魂医者：显示时机可设为死亡时（默认）、始终或不显示。先用游戏给的墓地列表
--- （C_DeathInfo.GetGraveyardsForMap），游戏不给时用插件自带的位置（Data/Graveyards.lua）。
+-- 灵魂医者：显示时机可设为死亡时（默认）、始终或不显示。游戏给的墓地列表（C_DeathInfo.GetGraveyardsForMap）
+-- 与插件自带的位置（Data/Graveyards.lua）合并，同一处只画一个。
 --------------------------------------------------------------------------------
 
 local function SpiritHealersWanted()
@@ -438,7 +506,9 @@ local function SpiritHealersWanted()
     return false
 end
 
--- { {x, y, name} }，坐标 0–100
+-- { {x, y, name} }，坐标 0–100。游戏给出的墓地在前；插件数据里游戏没给的点（相距 SAME_SPOT 格以内算同一个）补在后面。
+-- 原来游戏一给列表就整份丢掉插件数据，游戏列表不全时（如湿地中部）那里就没有图钉。
+local SAME_SPOT = 3
 local function GraveyardsForMap(mapID)
     local spots = {}
     local fromGame = C_DeathInfo and C_DeathInfo.GetGraveyardsForMap and C_DeathInfo.GetGraveyardsForMap(mapID)
@@ -448,8 +518,15 @@ local function GraveyardsForMap(mapID)
             tinsert(spots, { x * 100, y * 100, graveyard.name })
         end
     end
-    if #spots == 0 then
-        for _, point in ipairs(ns.Data.graveyards and ns.Data.graveyards[mapID] or {}) do
+    for _, point in ipairs(ns.Data.graveyards and ns.Data.graveyards[mapID] or {}) do
+        local known = false
+        for _, spot in ipairs(spots) do
+            if math.abs(spot[1] - point[1]) <= SAME_SPOT and math.abs(spot[2] - point[2]) <= SAME_SPOT then
+                known = true
+                break
+            end
+        end
+        if not known then
             tinsert(spots, { point[1], point[2] })
         end
     end

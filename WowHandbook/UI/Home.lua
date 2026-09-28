@@ -6,17 +6,15 @@ local Theme, UI = ns.Theme, ns.UI
 -- · 顶部一行：职业、等级与经验进度
 -- · 第一行“现在去哪”：适合练级的区域、适合你等级的副本（带进本前可先接的任务数）
 -- · 第二行“回城要做”：可以训练的技能；副本任务（日志里有副本任务时列出，可交的在前；没有时列出进本前先接）
--- · 接下来几级：按等级分栏的新技能与新开放的副本
--- · 底部网站区：推荐副本在网站上的完整攻略（条目级复制链接，见 docs/05-site-link-policy.md）
+-- · 底部网站区：推荐副本在网站上的完整攻略（条目级复制链接）
 -- 数据来自各功能模块的 Summary() 与区域数据；模块被关闭时对应卡片提示去设置里打开。
 local MainFrame = ns.MainFrame
 
 local PAD = 28
-local CARD_WIDTH, CARD_HEIGHT, GAP = 347, 158, 12
+local CARD_WIDTH, CARD_HEIGHT, GAP = 347, 204, 12
 local CARDS_TOP = -50
-local LINE_HEIGHT, MAX_LINES = 22, 4
+local LINE_HEIGHT, MAX_LINES = 22, 6
 local LEVELS_AHEAD = 4
-local TIMELINE_COLUMNS = 4
 
 local page
 local Refresh
@@ -280,6 +278,17 @@ local function RecommendedZones(count)
     for index = 1, math.min(count, #scored) do
         tinsert(result, scored[index])
     end
+    -- 挑出最合适的几个后按等级从低到高列出
+    table.sort(result, function(a, b)
+        local la, lb = a.zone.levels, b.zone.levels
+        if la[1] ~= lb[1] then
+            return la[1] < lb[1]
+        end
+        if la[2] ~= lb[2] then
+            return la[2] < lb[2]
+        end
+        return a.id < b.id
+    end)
     return result
 end
 
@@ -289,10 +298,11 @@ local function FillZones(card)
         local zone, levels = item.zone, item.zone.levels
         local range = ("|c%s%s|r"):format(ns.LevelColor(levels[1], levels[2]), ns.LevelRange(levels))
         local territory = TERRITORY[zone.faction or ""]
+        local continent = ns.ContinentName(item.id)
         tinsert(lines, {
             text = ns.Name(zone.name) or "?",
-            note = range,
-            tooltip = { ns.Name(zone.name) or "?", (L["Level %s"]):format(ns.LevelRange(levels)),
+            note = continent and ("|cff8a8374%s|r  %s"):format(continent, range) or range,
+            tooltip = { ns.Name(zone.name) or "?", continent, (L["Level %s"]):format(ns.LevelRange(levels)),
                 territory and L[territory] or nil, L["Click to open it on the world map."] },
             onClick = function()
                 ns.Waypoints:OpenMap(item.id)
@@ -450,36 +460,6 @@ local function RefreshStatus()
     page.xpText:SetText(text)
 end
 
--- 接下来几级：每个有新内容的等级一栏，栏内先列新技能，再列新开放的副本
-local function RefreshUpcoming(spells, dungeons)
-    local byLevel, levels = {}, {}
-    local function Add(level, text)
-        if not byLevel[level] then
-            byLevel[level] = {}
-            tinsert(levels, level)
-        end
-        tinsert(byLevel[level], text)
-    end
-    for level, names in pairs(spells and spells.upcoming or {}) do
-        Add(level, table.concat(names, ", "))
-    end
-    for level, names in pairs(dungeons and dungeons.upcoming or {}) do
-        Add(level, ("|cffe0b458%s|r"):format((L["%s opens"]):format(table.concat(names, ", "))))
-    end
-    table.sort(levels)
-    for index, column in ipairs(page.timeline) do
-        local level = levels[index]
-        if level then
-            column.heading:SetText((L["Level %d"]):format(level))
-            column.body:SetText(table.concat(byLevel[level], "\n"))
-            column:Show()
-        else
-            column:Hide()
-        end
-    end
-    page.timelineEmpty:SetShown(#levels == 0)
-end
-
 local function RefreshSite(dungeons)
     local first = dungeons and dungeons.recommended[1]
     local dungeon = first and ns.Data.dungeons[first.index]
@@ -499,7 +479,7 @@ local function RefreshSite(dungeons)
 end
 
 function Refresh()
-    if not (page and page:IsShown()) then
+    if not (page and page:IsVisible()) then
         return
     end
     local spellbook, dungeonGuide = EnabledModule("Spellbook"), EnabledModule("Dungeons")
@@ -510,7 +490,6 @@ function Refresh()
     FillDungeons(page.cards.dungeons, dungeons)
     FillSpells(page.cards.spells, spells)
     FillQuests(page.cards.quests, dungeons)
-    RefreshUpcoming(spells, dungeons)
     RefreshSite(dungeons)
 end
 
@@ -537,34 +516,6 @@ local function CreateStatus(p)
     p.xpBar = bar
 end
 
-local function CreateTimeline(p, top)
-    local title = UI:Text(p, "Heading", L["Coming up"])
-    title:SetPoint("TOPLEFT", PAD, top)
-    local width = (762 - PAD * 2 - GAP * (TIMELINE_COLUMNS - 1)) / TIMELINE_COLUMNS
-    p.timeline = {}
-    for index = 1, TIMELINE_COLUMNS do
-        local column = CreateFrame("Frame", nil, p)
-        column:SetSize(width, 60)
-        column:SetPoint("TOPLEFT", PAD + (index - 1) * (width + GAP), top - 22)
-        local accent = column:CreateTexture(nil, "ARTWORK")
-        accent:SetPoint("TOPLEFT")
-        accent:SetPoint("BOTTOMLEFT")
-        accent:SetWidth(2)
-        accent:SetColorTexture(unpack(Theme.colors.lineSoft))
-        column.heading = UI:Text(column, "Accent")
-        column.heading:SetPoint("TOPLEFT", 10, 0)
-        column.body = UI:Text(column, "Small")
-        column.body:SetPoint("TOPLEFT", column.heading, "BOTTOMLEFT", 0, -4)
-        column.body:SetWidth(width - 14)
-        column.body:SetJustifyH("LEFT")
-        column.body:SetJustifyV("TOP")
-        column.body:SetMaxLines(3)
-        p.timeline[index] = column
-    end
-    p.timelineEmpty = UI:Text(p, "Muted", L["Nothing new in the next few levels."])
-    p.timelineEmpty:SetPoint("TOPLEFT", PAD, top - 24)
-end
-
 local function CreateHomePage(parent)
     local p = CreateFrame("Frame", nil, parent)
     page = p
@@ -584,9 +535,7 @@ local function CreateHomePage(parent)
         p.cards[key]:SetPoint("TOPLEFT", PAD + column * (CARD_WIDTH + GAP), CARDS_TOP - row * (CARD_HEIGHT + GAP))
     end
 
-    CreateTimeline(p, CARDS_TOP - 2 * (CARD_HEIGHT + GAP) - 2)
-
-    -- 网站区（链接规范见 docs/05-site-link-policy.md）
+    -- 网站区
     local site = UI:Panel(p, "raised", "lineSoft")
     site:SetPoint("BOTTOMLEFT", PAD, 16)
     site:SetPoint("BOTTOMRIGHT", -PAD, 16)
@@ -604,7 +553,7 @@ local function CreateHomePage(parent)
     -- 页面打开期间，任务、经验、等级、技能变化时刷新（节流 0.5 秒）
     local pending = false
     local function OnChange()
-        if pending or not p:IsShown() then
+        if pending or not p:IsVisible() then
             return
         end
         pending = true

@@ -100,6 +100,17 @@ check("no collected-data tab without the collector", not ns.MainFrame:HasTab("co
 WowHandbookAPI.RegisterTab({ id = "extra", title = "Extra", create = function() end })
 check("external tab registered", ns.MainFrame:HasTab("extra"))
 
+-- 事件：一个处理函数出错不影响同一事件的其他处理函数，同一条错误只报告一次（R09）
+local reported, secondRan = {}, 0
+geterrorhandler = function() return function(message) table.insert(reported, message) end end
+ns:RegisterEvent("TEST_EVENT", function() error("boom") end)
+ns:RegisterEvent("TEST_EVENT", function() secondRan = secondRan + 1 end)
+fire("TEST_EVENT")
+fire("TEST_EVENT")
+check("failing handler does not stop the next one", secondRan == 2)
+check("handler error reported once with the event name", #reported == 1 and reported[1]:find("TEST_EVENT", 1, true) ~= nil)
+geterrorhandler = nil
+
 -- 斜杠命令
 SlashCmdList.WOWHANDBOOK("bogus")
 check("unknown command prints help", #printed >= 2)

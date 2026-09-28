@@ -29,6 +29,9 @@ local function AddTooltip(tooltip, data)
         return
     end
     local itemID = data and data.id
+    if ns.IsSecret(itemID) then
+        return
+    end
     if not itemID and tooltip.GetItem then
         local _, link = tooltip:GetItem()
         itemID = ItemID(link)

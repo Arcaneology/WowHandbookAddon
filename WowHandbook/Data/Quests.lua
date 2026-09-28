@@ -1,5 +1,4 @@
--- 自动生成，请勿手工编辑。生成脚本：tools/export_site_data.py
--- 来源：wowhandbook src/data/generated（客户端 1.60.1.69913）
+-- 自动生成的数据文件，请勿手工编辑。
 local ADDON_NAME, ns = ...
 ns.Data = ns.Data or {}
 ns.Data.quests = {
@@ -134,7 +133,6 @@ ns.Data.quests = {
             map = 1442,
             x = 47.2,
             y = 64.2,
-            unverified = true,
         },
         finish = {
             kind = "npc",
@@ -587,7 +585,6 @@ ns.Data.quests = {
             map = 719,
             x = 20.1,
             y = 52.3,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -668,7 +665,6 @@ ns.Data.quests = {
             map = 719,
             x = 20.1,
             y = 52.3,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -822,6 +818,7 @@ ns.Data.quests = {
                 zhCN = "弗兰克罗恩·铸铁",
             },
         },
+        after = { 3802 },
         summary = {
             enUS = "Speak with Franclorn Forgewright if you are interested in obtaining a key to the city major.",
             zhCN = "如果你想要得到进入这座城市主城区的钥匙，就去和弗兰克罗恩·铸铁谈一谈。",
@@ -845,7 +842,6 @@ ns.Data.quests = {
             map = 1415,
             x = 48.6,
             y = 64.2,
-            unverified = true,
         },
         finish = {
             kind = "object",
@@ -855,6 +851,7 @@ ns.Data.quests = {
                 zhCN = "弗兰克罗恩·铸铁的雕像",
             },
         },
+        before = { 3801 },
         summary = {
             enUS = "Slay Fineous Darkvire and recover the great hammer, Ironfel. Take Ironfel to the Shrine of Thaurissan and place it on the statue of...",
             zhCN = "杀掉弗诺斯·达克维尔并拿回战锤铁胆。把铁胆之锤拿到索瑞森神殿去，将其放在弗兰克罗恩·铸铁的雕像上。",
@@ -862,7 +859,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5100,
             money = 23000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11000,
                 },
@@ -1022,7 +1019,7 @@ ns.Data.quests = {
         rewards = {
             xp = 2650,
             money = 6000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11865,
                 },
@@ -1101,6 +1098,8 @@ ns.Data.quests = {
             x = 95.09,
             y = 31.56,
         },
+        before = { 3481 },
+        after = { 4024 },
         summary = {
             enUS = "Show Cyrus Therepentous the Black Dragonflight Molt you received from Kalaran Windblade.",
             zhCN = "向塞勒斯·萨雷芬图斯展示你从卡拉然·温布雷那里得到的黑龙皮。",
@@ -1136,6 +1135,7 @@ ns.Data.quests = {
             x = 95.09,
             y = 31.56,
         },
+        after = { 4024 },
         summary = {
             enUS = "Show Cyrus Therepentous proof of your worth. You have a feeling that Cyrus already knows that you are unworthy.",
             zhCN = "向塞勒斯·萨雷芬图斯证明你的价值。 你感觉到塞勒斯似乎对你不屑一顾。",
@@ -1172,7 +1172,7 @@ ns.Data.quests = {
             x = 85.82,
             y = 68.95,
         },
-        after = { 4241 },
+        after = { 4241, 4183 },
         summary = {
             enUS = "Slay 15 Black Broodlings, 10 Black Dragonspawn, 4 Black Wyrmkin and 1 Black Drake. Return to Helendis Riverhorn when the task is complete.",
             zhCN = "杀掉15条黑色小龙、10条黑色龙人和1条黑色幼龙。当你完成任务之后就向赫林迪斯·河角回报。",
@@ -1293,7 +1293,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5450,
             money = 24500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12038,
                 },
@@ -1332,7 +1332,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5450,
             money = 8000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11962,
                 },
@@ -1373,7 +1373,7 @@ ns.Data.quests = {
             x = 3.02,
             y = 47.81,
         },
-        after = { 4063 },
+        after = { 4062, 4063 },
         summary = {
             enUS = "Venture to the Burning Steppes and recover 10 Fractured Elemental Shards for Hierophant Theodora Mulvadania. You recall Theodora...",
             zhCN = "到燃烧平原去为塞朵拉·穆瓦丹尼收集10块断裂的元素碎片。 塞朵拉曾经说过，那里的机械傀儡和元素生物是这种碎片的主要来源。",
@@ -1410,6 +1410,8 @@ ns.Data.quests = {
             x = 25.95,
             y = 44.87,
         },
+        before = { 4061 },
+        after = { 4063 },
         summary = {
             enUS = "Take the Elemental Shard Sample to Lotwil Veriatus. You recall Theodora saying that Lotwil was stationed in a camp to the east.",
             zhCN = "将元素碎片样本交给鲁特维尔·沃拉图斯。 塞朵拉说鲁特维尔就在东边的一处营地里。",
@@ -1446,6 +1448,8 @@ ns.Data.quests = {
             x = 38.37,
             y = 55.31,
         },
+        before = { 3702 },
+        after = { 4341 },
         summary = {
             enUS = "Venture to the Ruins of Thaurissan in the Burning Steppes and recover information from the Thaurissan Relics. Return...",
             zhCN = "到燃烧平原的索瑞森废墟中去，从索瑞森遗物上搜集信息。当你收集到足够的信息之后，就回到皇家历史学家阿克瑟努斯那里。",
@@ -1482,7 +1486,7 @@ ns.Data.quests = {
             x = 38.37,
             y = 55.31,
         },
-        after = { 4341, 4361, 4362 },
+        after = { 3701, 4341, 4361, 4362 },
         summary = {
             enUS = "Listen to Royal Historian Archesonus recant the history of Thaurissan.",
             zhCN = "听皇家历史学家阿克瑟努斯讲述索瑞森的历史。",
@@ -1519,7 +1523,8 @@ ns.Data.quests = {
             x = 24.9,
             y = 44.3,
         },
-        after = { 4241 },
+        before = { 4182 },
+        after = { 4241, 4184 },
         summary = {
             enUS = "Travel to Lakeshire and deliver Helendis Riverhorn's Letter to Magistrate Solomon.",
             zhCN = "把赫林迪斯·河角的信交给湖畔镇的所罗门镇长。",
@@ -1556,7 +1561,8 @@ ns.Data.quests = {
             x = 79.6,
             y = 38.3,
         },
-        after = { 4241 },
+        before = { 4183 },
+        after = { 4241, 4185 },
         summary = {
             enUS = "Travel to Stormwind and deliver Solomon's Plea to Highlord Bolvar Fordragon. Bolvar resides in Stormwind Keep.",
             zhCN = "到暴风城去把所罗门的求援信交给伯瓦尔·弗塔根公爵。 伯瓦尔在暴风要塞里。",
@@ -1593,7 +1599,8 @@ ns.Data.quests = {
             x = 79.6,
             y = 38.3,
         },
-        after = { 4241 },
+        before = { 4184 },
+        after = { 4241, 4186 },
         summary = {
             enUS = "Speak with Highlord Bolvar Fordragon after speaking with Lady Katrana Prestor.",
             zhCN = "与女伯爵卡特拉娜·普瑞斯托谈话，然后再与伯瓦尔·弗塔根公爵谈话。",
@@ -1630,6 +1637,8 @@ ns.Data.quests = {
             x = 24.9,
             y = 44.3,
         },
+        before = { 4185 },
+        after = { 4223 },
         summary = {
             enUS = "Take Bolvar's Decree to Magistrate Solomon in Lakeshire.",
             zhCN = "把伯瓦尔的命令交给湖畔镇的所罗门镇长。",
@@ -1666,7 +1675,8 @@ ns.Data.quests = {
             x = 84.74,
             y = 69.02,
         },
-        after = { 4241 },
+        before = { 4186 },
+        after = { 4241, 4224 },
         summary = {
             enUS = "Speak with Marshal Maxwell in the Burning Steppes.",
             zhCN = "和燃烧平原的麦克斯韦尔元帅谈一谈。",
@@ -1703,6 +1713,7 @@ ns.Data.quests = {
             x = 84.74,
             y = 69.02,
         },
+        before = { 4223 },
         after = { 4241 },
         summary = {
             enUS = "Speak with Ragged John to learn of Marshal Windsor's fate and return to Marshal Maxwell when you have completed this task. You recall...",
@@ -1736,7 +1747,7 @@ ns.Data.quests = {
             },
         },
         before = { 3906, 3981 },
-        after = { 4002, 4003, 4004 },
+        after = { 4002, 4003, 4004, 4001 },
         summary = {
             enUS = "Defend Gor'shak.",
             zhCN = "保护哥沙克。",
@@ -1771,7 +1782,7 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
-        before = { 3906, 3981 },
+        before = { 3906, 3981, 3982 },
         after = { 4002, 4003, 4004 },
         summary = {
             enUS = "Speak with Kharan Mighthammer and gather information about Princess Moira Bronzebeard's kidnapping. Take that information to Thrall in...",
@@ -1817,7 +1828,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7050,
             money = 16500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11964,
                 },
@@ -1869,7 +1880,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5650,
             money = 8500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11964,
                 },
@@ -2037,7 +2048,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7300,
             money = 25500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12113,
                 },
@@ -2092,7 +2103,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5800,
             money = 8500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12113,
                 },
@@ -2146,7 +2157,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5800,
             money = 8500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11883,
                 },
@@ -2183,7 +2194,7 @@ ns.Data.quests = {
             x = 95.09,
             y = 31.56,
         },
-        before = { 3441, 3442, 3443, 3452, 3453, 3462, 3463, 3481 },
+        before = { 3441, 3442, 3443, 3452, 3453, 3462, 3463, 3481, 4022, 4023 },
         summary = {
             enUS = "Travel to Blackrock Depths and slay Bael'Gar. You only know that the giant resides inside Blackrock Depths. Remember to use the Altered...",
             zhCN = "到黑石深渊去杀掉贝尔加。 你只知道这个巨型怪物住在黑石深渊的最深处。记住你要使用特殊的黑龙皮从贝尔加的尸体上采集烈焰精华。 将你采集到的烈焰精华交给塞勒斯·萨雷芬图斯。",
@@ -2191,7 +2202,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6200,
             money = 26500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12066,
                 },
@@ -2280,7 +2291,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7750,
             money = 26500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12059,
                 },
@@ -2360,7 +2371,7 @@ ns.Data.quests = {
             x = 25.95,
             y = 44.87,
         },
-        before = { 4061 },
+        before = { 4061, 4062 },
         summary = {
             enUS = "Find and slay Golem Lord Argelmach. Return his head to Lotwil. You will also need to collect 10 Intact Elemental Cores from the...",
             zhCN = "找到并杀掉傀儡统帅阿格曼奇，将他的头交给鲁特维尔。你还需要从守卫着阿格曼奇的狂怒傀儡和战斗傀儡身上收集10块完整的元素核心。",
@@ -2368,7 +2379,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6200,
             money = 26500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12109,
                 },
@@ -2412,7 +2423,7 @@ ns.Data.quests = {
                 zhCN = "卡兰·巨锤",
             },
         },
-        before = { 3702 },
+        before = { 3702, 3701 },
         after = { 4361, 4362, 4363 },
         summary = {
             enUS = "Travel to Blackrock Depths and find Kharan Mighthammer. The King mentioned that Kharan was being held prisoner there - perhaps you should try...",
@@ -2580,7 +2591,6 @@ ns.Data.quests = {
             map = 1415,
             x = 48.4,
             y = 63.8,
-            unverified = true,
         },
         finish = {
             kind = "npc",
@@ -2626,6 +2636,7 @@ ns.Data.quests = {
             x = 79.28,
             y = 73.7,
         },
+        after = { 6821 },
         summary = {
             enUS = "Use the Aspect of Neptulon on poisoned elementals of Eastern Plaguelands. Bring 12 Discordant Bracers and the Aspect of Neptulon to Duke Hydraxis...",
             zhCN = "对东瘟疫之地的被感染的水元素使用海神之水。把12副不谐护腕和海神之水交给艾萨拉的海达克西斯公爵。",
@@ -2662,6 +2673,7 @@ ns.Data.quests = {
             x = 79.28,
             y = 73.7,
         },
+        after = { 6821 },
         summary = {
             enUS = "Kill 15 Dust Stormers and 15 Desert Rumblers and then return to Duke Hydraxis in Azshara.",
             zhCN = "杀死15个灰尘风暴和15个沙漠奔行者，然后回到艾萨拉的海达克西斯公爵那儿。",
@@ -2739,6 +2751,7 @@ ns.Data.quests = {
             x = 66.89,
             y = 24.03,
         },
+        before = { 3528 },
         after = { 4788 },
         summary = {
             enUS = "Bring the Third and Fourth Mosh'aru Tablets to Prospector Ironboot in Tanaris.",
@@ -2856,7 +2869,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6400,
             money = 9000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12529,
                 },
@@ -2901,7 +2914,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6400,
             money = 9000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12264,
                 },
@@ -3023,7 +3036,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6400,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15824,
                 },
@@ -3075,7 +3088,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6400,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15824,
                 },
@@ -3151,6 +3164,7 @@ ns.Data.quests = {
             x = 84.84,
             y = 69.12,
         },
+        before = { 4766 },
         after = { 4765 },
         summary = {
             enUS = "Bring Doomrigger's Clasp to Mayara Brightwing in the Burning Steppes.",
@@ -3191,6 +3205,7 @@ ns.Data.quests = {
             x = 79.28,
             y = 73.7,
         },
+        before = { 6804, 6805 },
         summary = {
             enUS = "Bring the Eye of the Emberseer to Duke Hydraxis in Azshara.",
             zhCN = "将艾博希尔之眼交给艾萨拉的海达克西斯公爵。",
@@ -3228,6 +3243,7 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
+        before = { 4941 },
         summary = {
             enUS = "Travel to Blackrock Spire and slay Warchief Rend Blackhand. Take his head and return to Orgrimmar.",
             zhCN = "去黑石塔杀死大酋长雷德·黑手，带着他的头颅返回奥格瑞玛。",
@@ -3235,7 +3251,7 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13966,
                 },
@@ -3319,6 +3335,7 @@ ns.Data.quests = {
             x = 84.74,
             y = 69.02,
         },
+        before = { 5089 },
         summary = {
             enUS = "Travel to Blackrock Spire and destroy General Drakkisath. Return to Marshal Maxwell when the job is done.",
             zhCN = "到黑石塔去杀掉达基萨斯将军，完成任务之后就回到麦克斯韦尔元帅那里复命。",
@@ -3326,7 +3343,7 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13966,
                 },
@@ -3416,7 +3433,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13958,
                 },
@@ -3453,8 +3470,8 @@ ns.Data.quests = {
                 zhCN = "雷明顿·瑞治维尔伯爵",
             },
             map = 1453,
-            x = 76.9,
-            y = 47.8,
+            x = 76.5,
+            y = 45.4,
         },
         finish = {
             kind = "npc",
@@ -3467,6 +3484,7 @@ ns.Data.quests = {
             x = 84.84,
             y = 69.12,
         },
+        after = { 4764 },
         summary = {
             enUS = "Speak with Mayara Brightwing in the Burning Steppes.",
             zhCN = "与燃烧平原的玛亚拉·布莱特文谈一谈。",
@@ -3498,6 +3516,7 @@ ns.Data.quests = {
                 zhCN = "维埃兰",
             },
         },
+        after = { 4743 },
         summary = {
             enUS = "Find the three gemstones of command: The Gemstone of Smolderthorn, Gemstone of Spirestone, and Gemstone of Bloodaxe. Return them, along...",
             zhCN = "找到三块命令宝石：燃棘宝钻、尖石宝钻和血斧宝钻。把它们和原始晋升印章一起交给维埃兰。 可能携带者三块宝石的将军是：燃棘氏族的指挥官沃恩、尖石氏族的欧莫克大王，以及血斧氏族的维姆萨拉克。",
@@ -3532,13 +3551,14 @@ ns.Data.quests = {
                 zhCN = "维埃兰",
             },
         },
+        before = { 4742 },
         summary = {
             enUS = "Travel to the Wyrmbog in Dustwallow Marsh. Find the ancient drake, Emberstrife and beat him without mercy until his will is broken. It...",
             zhCN = "到尘泥沼泽中的巨龙沼泽去。找到上古老龙埃博斯塔夫，对他发起无情的攻击，直到他的意志被摧毁。 此时，你必须尽快将未铸造的晋升印章放在这条龙面前，并使用龙力宝珠控制他的躯体，强迫他将黑龙的烈焰喷向未铸造的晋升印章！",
         },
         rewards = {
             xp = 9950,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12344,
                 },
@@ -3577,6 +3597,7 @@ ns.Data.quests = {
             x = 2.9,
             y = 47.76,
         },
+        before = { 4769 },
         summary = {
             enUS = "Bring the Darkstone Tablet to Shadow Mage Vivian Lagrave in Kargath.",
             zhCN = "将黑暗石板交给卡加斯的暗法师薇薇安·拉格雷。",
@@ -3584,7 +3605,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15861,
                 },
@@ -3632,7 +3653,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 8300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 12696,
                 },
@@ -3723,7 +3744,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13958,
                 },
@@ -3769,8 +3790,6 @@ ns.Data.quests = {
                 enUS = "Scout Riell",
                 zhCN = "哨兵瑞尔",
             },
-            x = 56.7,
-            y = 47.3,
         },
         before = { 65, 132, 135, 141, 142, 155 },
         summary = {
@@ -3884,18 +3903,21 @@ ns.Data.quests = {
             zhCN = "死亡矿井中的爆破",
         },
         level = 18,
-        min = 9,
+        min = 12,
         faction = "A",
         instances = { "deadmines" },
+        newInForeverChain = true,
         start = {
-            kind = "item",
-            id = 254553,
+            kind = "npc",
+            id = 253092,
             name = {
-                enUS = "Extra-Destructive Explosives",
-                zhCN = "强效炸药",
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
             },
+            map = 1436,
+            x = 52.5,
+            y = 53.0,
         },
-        inside = true,
         finish = {
             kind = "npc",
             name = {
@@ -3903,7 +3925,8 @@ ns.Data.quests = {
                 zhCN = "阿尔芭·皎月",
             },
         },
-        before = { 92752, 92742, 92744, 92745, 92747, 92748, 92749, 92750, 92751 },
+        before = { 92742, 92744, 92745, 92747, 92748, 92749, 92750, 92751, 92752 },
+        after = { 92819 },
         summary = {
             enUS = "Find the forge hidden in the Deadmines, and plant the Extra-Destructive Explosives nearby. Then, meet up with Alba Fairmoon at the Deadmines exit.",
             zhCN = "找到死亡矿井深处的熔炉，在附近安放强效炸药，然后在死亡矿井出口与阿尔芭·皎月会合。",
@@ -3956,7 +3979,8 @@ ns.Data.quests = {
             x = 56.33,
             y = 47.52,
         },
-        after = { 214, 166 },
+        before = { 65 },
+        after = { 214, 135, 166 },
         summary = {
             enUS = "Take Wiley's Note to Gryan Stoutmantle in Westfall.",
             zhCN = "将威利的便笺交给西部荒野的格里安·斯托曼。",
@@ -3996,7 +4020,8 @@ ns.Data.quests = {
             x = 78.4,
             y = 70.7,
         },
-        after = { 214, 166 },
+        before = { 132 },
+        after = { 214, 141, 166 },
         summary = {
             enUS = "Take Wiley's Note to Mathias Shaw in Stormwind.",
             zhCN = "将威利的便笺交给暴风城的马迪亚斯·肖尔。",
@@ -4036,7 +4061,8 @@ ns.Data.quests = {
             x = 56.33,
             y = 47.52,
         },
-        after = { 214, 166 },
+        before = { 135 },
+        after = { 214, 142, 166 },
         summary = {
             enUS = "Take Shaw's report to Gryan Stoutmantle in Westfall.",
             zhCN = "将肖尔的报告交给西部荒野的格里安·斯托曼。",
@@ -4076,7 +4102,8 @@ ns.Data.quests = {
             x = 56.33,
             y = 47.52,
         },
-        after = { 214, 166 },
+        before = { 141 },
+        after = { 214, 155, 166 },
         summary = {
             enUS = "Track down the Defias Messenger in Westfall and bring his message to Stoutmantle.",
             zhCN = "追捕西部荒野的迪菲亚信使，并将他身上携带着的信件交给斯托曼。",
@@ -4099,8 +4126,8 @@ ns.Data.quests = {
                 zhCN = "迪菲亚叛徒",
             },
             map = 1436,
-            x = 43.8,
-            y = 69.6,
+            x = 55.6,
+            y = 47.5,
         },
         finish = {
             kind = "npc",
@@ -4113,6 +4140,7 @@ ns.Data.quests = {
             x = 56.33,
             y = 47.52,
         },
+        before = { 142 },
         after = { 214, 166 },
         summary = {
             enUS = "Escort the Defias Traitor to the secret hideout of the Defias Brotherhood. Once the Defias Traitor shows you where VanCleef and his...",
@@ -4150,7 +4178,7 @@ ns.Data.quests = {
             x = 21.5,
             y = 45.3,
         },
-        after = { 214, 166 },
+        after = { 214, 132, 166 },
         summary = {
             enUS = "Gryan Stoutmantle wants you to talk to Wiley in Lakeshire.",
             zhCN = "格里安·斯托曼要求你去和湖畔镇的威利谈一谈。",
@@ -4331,8 +4359,6 @@ ns.Data.quests = {
                 enUS = "Gryan Stoutmantle",
                 zhCN = "格里安·斯托曼",
             },
-            x = 56.4,
-            y = 47.5,
         },
         before = { 65, 132, 135, 141, 142, 155 },
         summary = {
@@ -4462,7 +4488,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7550,
             money = 17000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18491,
                 },
@@ -4509,7 +4535,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7550,
             money = 17000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18491,
                 },
@@ -4554,7 +4580,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7750,
             money = 17500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18411,
                 },
@@ -4729,7 +4755,6 @@ ns.Data.quests = {
             map = 2557,
             x = 24.7,
             y = 31.7,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -4804,7 +4829,6 @@ ns.Data.quests = {
             map = 2557,
             x = 24.7,
             y = 31.7,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -4821,7 +4845,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18258,
                 },
@@ -4847,7 +4871,6 @@ ns.Data.quests = {
             map = 2557,
             x = 31.4,
             y = 76.8,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -4887,7 +4910,6 @@ ns.Data.quests = {
             map = 2557,
             x = 31.4,
             y = 76.8,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -4906,7 +4928,7 @@ ns.Data.quests = {
         rewards = {
             xp = 660,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18420,
                 },
@@ -4939,7 +4961,6 @@ ns.Data.quests = {
             map = 2557,
             x = 31.4,
             y = 76.8,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -4958,7 +4979,7 @@ ns.Data.quests = {
         rewards = {
             xp = 660,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18420,
                 },
@@ -4990,7 +5011,6 @@ ns.Data.quests = {
             map = 2557,
             x = 26.9,
             y = 28,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -5038,7 +5058,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18473,
                 },
@@ -5263,7 +5283,6 @@ ns.Data.quests = {
             map = 721,
             x = 71.5,
             y = 58.8,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -5338,7 +5357,7 @@ ns.Data.quests = {
         rewards = {
             xp = 3650,
             money = 2500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9605,
                 },
@@ -5365,8 +5384,8 @@ ns.Data.quests = {
                 zhCN = "科罗莫特·钢尺",
             },
             map = 1455,
-            x = 67.92,
-            y = 46.1,
+            x = 68.1,
+            y = 44.3,
         },
         finish = {
             kind = "npc",
@@ -5376,8 +5395,8 @@ ns.Data.quests = {
                 zhCN = "科罗莫特·钢尺",
             },
             map = 1455,
-            x = 67.92,
-            y = 46.1,
+            x = 68.1,
+            y = 44.3,
         },
         before = { 2925 },
         summary = {
@@ -5680,6 +5699,7 @@ ns.Data.quests = {
             x = 36.38,
             y = 3.61,
         },
+        before = { 2947 },
         summary = {
             enUS = "Bring the Brilliant Gold Ring, a Silver Bar, a Moss Agate, and 30 silver coins to Talvash del Kissel in Ironforge.",
             zhCN = "将闪亮的金戒指、1块银锭、1块绿玛瑙和30个银币交给铁炉堡的塔瓦斯德·基瑟尔。",
@@ -5761,6 +5781,7 @@ ns.Data.quests = {
             x = 75.99,
             y = 25.41,
         },
+        before = { 2949 },
         summary = {
             enUS = "Bring the Brilliant Gold Ring, a Silver Bar, a Moss Agate, and 30 silver coins to Nogg in Orgrimmar.",
             zhCN = "将闪亮的金戒指、1块银锭、1块绿玛瑙和30个银币交给奥格瑞玛的诺格。",
@@ -5803,7 +5824,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 2750,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9623,
                 },
@@ -5854,7 +5875,7 @@ ns.Data.quests = {
         rewards = {
             xp = 2750,
             money = 3500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9623,
                 },
@@ -5931,8 +5952,6 @@ ns.Data.quests = {
                 enUS = "Thom Filch",
                 zhCN = "托姆·菲尔奇",
             },
-            x = 32.4,
-            y = 44.8,
         },
         summary = {
             enUS = "Collect 8 Dwarven Heirlooms from the Hall of Thanes.",
@@ -5993,8 +6012,6 @@ ns.Data.quests = {
                 enUS = "Afadra Dunwall",
                 zhCN = "阿法德拉·邓沃尔",
             },
-            x = 33.2,
-            y = 47.6,
         },
         summary = {
             enUS = "Kill 15 Enraged Apparitions, 10 Tormented Souls and put the spirit of Anvilmar to rest.",
@@ -6194,7 +6211,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3450,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17772,
                 },
@@ -6241,7 +6258,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3450,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17772,
                 },
@@ -6287,7 +6304,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 5250,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17775,
                 },
@@ -6340,7 +6357,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 5250,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17768,
                 },
@@ -6390,7 +6407,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 5250,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17768,
                 },
@@ -6440,7 +6457,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5450,
             money = 14000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17774,
                 },
@@ -6520,7 +6537,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6100,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17705,
                 },
@@ -6570,7 +6587,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6100,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17705,
                 },
@@ -6651,7 +6668,7 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
-        after = { 5728 },
+        after = { 5727, 5728 },
         summary = {
             enUS = "Bring a Lieutenant's Insignia to Thrall in Orgrimmar.",
             zhCN = "将军官的徽章交给奥格瑞玛的萨尔。",
@@ -6688,6 +6705,8 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
+        before = { 5726 },
+        after = { 5728 },
         summary = {
             enUS = "Take the Lieutenant's Insignia to Neeru Fireblade and speak to him. Gauge if he believes you are a member of the Burning Blade and then...",
             zhCN = "将军官的徽章交给尼尔鲁·火刃并与他谈一谈，看看他是否相信你是火刃氏族中的一员，然后回到奥格瑞玛的萨尔那里。",
@@ -6724,6 +6743,8 @@ ns.Data.quests = {
             x = 49.47,
             y = 50.59,
         },
+        before = { 5728 },
+        after = { 5730 },
         summary = {
             enUS = "Speak to Neeru Fireblade in Orgrimmar.",
             zhCN = "与奥格瑞玛的尼尔鲁·火刃谈一谈。",
@@ -6813,8 +6834,8 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
-        before = { 5726 },
-        after = { 5730 },
+        before = { 5727, 5726 },
+        after = { 5730, 5729 },
         summary = {
             enUS = "Kill Bazzalan and Jergosh the Invoker before returning to Thrall in Orgrimmar.",
             zhCN = "杀死巴扎兰和祈求者耶戈什，然后回到奥格瑞玛的萨尔那里。",
@@ -6835,7 +6856,7 @@ ns.Data.quests = {
                     value = 100,
                 },
             },
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15443,
                     followUp = true,
@@ -6886,6 +6907,7 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
+        before = { 5729 },
         summary = {
             enUS = "Speak to Thrall in Orgrimmar and tell him what you've learned.",
             zhCN = "与奥格瑞玛的萨尔谈一谈，告诉他你了解到的东西。",
@@ -6910,7 +6932,6 @@ ns.Data.quests = {
             map = 2437,
             x = 58.6,
             y = 39.8,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -7164,7 +7185,6 @@ ns.Data.quests = {
             map = 722,
             x = 75.4,
             y = 8.7,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -7182,7 +7202,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 4250,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10710,
                 },
@@ -7207,7 +7227,6 @@ ns.Data.quests = {
             map = 722,
             x = 75.4,
             y = 8.7,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -7264,7 +7283,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 4300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10823,
                 },
@@ -7311,7 +7330,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 4300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10823,
                 },
@@ -7409,6 +7428,7 @@ ns.Data.quests = {
             x = 64.7,
             y = 37.3,
         },
+        before = { 1702 },
         summary = {
             enUS = "Gather the materials Furen Longbeard requires, and bring them to him in Stormwind.",
             zhCN = "收集必需的材料，将它们交给暴风城的弗伦·长须。",
@@ -7445,6 +7465,7 @@ ns.Data.quests = {
             x = 57.23,
             y = 30.34,
         },
+        before = { 1825 },
         summary = {
             enUS = "Bring to Thun'grim Firegaze 15 Smoky Iron Ingots, 10 Powdered Azurite, 10 Iron Bars and a Vial of Phlogiston.",
             zhCN = "为索恩格瑞姆收集15根烟雾铁锭、10份蓝铜粉、10块铁锭和1瓶燃素。",
@@ -7469,7 +7490,6 @@ ns.Data.quests = {
             map = 491,
             x = 37.8,
             y = 32.6,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -7489,7 +7509,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3050,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 6751,
                 },
@@ -7517,7 +7537,6 @@ ns.Data.quests = {
             map = 491,
             x = 37.5,
             y = 31.1,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -7640,7 +7659,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 4050,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 4197,
                 },
@@ -7726,7 +7745,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3350,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 4197,
                 },
@@ -7778,7 +7797,7 @@ ns.Data.quests = {
         rewards = {
             xp = 3500,
             money = 2000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17039,
                 },
@@ -7839,6 +7858,14 @@ ns.Data.quests = {
         min = 16,
         faction = "A",
         instances = { "ruins-of-lordaeron" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Captain Truman",
+                zhCN = "杜鲁门队长",
+            },
+        },
+        inside = true,
         finish = {
             kind = "npc",
             name = {
@@ -7914,7 +7941,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5300,
             money = 1300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 279864,
                 },
@@ -8015,8 +8042,8 @@ ns.Data.quests = {
                 zhCN = "马库斯·乔纳森将军",
             },
             map = 1453,
-            x = 63.97,
-            y = 75.32,
+            x = 69.0,
+            y = 82.8,
         },
         summary = {
             enUS = "Collect 10 Bloodied Insignias and take them to General Marcus Jonathan in Stormwind City.",
@@ -8067,6 +8094,8 @@ ns.Data.quests = {
                 zhCN = "黛娜·肯尼迪女士",
             },
             map = 1453,
+            x = 69.0,
+            y = 29.9,
         },
         summary = {
             enUS = "Return the Crest of Lordaeron to Lady Dena Kennedy in Stormwind City.",
@@ -8084,7 +8113,7 @@ ns.Data.quests = {
                     count = 1,
                 },
             },
-            referenceItems = {
+            extraItems = {
                 {
                     id = 279864,
                 },
@@ -8160,7 +8189,6 @@ ns.Data.quests = {
             map = 1458,
             x = 57.4,
             y = 88.8,
-            unverified = true,
         },
         finish = {
             kind = "npc",
@@ -8201,7 +8229,7 @@ ns.Data.quests = {
                     value = 150,
                 },
             },
-            referenceItems = {
+            extraItems = {
                 {
                     id = 279864,
                 },
@@ -8259,7 +8287,7 @@ ns.Data.quests = {
                     value = 150,
                 },
             },
-            referenceItems = {
+            extraItems = {
                 {
                     id = 279870,
                 },
@@ -8324,7 +8352,7 @@ ns.Data.quests = {
                     count = 1,
                 },
             },
-            referenceItems = {
+            extraItems = {
                 {
                     id = 279864,
                 },
@@ -8353,7 +8381,6 @@ ns.Data.quests = {
             map = 1420,
             x = 65.2,
             y = 60.2,
-            unverified = true,
         },
         finish = {
             kind = "npc",
@@ -8392,7 +8419,7 @@ ns.Data.quests = {
                     value = 150,
                 },
             },
-            referenceItems = {
+            extraItems = {
                 {
                     id = 279864,
                 },
@@ -8434,6 +8461,7 @@ ns.Data.quests = {
             x = 48.82,
             y = 69.28,
         },
+        before = { 1109 },
         summary = {
             enUS = "Master Apothecary Faranell in the Undercity wants 20 Hearts of Zeal.",
             zhCN = "幽暗城的大药剂师法拉尼尔需要20颗狂热之心。",
@@ -8462,7 +8490,6 @@ ns.Data.quests = {
             map = 796,
             x = 37.1,
             y = 21.5,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -8482,7 +8509,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 7750,
                 },
@@ -8527,7 +8554,7 @@ ns.Data.quests = {
             x = 57.8,
             y = 65.42,
         },
-        before = { 1149, 1150, 1151, 1152, 1154 },
+        before = { 1149, 1150, 1151, 1152, 1154, 1159 },
         after = { 1394 },
         summary = {
             enUS = "Find The Beginnings of the Undead Threat, and return it to Parqual Fintallas in Undercity.",
@@ -8575,7 +8602,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3550,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 7747,
                 },
@@ -8626,7 +8653,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3550,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 7746,
                 },
@@ -8665,7 +8692,7 @@ ns.Data.quests = {
             x = 66.52,
             y = 7.91,
         },
-        after = { 1053 },
+        after = { 1052, 1053 },
         summary = {
             enUS = "Destroy 30 Undead Ravagers, then return to Brother Anton at Nijel's Point.",
             zhCN = "杀掉30个亡灵劫掠者，然后向尼耶尔前哨站的安东修士复命。",
@@ -8703,6 +8730,8 @@ ns.Data.quests = {
             x = 51.47,
             y = 58.35,
         },
+        before = { 261 },
+        after = { 1053 },
         summary = {
             enUS = "Take Brother Anton's Letter of Commendation to Raleigh the Devout in Southshore.",
             zhCN = "将安东修士的表彰信带给南海镇的虔诚的莱雷恩。",
@@ -8740,14 +8769,14 @@ ns.Data.quests = {
             x = 51.47,
             y = 58.35,
         },
-        before = { 261 },
+        before = { 261, 1052 },
         summary = {
             enUS = "Kill High Inquisitor Whitemane, Scarlet Commander Mograine, Herod, the Scarlet Champion and Houndmaster Loksey and then report back to...",
             zhCN = "杀死大检察官怀特迈恩，血色十字军指挥官莫格莱尼，十字军的勇士赫洛德和驯犬者洛克希并向南海镇的莱雷恩复命。",
         },
         rewards = {
             xp = 4700,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 6829,
                 },
@@ -8839,7 +8868,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 5150,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 6802,
                 },
@@ -8972,7 +9001,7 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15853,
                 },
@@ -9059,7 +9088,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 8300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15805,
                 },
@@ -9140,6 +9169,7 @@ ns.Data.quests = {
             x = 42.66,
             y = 83.77,
         },
+        before = { 5803 },
         summary = {
             enUS = "Western Plaguelands Level 60. View quest details and related records.",
             zhCN = "完成骷髅钥匙的锻造，领取通灵学院钥匙。",
@@ -9176,6 +9206,7 @@ ns.Data.quests = {
             x = 83.13,
             y = 68.94,
         },
+        before = { 5804 },
         summary = {
             enUS = "Western Plaguelands Level 60. View quest details and related records.",
             zhCN = "完成骷髅钥匙的锻造，领取通灵学院钥匙。",
@@ -9218,7 +9249,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 9950,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13982,
                 },
@@ -9747,7 +9778,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 2750,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 3562,
                 },
@@ -9880,6 +9911,7 @@ ns.Data.quests = {
             x = 7.57,
             y = 43.7,
         },
+        before = { 5781 },
         after = { 5846 },
         summary = {
             enUS = "Travel to Northdale, in the northeastern region of the Eastern Plaguelands, and recover the Symbol of Lost Honor. Return to Tirion Fordring upon...",
@@ -9946,7 +9978,6 @@ ns.Data.quests = {
             map = 2017,
             x = 72.9,
             y = 61.7,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -9964,7 +9995,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 9950,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 17044,
                 },
@@ -10006,6 +10037,8 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
+        before = { 4903 },
+        after = { 4974 },
         summary = {
             enUS = "Speak with Eitrigg in Orgrimmar. When you have discussed matters with Eitrigg, seek council from Thrall. You recall having seen Eitrigg in...",
             zhCN = "和奥格瑞玛的伊崔格谈一谈。讨论完毕后，咨询萨尔的意见。 你回忆起曾在萨尔的大厅中见过伊崔格。",
@@ -10049,7 +10082,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13216,
                 },
@@ -10103,7 +10136,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13209,
                 },
@@ -10232,7 +10265,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 8300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13171,
                 },
@@ -10315,7 +10348,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 13315,
                 },
@@ -10399,7 +10432,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 7100,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 1490,
                 },
@@ -10436,6 +10469,7 @@ ns.Data.quests = {
             x = 66.99,
             y = 22.36,
         },
+        before = { 3527 },
         after = { 4788, 3528 },
         summary = {
             enUS = "Bring the Ancient Egg to Yeh'kinya in Tanaris.",
@@ -10480,7 +10514,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 5900,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 1490,
                 },
@@ -10558,7 +10592,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6100,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10773,
                 },
@@ -10634,6 +10668,7 @@ ns.Data.quests = {
             x = 45.54,
             y = 8.72,
         },
+        before = { 4147 },
         summary = {
             enUS = "Deliver the Unloaded Zapper and 5 samples of Atal'ai Haze to Larion in Marshal's Refuge.",
             zhCN = "收集5份阿塔莱之雾的样本，然后将它们送到马绍尔营地的拉瑞安那里。",
@@ -10678,7 +10713,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6550,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11123,
                 },
@@ -10727,7 +10762,7 @@ ns.Data.quests = {
         rewards = {
             xp = 7900,
             money = 24000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10749,
                 },
@@ -10772,7 +10807,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 2800,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10455,
                 },
@@ -10807,6 +10842,7 @@ ns.Data.quests = {
             x = 13.67,
             y = 71.72,
         },
+        before = { 3373 },
         summary = {
             enUS = "Bring the Oathstone of Ysera's Dragonflight and the Chained Essence of Eranikus to Itharius in the Swamp of Sorrows. It is there...",
             zhCN = "把伊瑟拉巨龙军团的誓言石和被禁锢的伊兰尼库斯精华交给悲伤沼泽的伊萨里奥斯。在那里你可以决定是否要帮助伊瑟拉的绿龙军团。",
@@ -10923,7 +10959,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9522,
                 },
@@ -10967,7 +11003,7 @@ ns.Data.quests = {
             x = 65.93,
             y = 65.62,
         },
-        after = { 704 },
+        after = { 704, 738 },
         summary = {
             enUS = "Speak with Prospector Ironband at Ironband's Excavation Site in Loch Modan.",
             zhCN = "和洛克莫丹铁环挖掘场的勘察员基恩萨·铁环谈一谈。",
@@ -11011,7 +11047,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 2850,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 4980,
                 },
@@ -11049,7 +11085,8 @@ ns.Data.quests = {
             x = 50.89,
             y = 62.4,
         },
-        after = { 704 },
+        before = { 707 },
+        after = { 704, 739 },
         summary = {
             enUS = "Find Agmond.",
             zhCN = "找到阿戈莫德。",
@@ -11164,7 +11201,8 @@ ns.Data.quests = {
             x = 53.42,
             y = 43.39,
         },
-        after = { 1139 },
+        before = { 722 },
+        after = { 724, 1139 },
         summary = {
             enUS = "Take Hammertoe's Amulet to Prospector Ryedol in the Badlands.",
             zhCN = "把铁趾的护符交给荒芜之地的勘察员雷杜恩。",
@@ -11201,6 +11239,7 @@ ns.Data.quests = {
             x = 77.54,
             y = 11.82,
         },
+        before = { 723 },
         after = { 1139 },
         summary = {
             enUS = "Take Hammertoe's Amulet to Historian Karnik in Ironforge.",
@@ -11244,7 +11283,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3150,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 4746,
                 },
@@ -11270,7 +11309,6 @@ ns.Data.quests = {
             map = 1337,
             x = 65.1,
             y = 94.4,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -11291,7 +11329,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 3900,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9626,
                 },
@@ -11555,6 +11593,7 @@ ns.Data.quests = {
             x = 65.93,
             y = 65.62,
         },
+        before = { 738 },
         after = { 704 },
         summary = {
             enUS = "Slay Agmond's killer, Murdaloc. Slay 12 Stonevault Bonesnappers. Report to Prospector Ironband in Loch Modan.",
@@ -11580,7 +11619,6 @@ ns.Data.quests = {
             map = 1337,
             x = 59,
             y = 63.6,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -11681,7 +11719,7 @@ ns.Data.quests = {
         rewards = {
             xp = 3450,
             money = 5500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9030,
                 },
@@ -11728,7 +11766,7 @@ ns.Data.quests = {
         rewards = {
             xp = 3450,
             money = 5500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9030,
                 },
@@ -11754,7 +11792,6 @@ ns.Data.quests = {
             map = 1337,
             x = 59,
             y = 63.6,
-            unverified = true,
         },
         inside = true,
         finish = {
@@ -11934,7 +11971,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 5600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 7673,
                 },
@@ -11980,7 +12017,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5850,
             money = 13000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 6723,
                 },
@@ -12016,6 +12053,8 @@ ns.Data.quests = {
             x = 69.93,
             y = 18.55,
         },
+        before = { 2278 },
+        after = { 2439 },
         summary = {
             enUS = "Take the miniature version of the Discs of Norgannon to the Explorers' League in Ironforge.",
             zhCN = "把迷你版的诺甘农圆盘带到铁炉堡的探险者协会去。",
@@ -12053,6 +12092,7 @@ ns.Data.quests = {
             x = 34.4,
             y = 46.87,
         },
+        before = { 2278 },
         after = { 2440, 2965, 2966, 2954 },
         summary = {
             enUS = "Take the miniature version of the Discs of Norgannon to the one of the sages in Thunder Bluff.",
@@ -12093,6 +12133,7 @@ ns.Data.quests = {
             x = 33.88,
             y = 59.15,
         },
+        before = { 2279 },
         summary = {
             enUS = "Take your reward voucher to Dinita Stonemantle in the Vault of Ironforge.",
             zhCN = "把你的报酬凭证交给铁炉堡银行的丁尼塔·石衣。",
@@ -12129,6 +12170,7 @@ ns.Data.quests = {
             x = 46.62,
             y = 33.17,
         },
+        before = { 2280 },
         summary = {
             enUS = "Take the reward voucher to Bena Winterhoof in Thunder Bluff.",
             zhCN = "把报酬凭证交给雷霆崖的本娜·冰蹄。",
@@ -12201,7 +12243,7 @@ ns.Data.quests = {
             x = 52.26,
             y = 31.93,
         },
-        after = { 914 },
+        after = { 877, 914 },
         summary = {
             enUS = "Report back to Tonga Runetotem with your findings.",
             zhCN = "向图加·符文图腾报告你的发现。",
@@ -12238,7 +12280,8 @@ ns.Data.quests = {
             x = 52.26,
             y = 31.93,
         },
-        after = { 914 },
+        before = { 877 },
+        after = { 1489, 914 },
         summary = {
             enUS = "Bring 8 Altered Snapjaw Shells to Tonga Runetotem at the Crossroads.",
             zhCN = "收集8块变异的钳嘴龟壳，把它们交给十字路口的图加。",
@@ -12271,7 +12314,8 @@ ns.Data.quests = {
                 zhCN = "大德鲁伊哈缪尔·符文图腾",
             },
         },
-        after = { 914 },
+        before = { 880 },
+        after = { 1490, 914 },
         summary = {
             enUS = "Speak with Hamuul Runetotem",
             zhCN = "和哈缪尔·符文图腾谈一谈。",
@@ -12320,6 +12364,7 @@ ns.Data.quests = {
             x = 75.65,
             y = 31.61,
         },
+        before = { 1489 },
         after = { 914 },
         summary = {
             enUS = "Speak with Nara Wildmane.",
@@ -12369,7 +12414,8 @@ ns.Data.quests = {
             x = 52.26,
             y = 31.93,
         },
-        after = { 914 },
+        before = { 870 },
+        after = { 880, 914 },
         summary = {
             enUS = "Return to Tonga at The Crossroads, after investigating the Stagnant Oasis.",
             zhCN = "调查死水绿洲，然后返回十字路口向图加·符文图腾报告。",
@@ -12791,6 +12837,7 @@ ns.Data.quests = {
             x = 78.62,
             y = 28.56,
         },
+        before = { 6981 },
         summary = {
             enUS = "Bring the Nightmare Shard to Hamuul Runetotem on Elder Rise.",
             zhCN = "把噩梦碎片交给长者高地的哈缪尔·符文图腾。",
@@ -12827,6 +12874,7 @@ ns.Data.quests = {
             x = 35.37,
             y = 8.4,
         },
+        before = { 6981 },
         summary = {
             enUS = "Bring the Nightmare Shard to Mathrengyl Bearwalker in Darnassus.",
             zhCN = "把噩梦碎片交给达纳苏斯的玛斯雷·驭熊者。",
@@ -12889,6 +12937,7 @@ ns.Data.quests = {
             x = 48.18,
             y = 32.78,
         },
+        after = { 3369, 3370 },
         summary = {
             enUS = "Travel to Ratchet to find someone that can tell you more about the glowing shard. Then, deliver the shard as you are directed.",
             zhCN = "寻找更多有关这块噩梦碎片的信息。",
@@ -12899,7 +12948,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 7700,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 10657,
                     followUp = true,
@@ -13066,7 +13115,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6050,
             money = 6500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9527,
                 },
@@ -13112,7 +13161,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9533,
                 },
@@ -13242,11 +13291,39 @@ ns.Data.quests = {
         rewards = {
             xp = 7100,
             money = 7500,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 11122,
                 },
             },
+        },
+    },
+    [1654] = {
+        name = {
+            enUS = "The Test of Righteousness",
+            zhCN = "正义试炼",
+        },
+        level = 22,
+        min = 20,
+        faction = "A",
+        instances = { "deadmines" },
+        relatedExternal = true,
+        classRestriction = "PALADIN",
+        start = {
+            kind = "npc",
+            id = 6181,
+            name = {
+                enUS = "Jordan Stilwell",
+                zhCN = "乔丹·斯迪威尔",
+            },
+            map = 1426,
+            x = 52.4,
+            y = 36.8,
+        },
+        before = { 1653 },
+        summary = {
+            enUS = "Paladin quest: collect the materials on Jordan's Weapon Notes, then return to Jordan Stilwell.",
+            zhCN = "圣骑士任务：按乔丹的武器材料单收集材料，完成后返回乔丹·斯迪威尔处。",
         },
     },
     [303] = {
@@ -13306,7 +13383,7 @@ ns.Data.quests = {
             },
             map = 1453,
             x = 57.7,
-            y = 47.9,
+            y = 47.8,
         },
         after = { 391 },
         chainOnly = true,
@@ -13347,7 +13424,7 @@ ns.Data.quests = {
             },
             map = 1453,
             x = 57.7,
-            y = 47.9,
+            y = 47.8,
         },
         chainOnly = true,
     },
@@ -13992,6 +14069,7 @@ ns.Data.quests = {
             zhCN = "修复项链",
         },
         level = 44,
+        min = 37,
         faction = "A",
         start = {
             kind = "object",
@@ -14001,6 +14079,7 @@ ns.Data.quests = {
                 zhCN = "塔瓦斯德的占卜之碗",
             },
         },
+        before = { 2201 },
         after = { 2361 },
         chainOnly = true,
     },
@@ -14031,6 +14110,7 @@ ns.Data.quests = {
             zhCN = "交付宝石",
         },
         level = 44,
+        min = 37,
         faction = "H",
         start = {
             kind = "npc",
@@ -14043,6 +14123,7 @@ ns.Data.quests = {
             x = 2.42,
             y = 46.06,
         },
+        after = { 2341 },
         chainOnly = true,
     },
     [2341] = {
@@ -14051,6 +14132,7 @@ ns.Data.quests = {
             zhCN = "项链任务的终结",
         },
         level = 44,
+        min = 40,
         faction = "H",
         start = {
             kind = "npc",
@@ -14063,6 +14145,7 @@ ns.Data.quests = {
             x = 59.49,
             y = 36.57,
         },
+        before = { 2340 },
         chainOnly = true,
     },
     [2500] = {
@@ -14414,6 +14497,7 @@ ns.Data.quests = {
             zhCN = "沉没的神庙",
         },
         level = 51,
+        min = 46,
         faction = "H",
         start = {
             kind = "npc",
@@ -14606,7 +14690,7 @@ ns.Data.quests = {
             x = 38.85,
             y = 38.99,
         },
-        after = { 4024 },
+        after = { 4022, 4024 },
         chainOnly = true,
     },
     [3512] = {
@@ -14675,6 +14759,7 @@ ns.Data.quests = {
             zhCN = "拯救公主？",
         },
         level = 60,
+        min = 48,
         faction = "H",
         start = {
             kind = "npc",
@@ -14684,6 +14769,7 @@ ns.Data.quests = {
                 zhCN = "铁炉堡公主茉艾拉·铜须",
             },
         },
+        before = { 4003 },
         chainOnly = true,
     },
     [4141] = {
@@ -14754,6 +14840,7 @@ ns.Data.quests = {
             zhCN = "被遗弃的希望",
         },
         level = 54,
+        min = 48,
         faction = "A",
         start = {
             kind = "npc",
@@ -14763,6 +14850,7 @@ ns.Data.quests = {
                 zhCN = "温德索尔元帅",
             },
         },
+        before = { 4241 },
         chainOnly = true,
     },
     [4264] = {
@@ -14771,6 +14859,7 @@ ns.Data.quests = {
             zhCN = "弄皱的便笺",
         },
         level = 58,
+        min = 50,
         faction = "A",
         start = {
             kind = "item",
@@ -14780,6 +14869,7 @@ ns.Data.quests = {
                 zhCN = "弄皱的便笺",
             },
         },
+        after = { 4282 },
         chainOnly = true,
     },
     [4282] = {
@@ -14788,6 +14878,7 @@ ns.Data.quests = {
             zhCN = "一丝希望",
         },
         level = 58,
+        min = 50,
         faction = "A",
         start = {
             kind = "npc",
@@ -14797,6 +14888,7 @@ ns.Data.quests = {
                 zhCN = "温德索尔元帅",
             },
         },
+        before = { 4264 },
         chainOnly = true,
     },
     [4322] = {
@@ -14805,6 +14897,7 @@ ns.Data.quests = {
             zhCN = "冲破牢笼！",
         },
         level = 58,
+        min = 50,
         faction = "A",
         start = {
             kind = "npc",
@@ -14823,6 +14916,7 @@ ns.Data.quests = {
             zhCN = "语出惊人的公主",
         },
         level = 59,
+        min = 50,
         faction = "A",
         start = {
             kind = "npc",
@@ -14832,6 +14926,7 @@ ns.Data.quests = {
                 zhCN = "铁炉堡公主茉艾拉·铜须",
             },
         },
+        before = { 4362 },
         chainOnly = true,
     },
     [4726] = {
@@ -14860,6 +14955,7 @@ ns.Data.quests = {
             zhCN = "冷冻龙蛋",
         },
         level = 60,
+        min = 57,
         start = {
             kind = "npc",
             id = 10267,
@@ -14871,7 +14967,8 @@ ns.Data.quests = {
             x = 65.24,
             y = 24.0,
         },
-        after = { 4771 },
+        before = { 4907 },
+        after = { 4771, 4735 },
         chainOnly = true,
     },
     [4735] = {
@@ -14880,6 +14977,7 @@ ns.Data.quests = {
             zhCN = "收集龙蛋",
         },
         level = 60,
+        min = 57,
         start = {
             kind = "npc",
             id = 10267,
@@ -14891,6 +14989,7 @@ ns.Data.quests = {
             x = 65.24,
             y = 24.0,
         },
+        before = { 4734 },
         after = { 4771 },
         chainOnly = true,
     },
@@ -14960,6 +15059,7 @@ ns.Data.quests = {
             zhCN = "比修的侦察报告",
         },
         level = 59,
+        min = 55,
         faction = "H",
         start = {
             kind = "npc",
@@ -14969,6 +15069,7 @@ ns.Data.quests = {
                 zhCN = "比修",
             },
         },
+        before = { 4982 },
         chainOnly = true,
     },
     [5122] = {
@@ -15179,7 +15280,7 @@ ns.Data.quests = {
             x = 70.57,
             y = 74.11,
         },
-        after = { 5466 },
+        after = { 5466, 5463 },
         chainOnly = true,
     },
     [5463] = {
@@ -15188,6 +15289,7 @@ ns.Data.quests = {
             zhCN = "米奈希尔的礼物",
         },
         level = 60,
+        min = 57,
         start = {
             kind = "npc",
             id = 11036,
@@ -15199,6 +15301,7 @@ ns.Data.quests = {
             x = 81.73,
             y = 57.83,
         },
+        before = { 5462 },
         after = { 5466 },
         chainOnly = true,
     },
@@ -15245,6 +15348,7 @@ ns.Data.quests = {
             zhCN = "卡斯迪诺夫的恐惧之袋",
         },
         level = 60,
+        min = 55,
         start = {
             kind = "npc",
             id = 11216,
@@ -15256,6 +15360,7 @@ ns.Data.quests = {
             x = 70.22,
             y = 73.71,
         },
+        before = { 5382 },
         after = { 5384, 5466 },
         chainOnly = true,
     },
@@ -15276,7 +15381,7 @@ ns.Data.quests = {
             x = 65.24,
             y = 24.0,
         },
-        after = { 4771 },
+        after = { 4771, 5531 },
         chainOnly = true,
     },
     [5531] = {
@@ -15285,6 +15390,7 @@ ns.Data.quests = {
             zhCN = "贝蒂娜·比格辛克",
         },
         level = 60,
+        min = 57,
         start = {
             kind = "npc",
             id = 11036,
@@ -15296,6 +15402,7 @@ ns.Data.quests = {
             x = 81.73,
             y = 57.83,
         },
+        before = { 5522 },
         after = { 4771 },
         chainOnly = true,
     },
@@ -15346,6 +15453,7 @@ ns.Data.quests = {
             zhCN = "塞雷布拉斯节杖",
         },
         level = 49,
+        min = 41,
         start = {
             kind = "npc",
             id = 13716,
@@ -15354,6 +15462,7 @@ ns.Data.quests = {
                 zhCN = "赎罪的塞雷布拉斯",
             },
         },
+        before = { 7044 },
         chainOnly = true,
     },
     [7492] = {
@@ -15412,8 +15521,8 @@ ns.Data.quests = {
                 zhCN = "斯巴克尔",
             },
             map = 1453,
-            x = 25.66,
-            y = 77.66,
+            x = 39.6,
+            y = 84.6,
         },
         after = { 7631 },
         chainOnly = true,
@@ -15515,7 +15624,7 @@ ns.Data.quests = {
             x = 35.93,
             y = 44.42,
         },
-        after = { 7631 },
+        after = { 7631, 7629 },
         chainOnly = true,
     },
     [7626] = {
@@ -15584,6 +15693,7 @@ ns.Data.quests = {
             zhCN = "瓶中的小鬼",
         },
         level = 60,
+        min = 60,
         start = {
             kind = "npc",
             id = 14437,
@@ -15595,6 +15705,7 @@ ns.Data.quests = {
             x = 12.44,
             y = 31.63,
         },
+        before = { 7625 },
         after = { 7631 },
         chainOnly = true,
     },
@@ -15683,6 +15794,10 @@ ns.Data.quests = {
             zhCN = "地下地图",
         },
         level = 15,
+        summary = {
+            enUS = "Kill Dark Iron Spies east of him for the Dark Iron Map, then bring it back to him to get the dungeon quest.",
+            zhCN = "到他东边不远处击杀黑铁间谍取得黑铁地图，交回给他后才会出现地下城任务。",
+        },
         start = {
             kind = "npc",
             id = 264936,
@@ -15697,6 +15812,266 @@ ns.Data.quests = {
         after = { 96393 },
         chainOnly = true,
     },
+    [92742] = {
+        name = {
+            enUS = "Testing the Wells",
+            zhCN = "Testing the Wells",
+        },
+        level = 12,
+        min = 12,
+        summary = {
+            enUS = "Collect well-water samples at the Jansen Stead and the Molsen Farm.",
+            zhCN = "到贾森农场和摩尔森农场的水井采集水样。",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 253092,
+            name = {
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
+            },
+            map = 1436,
+            x = 52.5,
+            y = 53.1,
+        },
+        after = { 92753, 92744 },
+        chainOnly = true,
+    },
+    [92744] = {
+        name = {
+            enUS = "Murloc Gills",
+            zhCN = "Murloc Gills",
+        },
+        level = 12,
+        min = 12,
+        summary = {
+            enUS = "Collect 7 Longshore Murloc Gills along the Westfall shoreline.",
+            zhCN = "沿西部荒野海岸收集 7 个长滩鱼人鳃。",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 253092,
+            name = {
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
+            },
+            map = 1436,
+            x = 52.5,
+            y = 53.1,
+        },
+        before = { 92742 },
+        after = { 92753, 92745 },
+        chainOnly = true,
+    },
+    [92745] = {
+        name = {
+            enUS = "The State of the Mines",
+            zhCN = "The State of the Mines",
+        },
+        level = 14,
+        min = 12,
+        summary = {
+            enUS = "Slay 4 Kobold Diggers in the Jangolode Mine and 6 Riverpaw Miners in the Gold Coast Quarry.",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 253092,
+            name = {
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
+            },
+            map = 1436,
+            x = 52.5,
+            y = 53.1,
+        },
+        before = { 92744 },
+        after = { 92753, 92747 },
+        chainOnly = true,
+    },
+    [92747] = {
+        name = {
+            enUS = "Moonbrook Espionage",
+            zhCN = "Moonbrook Espionage",
+        },
+        level = 15,
+        min = 12,
+        summary = {
+            enUS = "Collect 8 Suspicious Industrial Supplies from Moonbrook.",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 253092,
+            name = {
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
+            },
+            map = 1436,
+            x = 52.5,
+            y = 53.1,
+        },
+        before = { 92745 },
+        after = { 92753, 92748 },
+        chainOnly = true,
+    },
+    [92748] = {
+        name = {
+            enUS = "Explosive Consultation",
+            zhCN = "Explosive Consultation",
+        },
+        level = 16,
+        min = 12,
+        summary = {
+            enUS = "Travel to the Dwarven District in Stormwind and find an engineer who can help.",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 253092,
+            name = {
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
+            },
+            map = 1436,
+            x = 52.5,
+            y = 53.1,
+        },
+        before = { 92747 },
+        after = { 92753, 92749 },
+        chainOnly = true,
+    },
+    [92749] = {
+        name = {
+            enUS = "A Dynamite Plan",
+            zhCN = "A Dynamite Plan",
+        },
+        level = 16,
+        min = 12,
+        summary = {
+            enUS = "Obtain 10 Coarse Dynamite from crafting, trading, or the auction house, then return to Sprite Jumpsprocket in the Dwarven District of Stormwind.",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 11026,
+            name = {
+                enUS = "Sprite Jumpsprocket",
+                zhCN = "Sprite Jumpsprocket",
+            },
+            map = 1453,
+            x = 61.9,
+            y = 30.8,
+        },
+        before = { 92748 },
+        after = { 92753, 92750 },
+        chainOnly = true,
+    },
+    [92750] = {
+        name = {
+            enUS = "Detonation at a Distance",
+            zhCN = "Detonation at a Distance",
+        },
+        level = 16,
+        min = 12,
+        summary = {
+            enUS = "Talk to someone in Stormwind Intelligence about acquiring a remote detonator.",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 11026,
+            name = {
+                enUS = "Sprite Jumpsprocket",
+                zhCN = "Sprite Jumpsprocket",
+            },
+            map = 1453,
+            x = 61.9,
+            y = 30.8,
+        },
+        before = { 92749 },
+        after = { 92753, 92751 },
+        chainOnly = true,
+    },
+    [92751] = {
+        name = {
+            enUS = "Detonation at a Distance",
+            zhCN = "Detonation at a Distance",
+        },
+        level = 16,
+        min = 12,
+        summary = {
+            enUS = "Bring the Remote Detonator Kit to Sprite Jumpsprocket in the Dwarven District of Stormwind.",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 1325,
+            name = {
+                enUS = "Jasper Fel",
+                zhCN = "Jasper Fel",
+            },
+            map = 1453,
+            x = 80.2,
+            y = 70.1,
+        },
+        before = { 92750 },
+        after = { 92753, 92752 },
+        chainOnly = true,
+    },
+    [92752] = {
+        name = {
+            enUS = "Explosive Consultation",
+            zhCN = "Explosive Consultation",
+        },
+        level = 16,
+        min = 12,
+        summary = {
+            enUS = "Return to Alba Fairmoon.",
+            zhCN = "返回阿尔芭·皎月处。",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 11026,
+            name = {
+                enUS = "Sprite Jumpsprocket",
+                zhCN = "Sprite Jumpsprocket",
+            },
+            map = 1453,
+            x = 61.9,
+            y = 30.8,
+        },
+        before = { 92751 },
+        after = { 92753 },
+        chainOnly = true,
+    },
+    [92819] = {
+        name = {
+            enUS = "Destruction in Deadmines",
+            zhCN = "Destruction in Deadmines",
+        },
+        level = 18,
+        min = 12,
+        summary = {
+            enUS = "Use the detonator after planting the explosives in the Deadmines.",
+            zhCN = "在死亡矿井安放炸药后，使用引爆器。",
+        },
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 253279,
+            name = {
+                enUS = "Alba Fairmoon",
+                zhCN = "阿尔芭·皎月",
+            },
+        },
+        before = { 92753 },
+        chainOnly = true,
+        newInForeverChain = true,
+    },
     [153] = {
         level = 15,
         min = 9,
@@ -15706,7 +16081,7 @@ ns.Data.quests = {
             x = 56.6,
             y = 47.3,
         },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1106] = {
@@ -15718,7 +16093,7 @@ ns.Data.quests = {
             },
         },
         after = { 1108 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1108] = {
@@ -15731,7 +16106,7 @@ ns.Data.quests = {
         },
         before = { 1106 },
         after = { 1137 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1137] = {
@@ -15744,7 +16119,7 @@ ns.Data.quests = {
         },
         before = { 1108 },
         after = { 1190 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1159] = {
@@ -15756,7 +16131,8 @@ ns.Data.quests = {
             },
         },
         before = { 6627 },
-        unverified = true,
+        after = { 1160 },
+        extra = true,
         chainOnly = true,
     },
     [1190] = {
@@ -15769,7 +16145,7 @@ ns.Data.quests = {
         },
         before = { 1137 },
         after = { 1194 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1192] = {
@@ -15785,7 +16161,7 @@ ns.Data.quests = {
             y = 75.8,
         },
         before = { 1194 },
-        unverified = true,
+        extra = true,
         instances = { "uldaman" },
     },
     [1193] = {
@@ -15796,7 +16172,7 @@ ns.Data.quests = {
                 enUS = "A Broken Trap",
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "north" },
     },
@@ -15810,7 +16186,7 @@ ns.Data.quests = {
         },
         before = { 1190 },
         after = { 1192 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1318] = {
@@ -15818,7 +16194,7 @@ ns.Data.quests = {
         min = 56,
         rewards = {
             xp = 8300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18366,
                 },
@@ -15833,7 +16209,7 @@ ns.Data.quests = {
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -15847,7 +16223,7 @@ ns.Data.quests = {
         },
         before = { 1649 },
         after = { 1651 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1651] = {
@@ -15860,7 +16236,7 @@ ns.Data.quests = {
         },
         before = { 1650 },
         after = { 1652 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1652] = {
@@ -15873,7 +16249,7 @@ ns.Data.quests = {
         },
         before = { 1651 },
         after = { 1653 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1653] = {
@@ -15886,24 +16262,8 @@ ns.Data.quests = {
         },
         before = { 1652 },
         after = { 1654 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
-    },
-    [1654] = {
-        min = 20,
-        start = {
-            kind = "npc",
-            id = 6181,
-            name = {
-                enUS = "Jordan Stilwell",
-            },
-            map = 1426,
-            x = 52.4,
-            y = 36.8,
-        },
-        before = { 1653 },
-        unverified = true,
-        instances = { "deadmines" },
     },
     [1698] = {
         level = 20,
@@ -15914,7 +16274,7 @@ ns.Data.quests = {
             },
         },
         after = { 1699 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1699] = {
@@ -15927,7 +16287,7 @@ ns.Data.quests = {
         },
         before = { 1698 },
         after = { 1702 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1702] = {
@@ -15939,7 +16299,8 @@ ns.Data.quests = {
             },
         },
         before = { 1699 },
-        unverified = true,
+        after = { 1701 },
+        extra = true,
         chainOnly = true,
     },
     [1823] = {
@@ -15951,7 +16312,7 @@ ns.Data.quests = {
             },
         },
         after = { 1824 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1824] = {
@@ -15964,7 +16325,7 @@ ns.Data.quests = {
         },
         before = { 1823 },
         after = { 1825 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [1825] = {
@@ -15976,7 +16337,8 @@ ns.Data.quests = {
             },
         },
         before = { 1824 },
-        unverified = true,
+        after = { 1838 },
+        extra = true,
         chainOnly = true,
     },
     [2278] = {
@@ -15987,7 +16349,8 @@ ns.Data.quests = {
                 enUS = "The Discs of Norgannon",
             },
         },
-        unverified = true,
+        after = { 2279, 2280 },
+        extra = true,
         instances = { "uldaman" },
     },
     [2769] = {
@@ -15999,7 +16362,7 @@ ns.Data.quests = {
             },
         },
         after = { 2770 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [2861] = {
@@ -16011,7 +16374,7 @@ ns.Data.quests = {
             },
         },
         after = { 2846 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [2925] = {
@@ -16023,7 +16386,7 @@ ns.Data.quests = {
             },
         },
         after = { 2924 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [2931] = {
@@ -16035,7 +16398,7 @@ ns.Data.quests = {
             },
         },
         after = { 2930 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [2951] = {
@@ -16053,7 +16416,7 @@ ns.Data.quests = {
             xp = 2450,
             money = 300,
         },
-        unverified = true,
+        extra = true,
         instances = { "gnomeregan" },
     },
     [2952] = {
@@ -16069,13 +16432,13 @@ ns.Data.quests = {
         before = { 2951 },
         rewards = {
             xp = 2450,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 9363,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "gnomeregan" },
     },
     [3445] = {
@@ -16090,7 +16453,7 @@ ns.Data.quests = {
             x = 31.8,
             y = 45.4,
         },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [3454] = {
@@ -16102,7 +16465,7 @@ ns.Data.quests = {
             },
         },
         before = { 3453 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [4083] = {
@@ -16118,7 +16481,7 @@ ns.Data.quests = {
         rewards = {
             xp = 5650,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-depths" },
     },
     [4145] = {
@@ -16130,7 +16493,7 @@ ns.Data.quests = {
             },
         },
         after = { 4147 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [4147] = {
@@ -16142,7 +16505,8 @@ ns.Data.quests = {
             },
         },
         before = { 4145 },
-        unverified = true,
+        after = { 4146 },
+        extra = true,
         chainOnly = true,
     },
     [4765] = {
@@ -16163,7 +16527,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
             money = 27000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15861,
                 },
@@ -16172,7 +16536,7 @@ ns.Data.quests = {
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -16184,7 +16548,8 @@ ns.Data.quests = {
                 enUS = "Apothecary Zinge",
             },
         },
-        unverified = true,
+        after = { 4768 },
+        extra = true,
         chainOnly = true,
     },
     [4866] = {
@@ -16203,13 +16568,13 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15873,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -16226,13 +16591,13 @@ ns.Data.quests = {
         inside = true,
         rewards = {
             xp = 9950,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 15867,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "lower" },
     },
@@ -16245,7 +16610,8 @@ ns.Data.quests = {
             },
         },
         before = { 4810 },
-        unverified = true,
+        after = { 4734 },
+        extra = true,
         chainOnly = true,
     },
     [5047] = {
@@ -16262,7 +16628,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -16274,7 +16640,7 @@ ns.Data.quests = {
                 enUS = "Human Remains",
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "lower" },
     },
@@ -16290,7 +16656,7 @@ ns.Data.quests = {
             x = 61.2,
             y = 37.2,
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -16306,7 +16672,7 @@ ns.Data.quests = {
             x = 61.2,
             y = 37,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "lower" },
     },
@@ -16322,7 +16688,7 @@ ns.Data.quests = {
             x = 61.2,
             y = 37.2,
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -16341,7 +16707,7 @@ ns.Data.quests = {
         },
         inside = true,
         rewards = {
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18269,
                 },
@@ -16350,7 +16716,7 @@ ns.Data.quests = {
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16372,7 +16738,7 @@ ns.Data.quests = {
             xp = 6200,
             money = 9000,
         },
-        unverified = true,
+        extra = true,
         instances = { "scholomance" },
     },
     [5582] = {
@@ -16384,7 +16750,7 @@ ns.Data.quests = {
             },
         },
         before = { 5529 },
-        unverified = true,
+        extra = true,
         instances = { "scholomance" },
     },
     [5742] = {
@@ -16397,7 +16763,7 @@ ns.Data.quests = {
         },
         before = { 5542 },
         after = { 5781 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [5781] = {
@@ -16409,7 +16775,8 @@ ns.Data.quests = {
             },
         },
         before = { 5742 },
-        unverified = true,
+        after = { 5845 },
+        extra = true,
         chainOnly = true,
     },
     [5846] = {
@@ -16422,7 +16789,7 @@ ns.Data.quests = {
         },
         before = { 5845 },
         after = { 5848 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [5848] = {
@@ -16442,7 +16809,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -16455,7 +16822,7 @@ ns.Data.quests = {
             },
         },
         after = { 6135 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6135] = {
@@ -16468,7 +16835,7 @@ ns.Data.quests = {
         },
         before = { 6133 },
         after = { 6163 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6141] = {
@@ -16479,7 +16846,7 @@ ns.Data.quests = {
                 enUS = "Brother Crowley",
             },
         },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6163] = {
@@ -16500,7 +16867,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
             money = 18000,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18022,
                 },
@@ -16509,7 +16876,7 @@ ns.Data.quests = {
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -16523,7 +16890,7 @@ ns.Data.quests = {
         },
         before = { 4322 },
         after = { 6403 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6403] = {
@@ -16536,7 +16903,7 @@ ns.Data.quests = {
         },
         before = { 6402 },
         after = { 6501 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6501] = {
@@ -16549,7 +16916,7 @@ ns.Data.quests = {
         },
         before = { 6403 },
         after = { 6502 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6502] = {
@@ -16569,13 +16936,13 @@ ns.Data.quests = {
         before = { 6501 },
         rewards = {
             xp = 8300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 16309,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -16589,7 +16956,7 @@ ns.Data.quests = {
         },
         before = { 6567 },
         after = { 6569 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6569] = {
@@ -16610,7 +16977,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -16624,7 +16991,7 @@ ns.Data.quests = {
         },
         before = { 6569 },
         after = { 6582, 6583, 6584 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6582] = {
@@ -16637,7 +17004,7 @@ ns.Data.quests = {
         },
         before = { 6570 },
         after = { 6585 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6583] = {
@@ -16650,7 +17017,7 @@ ns.Data.quests = {
         },
         before = { 6570 },
         after = { 6585 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6584] = {
@@ -16663,7 +17030,7 @@ ns.Data.quests = {
         },
         before = { 6570 },
         after = { 6585 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6585] = {
@@ -16676,7 +17043,7 @@ ns.Data.quests = {
         },
         before = { 6582, 6583, 6584 },
         after = { 6601 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6601] = {
@@ -16689,7 +17056,7 @@ ns.Data.quests = {
         },
         before = { 6585 },
         after = { 6602 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [6602] = {
@@ -16709,13 +17076,13 @@ ns.Data.quests = {
         before = { 6601 },
         rewards = {
             xp = 9950,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 16309,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -16729,7 +17096,7 @@ ns.Data.quests = {
         },
         before = { 1154 },
         after = { 1159 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7463] = {
@@ -16749,7 +17116,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "east" },
     },
@@ -16762,7 +17129,7 @@ ns.Data.quests = {
             },
         },
         before = { 7482 },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16779,7 +17146,7 @@ ns.Data.quests = {
             y = 64.7,
         },
         before = { 7482 },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16796,7 +17163,7 @@ ns.Data.quests = {
             y = 64.7,
         },
         before = { 7482 },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16811,13 +17178,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18465,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16832,13 +17199,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18466,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16853,13 +17220,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18468,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16874,13 +17241,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18472,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16895,13 +17262,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18467,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16916,13 +17283,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18469,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16937,13 +17304,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18471,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16959,13 +17326,13 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
             money = 100,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18470,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16982,7 +17349,7 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -16999,7 +17366,7 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -17015,7 +17382,7 @@ ns.Data.quests = {
             x = 34,
             y = 50.2,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "east" },
     },
@@ -17030,13 +17397,13 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 18592,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-depths" },
     },
     [7621] = {
@@ -17048,7 +17415,7 @@ ns.Data.quests = {
             },
         },
         after = { 7622 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7622] = {
@@ -17064,7 +17431,7 @@ ns.Data.quests = {
             y = 18.4,
         },
         before = { 7621 },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -17077,7 +17444,7 @@ ns.Data.quests = {
             },
         },
         after = { 7639 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7639] = {
@@ -17090,7 +17457,7 @@ ns.Data.quests = {
         },
         before = { 7637 },
         after = { 7640 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7640] = {
@@ -17103,7 +17470,7 @@ ns.Data.quests = {
         },
         before = { 7639 },
         after = { 7641 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7641] = {
@@ -17116,7 +17483,7 @@ ns.Data.quests = {
         },
         before = { 7640 },
         after = { 7642 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7642] = {
@@ -17129,7 +17496,7 @@ ns.Data.quests = {
         },
         before = { 7641 },
         after = { 7643 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7643] = {
@@ -17142,7 +17509,7 @@ ns.Data.quests = {
         },
         before = { 7642 },
         after = { 7644 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7644] = {
@@ -17155,7 +17522,7 @@ ns.Data.quests = {
         },
         before = { 7643 },
         after = { 7646 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7646] = {
@@ -17168,7 +17535,7 @@ ns.Data.quests = {
         },
         before = { 7644 },
         after = { 7647 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [7647] = {
@@ -17180,7 +17547,7 @@ ns.Data.quests = {
             y = 50.2,
         },
         before = { 7646 },
-        unverified = true,
+        extra = true,
         instances = { "scholomance" },
     },
     [8151] = {
@@ -17192,7 +17559,7 @@ ns.Data.quests = {
             },
         },
         after = { 8153 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8153] = {
@@ -17205,7 +17572,7 @@ ns.Data.quests = {
         },
         before = { 8151 },
         after = { 8231 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8231] = {
@@ -17218,7 +17585,7 @@ ns.Data.quests = {
         },
         before = { 8153 },
         after = { 8232 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8232] = {
@@ -17234,7 +17601,7 @@ ns.Data.quests = {
             y = 42.6,
         },
         before = { 8231 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8233] = {
@@ -17246,7 +17613,7 @@ ns.Data.quests = {
             },
         },
         after = { 8234 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8234] = {
@@ -17259,7 +17626,7 @@ ns.Data.quests = {
         },
         before = { 8233 },
         after = { 8235 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8235] = {
@@ -17272,7 +17639,7 @@ ns.Data.quests = {
         },
         before = { 8234 },
         after = { 8236 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8236] = {
@@ -17288,7 +17655,7 @@ ns.Data.quests = {
             y = 40.2,
         },
         before = { 8235 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8250] = {
@@ -17300,7 +17667,7 @@ ns.Data.quests = {
             },
         },
         after = { 8251 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8251] = {
@@ -17313,7 +17680,7 @@ ns.Data.quests = {
         },
         before = { 8250 },
         after = { 8252 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8252] = {
@@ -17326,7 +17693,7 @@ ns.Data.quests = {
         },
         before = { 8251 },
         after = { 8253 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8253] = {
@@ -17342,7 +17709,7 @@ ns.Data.quests = {
             y = 40.2,
         },
         before = { 8252 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8254] = {
@@ -17354,7 +17721,7 @@ ns.Data.quests = {
             },
         },
         after = { 8255 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8255] = {
@@ -17367,7 +17734,7 @@ ns.Data.quests = {
         },
         before = { 8254 },
         after = { 8256 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8256] = {
@@ -17380,7 +17747,7 @@ ns.Data.quests = {
         },
         before = { 8255 },
         after = { 8257 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8257] = {
@@ -17396,7 +17763,7 @@ ns.Data.quests = {
             y = 42.6,
         },
         before = { 8256 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8410] = {
@@ -17408,7 +17775,7 @@ ns.Data.quests = {
             },
         },
         after = { 8412 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8412] = {
@@ -17421,7 +17788,7 @@ ns.Data.quests = {
         },
         before = { 8410 },
         after = { 8413 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8413] = {
@@ -17438,7 +17805,7 @@ ns.Data.quests = {
             y = 62.4,
         },
         before = { 8412 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8414] = {
@@ -17451,7 +17818,7 @@ ns.Data.quests = {
         },
         before = { 8415 },
         after = { 8416 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8415] = {
@@ -17463,7 +17830,7 @@ ns.Data.quests = {
             },
         },
         after = { 8414 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8416] = {
@@ -17476,7 +17843,7 @@ ns.Data.quests = {
         },
         before = { 8414 },
         after = { 8418 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8417] = {
@@ -17488,7 +17855,7 @@ ns.Data.quests = {
             },
         },
         after = { 8423 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8418] = {
@@ -17504,7 +17871,7 @@ ns.Data.quests = {
             y = 84,
         },
         before = { 8416 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8419] = {
@@ -17516,7 +17883,7 @@ ns.Data.quests = {
             },
         },
         after = { 8421 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8421] = {
@@ -17529,7 +17896,7 @@ ns.Data.quests = {
         },
         before = { 8419 },
         after = { 8422 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8422] = {
@@ -17545,7 +17912,7 @@ ns.Data.quests = {
             y = 44.8,
         },
         before = { 8421 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8423] = {
@@ -17558,7 +17925,7 @@ ns.Data.quests = {
         },
         before = { 8417 },
         after = { 8424 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8424] = {
@@ -17571,7 +17938,7 @@ ns.Data.quests = {
         },
         before = { 8423 },
         after = { 8425 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8425] = {
@@ -17587,7 +17954,7 @@ ns.Data.quests = {
             y = 65.4,
         },
         before = { 8424 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [8921] = {
@@ -17600,7 +17967,7 @@ ns.Data.quests = {
         },
         before = { 8922 },
         after = { 8924 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8922] = {
@@ -17612,7 +17979,7 @@ ns.Data.quests = {
             },
         },
         after = { 8921 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8924] = {
@@ -17625,7 +17992,7 @@ ns.Data.quests = {
         },
         before = { 8921 },
         after = { 8925 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8925] = {
@@ -17638,7 +18005,7 @@ ns.Data.quests = {
         },
         before = { 8924 },
         after = { 8928 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8926] = {
@@ -17651,7 +18018,7 @@ ns.Data.quests = {
         },
         before = { 8977 },
         after = { 8929 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8928] = {
@@ -17664,7 +18031,7 @@ ns.Data.quests = {
         },
         before = { 8925 },
         after = { 8977 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8929] = {
@@ -17677,7 +18044,7 @@ ns.Data.quests = {
         },
         before = { 8926 },
         after = { 8945 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8945] = {
@@ -17697,13 +18064,13 @@ ns.Data.quests = {
         after = { 8946 },
         rewards = {
             xp = 8300,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 22137,
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -17717,7 +18084,7 @@ ns.Data.quests = {
         },
         before = { 8945 },
         after = { 8947 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8947] = {
@@ -17730,7 +18097,7 @@ ns.Data.quests = {
         },
         before = { 8946 },
         after = { 8948 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8948] = {
@@ -17751,7 +18118,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -17773,7 +18140,7 @@ ns.Data.quests = {
         after = { 8950 },
         rewards = {
             xp = 6600,
-            referenceItems = {
+            extraItems = {
                 {
                     id = 22150,
                 },
@@ -17782,7 +18149,7 @@ ns.Data.quests = {
                 },
             },
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -17805,7 +18172,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -17819,7 +18186,7 @@ ns.Data.quests = {
         },
         before = { 9015 },
         after = { 8960 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8960] = {
@@ -17832,7 +18199,7 @@ ns.Data.quests = {
         },
         before = { 8951 },
         after = { 8961 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8961] = {
@@ -17845,7 +18212,7 @@ ns.Data.quests = {
         },
         before = { 8960 },
         after = { 8962, 8963, 8964, 8965 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8962] = {
@@ -17858,7 +18225,7 @@ ns.Data.quests = {
         },
         before = { 8961 },
         after = { 8966 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8963] = {
@@ -17871,7 +18238,7 @@ ns.Data.quests = {
         },
         before = { 8961 },
         after = { 8967 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8964] = {
@@ -17884,7 +18251,7 @@ ns.Data.quests = {
         },
         before = { 8961 },
         after = { 8968 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8965] = {
@@ -17897,7 +18264,7 @@ ns.Data.quests = {
         },
         before = { 8961 },
         after = { 8969 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8966] = {
@@ -17918,7 +18285,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -17939,7 +18306,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -17960,7 +18327,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -17981,7 +18348,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "scholomance" },
     },
     [8970] = {
@@ -17994,7 +18361,7 @@ ns.Data.quests = {
         },
         before = { 8966 },
         after = { 8985, 8986, 8987, 8988 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8977] = {
@@ -18007,7 +18374,7 @@ ns.Data.quests = {
         },
         before = { 8928 },
         after = { 8926 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8985] = {
@@ -18020,7 +18387,7 @@ ns.Data.quests = {
         },
         before = { 8970 },
         after = { 8990 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8986] = {
@@ -18033,7 +18400,7 @@ ns.Data.quests = {
         },
         before = { 8970 },
         after = { 8989 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8987] = {
@@ -18046,7 +18413,7 @@ ns.Data.quests = {
         },
         before = { 8970 },
         after = { 8991 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8988] = {
@@ -18059,7 +18426,7 @@ ns.Data.quests = {
         },
         before = { 8970 },
         after = { 8992 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [8989] = {
@@ -18080,7 +18447,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -18101,7 +18468,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
     },
@@ -18122,7 +18489,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
@@ -18143,7 +18510,7 @@ ns.Data.quests = {
         rewards = {
             xp = 8300,
         },
-        unverified = true,
+        extra = true,
         instances = { "scholomance" },
     },
     [8994] = {
@@ -18160,7 +18527,7 @@ ns.Data.quests = {
         },
         before = { 8989 },
         after = { 8995 },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -18181,7 +18548,7 @@ ns.Data.quests = {
         rewards = {
             xp = 9950,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
     },
@@ -18203,7 +18570,7 @@ ns.Data.quests = {
         rewards = {
             xp = 6600,
         },
-        unverified = true,
+        extra = true,
         instances = { "blackrock-depths" },
     },
     [9051] = {
@@ -18216,7 +18583,7 @@ ns.Data.quests = {
         },
         before = { 9052 },
         after = { 9053 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [9052] = {
@@ -18229,7 +18596,7 @@ ns.Data.quests = {
         },
         before = { 9063 },
         after = { 9051 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [9053] = {
@@ -18245,7 +18612,7 @@ ns.Data.quests = {
             y = 76,
         },
         before = { 9051 },
-        unverified = true,
+        extra = true,
         instances = { "temple-of-atalhakkar" },
     },
     [9063] = {
@@ -18257,7 +18624,7 @@ ns.Data.quests = {
             },
         },
         after = { 9052 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [9251] = {
@@ -18270,7 +18637,7 @@ ns.Data.quests = {
         },
         before = { 9250 },
         after = { 9257 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [9257] = {
@@ -18282,14 +18649,14 @@ ns.Data.quests = {
             },
         },
         before = { 9251 },
-        unverified = true,
+        extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
     [79987] = {
         level = 40,
         after = { 80131 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [80131] = {
@@ -18301,215 +18668,8 @@ ns.Data.quests = {
             },
         },
         before = { 79987 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
-    },
-    [92742] = {
-        name = {
-            enUS = "Testing the Wells",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Alba Fairmoon",
-            },
-            map = 1436,
-            x = 53,
-            y = 53.3,
-        },
-        after = { 92753, 92744 },
-        rewards = {
-            xp = 460,
-            money = 250,
-        },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92744] = {
-        name = {
-            enUS = "Murloc Gills",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Alba Fairmoon",
-            },
-        },
-        before = { 92742 },
-        after = { 92753, 92745 },
-        rewards = {
-            xp = 460,
-            money = 250,
-        },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92745] = {
-        name = {
-            enUS = "The State of the Mines",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Alba Fairmoon",
-            },
-        },
-        before = { 92744 },
-        after = { 92753, 92747 },
-        rewards = {
-            xp = 490,
-            money = 300,
-        },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92747] = {
-        name = {
-            enUS = "Moonbrook Espionage",
-        },
-        level = 16,
-        min = 9,
-        faction = "A",
-        start = {
-            kind = "npc",
-            id = 253092,
-            name = {
-                enUS = "Alba Fairmoon",
-            },
-            map = 1436,
-            x = 52.5,
-            y = 53.1,
-        },
-        before = { 92745 },
-        after = { 92753, 92748 },
-        rewards = {
-            xp = 575,
-            money = 400,
-        },
-        unverified = true,
-        instances = { "deadmines" },
-    },
-    [92748] = {
-        name = {
-            enUS = "Explosive Consultation",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Alba Fairmoon",
-            },
-        },
-        before = { 92747 },
-        after = { 92753, 92749 },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92749] = {
-        name = {
-            enUS = "A Dynamite Plan",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Sprite Jumpsprocket",
-            },
-        },
-        before = { 92748 },
-        after = { 92753, 92750 },
-        rewards = {
-            xp = 580,
-            money = 400,
-        },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92750] = {
-        name = {
-            enUS = "Detonation at a Distance",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Sprite Jumpsprocket",
-            },
-        },
-        before = { 92749 },
-        after = { 92753, 92751 },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92751] = {
-        name = {
-            enUS = "Detonation at a Distance",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Jasper Fel",
-            },
-        },
-        before = { 92750 },
-        after = { 92753, 92752 },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92752] = {
-        name = {
-            enUS = "Explosive Consultation",
-        },
-        level = 9,
-        min = 9,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Sprite Jumpsprocket",
-            },
-        },
-        before = { 92751 },
-        after = { 92753 },
-        rewards = {
-            xp = 580,
-            money = 400,
-        },
-        unverified = true,
-        chainOnly = true,
-    },
-    [92819] = {
-        name = {
-            enUS = "Destruction in Deadmines",
-        },
-        level = 18,
-        min = 9,
-        faction = "A",
-        start = {
-            kind = "npc",
-            id = 253279,
-            name = {
-                enUS = "Alba Fairmoon",
-            },
-            map = 1436,
-            x = 38.6,
-            y = 83.2,
-        },
-        rewards = {
-            xp = 680,
-        },
-        unverified = true,
-        instances = { "deadmines" },
     },
     [95161] = {
         level = 15,
@@ -18519,7 +18679,7 @@ ns.Data.quests = {
                 enUS = "Orphan Matron Nightingale",
             },
         },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [97289] = {
@@ -18532,7 +18692,7 @@ ns.Data.quests = {
         },
         before = { 97288 },
         after = { 97290 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [97290] = {
@@ -18545,7 +18705,7 @@ ns.Data.quests = {
         },
         before = { 97289 },
         after = { 97291 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [97291] = {
@@ -18558,7 +18718,7 @@ ns.Data.quests = {
         },
         before = { 97290 },
         after = { 97292 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
     [97292] = {
@@ -18571,7 +18731,7 @@ ns.Data.quests = {
         },
         before = { 97291 },
         after = { 97288 },
-        unverified = true,
+        extra = true,
         chainOnly = true,
     },
 }

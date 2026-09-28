@@ -7,6 +7,46 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import export_site_data as exporter  # noqa: E402
 
 
+class DeadminesSiteSyncTest(unittest.TestCase):
+    def test_toxic_soil_chain_stays_under_one_dungeon_card(self):
+        if not (exporter.DEFAULT_SITE / "src/data/quest-chain-overrides.json").exists():
+            self.skipTest("Local website checkout unavailable")
+        data = exporter.export(exporter.DEFAULT_SITE)
+        quests = data["quests"]
+        self.assertTrue(quests[92753]["newInForeverChain"])
+        self.assertFalse(quests[92753].get("inside"))
+        self.assertEqual(quests[92753]["before"], [92742,92744,92745,92747,92748,92749,92750,92751,92752])
+        self.assertEqual(quests[92753]["after"], [92819])
+        self.assertEqual(quests[92819]["before"], [92753])
+        self.assertTrue(quests[92819]["chainOnly"])
+        self.assertEqual(quests[92742]["min"], 12)
+        self.assertEqual(quests[92753]["min"], 12)
+        self.assertTrue(quests[92819]["summary"]["zhCN"])
+        dungeon = next(d for d in data["dungeons"] if d["slug"] == "deadmines")
+        self.assertIn(92753, dungeon["quests"])
+        for qid in [92742,92744,92745,92747,92748,92749,92750,92751,92752,92819]:
+            self.assertNotIn(qid, dungeon["quests"])
+
+    def test_curated_site_classification_reaches_addon(self):
+        site = exporter.DEFAULT_SITE
+        if not (site / "src/data/deadminesQuestSync.ts").exists():
+            self.skipTest("Local website checkout unavailable")
+        doc = {"quests": [{"id": 92819}, {"id": 166}],
+               "referenceQuests": [{"id": 1654}, {"id": 92819}, {"id": 92747}]}
+        zh = {}
+        exporter.apply_deadmines_site_sync(site, doc, zh)
+        self.assertEqual([q["id"] for q in doc["quests"]], [166, 1654])
+        self.assertEqual([q["id"] for q in doc["referenceQuests"]], [92747])
+        paladin = doc["quests"][-1]
+        result = exporter.build_quests([paladin], zh, {"chains": {}, "steps": {}}, {},
+                                       {"Dun Morogh": 1426})[1654]
+        self.assertTrue(result["relatedExternal"])
+        self.assertEqual(result["classRestriction"], "PALADIN")
+        self.assertEqual(result["before"], [1653])
+        self.assertEqual(result["start"]["map"], 1426)
+        self.assertEqual(result["name"]["zhCN"], "正义试炼")
+
+
 class ResolveMapTest(unittest.TestCase):
     ZONES = {"Ashenvale": 1440, "Swamp of Sorrows": 1435, "Orgrimmar": 1454}
 
@@ -22,6 +62,45 @@ class ResolveMapTest(unittest.TestCase):
     def test_inside_instance_is_none(self) -> None:
         self.assertIsNone(exporter.resolve_map("Blackrock Depths — Shadowforge City", self.ZONES))
         self.assertIsNone(exporter.resolve_map(None, self.ZONES))
+
+
+class PlaceTest(unittest.TestCase):
+    ZONES = {"Westfall": 1436, "Dun Morogh": 1426}
+
+    def place(self, source, reference=None):
+        return exporter.place(dict(source, kind="npc", id=1, name="N"), self.ZONES, None, reference)
+
+    def setUp(self) -> None:
+        exporter.place_conflicts.clear()
+
+    def test_site_only(self) -> None:
+        p = self.place({"location": "Westfall", "coordinates": [10, 20]})
+        self.assertEqual((p["map"], p["x"], p["y"]), (1436, 10, 20))
+        self.assertNotIn("unverified", p)
+
+    def test_reference_map_without_coordinates_corrects_the_map(self) -> None:
+        p = self.place({"location": "Dun Morogh", "coordinates": [69.5, 50.3]}, {"uiMapId": 1455})
+        self.assertEqual((p["map"], p["x"], p["y"]), (1455, 69.5, 50.3))
+
+    def test_matching_reference_coordinates_use_reference_map(self) -> None:
+        p = self.place({"location": "Sentinel Tower", "coordinates": [56.7, 47.3]},
+                       {"uiMapId": 1436, "coordinates": [56.8, 47.0]})
+        self.assertEqual((p["map"], p["x"], p["y"]), (1436, 56.7, 47.3))
+
+    def test_conflicting_reference_never_mixes_sources(self) -> None:
+        # 参照 map=200、坐标 (70,80)，网站坐标 (10,20)：不得输出 map=200 + (10,20)
+        p = self.place({"location": "Westfall", "coordinates": [10, 20]}, {"uiMapId": 200, "coordinates": [70, 80]})
+        self.assertEqual((p["map"], p["x"], p["y"]), (1436, 10, 20))
+        p = self.place({"location": "Nowhere", "coordinates": [10, 20]}, {"uiMapId": 200, "coordinates": [70, 80]})
+        self.assertEqual((p["map"], p["x"], p["y"]), (None, None, None))
+        self.assertEqual(len(exporter.place_conflicts), 1)
+
+    def test_reference_only_is_whole_and_unmarked(self) -> None:
+        p = self.place({"location": "Westfall"}, {"uiMapId": 1436, "coordinates": [30, 40]})
+        self.assertEqual((p["map"], p["x"], p["y"]), (1436, 30, 40))
+        self.assertNotIn("unverified", p)
+        p = self.place({"location": "Nowhere"}, {"coordinates": [30, 40]})
+        self.assertEqual((p["map"], p["x"], p["y"]), (None, None, None))
 
 
 class SpellIdTest(unittest.TestCase):
@@ -120,6 +199,11 @@ class RewardsTest(unittest.TestCase):
         self.assertEqual([c["id"] for c in result["choices"]], [7003, 7004])
         self.assertNotIn("items", result)
         self.assertEqual(result["reputation"][0]["name"], {"enUS": "Darnassus", "zhCN": "达纳苏斯"})
+
+    def test_extra_reward_items_use_a_neutral_field(self) -> None:
+        result = exporter.build_rewards({"items": []}, None, {"rewardItemIds": [901], "followUpRewardItemIds": [902]})
+        self.assertEqual(result["extraItems"], [{"id": 901}, {"id": 902, "followUp": True}])
+        self.assertNotIn("referenceItems", result)
 
 
 class DungeonSectionsTest(unittest.TestCase):

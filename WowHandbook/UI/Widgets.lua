@@ -1,7 +1,7 @@
 local ADDON_NAME, ns = ...
 
 -- 自绘控件：按钮、分段选择、搜索框、勾选框、细滚动条、滚动区域、虚拟列表、统计卡片。
--- 统一使用 ns.Theme 的颜色与字体；通过 WowHandbookAPI.UI 也提供给内部采集插件使用。
+-- 统一使用 ns.Theme 的颜色与字体；通过 WowHandbookAPI.UI 也提供给其他插件使用。
 local Theme = ns.Theme
 local C = Theme.colors
 local UI = {}
@@ -172,7 +172,8 @@ function UI:Dropdown(parent, items, onChange, width)
     arrow:SetTexture("Interface\\Buttons\\Arrow-Down-Up")
     arrow:SetVertexColor(unpack(C.muted))
 
-    local menu = UI:Panel(dropdown, "window", "line")
+    -- 菜单挂在 UIParent 上，放在滚动区域里的下拉框展开时不会被裁掉；下拉框隐藏时一起隐藏
+    local menu = UI:Panel(UIParent, "window", "line")
     menu:SetFrameStrata("DIALOG")
     menu:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -2)
     menu:SetWidth(width or 150)
@@ -212,6 +213,7 @@ function UI:Dropdown(parent, items, onChange, width)
     end
 
     dropdown:SetScript("OnClick", function()
+        menu:SetScale(dropdown:GetEffectiveScale() / UIParent:GetEffectiveScale())
         menu:SetShown(not menu:IsShown())
     end)
     dropdown:HookScript("OnHide", function()
@@ -456,13 +458,15 @@ function UI:List(parent, rowHeight, onSelect)
         row.accent:SetPoint("BOTTOMLEFT")
         row.accent:SetWidth(2)
         SetColor(row.accent, "gold")
-        row.label = UI:Text(row, "Small")
-        row.label:SetPoint("LEFT", 10, 0)
-        row.label:SetPoint("RIGHT", -110, 0)
-        row.label:SetWordWrap(false)
         row.tags = UI:Text(row, "Muted")
         row.tags:SetPoint("RIGHT", -6, 0)
         row.tags:SetJustifyH("RIGHT")
+        row.tags:SetWordWrap(false)
+        -- 名字的右边界跟随右侧标签：标签多宽就让多少，名字放不下时截断，不与标签叠字
+        row.label = UI:Text(row, "Small")
+        row.label:SetPoint("LEFT", 10, 0)
+        row.label:SetPoint("RIGHT", row.tags, "LEFT", -8, 0)
+        row.label:SetWordWrap(false)
         -- 分隔行（entry.divider）：上方一条细线 + 小标题，不可点选
         row.line = row:CreateTexture(nil, "ARTWORK")
         row.line:SetPoint("TOPLEFT", 6, -3)
@@ -661,8 +665,8 @@ function UI:ItemButton(parent, size)
     return button
 end
 
--- 小地图入口：与小地图上其他按钮一致，采用暴雪原生的圆形边框、圆形底和悬停高亮（主题规则的例外，
--- 用户指定）；图标为网站徽标。不依赖第三方库。
+-- 小地图入口：与小地图上其他按钮一致，采用暴雪原生的圆形边框、圆形底和悬停高亮（主题规则的例外）；
+-- 图标为网站徽标。不依赖第三方库。
 local MINIMAP_ICON = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\MinimapIcon"
 
 function UI:MinimapButton(parent, onClick)
@@ -817,8 +821,8 @@ function UI:Stack(parent)
         for _, entry in ipairs(itemIDs) do
             local itemID = type(entry) == "table" and entry.id or entry
             local name = C_Item.GetItemInfo(itemID)
-            if not name and C_Item.RequestLoadItemDataByID then
-                C_Item.RequestLoadItemDataByID(itemID)
+            if not name then
+                ns.RequestItem(itemID)
             end
             local button = Take("item", function()
                 return UI:ItemButton(self.parent, size)
@@ -863,14 +867,29 @@ function UI:Card(parent)
     card.accent:SetPoint("BOTTOMLEFT", 1, 1)
     card.accent:SetWidth(3)
     SetColor(card.accent, "goldDim")
+    -- 高亮卡片（如“适合你”的副本）：浅金底、金色边框；悬停时再亮一级。onHover(self, hovered) 供页面加额外效果
+    local function Paint(self, hovered)
+        if self.highlighted then
+            self:SetBackdropBorderColor(unpack(hovered and C.gold or C.goldDim))
+            self:SetBackdropColor(unpack(C.selected))
+        else
+            self:SetBackdropBorderColor(unpack(hovered and C.goldDim or C.lineSoft))
+            self:SetBackdropColor(unpack(hovered and C.raised or C.panel))
+        end
+        if self.onHover then
+            self:onHover(hovered)
+        end
+    end
     card:SetScript("OnEnter", function(self)
-        self:SetBackdropBorderColor(unpack(C.goldDim))
-        self:SetBackdropColor(unpack(C.raised))
+        Paint(self, true)
     end)
     card:SetScript("OnLeave", function(self)
-        self:SetBackdropBorderColor(unpack(C.lineSoft))
-        self:SetBackdropColor(unpack(C.panel))
+        Paint(self, false)
     end)
+    function card:SetHighlighted(highlighted)
+        self.highlighted = highlighted and true or false
+        Paint(self, false)
+    end
     -- 左侧色条颜色（十六进制 "ffe0b458"）
     function card:SetAccentHex(hex)
         local r = tonumber(hex:sub(3, 4), 16) / 255

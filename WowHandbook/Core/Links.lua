@@ -1,13 +1,13 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
--- 网站地址统一在这里生成，模块不得自行拼接。规则见 docs/05-site-link-policy.md。
+-- 网站地址统一在这里生成，模块不得自行拼接。
 local Links = {}
 ns.Links = Links
 
 local BASE_URL = "https://wowhandbook.com"
 
--- 路由以网站仓库为准；网站路由变更时同步修改这里。
+-- 网站路由：英文无前缀，中文在 /zh/ 下；网站路由变更时同步修改这里。
 local ROUTES = {
     home = "/",
     dungeon = "/zones/dungeons/%s/", -- 副本 slug，如 "deadmines"

@@ -1,28 +1,58 @@
 # WoW Handbook
 
-A free, all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x).
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x).
 
-- **Dungeon guide**: every dungeon with level-based recommendations, the quests to pick up before you zone in, quest chains with clear next steps, map markers for entrances and quest givers, and boss loot you can filter by your class.
-- **Spells by level**: see what your class learns at each level, with a heads-up when new ranks are ready at the trainer. Warlocks also get demon abilities and their grimoires.
-- **Action bars**: newly trained ranks replace older ones automatically, and brand-new spells land in an empty slot.
-- **Vendor**: sell junk automatically.
-- **World map**: zone level ranges, flight points you have and have not unlocked, the full map, and map scale.
+## Summary
 
-Every feature can be switched on or off in the settings. Type `/wh` in game to open the handbook.
+All-in-one companion for World of Warcraft: Forever. Level-based dungeon guides with quest chains and boss loot, spells by level, auto action bar upgrade, map pins, and auto junk seller. Type `/wh` in game to open the handbook.
 
-The addon is in active development and supports English and Simplified Chinese.
+## Description
+
+WoW Handbook helps you answer three essential questions during your leveling and dungeon adventures in World of Warcraft: Forever: where to go, what to learn, and what to do next.
+
+### Key Features
+
+- **Dungeon Guide & Quests**: Level-matched dungeon recommendations, pre-dungeon quests with quest chain progression, quest giver and entrance map pins, and boss loot filterable by class and armor type.
+- **Spells by Level**: See exactly what your class learns at each level, with timely alerts when new ranks are available at class trainers. Warlocks also get demon abilities and their grimoires categorized clearly.
+- **Automatic Action Bar Upgrades**: Automatically replaces lower rank spells on your action bars when you train higher ranks, and places brand-new active spells into empty action bar slots.
+- **World Map & Exploration**: Zone level ranges, native flight point status pins (unlocked vs. greyed-out locked), dungeon entrances, spirit healer markers, full map display, and map scaling.
+- **Quality of Life**: Automatically sells grey junk items when speaking to vendors.
+- **Companion Web Guides**: Quick one-click copy links to complete web guides, talent builds, and tools on wowhandbook.com.
+
+Every feature can be toggled on or off individually in the settings.
+
+### In-Game Commands
+
+- `/wh` or `/wowhandbook` — Open or close the handbook.
+
+---
 
 ## 简体中文
 
-**WoW 手册**是为《魔兽世界：无限》（客户端 1.60.x）打造的免费游戏助手：
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。
 
-- **副本手册**：按等级推荐副本，列出进本前要接的任务、任务链进度与下一步，在地图上标出入口和接任务的 NPC，首领掉落可按职业筛选。
-- **按等级技能书**：每个等级能学什么一目了然，训练师有新等级时及时提醒；术士额外显示恶魔技能与魔典。
-- **动作条**：学会新等级自动替换旧等级，新技能自动放进空位。
-- **自动卖灰**。
-- **大地图**：区域等级区间、已开启与未开启的飞行点、完整地图与地图缩放。
+### Summary
 
-每项功能都能在设置里单独开关。游戏内输入 `/wh` 打开。
+《魔兽世界：无限》一站式升级与副本助手。按等级推荐副本与前置任务链、首领掉落职业筛选、按等级技能书与动作条自动替换、大地图飞行点与等级标注、自动卖灰。游戏内输入 `/wh` 打开。
+
+### Description
+
+WoW 手册致力于帮助玩家在《魔兽世界：无限》中轻松解决三个核心问题：去哪升级、学什么技能、下一步做什么。
+
+### 核心功能
+
+- **副本手册与任务链**：按角色当前等级推荐适合的地下城，清晰列出进本前必须接取的任务与前置链步骤；在地图上标注副本入口与接交任务 NPC；首领掉落支持按职业与护甲类型筛选。
+- **按等级技能书**：按学习等级清晰展示全职业技能表，升级到训练师有新法术可学时及时提醒；术士专属恶魔技能与魔典分类清晰。
+- **动作条自动升级**：学完新等级技能自动替换动作条上的低级版本，新习得主动技能自动填充至动作条空位。
+- **大地图与探索辅助**：大地图原生区域名显示推荐等级区间、飞行点状态提示（未开启变灰显示）、副本入口与灵魂医者图钉、完整地图显示控制及地图缩放。
+- **实用便利**：拜访商人时自动出售灰色垃圾物品；所有功能均可在设置中单独开关。
+- **攻略联动**：支持一键复制对应副本与职业在 wowhandbook.com 的完整图文攻略与天赋模拟器链接。
+
+### 游戏内命令
+
+- `/wh` 或 `/wowhandbook` — 打开或关闭手册。
+
+---
 
 ## Development
 

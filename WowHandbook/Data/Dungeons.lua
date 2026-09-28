@@ -1,5 +1,4 @@
--- 自动生成，请勿手工编辑。生成脚本：tools/export_site_data.py
--- 来源：wowhandbook src/data/generated（客户端 1.60.1.69913）
+-- 自动生成的数据文件，请勿手工编辑。
 local ADDON_NAME, ns = ...
 ns.Data = ns.Data or {}
 ns.Data.dungeons = {
@@ -15,6 +14,11 @@ ns.Data.dungeons = {
         name = {
             enUS = "The Hall of Thanes",
             zhCN = "领主大厅",
+        },
+        entrance = {
+            map = 1455,
+            x = 27.8,
+            y = 47.9,
         },
         bosses = {
             {
@@ -258,7 +262,9 @@ ns.Data.dungeons = {
             zhCN = "洛丹伦废墟",
         },
         entrance = {
-            map = 1420,
+            map = 1458,
+            x = 72.5,
+            y = 11.4,
         },
         bosses = {
             {
@@ -798,9 +804,7 @@ ns.Data.dungeons = {
             373,
             1654,
             2040,
-            92747,
             92753,
-            92819,
         },
     },
     {
@@ -2689,6 +2693,8 @@ ns.Data.dungeons = {
         },
         entrance = {
             map = 1437,
+            x = 47.9,
+            y = 56.5,
         },
         bosses = {
             {

@@ -43,3 +43,8 @@ end
 function ns.InvalidateKnownSpells()
     cache = nil
 end
+
+-- 缓存失效由核心负责，不依赖哪个显示模块开着。核心在所有模块之前订阅，
+-- 同一事件里模块的处理函数读到的已经是失效后的缓存。
+ns:RegisterEvent("SPELLS_CHANGED", ns.InvalidateKnownSpells)
+ns:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE", ns.InvalidateKnownSpells)

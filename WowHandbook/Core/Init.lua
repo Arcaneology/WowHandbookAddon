@@ -55,6 +55,23 @@ function ns:UnregisterEvent(event, handler)
     end
 end
 
+-- 一个处理函数出错不影响同一事件的其他处理函数：错误交给游戏的错误处理（开了 scriptErrors 会弹出），
+-- 同一条错误每个会话只报告一次，避免高频事件刷屏。
+local reportedErrors = {}
+local function ReportHandlerError(event, err)
+    local message = ("WoW Handbook %s: %s"):format(event, tostring(err))
+    if reportedErrors[message] then
+        return
+    end
+    reportedErrors[message] = true
+    local handler = geterrorhandler and geterrorhandler()
+    if handler then
+        handler(message)
+    else
+        ns:Print(message)
+    end
+end
+
 eventFrame:SetScript("OnEvent", function(_, event, ...)
     local list = handlers[event]
     if not list then
@@ -63,7 +80,10 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
     -- 复制一份再遍历：处理函数里注册或注销事件不会打乱本轮分发。
     local snapshot = { unpack(list) }
     for _, handler in ipairs(snapshot) do
-        handler(event, ...)
+        local ok, err = pcall(handler, event, ...)
+        if not ok then
+            ReportHandlerError(event, err)
+        end
     end
 end)
 
@@ -208,10 +228,15 @@ ns:RegisterEvent("PLAYER_LOGIN", OnPlayerLogin)
 -- 斜杠命令：/wowhandbook 与 /wh
 --------------------------------------------------------------------------------
 
+local moduleCommands = {} -- 模块注册的子命令：{ name, help }，按注册顺序列在帮助里
+
 local function PrintHelp()
     ns:Print(L["Commands:"])
     ns:Print("/wh - %s", L["open or close the main window"])
     ns:Print("/wh link - %s", L["copy the website link"])
+    for _, command in ipairs(moduleCommands) do
+        ns:Print("/wh %s - %s", command.name, command.help)
+    end
     ns:Print("/wh help - %s", L["show this help"])
 end
 
@@ -224,6 +249,15 @@ local COMMANDS = {
     end,
     help = PrintHelp,
 }
+
+-- 功能模块注册 /wh 子命令（help 为已本地化的说明）
+function ns:AddCommand(name, help, run)
+    if COMMANDS[name] then
+        return
+    end
+    COMMANDS[name] = run
+    tinsert(moduleCommands, { name = name, help = help })
+end
 
 SLASH_WOWHANDBOOK1 = "/wowhandbook"
 SLASH_WOWHANDBOOK2 = "/wh"

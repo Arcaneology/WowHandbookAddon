@@ -1,5 +1,4 @@
--- 自动生成，请勿手工编辑。生成脚本：tools/export_site_data.py
--- 来源：客户端表 UiMapXMapArt / WorldMapOverlay / WorldMapOverlayTile
+-- 自动生成的数据文件，请勿手工编辑。
 local ADDON_NAME, ns = ...
 ns.Data = ns.Data or {}
 ns.Data.mapOverlays = {

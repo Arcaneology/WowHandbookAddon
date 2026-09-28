@@ -29,6 +29,14 @@ Theme.colors = {
     green = Hex("46bf72", 1),
     red = Hex("d8664a", 1),
     blue = Hex("6f95d6", 1),
+    -- 半透明卡片（副本进度小窗等浮在游戏画面上的界面）
+    glass = Hex("0b0d11", 0.78),    -- 卡片底
+    glassLine = Hex("e0b458", 0.28), -- 卡片边框
+    glassHover = Hex("ffffff", 0.07), -- 行悬停
+    track = Hex("ffffff", 0.09),    -- 进度条底
+    greenDim = Hex("46bf72", 0.55), -- 已完成的进度段
+    -- 表格整行高亮底色（技能书：现在可学）
+    goldTint = Hex("e0b458", 0.14),
 }
 
 -- 文字里内嵌颜色用的十六进制（|cffXXXXXX）

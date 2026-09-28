@@ -4,7 +4,7 @@
 ## Notes: Dungeon quests and loot, spells by level and more for World of Warcraft: Forever.
 ## Notes-zhCN: 魔兽世界：无限的副本任务与掉落、按等级学习的技能等游戏助手。
 ## Author: WoW Handbook
-## Version: 0.1.0-dev
+## Version: 0.1.0
 ## SavedVariables: WowHandbookDB
 ## SavedVariablesPerCharacter: WowHandbookCharDB
 ## X-Website: https://wowhandbook.com
@@ -37,5 +37,6 @@ Modules\SpellbookPanel.lua
 Modules\ActionBars.lua
 Modules\Vendor.lua
 Modules\WorldMap.lua
+Modules\InstanceTracker.lua
 UI\MapPins.xml
 Modules\Settings.lua

@@ -23,6 +23,7 @@ import csv
 import json
 import os
 import re
+import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -76,11 +77,12 @@ def lua_value(value, indent: int = 0) -> str:
     raise TypeError(f"unsupported value: {value!r}")
 
 
-def write_lua(name: str, source: str, table_name: str, value) -> None:
+def write_lua(name: str, table_name: str, value, notice: str | None = None) -> None:
+    """发布包里的数据文件只写“自动生成”和必要的许可署名，不写内部路径、来源插件或核验说明。"""
     text = (
-        "-- 自动生成，请勿手工编辑。生成脚本：tools/export_site_data.py\n"
-        f"-- 来源：{source}\n"
-        "local ADDON_NAME, ns = ...\n"
+        "-- 自动生成的数据文件，请勿手工编辑。\n"
+        + (f"-- {notice}\n" if notice else "")
+        + "local ADDON_NAME, ns = ...\n"
         "ns.Data = ns.Data or {}\n"
         f"ns.Data.{table_name} = {lua_value(value)}\n"
     )
@@ -126,21 +128,53 @@ def resolve_map(location: str | None, zone_by_name: dict) -> int | None:
     return None
 
 
+# 两个来源的坐标相差在这个范围内（0–100 的地图百分比）才视为同一地点、同一坐标系
+PLACE_TOLERANCE = 2.0
+
+# 网站与参照坐标矛盾、无法确定地图的地点，导出结束时报告数量
+place_conflicts: list[dict] = []
+
+
+def _same_spot(a, b) -> bool:
+    return bool(a and b and None not in a[:2] and None not in b[:2]
+                and abs(a[0] - b[0]) <= PLACE_TOLERANCE and abs(a[1] - b[1]) <= PLACE_TOLERANCE)
+
+
 def place(source: dict | None, zone_by_name: dict, zh_source: dict | None, reference: dict | None = None) -> dict | None:
-    """接任务地点。参照数据（其他插件）给出的 uiMapID 在坐标一致时优先于按地点名推断的地图；
-    网站没有坐标时用参照坐标并标记 unverified。"""
+    """接任务地点。地图与坐标作为一个整体从同一来源选取，不把一个来源的地图和另一个来源的坐标拼在一起：
+    · 网站有坐标：参照只给地图、或参照坐标与之一致时，用参照的 uiMapID（按地点名推断地图对“Sentinel Tower”
+      这类名称会失败，主城地点还会被推到外面的区域）；参照坐标与网站矛盾时说明两者不是同一处，改用按地点名
+      推断的地图，推断不出时不给坐标，并记进 place_conflicts；
+    · 网站没有坐标：整组使用参照的地图与坐标，参照缺地图时不给坐标。
+    发布到插件的数据不带来源或核验标记（核验清单只在采集插件里）。"""
     if not source:
         return None
     reference = reference or {}
-    coords = source.get("coordinates") or reference.get("coordinates") or [None, None]
+    site_coords = source.get("coordinates")
+    ref_coords = reference.get("coordinates")
+    ref_map = reference.get("uiMapId")
+    map_id, coords = None, None
+    if site_coords:
+        if ref_map and (not ref_coords or _same_spot(site_coords, ref_coords)):
+            map_id, coords = ref_map, site_coords
+        else:
+            map_id = resolve_map(source.get("location"), zone_by_name)
+            coords = site_coords if map_id else None
+            if not map_id and ref_map:
+                place_conflicts.append({"id": source.get("id"), "site": site_coords,
+                                        "reference": {"map": ref_map, "coordinates": ref_coords}})
+    elif ref_coords and ref_map:
+        map_id, coords = ref_map, ref_coords
+    else:
+        map_id = resolve_map(source.get("location"), zone_by_name)
+    coords = coords or [None, None]
     return {
         "kind": source.get("kind"),
         "id": source.get("id"),
         "name": {"enUS": source.get("name"), "zhCN": (zh_source or {}).get("name")},
-        "map": reference.get("uiMapId") or resolve_map(source.get("location"), zone_by_name),
+        "map": map_id,
         "x": coords[0],
         "y": coords[1],
-        "unverified": True if not source.get("coordinates") and reference.get("coordinates") else None,
     }
 
 
@@ -157,7 +191,7 @@ def money_copper(value) -> int | None:
 
 
 def build_rewards(rewards: dict | None, zh_rewards: dict | None, reference: dict | None = None) -> dict | None:
-    """任务奖励。网站没有经验、金钱时用参照值；参照独有的奖励物品放进 referenceItems（待验证）。"""
+    """任务奖励。网站没有经验、金钱时用参照值；参照独有的奖励物品放进 extraItems（插件显示为“其他可能的奖励”）。"""
     if not rewards:
         return None
     reference = reference or {}
@@ -172,7 +206,7 @@ def build_rewards(rewards: dict | None, zh_rewards: dict | None, reference: dict
              "value": r.get("value")}
             for index, r in enumerate(rewards.get("reputation") or [])
         ],
-        "referenceItems": [{"id": i} for i in reference.get("rewardItemIds") or []]
+        "extraItems": [{"id": i} for i in reference.get("rewardItemIds") or []]
                           + [{"id": i, "followUp": True} for i in reference.get("followUpRewardItemIds") or []],
     }
     return {k: v for k, v in result.items() if v} or None
@@ -219,6 +253,7 @@ def merge_ids(*groups) -> list:
 def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: dict, zone_by_name: dict,
                  reference_quests: list | None = None) -> dict:
     quests = {}
+    references = {int(q["id"]): q for q in reference_quests or []}
     for quest in dungeon_quests:
         qid = int(quest["id"])
         zh = zh_quests.get(qid, {})
@@ -235,10 +270,13 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
             "faction": FACTION_CODES.get(quest.get("faction") or ""),
             "instances": quest.get("instanceSlugs") or ([quest["instanceSlug"]] if quest.get("instanceSlug") else []),
             "sectionSlugs": quest.get("sectionSlugs") or None,
+            "relatedExternal": quest.get("relatedExternal") or None,
+            "newInForeverChain": chain.get("newInForever") or None,
+            "classRestriction": (quest.get("classRestriction") or "").upper() or None,
             "start": place(start, zone_by_name, zh_start, reference.get("start")),
-            "inside": starts_inside(start, quest.get("instances") or [quest.get("instance")]) or None,
+            "inside": (not quest.get("pickupBefore") and starts_inside(start, quest.get("instances") or [quest.get("instance")])) or None,
             "finish": place(finish, zone_by_name, zh_finish),
-            "before": merge_ids(flatten(chain.get("before")), reference.get("prerequisites")),
+            "before": merge_ids(flatten(chain.get("before")), [p["id"] for p in quest.get("prerequisites", [])], reference.get("prerequisites")),
             "after": flatten(chain.get("after")),
             "summary": {"enUS": quest.get("summary"), "zhCN": zh.get("summary")} if quest.get("summary") else None,
             "objectives": {"enUS": quest.get("objectives"), "zhCN": zh.get("objectives")} if quest.get("objectives") else None,
@@ -256,13 +294,15 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
         quests[qid] = {
             "name": {"enUS": step.get("name"), "zhCN": zh_step.get("name")},
             "level": step.get("level"),
+            "min": step.get("minimumLevel") or references.get(qid, {}).get("minimumLevel"),
+            "summary": {"enUS": step.get("note"), "zhCN": zh_step.get("note")} if step.get("note") else None,
             "faction": FACTION_CODES.get(step.get("faction") or ""),
             "start": place(start, zone_by_name, zh_start),
-            "before": flatten(chain.get("before")),
+            "before": merge_ids(flatten(chain.get("before")), references.get(qid, {}).get("prerequisites")),
             "after": flatten(chain.get("after")),
             "chainOnly": True,
         }
-    # 网站未发布、只来自其他插件的任务：待验证；名称优先运行时向客户端获取
+    # 网站未发布、只来自其他插件的任务：导出为 extra（不计入推荐与可接数量），名称优先运行时向客户端获取
     for ref in reference_quests or []:
         qid = int(ref["id"])
         if qid in quests:
@@ -286,9 +326,9 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
             "after": [],
             "rewards": {k: v for k, v in {
                 "xp": rewards.get("experience"), "money": rewards.get("money"),
-                "referenceItems": [{"id": i} for i in rewards.get("itemIds") or []],
+                "extraItems": [{"id": i} for i in rewards.get("itemIds") or []],
             }.items() if v} or None,
-            "unverified": True,
+            "extra": True,
         }
         if ref.get("role") == "dungeon":
             entry["instances"] = ref.get("instanceSlugs") or []
@@ -296,6 +336,13 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
         else:
             entry["chainOnly"] = True
         quests[qid] = entry
+    # Preserve the confirmed follow-up relationship of curated Forever chains.
+    for owner, chain in chains.get("chains", {}).items():
+        if chain.get("newInForever"):
+            for qid in flatten(chain.get("after")):
+                if qid in quests:
+                    quests[qid]["before"] = merge_ids(quests[qid].get("before"), [int(owner)])
+                    quests[qid]["newInForeverChain"] = True
     # 参照前置补进来后，给前置任务补上 after
     for qid, quest in quests.items():
         for before in quest.get("before") or []:
@@ -577,13 +624,43 @@ def build_graveyards(graveyards: dict) -> dict:
                                                                                 key=lambda kv: int(kv[0]))}
 
 
+def apply_deadmines_site_sync(site: Path, document: dict, zh_quests: dict) -> None:
+    """Read the website's curated overlay, including its class/external classification."""
+    module = site / "src/data/deadminesQuestSync.ts"
+    if not module.exists():
+        return
+    result = subprocess.run([
+        "node", "--input-type=module", "-e",
+        "const m = await import(process.argv[1]); console.log(JSON.stringify({"
+        "en:m.additionalDeadminesQuests('en'),zh:m.additionalDeadminesQuests('zh'),"
+        "minimumLevels:m.deadminesMinimumLevelOverrides,pickupBefore:[...m.deadminesPickupBeforeIds],main:[...m.deadminesMainQuestIds],excluded:[...m.excludedDeadminesQuestIds]}));",
+        module.resolve().as_uri(),
+    ], check=True, capture_output=True, text=True)
+    overlay = json.loads(result.stdout)
+    excluded = set(overlay["excluded"])
+    promoted = {q["id"] for q in overlay["en"]}
+    document["quests"] = [q for q in document["quests"] if q["id"] not in excluded | promoted]
+    for quest in overlay["en"]:
+        quest["relatedExternal"] = quest["id"] not in overlay["main"]
+        document["quests"].append(quest)
+    for quest in document["quests"]:
+        if str(quest["id"]) in overlay["minimumLevels"]:
+            quest["minimumLevel"] = overlay["minimumLevels"][str(quest["id"])]
+        if quest["id"] in overlay["pickupBefore"]:
+            quest["pickupBefore"] = True
+    zh_quests.update({q["id"]: q for q in overlay["zh"]})
+    document["referenceQuests"] = [q for q in document.get("referenceQuests", [])
+                                    if q["id"] not in excluded | promoted]
+
+
 def export(site: Path) -> dict:
     generated = site / "src" / "data" / "generated"
     zones = load(generated / "zones.json")["maps"]
     zh_names = load(generated / "zh" / "zone-names.json")["names"]
     dungeon_quests_data = load(generated / "dungeon-quests.json")
-    dungeon_quests = dungeon_quests_data["quests"]
     zh_quests = {int(q["id"]): q for q in load(generated / "zh" / "dungeon-quests.json")["quests"]}
+    apply_deadmines_site_sync(site, dungeon_quests_data, zh_quests)
+    dungeon_quests = dungeon_quests_data["quests"]
     chains = load(generated / "quest-chains.json")
     zh_chains = load(generated / "zh" / "quest-chains.json")
     boss_loot_data = load(generated / "boss-loot.json")
@@ -608,19 +685,21 @@ def main() -> int:
     parser.add_argument("--site", type=Path, default=DEFAULT_SITE)
     args = parser.parse_args()
     data = export(args.site)
-    source = f"wowhandbook src/data/generated（客户端 {data['build']}）"
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    write_lua("Zones.lua", source, "zones", data["zones"])
-    write_lua("Dungeons.lua", source, "dungeons", data["dungeons"])
-    write_lua("Quests.lua", source, "quests", data["quests"])
-    write_lua("Spells.lua", source, "spells", data["spells"])
-    write_lua("MapOverlays.lua", "客户端表 UiMapXMapArt / WorldMapOverlay / WorldMapOverlayTile", "mapOverlays",
-              data["mapOverlays"])
-    write_lua("Graveyards.lua", "wowhandbook src/data/generated/graveyards.json（QuestieDB 灵魂医者刷新点）", "graveyards",
-              data["graveyards"])
+    write_lua("Zones.lua", "zones", data["zones"])
+    write_lua("Dungeons.lua", "dungeons", data["dungeons"])
+    write_lua("Quests.lua", "quests", data["quests"])
+    write_lua("Spells.lua", "spells", data["spells"])
+    write_lua("MapOverlays.lua", "mapOverlays", data["mapOverlays"])
+    # 灵魂医者刷新点来自 GPL-3.0 的 Questie，按许可保留署名
+    write_lua("Graveyards.lua", "graveyards", data["graveyards"],
+              "Spirit healer locations from Questie (https://github.com/Questie/Questie), GPL-3.0.")
     print(f"区域 {len(data['zones'])}，副本 {len(data['dungeons'])}，任务 {len(data['quests'])}，"
           f"职业 {len(data['spells'])}（技能 {sum(len(v) for v in data['spells'].values())}），"
           f"地图探索贴图 {len(data['mapOverlays'])} 张地图，灵魂医者 {sum(len(v) for v in data['graveyards'].values())} 个")
+    if place_conflicts:
+        ids = ", ".join(str(item["id"]) for item in place_conflicts[:10])
+        print(f"注意：{len(place_conflicts)} 个地点网站坐标与参照不一致且按地点名推断不出地图，未导出坐标（{ids}…）")
     return 0
 
 

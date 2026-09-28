@@ -1,5 +1,5 @@
--- 自动生成，请勿手工编辑。生成脚本：tools/export_site_data.py
--- 来源：wowhandbook src/data/generated/graveyards.json（QuestieDB 灵魂医者刷新点）
+-- 自动生成的数据文件，请勿手工编辑。
+-- Spirit healer locations from Questie (https://github.com/Questie/Questie), GPL-3.0.
 local ADDON_NAME, ns = ...
 ns.Data = ns.Data or {}
 ns.Data.graveyards = {

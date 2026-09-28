@@ -13,6 +13,18 @@ end
 
 -- 首领名：数据里的掉落分组（小怪、配方、书籍）用插件自己的本地化文字，其余按语言取名
 local LOOT_GROUPS = { ["Trash mobs"] = true, ["Plans and patterns"] = true, ["Books"] = true }
+-- 客户端的“秘密值”：副本、战斗等场合加密的单位身份（GUID、名字）、战斗记录内容等。
+-- 插件不能比较、拆分或转成文字，遇到就当作取不到
+function ns.IsSecret(value)
+    return issecretvalue ~= nil and issecretvalue(value) or false
+end
+
+-- 掉落分组不是首领（副本进度小窗等只列真正的首领）
+function ns.IsLootGroup(boss)
+    local english = boss and boss.name and boss.name.enUS
+    return english and LOOT_GROUPS[english] or false
+end
+
 function ns.BossName(boss)
     local english = boss and boss.name and boss.name.enUS
     if english and LOOT_GROUPS[english] then
@@ -76,6 +88,143 @@ function ns.MapName(uiMapID)
     return zone and ns.Name(zone.name) or tostring(uiMapID)
 end
 
+-- 副本入口：优先用客户端的副本入口接口（C_EncounterJournal.GetDungeonEntrancesForMap），
+-- 按副本 ID 或名字对应到插件的副本；客户端没给的副本才用插件数据里的坐标。
+-- 客户端入口是静态数据，按地图缓存，整个会话只查一次。
+-- 名字比较用的键：小写、去掉开头的 The、空白与标点（客户端名与数据名写法略有不同时也能对上）
+local function NormalizedName(name)
+    if not name then
+        return nil
+    end
+    local key = name:lower():gsub("^the ", "")
+    key = key:gsub("[%s%p]", "")
+    return key ~= "" and key or nil
+end
+ns.NormalizedName = NormalizedName
+
+-- 客户端入口的副本 ID：EJ_GetInstanceInfo 第 10 个返回值是副本（instance）ID
+local function EntranceInstanceID(entrance)
+    if EJ_GetInstanceInfo and entrance.journalInstanceID then
+        return select(10, EJ_GetInstanceInfo(entrance.journalInstanceID))
+    end
+    return nil
+end
+
+-- 副本 ID 与各语言名字 -> 副本序号列表。分区副本的父条目（aggregateOnly）对应到它的各个分区，
+-- 客户端只给一个入口（如“血色修道院”）时，各分区都用这个入口。
+local dungeonIndex
+local function DungeonIndex()
+    if dungeonIndex then
+        return dungeonIndex
+    end
+    local byInstance, byName, children = {}, {}, {}
+    local dungeons = ns.Data.dungeons or {}
+    for index, dungeon in ipairs(dungeons) do
+        if dungeon.parentSlug then
+            children[dungeon.parentSlug] = children[dungeon.parentSlug] or {}
+            tinsert(children[dungeon.parentSlug], index)
+        end
+    end
+    for index, dungeon in ipairs(dungeons) do
+        local targets = dungeon.aggregateOnly and children[dungeon.slug] or { index }
+        if dungeon.instanceID then
+            byInstance[dungeon.instanceID] = targets
+        end
+        for _, name in pairs(dungeon.name or {}) do
+            local key = NormalizedName(name)
+            if key then
+                byName[key] = targets
+            end
+        end
+    end
+    dungeonIndex = { byInstance = byInstance, byName = byName }
+    return dungeonIndex
+end
+
+local clientEntrances = {} -- [uiMapID] = { { index = 副本序号, x, y（0–1） } }
+function ns.ClientDungeonEntrances(uiMapID)
+    if not uiMapID then
+        return {}
+    end
+    if clientEntrances[uiMapID] then
+        return clientEntrances[uiMapID]
+    end
+    local found = {}
+    local api = C_EncounterJournal and C_EncounterJournal.GetDungeonEntrancesForMap
+    local entrances = api and api(uiMapID)
+    if entrances and #entrances > 0 then
+        local index = DungeonIndex()
+        for _, entrance in ipairs(entrances) do
+            local targets = index.byInstance[EntranceInstanceID(entrance) or false]
+                or index.byName[NormalizedName(entrance.name) or false]
+            if targets and entrance.position then
+                local x, y = entrance.position:GetXY()
+                for _, target in ipairs(targets) do
+                    tinsert(found, { index = target, x = x, y = y })
+                end
+            end
+        end
+    end
+    clientEntrances[uiMapID] = found
+    return found
+end
+
+local function FindOnMap(uiMapID, index)
+    for _, spot in ipairs(ns.ClientDungeonEntrances(uiMapID)) do
+        if spot.index == index then
+            return uiMapID, spot.x * 100, spot.y * 100
+        end
+    end
+    return nil
+end
+
+-- 副本入口的地图与坐标（0–100）：先在入口所在地图向客户端查，数据没写地图时查所有区域地图；
+-- 客户端没有时用插件数据；都没有时返回 nil
+function ns.DungeonEntrance(index)
+    local dungeon = ns.Data.dungeons[index]
+    if not dungeon then
+        return nil
+    end
+    local entrance = dungeon.entrance
+    local mapID, x, y = FindOnMap(entrance and entrance.map, index)
+    if mapID then
+        return mapID, x, y
+    end
+    if not (entrance and entrance.map) then
+        for zoneMap in pairs(ns.Data.zones or {}) do
+            mapID, x, y = FindOnMap(zoneMap, index)
+            if mapID then
+                return mapID, x, y
+            end
+        end
+    end
+    if entrance and entrance.map and entrance.x then
+        return entrance.map, entrance.x, entrance.y
+    end
+    return nil
+end
+
+-- 地图所在的大陆名（卡利姆多、东部王国……）：沿父地图往上找到大陆，名字取客户端的（按客户端语言）。
+-- 取不到时返回 nil。取到的结果按地图缓存（取不到的不缓存，下次再问客户端）。
+local continentNames = {}
+function ns.ContinentName(uiMapID)
+    if continentNames[uiMapID] then
+        return continentNames[uiMapID]
+    end
+    local continentType = Enum and Enum.UIMapType and Enum.UIMapType.Continent
+    local info = uiMapID and C_Map.GetMapInfo(uiMapID)
+    local steps = 0
+    while info and continentType and info.mapType ~= continentType and info.parentMapID and info.parentMapID > 0 and steps < 6 do
+        info = C_Map.GetMapInfo(info.parentMapID)
+        steps = steps + 1
+    end
+    local name = info and continentType and info.mapType == continentType and info.name or nil
+    if uiMapID then
+        continentNames[uiMapID] = name
+    end
+    return name
+end
+
 function ns.Money(copper)
     if not copper or copper <= 0 then
         return nil
@@ -86,11 +235,60 @@ function ns.Money(copper)
     return ("%dg %ds %dc"):format(floor(copper / 10000), floor(copper / 100) % 100, copper % 100)
 end
 
--- 物品链接（客户端还没缓存时显示“物品 ID”，数据到了会在下一次刷新时补上）
+-- 物品数据请求：同一物品等待中不重复请求；失败后按 5 秒起、每次翻倍、最长 5 分钟的间隔才再试，
+-- 不会永久放弃（服务器可能只是暂时没给）。只有本插件请求的物品成功到达时才通知页面刷新。
+local ITEM_PENDING_TIMEOUT, ITEM_RETRY_BASE, ITEM_RETRY_MAX = 30, 5, 300
+local itemRequests = {} -- [itemID] = { pending = 是否等待中, requestedAt, retryAt, tries }
+local itemListeners = {}
+
+function ns.RequestItem(itemID)
+    if not (itemID and C_Item.RequestLoadItemDataByID) then
+        return
+    end
+    local now = GetTime()
+    local request = itemRequests[itemID]
+    if request then
+        if request.pending and now - request.requestedAt < ITEM_PENDING_TIMEOUT then
+            return
+        end
+        if not request.pending and now < request.retryAt then
+            return
+        end
+    else
+        request = { tries = 0 }
+        itemRequests[itemID] = request
+    end
+    request.pending, request.requestedAt = true, now
+    request.tries = request.tries + 1
+    C_Item.RequestLoadItemDataByID(itemID)
+end
+
+-- listener(event, itemID)：本插件请求的物品数据到达时调用
+function ns.OnItemLoaded(listener)
+    tinsert(itemListeners, listener)
+end
+
+ns:RegisterEvent("GET_ITEM_INFO_RECEIVED", function(event, itemID, success)
+    local request = itemRequests[itemID]
+    if not (request and request.pending) then
+        return
+    end
+    if success == false then
+        request.pending = false
+        request.retryAt = GetTime() + math.min(ITEM_RETRY_MAX, ITEM_RETRY_BASE * 2 ^ (request.tries - 1))
+        return
+    end
+    itemRequests[itemID] = nil
+    for _, listener in ipairs(itemListeners) do
+        listener(event, itemID)
+    end
+end)
+
+-- 物品链接（客户端还没缓存时显示占位文字，数据到了会在下一次刷新时补上）
 function ns.ItemLink(itemID)
     local _, link = C_Item.GetItemInfo(itemID)
-    if not link and C_Item.RequestLoadItemDataByID then
-        C_Item.RequestLoadItemDataByID(itemID)
+    if not link then
+        ns.RequestItem(itemID)
     end
     return link or L["Item information not yet unlocked"]
 end
