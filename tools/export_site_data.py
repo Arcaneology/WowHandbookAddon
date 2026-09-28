@@ -78,7 +78,7 @@ def lua_value(value, indent: int = 0) -> str:
 
 
 def write_lua(name: str, table_name: str, value, notice: str | None = None) -> None:
-    """发布包里的数据文件只写“自动生成”和必要的许可署名，不写内部路径、来源插件或核验说明。"""
+    """数据文件只写“自动生成”和必要的许可署名。"""
     text = (
         "-- 自动生成的数据文件，请勿手工编辑。\n"
         + (f"-- {notice}\n" if notice else "")
@@ -146,7 +146,7 @@ def place(source: dict | None, zone_by_name: dict, zh_source: dict | None, refer
       这类名称会失败，主城地点还会被推到外面的区域）；参照坐标与网站矛盾时说明两者不是同一处，改用按地点名
       推断的地图，推断不出时不给坐标，并记进 place_conflicts；
     · 网站没有坐标：整组使用参照的地图与坐标，参照缺地图时不给坐标。
-    发布到插件的数据不带来源或核验标记（核验清单只在采集插件里）。"""
+    发布到插件的数据不带来源标记。"""
     if not source:
         return None
     reference = reference or {}
@@ -302,7 +302,7 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
             "after": flatten(chain.get("after")),
             "chainOnly": True,
         }
-    # 网站未发布、只来自其他插件的任务：导出为 extra（不计入推荐与可接数量），名称优先运行时向客户端获取
+    # 网站未单独发布的参照任务：导出为 extra（不计入推荐与可接数量），名称优先运行时向客户端获取
     for ref in reference_quests or []:
         qid = int(ref["id"])
         if qid in quests:

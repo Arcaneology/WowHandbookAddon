@@ -7,7 +7,7 @@ exclude_files = {
     "WowHandbook/Libs/",
 }
 
--- 采集插件（内部工具）额外允许的全局名
+-- 可选的本地扩展目录（不在公开仓库中）额外允许的全局名
 files["WowHandbook_Collector/"] = {
     globals = {
         "WowHandbookCollectorDB",
