@@ -236,6 +236,72 @@ class DungeonSectionsTest(unittest.TestCase):
         fallback = next(d for d in result if d.get("aggregateOnly"))
         self.assertEqual(fallback["quests"], [2])
 
+    def test_loot_table_rows_outside_site_bosses_are_loot_only(self) -> None:
+        zones = [{"slug": "deadmines", "name": "The Deadmines", "kind": "dungeon", "levels": [17, 26],
+                  "bosses": ["Rhahk'Zor", "Sneed"]},
+                 {"slug": "new-dungeon", "name": "New Dungeon", "kind": "dungeon", "levels": [30, 35]}]
+        loot = {"deadmines": {"bosses": {"Rhahk'Zor": [1], "Miner Johnson": [2], "Sneed's Shredder": [3]},
+                              "extra": [{"name": "Trash mobs", "items": [4]}]},
+                "new-dungeon": {"bosses": {"Someone": [5]}}}
+        result = {d["slug"]: d for d in exporter.build_dungeons(zones, {}, loot, {}, {})}
+        flags = {b["name"]["enUS"]: b["lootOnly"] for b in result["deadmines"]["bosses"]}
+        self.assertEqual(flags, {"Rhahk'Zor": None, "Sneed": None, "Miner Johnson": True,
+                                 "Sneed's Shredder": True, "Trash mobs": True})
+        # 网站还没有首领列表时不标记，掉落表的行照常当首领
+        self.assertIsNone(result["new-dungeon"]["bosses"][0]["lootOnly"])
+
+    def test_deadmines_bosses_follow_the_actual_route(self) -> None:
+        zones = [{"slug": "deadmines", "name": "The Deadmines", "kind": "dungeon", "levels": [17, 26],
+                  "bosses": ["Rhahk'Zor", "Sneed", "Gilnid", "Captain Greenskin", "Mr. Smite", "Cookie",
+                             "Edwin VanCleef"]}]
+        loot = {"deadmines": {"bosses": {"Miner Johnson": [1]}}}
+        result = exporter.build_dungeons(zones, {}, loot, {}, {})[0]
+        self.assertEqual([b["name"]["enUS"] for b in result["bosses"]],
+                         ["Rhahk'Zor", "Sneed", "Gilnid", "Mr. Smite", "Captain Greenskin", "Edwin VanCleef",
+                          "Cookie", "Miner Johnson"])
+
+
+class ProfessionsTest(unittest.TestCase):
+    def test_trainers_join_their_profession_with_both_names(self) -> None:
+        professions = {"professions": [{"slug": "alchemy", "kind": "primary", "name": "Alchemy",
+                                        "icon": "/icons/game/trade_alchemy.jpg", "recipes": []}]}
+        zh = {"professions": [{"slug": "alchemy", "name": "炼金术"}]}
+        trainers = {"professions": {"alchemy": [
+            {"id": 3184, "name": "Miao'zan", "nameZh": "米奥赞", "faction": "H", "rank": "journeyman",
+             "map": 1411, "x": 55.4, "y": 74.0, "position": "questie"},
+            {"id": 5, "name": "Somebody", "nameZh": None, "faction": "A", "rank": "odd",
+             "map": 1453, "x": None, "y": None, "position": None}]}}
+        result = exporter.build_professions(professions, zh, trainers)[0]
+        self.assertEqual(result["name"], {"enUS": "Alchemy", "zhCN": "炼金术"})
+        self.assertEqual(result["icon"], "trade_alchemy")
+        self.assertEqual(result["trainers"][0]["name"], {"enUS": "Miao'zan", "zhCN": "米奥赞"})
+        self.assertEqual(result["trainers"][0]["rank"], "journeyman")
+        # 未知的等级不导出；没有坐标的保留地图
+        self.assertIsNone(result["trainers"][1]["rank"])
+        self.assertEqual(result["trainers"][1]["map"], 1453)
+        self.assertIsNone(result["trainers"][1]["x"])
+
+
+class ClassTrainersTest(unittest.TestCase):
+    def test_trainers_keep_kind_and_both_names(self) -> None:
+        result = exporter.build_class_trainers({"classes": {"hunter": [
+            {"id": 3306, "name": "Keldas", "nameZh": "凯尔达斯", "faction": "A", "kind": "pet",
+             "map": 1438, "x": 56.1, "y": 59.7, "position": "questie"}]}})
+        self.assertEqual(result["hunter"][0], {"id": 3306, "name": {"enUS": "Keldas", "zhCN": "凯尔达斯"},
+                                               "faction": "A", "kind": "pet", "map": 1438, "x": 56.1, "y": 59.7})
+
+
+class GatheringTest(unittest.TestCase):
+    def test_nodes_keep_item_and_skill_and_maps_use_numeric_ids(self) -> None:
+        gathering = {"nodes": [{"key": "peacebloom", "kind": "herb", "item": 2447, "skill": 1, "rare": False, "objects": [1618]},
+                               {"key": "silver_vein", "kind": "ore", "item": 2775, "skill": 75, "rare": True, "objects": [1733]}],
+                     "maps": {"1411": {"herb": [[35.7, 28.4, 1]]}}}
+        result = exporter.build_gathering(gathering)
+        # 稀有变种带 rare，普通的不写这个字段
+        self.assertEqual(result["nodes"], [{"kind": "herb", "item": 2447, "skill": 1, "rare": None, "objects": [1618]},
+                                           {"kind": "ore", "item": 2775, "skill": 75, "rare": True, "objects": [1733]}])
+        self.assertEqual(result["maps"], {1411: {"herb": [[35.7, 28.4, 1]]}})
+
 
 class PetSpellTest(unittest.TestCase):
     def test_demon_ranks_split_into_grimoire_and_innate(self) -> None:

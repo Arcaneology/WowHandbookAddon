@@ -216,7 +216,7 @@ local function FillCard(card, index)
     if dungeon.dataPending then
         tinsert(facts, L["Data coming soon"])
     elseif not dungeon.aggregateOnly then
-        tinsert(facts, (L["%d bosses"]):format(#(dungeon.bosses or {})))
+        tinsert(facts, (L["%d bosses"]):format(ns.BossCount(dungeon)))
     end
     local loot = LootCount(dungeon)
     if loot > 0 then
@@ -909,7 +909,7 @@ local function RenderLoot(detail, dungeon)
     if shown == 0 then
         stack:Text(L["No items match these filters."], "Muted", 0, 8)
     end
-    stack:Text(L["Hover an item for its stats; Shift-click to link it in chat."], "Muted")
+    stack:Text(L["Hover: stats · Shift-click: link"], "Muted")
 end
 
 -- 掉落页上方的筛选条

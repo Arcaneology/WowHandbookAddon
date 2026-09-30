@@ -111,6 +111,7 @@ ns.Data.dungeons = {
                 level = 16,
                 npcID = 11520,
                 displayID = 7970,
+                lootOnly = true,
                 items = {
                     {
                         id = 270230,
@@ -405,6 +406,7 @@ ns.Data.dungeons = {
                 },
                 level = 17,
                 npcID = 250660,
+                lootOnly = true,
                 items = {
                     {
                         id = 271206,
@@ -533,32 +535,6 @@ ns.Data.dungeons = {
             },
             {
                 name = {
-                    enUS = "Captain Greenskin",
-                    zhCN = "绿皮船长",
-                },
-                level = 20,
-                npcID = 647,
-                displayID = 7113,
-                items = {
-                    {
-                        id = 5201,
-                        rate = 38.0,
-                        newInForever = false,
-                    },
-                    {
-                        id = 10403,
-                        rate = 27.0,
-                        newInForever = false,
-                    },
-                    {
-                        id = 5200,
-                        rate = 28.0,
-                        newInForever = false,
-                    },
-                },
-            },
-            {
-                name = {
                     enUS = "Mr. Smite",
                     zhCN = "重拳先生",
                 },
@@ -589,31 +565,27 @@ ns.Data.dungeons = {
             },
             {
                 name = {
-                    enUS = "Cookie",
-                    zhCN = "曲奇",
+                    enUS = "Captain Greenskin",
+                    zhCN = "绿皮船长",
                 },
                 level = 20,
-                npcID = 645,
-                displayID = 1305,
+                npcID = 647,
+                displayID = 7113,
                 items = {
                     {
-                        id = 5198,
-                        rate = 33.0,
+                        id = 5201,
+                        rate = 38.0,
                         newInForever = false,
                     },
                     {
-                        id = 5197,
-                        rate = 55.0,
+                        id = 10403,
+                        rate = 27.0,
                         newInForever = false,
                     },
                     {
-                        id = 8490,
-                        rate = 10.0,
+                        id = 5200,
+                        rate = 28.0,
                         newInForever = false,
-                    },
-                    {
-                        id = 273298,
-                        newInForever = true,
                     },
                 },
             },
@@ -655,11 +627,42 @@ ns.Data.dungeons = {
             },
             {
                 name = {
+                    enUS = "Cookie",
+                    zhCN = "曲奇",
+                },
+                level = 20,
+                npcID = 645,
+                displayID = 1305,
+                items = {
+                    {
+                        id = 5198,
+                        rate = 33.0,
+                        newInForever = false,
+                    },
+                    {
+                        id = 5197,
+                        rate = 55.0,
+                        newInForever = false,
+                    },
+                    {
+                        id = 8490,
+                        rate = 10.0,
+                        newInForever = false,
+                    },
+                    {
+                        id = 273298,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
                     enUS = "Miner Johnson",
                 },
                 level = 19,
                 npcID = 3586,
                 displayID = 556,
+                lootOnly = true,
                 items = {
                     {
                         id = 5443,
@@ -680,6 +683,7 @@ ns.Data.dungeons = {
                 level = 20,
                 npcID = 642,
                 displayID = 1269,
+                lootOnly = true,
                 items = {
                     {
                         id = 1937,
@@ -701,6 +705,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Defias Gunpowder",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 5397,
@@ -712,6 +717,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 8492,
@@ -783,6 +789,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 8492,
@@ -1049,6 +1056,7 @@ ns.Data.dungeons = {
                 level = 20,
                 npcID = 5912,
                 displayID = 1267,
+                lootOnly = true,
                 items = {
                     {
                         id = 5243,
@@ -1066,6 +1074,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 10413,
@@ -1078,6 +1087,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 10413,
@@ -1328,6 +1338,7 @@ ns.Data.dungeons = {
                 level = "20-21",
                 npcID = 3864,
                 displayID = 1952,
+                lootOnly = true,
                 items = {
                     {
                         id = 6341,
@@ -1348,6 +1359,7 @@ ns.Data.dungeons = {
                 level = 25,
                 npcID = 3872,
                 displayID = 3224,
+                lootOnly = true,
                 items = {
                     {
                         id = 6642,
@@ -1368,6 +1380,7 @@ ns.Data.dungeons = {
                 level = "24-25",
                 npcID = 4627,
                 displayID = 1131,
+                lootOnly = true,
                 items = {
                     {
                         id = 5943,
@@ -1380,6 +1393,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 2292,
@@ -1452,6 +1466,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Jordan's Smithing Hammer",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 6895,
@@ -1463,6 +1478,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "The Book of Ur",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 6283,
@@ -1474,6 +1490,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 2292,
@@ -1515,6 +1532,7 @@ ns.Data.dungeons = {
                     enUS = "Sever",
                 },
                 npcID = 14682,
+                lootOnly = true,
                 items = {
                     {
                         id = 23173,
@@ -1712,6 +1730,7 @@ ns.Data.dungeons = {
                 level = 26,
                 npcID = 6243,
                 displayID = 1773,
+                lootOnly = true,
                 items = {
                     {
                         id = 6906,
@@ -1737,6 +1756,7 @@ ns.Data.dungeons = {
                 level = 28,
                 npcID = 12876,
                 displayID = 110,
+                lootOnly = true,
                 items = {
                     {
                         id = 16782,
@@ -1749,6 +1769,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 1486,
@@ -1816,6 +1837,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 1486,
@@ -1935,6 +1957,7 @@ ns.Data.dungeons = {
                 level = 25,
                 npcID = 1720,
                 displayID = 2142,
+                lootOnly = true,
                 items = {
                     {
                         id = 3228,
@@ -1957,6 +1980,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 1076,
@@ -1969,6 +1993,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 1076,
@@ -2124,6 +2149,7 @@ ns.Data.dungeons = {
                 level = 27,
                 npcID = 4438,
                 displayID = 6078,
+                lootOnly = true,
                 items = {
                     {
                         id = 6679,
@@ -2139,6 +2165,7 @@ ns.Data.dungeons = {
                 level = 27,
                 npcID = 4425,
                 displayID = 4735,
+                lootOnly = true,
                 items = {
                     {
                         id = 6695,
@@ -2164,6 +2191,7 @@ ns.Data.dungeons = {
                 level = 27,
                 npcID = 4842,
                 displayID = 6102,
+                lootOnly = true,
                 items = {
                     {
                         id = 6689,
@@ -2181,6 +2209,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 2264,
@@ -2248,6 +2277,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 2264,
@@ -2458,6 +2488,7 @@ ns.Data.dungeons = {
                 level = 26,
                 npcID = 6231,
                 displayID = 7288,
+                lootOnly = true,
                 items = {
                     {
                         id = 9444,
@@ -2473,6 +2504,7 @@ ns.Data.dungeons = {
                 level = 28,
                 npcID = 6228,
                 displayID = 6669,
+                lootOnly = true,
                 items = {
                     {
                         id = 9455,
@@ -2495,6 +2527,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 9508,
@@ -2592,6 +2625,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 9491,
@@ -3104,6 +3138,7 @@ ns.Data.dungeons = {
                     enUS = "Scorn",
                 },
                 npcID = 14693,
+                lootOnly = true,
                 items = {
                     {
                         id = 23169,
@@ -3121,6 +3156,7 @@ ns.Data.dungeons = {
                     enUS = "Headless Horseman",
                 },
                 npcID = 23682,
+                lootOnly = true,
                 items = {
                     {
                         id = 211817,
@@ -3600,6 +3636,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 10574,
@@ -3660,6 +3697,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 8696,
                 displayID = 8029,
+                lootOnly = true,
                 items = {
                     {
                         id = 3826,
@@ -3676,6 +3714,7 @@ ns.Data.dungeons = {
                     enUS = "Lady Falther'ess",
                 },
                 npcID = 14686,
+                lootOnly = true,
                 items = {
                     {
                         id = 23178,
@@ -3920,6 +3959,7 @@ ns.Data.dungeons = {
                 level = 39,
                 npcID = 6907,
                 displayID = 5708,
+                lootOnly = true,
                 items = {
                     {
                         id = 9394,
@@ -3945,6 +3985,7 @@ ns.Data.dungeons = {
                 level = 39,
                 npcID = 6906,
                 displayID = 5710,
+                lootOnly = true,
                 items = {
                     {
                         id = 9401,
@@ -3970,6 +4011,7 @@ ns.Data.dungeons = {
                 level = 39,
                 npcID = 6908,
                 displayID = 5709,
+                lootOnly = true,
                 items = {
                     {
                         id = 9404,
@@ -3992,6 +4034,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 9431,
@@ -4108,6 +4151,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Baelog's Chest",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 7740,
@@ -4119,6 +4163,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Conspicuous Urn",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 7671,
@@ -4130,6 +4175,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Shadowforge Cache",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 7669,
@@ -4141,6 +4187,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Tablet of Will",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 5824,
@@ -4152,6 +4199,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 9420,
@@ -4953,6 +5001,7 @@ ns.Data.dungeons = {
                 level = 45,
                 npcID = 10080,
                 displayID = 9291,
+                lootOnly = true,
                 items = {
                     {
                         id = 9523,
@@ -4968,6 +5017,7 @@ ns.Data.dungeons = {
                 level = 46,
                 npcID = 10081,
                 displayID = 9292,
+                lootOnly = true,
                 items = {
                     {
                         id = 12471,
@@ -4983,6 +5033,7 @@ ns.Data.dungeons = {
                 level = 46,
                 npcID = 7274,
                 displayID = 6440,
+                lootOnly = true,
                 items = {
                     {
                         id = 8444,
@@ -4998,6 +5049,7 @@ ns.Data.dungeons = {
                 level = 45,
                 npcID = 7604,
                 displayID = 6433,
+                lootOnly = true,
                 items = {
                     {
                         id = 8548,
@@ -5018,6 +5070,7 @@ ns.Data.dungeons = {
                 level = 45,
                 npcID = 10082,
                 displayID = 9293,
+                lootOnly = true,
                 items = {
                     {
                         id = 12470,
@@ -5030,6 +5083,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 9512,
@@ -5353,6 +5407,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 13738,
                 displayID = 9418,
+                lootOnly = true,
                 items = {
                     {
                         id = 17765,
@@ -5367,6 +5422,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 13739,
                 displayID = 9441,
+                lootOnly = true,
                 items = {
                     {
                         id = 17764,
@@ -5382,6 +5438,7 @@ ns.Data.dungeons = {
                 level = 48,
                 npcID = 12237,
                 displayID = 9014,
+                lootOnly = true,
                 items = {
                     {
                         id = 17767,
@@ -5406,6 +5463,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 13718,
                 displayID = 9426,
+                lootOnly = true,
                 items = {
                     {
                         id = 17757,
@@ -5420,6 +5478,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 13742,
                 displayID = 4860,
+                lootOnly = true,
                 items = {
                     {
                         id = 17761,
@@ -5434,6 +5493,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 13741,
                 displayID = 9427,
+                lootOnly = true,
                 items = {
                     {
                         id = 17762,
@@ -5448,6 +5508,7 @@ ns.Data.dungeons = {
                 },
                 npcID = 13740,
                 displayID = 9433,
+                lootOnly = true,
                 items = {
                     {
                         id = 17763,
@@ -5835,6 +5896,7 @@ ns.Data.dungeons = {
                     enUS = "Balcony Minibosses",
                 },
                 displayID = 6701,
+                lootOnly = true,
                 items = {
                     {
                         id = 10783,
@@ -5890,6 +5952,7 @@ ns.Data.dungeons = {
                 level = 49,
                 npcID = 5708,
                 displayID = 4065,
+                lootOnly = true,
                 items = {
                     {
                         id = 10801,
@@ -5910,6 +5973,7 @@ ns.Data.dungeons = {
                 level = 49,
                 npcID = 5711,
                 displayID = 6709,
+                lootOnly = true,
                 items = {
                     {
                         id = 10805,
@@ -5932,6 +5996,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 10630,
@@ -6115,6 +6180,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 10782,
@@ -6833,6 +6899,7 @@ ns.Data.dungeons = {
                     enUS = "Ring of Law: Gorosh the Dervish",
                 },
                 displayID = 8760,
+                lootOnly = true,
                 items = {
                     {
                         id = 11726,
@@ -6861,6 +6928,7 @@ ns.Data.dungeons = {
                     enUS = "Ring of Law: Grizzle",
                 },
                 displayID = 7873,
+                lootOnly = true,
                 items = {
                     {
                         id = 11722,
@@ -6894,6 +6962,7 @@ ns.Data.dungeons = {
                     enUS = "Ring of Law: Eviscerator",
                 },
                 displayID = 523,
+                lootOnly = true,
                 items = {
                     {
                         id = 11685,
@@ -6922,6 +6991,7 @@ ns.Data.dungeons = {
                     enUS = "Ring of Law: Ok'thor the Breaker",
                 },
                 displayID = 11538,
+                lootOnly = true,
                 items = {
                     {
                         id = 11665,
@@ -6950,6 +7020,7 @@ ns.Data.dungeons = {
                     enUS = "Ring of Law: Anub'shiah",
                 },
                 displayID = 3004,
+                lootOnly = true,
                 items = {
                     {
                         id = 11678,
@@ -6978,6 +7049,7 @@ ns.Data.dungeons = {
                     enUS = "Ring of Law: Hedrum the Creeper",
                 },
                 displayID = 8271,
+                lootOnly = true,
                 items = {
                     {
                         id = 11633,
@@ -7006,6 +7078,7 @@ ns.Data.dungeons = {
                     enUS = "Dark Coffer",
                 },
                 displayID = 8592,
+                lootOnly = true,
                 items = {
                     {
                         id = 11197,
@@ -7061,6 +7134,7 @@ ns.Data.dungeons = {
                 level = 53,
                 npcID = 9042,
                 displayID = 9019,
+                lootOnly = true,
                 items = {
                     {
                         id = 11755,
@@ -7081,6 +7155,7 @@ ns.Data.dungeons = {
                 level = 54,
                 npcID = 9476,
                 displayID = 8655,
+                lootOnly = true,
                 items = {
                     {
                         id = 22205,
@@ -7106,6 +7181,7 @@ ns.Data.dungeons = {
                 },
                 level = 55,
                 displayID = 8658,
+                lootOnly = true,
                 items = {
                     {
                         id = 11735,
@@ -7193,6 +7269,7 @@ ns.Data.dungeons = {
                 level = 56,
                 npcID = 8923,
                 displayID = 8270,
+                lootOnly = true,
                 items = {
                     {
                         id = 22245,
@@ -7221,6 +7298,7 @@ ns.Data.dungeons = {
                     enUS = "Chest of The Seven",
                 },
                 displayID = 8690,
+                lootOnly = true,
                 items = {
                     {
                         id = 11925,
@@ -7268,6 +7346,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 12549,
@@ -7405,6 +7484,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Plans",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 11614,
@@ -7422,6 +7502,7 @@ ns.Data.dungeons = {
                 },
                 level = 52,
                 npcID = 9027,
+                lootOnly = true,
                 items = {
                     {
                         id = 11726,
@@ -7443,6 +7524,7 @@ ns.Data.dungeons = {
                 },
                 level = 52,
                 npcID = 9028,
+                lootOnly = true,
                 items = {
                     {
                         id = 11610,
@@ -7467,6 +7549,7 @@ ns.Data.dungeons = {
                 },
                 level = 52,
                 npcID = 9029,
+                lootOnly = true,
                 items = {
                     {
                         id = 11730,
@@ -7488,6 +7571,7 @@ ns.Data.dungeons = {
                 },
                 level = 53,
                 npcID = 9030,
+                lootOnly = true,
                 items = {
                     {
                         id = 11728,
@@ -7509,6 +7593,7 @@ ns.Data.dungeons = {
                 },
                 level = 52,
                 npcID = 9031,
+                lootOnly = true,
                 items = {
                     {
                         id = 11731,
@@ -7530,6 +7615,7 @@ ns.Data.dungeons = {
                 },
                 level = 52,
                 npcID = 9032,
+                lootOnly = true,
                 items = {
                     {
                         id = 11633,
@@ -7549,6 +7635,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 15781,
@@ -7625,6 +7712,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Plans and patterns",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 11614,
@@ -7640,6 +7728,7 @@ ns.Data.dungeons = {
                 },
                 level = 60,
                 npcID = 16059,
+                lootOnly = true,
                 items = {
                     {
                         id = 22305,
@@ -7660,6 +7749,7 @@ ns.Data.dungeons = {
                     enUS = "Coren Direbrew",
                 },
                 npcID = 23872,
+                lootOnly = true,
                 items = {
                     {
                         id = 49116,
@@ -8142,6 +8232,7 @@ ns.Data.dungeons = {
                     enUS = "Isalien",
                 },
                 npcID = 16097,
+                lootOnly = true,
                 items = {
                     {
                         id = 22304,
@@ -8167,6 +8258,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Books",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 18401,
@@ -8895,6 +8987,7 @@ ns.Data.dungeons = {
                     enUS = "Mor Grayhoof",
                 },
                 npcID = 16080,
+                lootOnly = true,
                 items = {
                     {
                         id = 22306,
@@ -9693,6 +9786,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Books",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 18401,
@@ -10211,6 +10305,7 @@ ns.Data.dungeons = {
                     enUS = "Revanchion",
                 },
                 npcID = 14690,
+                lootOnly = true,
                 items = {
                     {
                         id = 23127,
@@ -10227,6 +10322,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Books",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 18401,
@@ -11568,6 +11664,7 @@ ns.Data.dungeons = {
                 level = 61,
                 npcID = 14861,
                 displayID = 10925,
+                lootOnly = true,
                 items = {
                     {
                         id = 13523,
@@ -11583,6 +11680,7 @@ ns.Data.dungeons = {
                 level = 60,
                 npcID = 10506,
                 displayID = 7534,
+                lootOnly = true,
                 items = {
                     {
                         id = 16734,
@@ -11638,6 +11736,7 @@ ns.Data.dungeons = {
                 level = 61,
                 npcID = 14516,
                 displayID = 14591,
+                lootOnly = true,
                 items = {
                     {
                         id = 18760,
@@ -11668,6 +11767,7 @@ ns.Data.dungeons = {
                 level = 62,
                 npcID = 10508,
                 displayID = 7919,
+                lootOnly = true,
                 items = {
                     {
                         id = 13314,
@@ -11745,6 +11845,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash mobs",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 16685,
@@ -12001,6 +12102,7 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Trash",
                 },
+                lootOnly = true,
                 items = {
                     {
                         id = 16685,
@@ -12081,6 +12183,7 @@ ns.Data.dungeons = {
                     enUS = "Lord Blackwood",
                 },
                 npcID = 14695,
+                lootOnly = true,
                 items = {
                     {
                         id = 23132,
@@ -14043,6 +14146,7 @@ ns.Data.dungeons = {
                     zhCN = "瓦塔拉克公爵",
                 },
                 npcID = 16042,
+                lootOnly = true,
                 items = {
                     {
                         id = 22302,

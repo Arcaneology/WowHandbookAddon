@@ -8,7 +8,8 @@ local L = ns.L
 -- 想把整条动作条一次升级到最高等级，在设置页手动执行，并可撤销最近一次改动。
 -- 战斗中动作条不能改动，排队等脱战后执行；光标上正拿着东西时先不动，等放下再做。
 -- 只处理技能，不动宏、物品和其他按钮。
-local Module = ns:NewModule("ActionBars", { upgradeRanks = true, placeNewSpells = true })
+-- 超出距离时把整个按钮图标染红见 ActionBarRange.lua。
+local Module = ns:NewModule("ActionBars", { upgradeRanks = true, placeNewSpells = true, rangeTint = true })
 
 local MAX_SLOTS = 120
 local MAIN_BAR = { 1, 12 }  -- 主动作条第一页
@@ -241,4 +242,5 @@ end
 function Module:OnEnable()
     ns:RegisterEvent("LEARNED_SPELL_IN_SKILL_LINE", OnLearned)
     ns:RegisterEvent("PLAYER_REGEN_ENABLED", Process)
+    Module.StartRangeTint() -- ActionBarRange.lua
 end

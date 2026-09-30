@@ -674,7 +674,7 @@ function UI:MinimapButton(parent, onClick)
     button:SetSize(31, 31)
     button:SetFrameStrata("MEDIUM")
     button:SetFrameLevel(8)
-    button:RegisterForClicks("LeftButtonUp")
+    button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
 
     local background = button:CreateTexture(nil, "BACKGROUND")
@@ -701,17 +701,285 @@ function UI:MinimapButton(parent, onClick)
     button:SetScript("OnMouseUp", function()
         icon:SetPoint("CENTER", 0, 0)
     end)
-    button:SetScript("OnClick", function()
-        onClick()
+    button:SetScript("OnClick", function(self, mouseButton)
+        onClick(mouseButton)
     end)
     button:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:AddLine(ns.L["WoW Handbook"])
-        GameTooltip:AddLine(ns.L["Left-click: open or close. Drag: move."], 1, 1, 1)
+        GameTooltip:AddLine(ns.L["Left-click: open or close. Right-click: quick settings. Drag: move."], 1, 1, 1)
         GameTooltip:Show()
     end)
     button:SetScript("OnLeave", GameTooltip_Hide)
     return button
+end
+
+--------------------------------------------------------------------------------
+-- 停靠面板：贴在某个游戏窗口右侧的面板（未学技能面板、配方面板），可拖动，记住相对那个窗口右上角的偏移。
+-- UI:Dockable(panel, settings, defaultX)：settings 为模块设置（偏移存在 dockX / dockY），defaultX 为默认的横向间距。
+-- panel:Dock(outer) 按偏移贴到 outer 右侧（高度与 outer 一致），panel:DockOffset() 返回当前偏移；
+-- 左键拖动面板空白处移动，松手后记下偏移；右键面板复位到默认位置。
+--------------------------------------------------------------------------------
+
+function UI:Dockable(panel, settings, defaultX)
+    panel:SetMovable(true)
+    panel:SetClampedToScreen(true)
+    panel:EnableMouse(true)
+    panel:RegisterForDrag("LeftButton")
+
+    function panel:DockOffset()
+        return settings.dockX or defaultX, settings.dockY or 0
+    end
+
+    function panel:Dock(outer)
+        self.dockOuter = outer
+        local x, y = self:DockOffset()
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", outer, "TOPRIGHT", x, y)
+        self:SetPoint("BOTTOMLEFT", outer, "BOTTOMRIGHT", x, y)
+    end
+
+    panel:SetScript("OnDragStart", function(self)
+        self:StartMoving()
+    end)
+    panel:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        local outer = self.dockOuter
+        local left, top = self:GetLeft(), self:GetTop()
+        local right, outerTop = outer and outer:GetRight(), outer and outer:GetTop()
+        if left and top and right and outerTop then
+            -- 两者可能缩放不同：统一换算到面板自己的坐标
+            local ratio = outer:GetEffectiveScale() / self:GetEffectiveScale()
+            settings.dockX = math.floor(left - right * ratio + 0.5)
+            settings.dockY = math.floor(top - outerTop * ratio + 0.5)
+        end
+        if outer then
+            self:Dock(outer)
+        end
+        if self.onDocked then
+            self.onDocked()
+        end
+    end)
+    panel:SetScript("OnMouseUp", function(self, button)
+        if button == "RightButton" then
+            settings.dockX, settings.dockY = nil, nil
+            if self.dockOuter then
+                self:Dock(self.dockOuter)
+            end
+            if self.onDocked then
+                self.onDocked()
+            end
+        end
+    end)
+    return panel
+end
+
+--------------------------------------------------------------------------------
+-- 勾选菜单（小地图按钮右键的快捷设置），紧凑排列：行首是图标加简短名称，控件靠右。条目按顺序：
+--   { kind = "title", text, onClick }             金色标题（可点击）
+--   { kind = "check", text, checked, onClick, tip }  勾选项：行尾方框，点整行切换
+--   { kind = "choice", text, choices = { {id, text, tip} }, value, onClick(id), tip }
+--                                                  多选一：行尾横排选项（可以是图标贴图），当前项金色、其余淡色
+--   { kind = "action", text, onClick }             普通按钮行
+--   { kind = "separator" }                         分隔线
+-- tip 为悬停提示。menu:Open(anchor, build)：build() 返回条目表；点了勾选项或选项后重新调用 build 刷新，
+-- 菜单保持打开。点菜单以外的地方或按 Esc 关闭。
+--------------------------------------------------------------------------------
+
+local MENU_ROW = 18
+local MENU_PAD = 6
+local MENU_GAP = 14 -- 名称与右侧控件之间至少留的空
+
+local function MenuTip(owner, title, tip)
+    if not tip then
+        return
+    end
+    GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+    GameTooltip:SetText(title or "", 1, 0.82, 0)
+    GameTooltip:AddLine(tip, 1, 1, 1, true)
+    GameTooltip:Show()
+end
+
+function UI:CheckMenu(name)
+    local menu = UI:Panel(UIParent, "window", "line")
+    if name then
+        _G[name] = menu -- 具名框架才能放进 UISpecialFrames 让 Esc 关闭（名字以 WowHandbook 开头）
+        tinsert(UISpecialFrames, name)
+    end
+    menu:SetFrameStrata("DIALOG")
+    menu:SetClampedToScreen(true)
+    menu:EnableMouse(true)
+    menu:Hide()
+    local rows = {}
+
+    local function Clickable(entry)
+        return entry and entry.onClick and entry.kind ~= "choice"
+    end
+
+    local function Row(index)
+        local row = rows[index]
+        if row then
+            return row
+        end
+        row = CreateFrame("Button", nil, menu)
+        row:SetHeight(MENU_ROW)
+        row.hover = row:CreateTexture(nil, "BACKGROUND")
+        row.hover:SetAllPoints()
+        SetColor(row.hover, "raised")
+        row.hover:Hide()
+        row.box = CreateFrame("Frame", nil, row, "BackdropTemplate")
+        row.box:SetSize(11, 11)
+        row.box:SetPoint("RIGHT", -MENU_PAD, 0)
+        Theme:Skin(row.box, "panel", "line")
+        row.mark = row.box:CreateTexture(nil, "OVERLAY")
+        row.mark:SetPoint("TOPLEFT", 2, -2)
+        row.mark:SetPoint("BOTTOMRIGHT", -2, 2)
+        SetColor(row.mark, "gold")
+        row.text = UI:Text(row, "Small")
+        row.text:SetJustifyH("LEFT")
+        row.text:SetPoint("LEFT", MENU_PAD, 0)
+        row.line = row:CreateTexture(nil, "ARTWORK")
+        row.line:SetPoint("LEFT", MENU_PAD, 0)
+        row.line:SetPoint("RIGHT", -MENU_PAD, 0)
+        row.line:SetHeight(1)
+        SetColor(row.line, "lineSoft")
+        row.options = {}
+        row:SetScript("OnEnter", function(self)
+            self.hover:SetShown(Clickable(self.entry) and true or false)
+            if self.entry then
+                MenuTip(self, self.entry.text, self.entry.tip)
+            end
+        end)
+        row:SetScript("OnLeave", function(self)
+            self.hover:Hide()
+            GameTooltip_Hide()
+        end)
+        row:SetScript("OnClick", function(self)
+            local entry = self.entry
+            if not Clickable(entry) then
+                return
+            end
+            if entry.kind ~= "check" then
+                menu:Hide()
+            end
+            entry.onClick(not entry.checked)
+            if entry.kind == "check" then
+                menu:Refresh()
+            end
+        end)
+        rows[index] = row
+        return row
+    end
+
+    -- 多选一的选项：小号文字或图标按钮
+    local function Option(row, index)
+        local option = row.options[index]
+        if not option then
+            option = CreateFrame("Button", nil, row)
+            option:SetHeight(MENU_ROW)
+            option.text = UI:Text(option, "Small")
+            option.text:SetPoint("CENTER")
+            option.dot = option:CreateTexture(nil, "ARTWORK")
+            option.dot:SetHeight(2)
+            option.dot:SetPoint("BOTTOMLEFT", 3, 1)
+            option.dot:SetPoint("BOTTOMRIGHT", -3, 1)
+            SetColor(option.dot, "gold")
+            option:SetScript("OnClick", function(self)
+                self.entry.onClick(self.id)
+                menu:Refresh()
+            end)
+            option:SetScript("OnEnter", function(self)
+                self.text:SetAlpha(1)
+                MenuTip(self, self.entry.text, self.tip)
+            end)
+            option:SetScript("OnLeave", function(self)
+                self.text:SetAlpha(self.id == self.entry.value and 1 or 0.45)
+                GameTooltip_Hide()
+            end)
+            row.options[index] = option
+        end
+        return option
+    end
+
+    function menu:Refresh()
+        local entries = self.build and self.build() or {}
+        local width, y = 150, MENU_PAD
+        for index, entry in ipairs(entries) do
+            local row = Row(index)
+            row.entry = entry
+            row:ClearAllPoints()
+            row:SetPoint("TOPLEFT", 1, -y)
+            row:SetPoint("RIGHT", -1, 0)
+            row.box:SetShown(entry.kind == "check")
+            row.mark:SetShown(entry.kind == "check" and entry.checked and true or false)
+            row.line:SetShown(entry.kind == "separator")
+            row.text:SetShown(entry.kind ~= "separator")
+            row.text:SetText(entry.text or "")
+            row.text:SetTextColor(unpack(entry.kind == "title" and C.gold or C.text))
+            for _, option in ipairs(row.options) do
+                option:Hide()
+            end
+            local rowWidth = MENU_PAD + row.text:GetStringWidth() + MENU_PAD
+            if entry.kind == "check" then
+                rowWidth = rowWidth + MENU_GAP + 11
+            elseif entry.kind == "choice" then
+                -- 选项从右往左排
+                local x, total = -MENU_PAD, 0
+                for optionIndex = #entry.choices, 1, -1 do
+                    local choice = entry.choices[optionIndex]
+                    local option = Option(row, optionIndex)
+                    option.entry, option.id, option.tip = entry, choice.id, choice.tip
+                    option.text:SetText(choice.text)
+                    local selected = choice.id == entry.value
+                    option.text:SetTextColor(unpack(selected and C.gold or C.text))
+                    option.text:SetAlpha(selected and 1 or 0.45)
+                    option.dot:SetShown(selected)
+                    local optionWidth = math.max(18, option.text:GetStringWidth() + 8)
+                    option:SetWidth(optionWidth)
+                    option:ClearAllPoints()
+                    option:SetPoint("RIGHT", row, "RIGHT", x, 0)
+                    option:Show()
+                    x = x - optionWidth
+                    total = total + optionWidth
+                end
+                rowWidth = rowWidth + MENU_GAP + total
+            end
+            local height = entry.kind == "separator" and 7 or MENU_ROW
+            row:SetHeight(height)
+            row:Show()
+            width = math.max(width, rowWidth)
+            y = y + height
+        end
+        for index = #entries + 1, #rows do
+            rows[index]:Hide()
+        end
+        self:SetSize(width + 2, y + MENU_PAD)
+        self.rows = rows -- 供测试使用
+    end
+
+    function menu:Open(anchor, build)
+        self.build, self.anchor = build, anchor
+        self:ClearAllPoints()
+        self:SetPoint("TOPRIGHT", anchor, "BOTTOMLEFT", 0, 0)
+        self:Refresh()
+        self:Show()
+    end
+
+    function menu:Toggle(anchor, build)
+        if self:IsShown() then
+            self:Hide()
+        else
+            self:Open(anchor, build)
+        end
+    end
+
+    -- 点菜单以外的地方关闭（点锚点本身交给锚点的点击处理，避免关了又开）
+    ns:RegisterEvent("GLOBAL_MOUSE_DOWN", function()
+        if menu:IsShown() and not menu:IsMouseOver() and not (menu.anchor and menu.anchor:IsMouseOver()) then
+            menu:Hide()
+        end
+    end)
+    return menu
 end
 
 --------------------------------------------------------------------------------

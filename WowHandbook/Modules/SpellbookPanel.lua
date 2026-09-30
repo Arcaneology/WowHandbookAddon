@@ -5,10 +5,12 @@ local L = ns.L
 -- （现在可学的在前，其余按学习等级排列；术士另列可买的魔典）。
 -- 面板是插件自己的框架，只用 HookScript 跟随暴雪技能书显示和隐藏：不改暴雪框架、不往暴雪列表里加条目，
 -- 所以不会污染技能书的施法与拖放。
+-- 位置：默认在技能书右侧再往右 DOCK_X（让开官方技能书右侧的标签页）；可拖动，记住相对技能书的偏移，右键复位。
 local Module = ns:NewModule("SpellbookPanel", { collapsed = false })
 local UI
 
 local PANEL_WIDTH, ROW_HEIGHT = 270, 26
+local DOCK_X = 40 -- 官方技能书右侧有一列标签页，面板默认让开它
 local ORDER = { ready = 1, book = 2, unchecked = 3, later = 4 }
 
 local panel, tab
@@ -122,8 +124,8 @@ local function Create()
     UI = ns.UI
     panel = UI:Panel(UIParent, "panel", "line")
     panel:SetWidth(PANEL_WIDTH)
-    panel:EnableMouse(true)
     panel:Hide()
+    UI:Dockable(panel, ns:GetModuleSettings(Module), DOCK_X)
     panel.title = UI:Text(panel, "Heading", L["Unlearned spells"])
     panel.title:SetPoint("TOPLEFT", 14, -12)
     panel.count = UI:Text(panel, "Muted")
@@ -152,11 +154,10 @@ end
 
 local function Place()
     local outer = Outer()
-    panel:ClearAllPoints()
-    panel:SetPoint("TOPLEFT", outer, "TOPRIGHT", 2, 0)
-    panel:SetPoint("BOTTOMLEFT", outer, "BOTTOMRIGHT", 2, 0)
+    panel:Dock(outer)
+    local x, y = panel:DockOffset()
     tab:ClearAllPoints()
-    tab:SetPoint("TOPLEFT", outer, "TOPRIGHT", 2, -36)
+    tab:SetPoint("TOPLEFT", outer, "TOPRIGHT", x, y - 36)
     for _, frame in ipairs({ panel, tab }) do
         frame:SetFrameStrata(outer:GetFrameStrata())
         frame:SetFrameLevel(outer:GetFrameLevel() + 20)

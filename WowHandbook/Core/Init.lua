@@ -24,19 +24,32 @@ end
 local eventFrame = CreateFrame("Frame")
 local handlers = {} -- [event] = { handler, ... }
 
+-- 客户端认不认识这个事件：各版本客户端的事件不完全相同（Forever 没有 TRADE_SKILL_UPDATE），
+-- 注册未知事件会报错，所以先查；没有查询接口时照常注册
+function ns.IsEventValid(event)
+    if C_EventUtils and C_EventUtils.IsEventValid then
+        return C_EventUtils.IsEventValid(event) and true or false
+    end
+    return true
+end
+
+-- 订阅事件；客户端不认识的事件跳过并返回 false，不影响模块其余部分
 function ns:RegisterEvent(event, handler)
     local list = handlers[event]
     if not list then
+        if not ns.IsEventValid(event) or not pcall(eventFrame.RegisterEvent, eventFrame, event) then
+            return false
+        end
         list = {}
         handlers[event] = list
-        eventFrame:RegisterEvent(event)
     end
     for _, existing in ipairs(list) do
         if existing == handler then
-            return
+            return true
         end
     end
     tinsert(list, handler)
+    return true
 end
 
 function ns:UnregisterEvent(event, handler)

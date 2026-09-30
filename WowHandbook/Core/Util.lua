@@ -12,25 +12,81 @@ function ns.Name(names)
 end
 
 -- 首领名：数据里的掉落分组（小怪、配方、书籍）用插件自己的本地化文字，其余按语言取名
-local LOOT_GROUPS = { ["Trash mobs"] = true, ["Plans and patterns"] = true, ["Books"] = true }
+-- 值是显示用的本地化键；网站数据里少数副本把小怪写成 "Trash"
+local LOOT_GROUPS = {
+    ["Trash mobs"] = "Trash mobs",
+    ["Trash"] = "Trash mobs",
+    ["Plans and patterns"] = "Plans and patterns",
+    ["Books"] = "Books",
+}
 -- 客户端的“秘密值”：副本、战斗等场合加密的单位身份（GUID、名字）、战斗记录内容等。
 -- 插件不能比较、拆分或转成文字，遇到就当作取不到
 function ns.IsSecret(value)
     return issecretvalue ~= nil and issecretvalue(value) or false
 end
 
--- 掉落分组不是首领（副本进度小窗等只列真正的首领）
+-- 掉落表里的行不是首领（副本卡片的首领数、副本进度小窗等只算真正的首领）：
+-- 导出时标了 lootOnly 的（稀有精英、物品、杂兵等），以及小怪、配方、书籍这些掉落分组
 function ns.IsLootGroup(boss)
+    if boss and boss.lootOnly then
+        return true
+    end
     local english = boss and boss.name and boss.name.enUS
-    return english and LOOT_GROUPS[english] or false
+    return english and LOOT_GROUPS[english] ~= nil or false
+end
+
+function ns.BossCount(dungeon)
+    local n = 0
+    for _, boss in ipairs(dungeon and dungeon.bosses or {}) do
+        if not ns.IsLootGroup(boss) then
+            n = n + 1
+        end
+    end
+    return n
 end
 
 function ns.BossName(boss)
     local english = boss and boss.name and boss.name.enUS
     if english and LOOT_GROUPS[english] then
-        return ns.L[english]
+        return ns.L[LOOT_GROUPS[english]]
     end
     return boss and ns.Name(boss.name)
+end
+
+-- 玩家已学的专业：{ [slug] = { rank = 当前技能, max = 当前上限 } }。
+-- Forever 跑在正式服引擎上：用 GetProfessions / GetProfessionInfo，按技能线 ID 对照数据里的 skillLines
+-- （主技能线与其下的子技能线），对不上再按名字（客户端语言）对照。经典旧世客户端没有这组接口，
+-- 改读技能列表 GetSkillLineInfo（同样按名字对照）。
+function ns.ProfessionSkills()
+    local learned = {}
+    local byLine, byName = {}, {}
+    for _, profession in ipairs(ns.Data.professions or {}) do
+        for _, line in ipairs(profession.skillLines or {}) do
+            byLine[line] = profession.slug
+        end
+        for _, name in pairs(profession.name or {}) do
+            byName[name:lower()] = profession.slug
+        end
+    end
+    if GetProfessions and GetProfessionInfo then
+        for _, index in pairs({ GetProfessions() }) do
+            local name, _, rank, maxRank, _, _, skillLine = GetProfessionInfo(index)
+            local slug = byLine[skillLine] or (type(name) == "string" and byName[name:lower()])
+            if slug then
+                learned[slug] = { rank = rank or 0, max = maxRank or 0 }
+            end
+        end
+    end
+    if GetNumSkillLines and GetSkillLineInfo then
+        for index = 1, GetNumSkillLines() or 0 do
+            local name, header, _, rank, _, _, maxRank = GetSkillLineInfo(index)
+            local slug = not header and type(name) == "string" and byName[name:lower()]
+            if slug and not learned[slug] then
+                learned[slug] = { rank = rank or 0, max = maxRank or 0 }
+            end
+        end
+    end
+    return learned
 end
 
 -- "A" / "H"

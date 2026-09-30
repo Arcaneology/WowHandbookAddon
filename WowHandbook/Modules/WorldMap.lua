@@ -12,8 +12,17 @@ local L = ns.L
 --   设置里可关闭。
 -- · 副本入口：区域地图与大陆地图上标出副本与团队副本入口，悬停看等级区间，点击在手册里打开。
 -- · 灵魂医者：默认死亡时显示（可改为始终或不显示），点击设为导航。
+-- · 草药与矿点：区域地图上标出采集点（Data/GatheringNodes.lua），默认学了草药学 / 采矿才显示对应的点；
+--   技能够采的正常显示，不够的变灰变淡；悬停列出这里可能刷出的几种与所需技能，点击设为导航。
+--   小地图上同样显示（Modules/GatherMinimap.lua，可在设置里关闭）；自己采过的点另外记下并合并显示
+--   （Modules/GatherLog.lua）。
+-- · 职业训练师：显示你职业的训练师（本阵营与中立；猎人另有宠物训练师、法师另有传送门训练师），可关闭；
+--   悬停看名字与现在可学的技能数，有可学技能时不透明、没有时半透明；点击设为导航。
+-- · 专业训练师：默认显示你学了的专业的训练师（本阵营与中立），可改为全部专业或不显示；下一步该找的那一档
+--   不透明，其余半透明；悬停看名字、专业与能教到的等级，点击设为导航。
 local Module = ns:NewModule("WorldMap", { levelLabel = true, flightPins = true, revealMap = true, mapScale = 1,
-    dungeonPins = true, spiritHealers = "dead" })
+    dungeonPins = true, spiritHealers = "dead", herbPins = "auto", orePins = "auto", minimapGather = true,
+    recordGather = true, minimapGatherStyle = "icon", trainerPins = "mine", classTrainerPins = true })
 
 local PIN_TEMPLATE = "WowHandbookFlightPinTemplate"
 local BLIZZARD_PIN_TEMPLATE = "FlightPointPinTemplate"
@@ -312,6 +321,9 @@ end
 
 local DUNGEON_PIN = "WowHandbookDungeonPinTemplate"
 local GRAVEYARD_PIN = "WowHandbookGraveyardPinTemplate"
+local GATHER_PIN = "WowHandbookGatherPinTemplate"
+local TRAINER_PIN = "WowHandbookTrainerPinTemplate"
+local CLASS_TRAINER_PIN = "WowHandbookClassTrainerPinTemplate"
 local ICONS = {
     dungeon = { level = "PIN_FRAME_LEVEL_DUNGEON_ENTRANCE", atlas = "Dungeon",
         texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 22 },
@@ -320,6 +332,11 @@ local ICONS = {
     -- 灵魂医者：死亡后“返回墓地”按钮用的守护之魂图标，做成圆形徽章
     graveyard = { level = "PIN_FRAME_LEVEL_SELECTABLE_GRAVEYARD", texture = "Interface\\Icons\\spell_holy_guardianspirit",
         size = 24, round = true },
+    -- 专业训练师：专业图标做成圆形徽章，贴图在放置时换成对应专业
+    trainer = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\Icons\\inv_misc_questionmark",
+        size = 20, round = true },
+    -- 采集点：小图标，贴图在放置时换成采到的物品图标；比任务等图标低一层，不挡住它们
+    gather = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\Icons\\inv_misc_questionmark", size = 7 },
 }
 
 local function HasAtlas(name)
@@ -563,6 +580,336 @@ end
 
 --------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
+-- 草药与矿点：herbPins / orePins 为 auto（学了对应专业才显示，默认）、always 或 off。
+-- 一处可能刷出几种（如锡、银、铁轮流），图标取你能采的里面所需技能最高的一种；一种都采不了时变灰变淡。
+--------------------------------------------------------------------------------
+
+-- 地图的实际宽、高（码），按地图缓存；取不到返回 nil（小地图换算与采集点误差共用）
+local mapSizes = {}
+function Module.MapSize(mapID)
+    if mapSizes[mapID] then
+        return mapSizes[mapID][1], mapSizes[mapID][2]
+    end
+    if not (mapID and C_Map.GetWorldPosFromMapPos and CreateVector2D) then
+        return nil
+    end
+    local _, topLeft = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(0, 0))
+    local _, bottomRight = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(1, 1))
+    if not (topLeft and bottomRight) then
+        return nil
+    end
+    -- 世界坐标 x 向北、y 向西；地图 x 向东、y 向南。只取跨度
+    local width, height = math.abs(topLeft.y - bottomRight.y), math.abs(topLeft.x - bottomRight.x)
+    if width == 0 or height == 0 then
+        return nil
+    end
+    mapSizes[mapID] = { width, height }
+    return width, height
+end
+
+-- 采集点的误差：两个坐标（0–100）相距 SAME_SPOT_YARDS 码以内算同一个点。采集时人站在草药 / 矿旁边几码内，
+-- 这个范围盖住站位偏差，又不会把相邻的两个刷新点合成一个。取不到地图尺寸时按很小的百分比判断（宁可多记一个点）
+local SAME_SPOT_YARDS = 5
+local SAME_SPOT_FALLBACK = 0.15
+function Module.SameSpot(mapID, x1, y1, x2, y2)
+    local width, height = Module.MapSize(mapID)
+    if not width then
+        return math.abs(x1 - x2) <= SAME_SPOT_FALLBACK and math.abs(y1 - y2) <= SAME_SPOT_FALLBACK
+    end
+    local dx, dy = (x1 - x2) * width / 100, (y1 - y2) * height / 100
+    return dx * dx + dy * dy <= SAME_SPOT_YARDS * SAME_SPOT_YARDS
+end
+
+local GATHER_PROFESSION = { herb = "herbalism", ore = "mining" }
+local GATHER_SETTING = { herb = "herbPins", ore = "orePins" }
+local GATHER_TITLE = { herb = "Herb", ore = "Mining node" }
+-- 采集点统一半透明，不抢地图上其他信息；技能不够的图标染红（小地图共用）
+local GATHER_ALPHA = 0.5
+Module.GATHER_ALPHA = GATHER_ALPHA
+function Module.StyleGatherIcon(texture, ok)
+    local red = ns.Theme.colors.red
+    if ok then
+        texture:SetVertexColor(1, 1, 1)
+    else
+        texture:SetVertexColor(1, red[2] + 0.1, red[3] + 0.1)
+    end
+end
+
+-- 该类采集点显示与否，以及玩家该专业的技能（没学为 0）
+local function GatherWanted(kind, skills)
+    local mode = Settings()[GATHER_SETTING[kind]] or "auto"
+    local skill = skills[GATHER_PROFESSION[kind]]
+    if mode == "off" or (mode == "auto" and not skill) then
+        return false, 0
+    end
+    return true, skill and skill.rank or 0
+end
+Module.GatherWanted = GatherWanted -- 供测试使用
+
+local function ItemName(itemID)
+    local name = C_Item.GetItemNameByID and C_Item.GetItemNameByID(itemID)
+    if not name then
+        ns.RequestItem(itemID)
+    end
+    return name or ("#" .. itemID)
+end
+
+Module.ItemName = ItemName -- 小地图共用
+
+-- 一处采集点：返回图标物品、能不能采、提示行；mine 为自己在这里采过的次数。
+-- 同一处可能轮流刷出几种（游戏的共享刷新点，如铜 / 锡 / 银）。数据只列可能刷出什么、没有频率，图标按区域等级挑主矿：
+-- 去掉偶尔替换刷出的稀有变种（rare：银、金、真银、黑铁），按这张地图的最低等级 × 5 估一个“该区域适用的技能”，
+-- 取所需技能不超过它的最高一种；都超过就取最低的。于是低级区是铜、荆棘谷是铁、燃烧平原是瑟银。
+-- 提示按所需技能从低到高列出全部可能，稀有的标出来；图标染不染红按图标上那一种的所需技能判断。
+local function DescribeSpot(kind, spot, skill, mine, mapID)
+    local nodes = ns.Data.gathering.nodes
+    local list = {}
+    for index = 3, #spot do
+        if nodes[spot[index]] then
+            tinsert(list, nodes[spot[index]])
+        end
+    end
+    table.sort(list, function(a, b)
+        return a.skill < b.skill
+    end)
+    local zone = mapID and ns.Data.zones[mapID]
+    local target = zone and zone.levels and zone.levels[1] * 5 or 0
+    local icon, lowest
+    for _, node in ipairs(list) do
+        if not node.rare then
+            lowest = lowest or node
+            if node.skill <= target then
+                icon = node
+            end
+        end
+    end
+    icon = icon or lowest or list[1]
+    -- 能不能采按图标上的那一种判断：图标是锡矿就看锡矿要的技能，不因为这里也可能刷铜矿就当作能采
+    local ok, lines = icon ~= nil and skill >= icon.skill, { L[GATHER_TITLE[kind]] }
+    for _, node in ipairs(list) do
+        local can = skill >= node.skill
+        local text = ("%s  (%s)"):format(ItemName(node.item), (L["skill %d"]):format(node.skill))
+        if node.rare then
+            text = text .. "  " .. L["rare"]
+        end
+        tinsert(lines, ns.Theme:Color(text, can and "green" or "red"))
+    end
+    if mine and mine > 0 then
+        tinsert(lines, ns.Theme:Color((L["You gathered here %d times"]):format(mine), "gold"))
+    end
+    tinsert(lines, L["Click to set a waypoint here."])
+    return icon, ok, lines
+end
+Module.DescribeSpot = DescribeSpot -- 供测试使用
+
+local gatherProvider
+
+local function CreateGatherProvider()
+    gatherProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function gatherProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(GATHER_PIN)
+    end
+    function gatherProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        if not (mapID and ns.Data.gathering) then
+            return
+        end
+        local skills = ns.ProfessionSkills()
+        for _, kind in ipairs({ "herb", "ore" }) do
+            local wanted, skill = GatherWanted(kind, skills)
+            local spots, mine = {}, {}
+            if wanted then
+                spots, mine = Module.GatherSpots(mapID, kind)
+            end
+            for _, spot in ipairs(spots) do
+                local node, ok, lines = DescribeSpot(kind, spot, skill, mine[spot], mapID)
+                local pin = map:AcquirePin(GATHER_PIN)
+                SetupPin(pin, "gather")
+                pin.whTexture:SetTexture(node and C_Item.GetItemIconByID(node.item) or ICONS.gather.texture)
+                Module.StyleGatherIcon(pin.whTexture, ok)
+                pin.whOk = ok -- 供测试使用
+                pin:SetAlpha(GATHER_ALPHA)
+                SetPinBehavior(pin, lines, function()
+                    ns.Waypoints:Set(mapID, spot[1], spot[2], node and ItemName(node.item) or lines[1])
+                end)
+                pin:SetPosition(spot[1] / 100, spot[2] / 100)
+            end
+        end
+    end
+    return gatherProvider
+end
+
+--------------------------------------------------------------------------------
+-- 专业训练师：trainerPins 为 mine（学了的专业，默认）、all（全部专业）或 off
+--------------------------------------------------------------------------------
+
+local RANK_LABEL = { apprentice = "Apprentice", journeyman = "Journeyman", expert = "Expert", artisan = "Artisan",
+    specialization = "Specialization" }
+
+-- 下一步该找的训练师等级：技能上限 75 找中级、150 找高级、225 找专家级；没学找初级（与专业页一致）
+local function NextRank(skill)
+    if not skill then
+        return "apprentice"
+    elseif skill.max <= 75 then
+        return "journeyman"
+    elseif skill.max <= 150 then
+        return "expert"
+    elseif skill.max <= 225 then
+        return "artisan"
+    end
+end
+
+-- 这张地图上要画的训练师：{ {trainer, profession, next} }
+local function TrainersForMap(mapID)
+    local mode = Settings().trainerPins or "mine"
+    local list = {}
+    if mode == "off" then
+        return list
+    end
+    local skills = ns.ProfessionSkills()
+    local faction = ns.PlayerFaction()
+    for _, profession in ipairs(ns.Data.professions or {}) do
+        local skill = skills[profession.slug]
+        if mode == "all" or skill then
+            local nextRank = NextRank(skill)
+            for _, trainer in ipairs(profession.trainers or {}) do
+                if trainer.map == mapID and trainer.x
+                    and (not trainer.faction or trainer.faction == "AH" or not faction or trainer.faction == faction) then
+                    tinsert(list, { trainer = trainer, profession = profession,
+                        next = trainer.rank ~= nil and trainer.rank == nextRank })
+                end
+            end
+        end
+    end
+    return list
+end
+Module.TrainersForMap = TrainersForMap -- 供测试使用
+
+local trainerProvider
+
+local function CreateTrainerProvider()
+    trainerProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function trainerProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(TRAINER_PIN)
+    end
+    function trainerProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        if not mapID then
+            return
+        end
+        for _, item in ipairs(TrainersForMap(mapID)) do
+            local trainer, profession = item.trainer, item.profession
+            local pin = map:AcquirePin(TRAINER_PIN)
+            SetupPin(pin, "trainer")
+            pin.whTexture:SetTexture("Interface\\Icons\\" .. (profession.icon or "inv_misc_questionmark"))
+            pin:SetAlpha(item.next and 1 or 0.6)
+            local name = ns.Name(trainer.name) or "?"
+            local lines = { name, ns.Name(profession.name) or profession.slug }
+            if trainer.rank then
+                lines[2] = lines[2] .. " · " .. L[RANK_LABEL[trainer.rank]]
+            end
+            if item.next then
+                tinsert(lines, ns.Theme:Color(L["The trainer you need next"], "gold"))
+            end
+            tinsert(lines, L["Click to set a waypoint here."])
+            SetPinBehavior(pin, lines, function()
+                ns.Waypoints:Set(mapID, trainer.x, trainer.y, name)
+            end)
+            pin:SetPosition(trainer.x / 100, trainer.y / 100)
+        end
+    end
+    return trainerProvider
+end
+
+--------------------------------------------------------------------------------
+-- 职业训练师：classTrainerPins 开关（默认开）；只画自己职业的
+--------------------------------------------------------------------------------
+
+local CLASS_ICON = { pet = "Ability_Hunter_BeastTraining", portal = "Spell_Arcane_PortalIronForge" }
+local CLASS_KIND_LABEL = { pet = "Pet trainer", portal = "Portal trainer" }
+
+-- 现在可以去训练师那里学的职业技能数（技能书模块的判断：已到等级、还没学）
+local function ReadySpells()
+    local spellbook = ns.modules.Spellbook
+    if not (spellbook and spellbook.Rows) then
+        return 0
+    end
+    local ready = 0
+    for _, row in ipairs(spellbook.Rows(false)) do
+        if row.status == "ready" then
+            ready = ready + 1
+        end
+    end
+    return ready
+end
+
+-- 这张地图上要画的本职业训练师：{ trainer, … }
+local function ClassTrainersForMap(mapID)
+    if Settings().classTrainerPins == false then
+        return {}
+    end
+    local faction = ns.PlayerFaction()
+    local list = {}
+    for _, trainer in ipairs(ns.Data.classTrainers and ns.Data.classTrainers[ns.PlayerClass() or ""] or {}) do
+        if trainer.map == mapID and trainer.x
+            and (not trainer.faction or trainer.faction == "AH" or not faction or trainer.faction == faction) then
+            tinsert(list, trainer)
+        end
+    end
+    return list
+end
+Module.ClassTrainersForMap = ClassTrainersForMap -- 供测试使用
+
+local classTrainerProvider
+
+local function CreateClassTrainerProvider()
+    classTrainerProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function classTrainerProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(CLASS_TRAINER_PIN)
+    end
+    function classTrainerProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        local trainers = mapID and ClassTrainersForMap(mapID) or {}
+        if #trainers == 0 then
+            return
+        end
+        local ready = ReadySpells()
+        local _, classFile = UnitClass("player")
+        local className = LOCALIZED_CLASS_NAMES_MALE and LOCALIZED_CLASS_NAMES_MALE[classFile or ""] or classFile or "?"
+        for _, trainer in ipairs(trainers) do
+            local pin = map:AcquirePin(CLASS_TRAINER_PIN)
+            SetupPin(pin, "trainer")
+            local icon = CLASS_ICON[trainer.kind] or ("ClassIcon_" .. (classFile or ""):sub(1, 1)
+                .. (classFile or ""):sub(2):lower())
+            pin.whTexture:SetTexture("Interface\\Icons\\" .. icon)
+            local name = ns.Name(trainer.name) or "?"
+            local lines = { name }
+            if trainer.kind then
+                tinsert(lines, L[CLASS_KIND_LABEL[trainer.kind]])
+                pin:SetAlpha(1)
+            else
+                tinsert(lines, (L["%s trainer"]):format(className))
+                tinsert(lines, ready > 0 and ns.Theme:Color((L["%d spells to train now"]):format(ready), "gold")
+                    or ns.Theme:Color(L["Nothing new to train yet"], "muted"))
+                pin:SetAlpha(ready > 0 and 1 or 0.6)
+            end
+            tinsert(lines, L["Click to set a waypoint here."])
+            SetPinBehavior(pin, lines, function()
+                ns.Waypoints:Set(mapID, trainer.x, trainer.y, name)
+            end)
+            pin:SetPosition(trainer.x / 100, trainer.y / 100)
+        end
+    end
+    return classTrainerProvider
+end
+
 function Module:ApplyScale()
     if WorldMapFrame and not InCombatLockdown() then
         local scale = Settings().mapScale or 1
@@ -573,7 +920,8 @@ function Module:ApplyScale()
 end
 
 function Module:Refresh()
-    for _, dataProvider in ipairs({ provider, revealProvider, dungeonProvider, graveyardProvider }) do
+    for _, dataProvider in ipairs({ provider, revealProvider, dungeonProvider, graveyardProvider, gatherProvider,
+        trainerProvider, classTrainerProvider }) do
         if dataProvider and dataProvider.GetMap and dataProvider:GetMap() then
             dataProvider:RefreshAllData()
         end
@@ -590,6 +938,9 @@ local function Attach()
     WorldMapFrame:AddDataProvider(CreateRevealProvider())
     WorldMapFrame:AddDataProvider(CreateDungeonProvider())
     WorldMapFrame:AddDataProvider(CreateGraveyardProvider())
+    WorldMapFrame:AddDataProvider(CreateGatherProvider())
+    WorldMapFrame:AddDataProvider(CreateTrainerProvider())
+    WorldMapFrame:AddDataProvider(CreateClassTrainerProvider())
     local label = FindAreaLabel()
     if label then
         HookAreaLabel(label)
@@ -615,6 +966,33 @@ function Module:OnEnable()
         ns:RegisterEvent(event, function()
             if WorldMapFrame and WorldMapFrame:IsShown() and graveyardProvider and graveyardProvider:GetMap() then
                 graveyardProvider:RefreshAllData()
+            end
+        end)
+    end
+    if Module.StartMinimapGather then
+        Module.StartMinimapGather()
+    end
+    Module.StartGatherLog()
+    -- 学了或提升了专业：刷新采集点与训练师（只在地图打开时，合并 1 秒内的多次变化）
+    local skillPending = false
+    ns:RegisterEvent("SKILL_LINES_CHANGED", function()
+        if skillPending or not (WorldMapFrame and WorldMapFrame:IsShown() and gatherProvider and gatherProvider:GetMap()) then
+            return
+        end
+        skillPending = true
+        C_Timer.After(1, function()
+            skillPending = false
+            if WorldMapFrame:IsShown() then
+                gatherProvider:RefreshAllData()
+                trainerProvider:RefreshAllData()
+            end
+        end)
+    end)
+    -- 升级、学了新技能：职业训练师的“可学技能数”跟着变（只在地图打开时）
+    for _, event in ipairs({ "PLAYER_LEVEL_UP", "LEARNED_SPELL_IN_SKILL_LINE" }) do
+        ns:RegisterEvent(event, function()
+            if WorldMapFrame and WorldMapFrame:IsShown() and classTrainerProvider and classTrainerProvider:GetMap() then
+                classTrainerProvider:RefreshAllData()
             end
         end)
     end

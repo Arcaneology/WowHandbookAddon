@@ -18,4 +18,28 @@
             </OnLoad>
         </Scripts>
     </Frame>
+    <!-- 专业训练师图钉：同样混入基础图钉方法，图标（专业图标）与提示在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookTrainerPinTemplate" hidden="true" enableMouse="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MapCanvasPinMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <!-- 职业训练师图钉：同样混入基础图钉方法，图标（职业图标）与提示在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookClassTrainerPinTemplate" hidden="true" enableMouse="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MapCanvasPinMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <!-- 草药与矿点图钉：同样混入基础图钉方法，图标（采到的物品）与提示在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookGatherPinTemplate" hidden="true" enableMouse="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MapCanvasPinMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
 </Ui>

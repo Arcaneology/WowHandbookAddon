@@ -404,7 +404,7 @@ local function Refresh()
             upcomingLevel = row.level
         end
     end
-    page.summary:SetText((L["Level %d · %d ready to train · next new spells at level %s"]):format(
+    page.summary:SetText((L["Level %d · %d to train · next at %s"]):format(
         level, ready, upcomingLevel and tostring(upcomingLevel) or "-"))
 
     local t = Table(page)

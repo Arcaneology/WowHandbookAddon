@@ -37,6 +37,11 @@ Theme.colors = {
     greenDim = Hex("46bf72", 0.55), -- 已完成的进度段
     -- 表格整行高亮底色（技能书：现在可学）
     goldTint = Hex("e0b458", 0.14),
+    -- 动作条按钮图标的染色：超出距离染红；恢复时沿用游戏的可用性颜色（可用原色、缺法力偏蓝、不能用变灰）
+    actionOutOfRange = Hex("ff3a3a", 1),
+    actionUsable = Hex("ffffff", 1),
+    actionNoMana = Hex("8080ff", 1),
+    actionUnusable = Hex("666666", 1),
 }
 
 -- 文字里内嵌颜色用的十六进制（|cffXXXXXX）
@@ -48,6 +53,11 @@ Theme.hex = {
     green = "ff46bf72",
     red = "ffd8664a",
     blue = "ff6f95d6",
+    -- 专业配方难度，沿用游戏的约定：橙色必涨技能、黄色多半涨、绿色偶尔涨、灰色不涨
+    skillOrange = "ffff8040",
+    skillYellow = "ffffd100",
+    skillGreen = "ff40bf40",
+    skillGray = "ff808080",
 }
 
 function Theme:Color(text, name)

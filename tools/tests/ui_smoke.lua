@@ -1,4 +1,4 @@
--- 界面冒烟测试：用“万能”框架桩加载主插件与采集插件，实际执行界面创建与交互路径
+-- 界面冒烟测试：用“万能”框架桩加载主插件（以及存在时的本地扩展插件），实际执行界面创建与交互路径
 -- （打开主窗口、切换页面、采集数据页的分类/搜索/筛选/选择/跳转、复制链接对话框），
 -- 捕获空值等运行错误。看不到画面，布局与观感仍需游戏内确认。
 -- 桩的边界：未知的框架方法仍返回空函数（结束时列出调用过的未知方法供核对），不能证明方法在客户端存在；
@@ -246,7 +246,7 @@ frameMethods.SetParent = function(self, parent)
 end
 frameMethods.SetPoint = function(self, point, a, b, c, d)
     -- 记录锚点偏移：SetPoint(point, x, y) 或 SetPoint(point, relative, relativePoint, x, y)
-    if type(a) == "number" then self.pointY = b else self.pointY = d end
+    if type(a) == "number" then self.pointX, self.pointY = a, b else self.pointX, self.pointY = c, d end
     if type(a) == "table" then self.relativeTo = a end
     self.point = point
 end
@@ -254,6 +254,8 @@ frameMethods.SetAllPoints = function(self, relative)
     if type(relative) == "table" then self.relativeTo = relative end
 end
 frameMethods.SetAlpha = function(self, alpha) self.alpha = alpha end
+frameMethods.SetDesaturated = function(self, desaturated) self.desaturated = desaturated and true or false end
+frameMethods.SetVertexColor = function(self, r, g, b) self.vertexColor = { r, g, b } end
 frameMethods.SetTexCoord = function(self, left, right, top, bottom) self.texCoord = { left, right, top, bottom } end
 frameMethods.SetScrollChild = function(self, child) self.scrollChild = child end
 frameMethods.SetText = function(self, t) self.text = t or "" end
@@ -268,13 +270,22 @@ frameMethods.GetStringWidth = function() return 40 end
 frameMethods.GetTop = function() return 100 end
 frameMethods.GetEffectiveScale = function() return 1 end
 frameMethods.GetCenter = function() return 500, 500 end
-frameMethods.GetFrameLevel = function() return 1 end
+frameMethods.GetFrameLevel = function(self) return rawget(self, "frameLevel") or 1 end
+frameMethods.SetFrameLevel = function(self, level) self.frameLevel = level end
 frameMethods.GetScale = function() return 1 end
 frameMethods.GetVerticalScroll = function() return 0 end
 frameMethods.GetName = function(self) return self.name end
 frameMethods.IsEnabled = function(self) return self.enabled end
 frameMethods.IsMouseOver = function() return false end
-frameMethods.RegisterEvent = function(self, e) self.events[e] = true end
+-- Forever 客户端没有旧版专业窗口的这些事件：注册会报错（2026-09-29 专业模块因此没能启用）
+local UNKNOWN_EVENTS = { TRADE_SKILL_UPDATE = true, CRAFT_SHOW = true, CRAFT_UPDATE = true }
+C_EventUtils = { IsEventValid = function(e) return not UNKNOWN_EVENTS[e] end }
+frameMethods.RegisterEvent = function(self, e)
+    if UNKNOWN_EVENTS[e] then
+        error(('Frame:RegisterEvent(): Attempt to register unknown event "%s"'):format(e))
+    end
+    self.events[e] = true
+end
 frameMethods.UnregisterEvent = function(self, e) self.events[e] = nil end
 frameMethods.Click = function(self) if self.scripts.OnClick then self.scripts.OnClick(self, "LeftButton") end end
 
@@ -304,6 +315,9 @@ WorldMapFrame.ScrollContainer = newObject("Frame")
 WorldMapFrame.GetMapID = function() return 1413 end
 WorldMapFrame.GetNormalizedCursorPosition = function() return 0.5, 0.5 end
 hooksecurefunc = function(target, method, hook)
+    if type(target) == "string" then -- 挂全局函数：hooksecurefunc("名字", hook)
+        target, method, hook = _G, target, method
+    end
     local original = target[method]
     target[method] = function(...)
         local a, b, c, d = original(...)
@@ -386,7 +400,7 @@ local function check(name, fn)
     if not ok then failures = failures + 1 end
 end
 
--- 内部采集插件不在公开仓库中：没有时跳过相关检查
+-- 本地扩展插件不在公开仓库中：没有时跳过相关检查
 local hasCollector = io.open("WowHandbook_Collector/WowHandbook_Collector.toc") ~= nil
 local function collectorCheck(name, fn)
     if hasCollector then
@@ -454,6 +468,72 @@ check("minimap button opens window and can be hidden", function()
     assert(not button.shown, "disabled button still visible")
     main:EnableModule(module)
     assert(#allFrames == count and button.shown, "reenable should reuse button")
+end)
+check("minimap button right-click opens a quick settings menu that changes settings in place", function()
+    local module = main.modules.MinimapButton
+    -- 改大地图选项会刷新整张地图；这里只验证设置值，刷新换成记次数（后面的大地图测试依赖图层还没画过）
+    local worldMap = main.modules.WorldMap
+    local savedRefresh, refreshed = worldMap.Refresh, 0
+    worldMap.Refresh = function() refreshed = refreshed + 1 end
+    local button
+    for _, f in ipairs(allFrames) do
+        if f.parent == Minimap and f.scripts.OnDragStart then button = f; break end
+    end
+    button.scripts.OnClick(button, "RightButton")
+    local menu = module.menu
+    assert(menu and menu.shown, "right-click did not open the menu")
+    assert(not (WowHandbookMainFrame and WowHandbookMainFrame.shown), "right-click opened the main window")
+    local function find(kind, text)
+        for _, row in ipairs(menu.rows) do
+            local entryText = row.shown and row.entry and row.entry.text
+            if entryText and row.entry.kind == kind and entryText:sub(-#text) == text then return row end
+        end
+    end
+    local L = main.L
+    assert(find("title", L["WoW Handbook"]), "menu has no title")
+    -- 紧凑：行首是图标，名称是短名，完整说明在悬停提示里
+    local sell = find("check", L["Sell gray items"])
+    assert(sell and sell.entry.checked, "sell junk option missing or not checked")
+    assert(sell.entry.text:find("^|T") and sell.entry.tip == L["Sell gray items automatically when I open a vendor"],
+        "menu row has no icon or no full description in its tip")
+    assert(menu.width < 260, ("menu is too wide: %d"):format(menu.width))
+    -- 勾选项：点一下关掉，菜单保持打开，勾选状态跟着变
+    sell.scripts.OnClick(sell)
+    assert(main.db.modules.Vendor.sellJunk == false and menu.shown, "check did not change the setting in place")
+    assert(not find("check", L["Sell gray items"]).entry.checked, "menu not refreshed")
+    find("check", L["Sell gray items"]).scripts.OnClick(find("check", L["Sell gray items"]))
+    assert(main.db.modules.Vendor.sellJunk == true, "check did not turn it back on")
+    -- 多选一：矿点改为始终显示（绿勾图标），悬停看含义
+    local ore = find("choice", L["Mining nodes"])
+    assert(ore and ore.entry.value == "auto", "mining nodes choice missing")
+    for _, option in ipairs(ore.options) do
+        if option.shown and option.id == "always" then
+            assert(option.text:GetText():find("ReadyCheck%-Ready") and option.tip == L["Always"], "always is not a check mark")
+            option.scripts.OnClick(option)
+        end
+    end
+    assert(main.db.modules.WorldMap.orePins == "always" and find("choice", L["Mining nodes"]).entry.value == "always",
+        "choice did not change the setting")
+    assert(refreshed == 1, "changing a world map option did not refresh the map")
+    main.db.modules.WorldMap.orePins = nil
+    worldMap.Refresh = savedRefresh
+    -- 设置页显示时同步快捷菜单里改过的值
+    main.db.modules.Vendor.sellJunk = false
+    main.MainFrame:Open("settings")
+    main.MainFrame:SelectTab("home")
+    main.MainFrame:SelectTab("settings")
+    main.db.modules.Vendor.sellJunk = true
+    main.MainFrame:Hide()
+    -- 点菜单外面关闭；Esc 可关闭
+    fireAll("GLOBAL_MOUSE_DOWN", "LeftButton")
+    assert(not menu.shown, "clicking elsewhere did not close the menu")
+    local escape = false
+    for _, name in ipairs(UISpecialFrames) do escape = escape or name == "WowHandbookQuickMenu" end
+    assert(escape, "menu does not close with Esc")
+    -- 左键仍然开关主窗口
+    button.scripts.OnClick(button, "LeftButton")
+    assert(WowHandbookMainFrame.shown, "left-click no longer opens the window")
+    main.MainFrame:Hide()
 end)
 check("minimap button sits on the minimap edge for its actual size", function()
     local module = main.modules.MinimapButton
@@ -782,6 +862,431 @@ check("warlock spellbook shows demon abilities with grimoires and innate ranks",
     end
     playerClass = { "Mage", "MAGE" }
 end)
+check("unknown events are skipped and the professions module still loads", function()
+    assert(main.modules.Professions.enabled, "professions module failed to enable")
+    assert(main:RegisterEvent("TRADE_SKILL_UPDATE", function() end) == false, "unknown event was not skipped")
+    assert(main:RegisterEvent("TRADE_SKILL_SHOW", function() end) == true, "known event was not registered")
+    C_EventUtils = nil -- 没有查询接口时靠 pcall 兜底
+    assert(main:RegisterEvent("CRAFT_UPDATE", function() end) == false, "failed registration was not caught")
+    C_EventUtils = { IsEventValid = function(e) return not UNKNOWN_EVENTS[e] end }
+end)
+check("professions page lists trainers for your faction and highlights the next rank", function()
+    -- 已学炼金术 120/150（部落）：默认选中炼金术，只列部落与中立训练师，高级训练师一档高亮
+    GetNumSkillLines = function() return 2 end
+    GetSkillLineInfo = function(index)
+        if index == 1 then return "Professions", true end
+        return "Alchemy", false, false, 120, 0, 0, 150
+    end
+    main.db.modules.Professions.selected = nil
+    main.MainFrame:SelectTab("professions")
+    local module = main.modules.Professions
+    local page = module.page
+    assert(module.NextRank({ rank = 120, max = 150 }) == "expert", "next rank after journeyman should be expert")
+    local alchemy
+    for _, profession in ipairs(main.Data.professions) do
+        if profession.slug == "alchemy" then alchemy = profession end
+    end
+    assert(page.title:GetText() == main.Name(alchemy.name), "learned profession is not selected by default")
+    local expected = module.Trainers(alchemy)
+    local shown, highlighted, clickable = 0, 0, nil
+    for _, row in ipairs(page.rows) do
+        if row:IsShown() and row.trainer then
+            shown = shown + 1
+            assert(row.trainer.faction ~= "A", "alliance trainer listed for a horde player")
+            if row.tint.shown then
+                highlighted = highlighted + 1
+                assert(row.trainer.rank == "expert", "highlighted row is not an expert trainer")
+            end
+            if row.trainer.x and not clickable then clickable = row end
+        end
+    end
+    assert(shown == #expected and shown > 0, ("table shows %d of %d trainers"):format(shown, #expected))
+    assert(highlighted > 0, "no expert trainer highlighted")
+    assert(page.summary:GetText():find("120/150", 1, true), "summary has no skill level")
+    waypoint = nil
+    clickable.scripts.OnClick(clickable)
+    assert(waypoint and waypoint.map == clickable.trainer.map, "clicking a trainer did not set a waypoint")
+    -- 切换专业
+    main.MainFrame:Open("professions") -- 标记地图时收起了主窗口
+    page.list.rows[1].scripts.OnClick(page.list.rows[1])
+    GetNumSkillLines, GetSkillLineInfo = nil, nil
+end)
+check("every profession's trainer list renders, learned or not", function()
+    local module = main.modules.Professions
+    local settings = main.db.modules.Professions
+    main.MainFrame:Open("professions")
+    for _, skill in ipairs({ false, true }) do
+        GetNumSkillLines = function() return skill and #main.Data.professions or 0 end
+        GetSkillLineInfo = function(index)
+            local profession = main.Data.professions[index]
+            return profession.name.enUS, false, false, 290, 0, 0, 300
+        end
+        for _, profession in ipairs(main.Data.professions) do
+            settings.selected = profession.slug
+            module.Refresh()
+            for _, row in ipairs(module.page.rows) do
+                if row:IsShown() and row.trainer then
+                    row.scripts.OnEnter(row)
+                    row.scripts.OnLeave(row)
+                end
+            end
+        end
+    end
+    settings.selected = nil
+    GetNumSkillLines, GetSkillLineInfo = nil, nil
+end)
+check("side panels clear the spellbook tabs, can be dragged, remember their offset and reset on right-click", function()
+    local book = PlayerSpellsFrame.SpellBookFrame
+    local module = main.modules.SpellbookPanel
+    local settings = main.db.modules.SpellbookPanel
+    settings.collapsed, settings.dockX, settings.dockY = false, nil, nil
+    book.shown = true
+    book.scripts.OnShow(book)
+    local panel = module.panel
+    assert(panel.pointX == 40 and panel.relativeTo == PlayerSpellsFrame, "spell panel does not clear the spellbook tabs")
+    -- 拖到技能书右上角往右 120、往下 30 的地方
+    PlayerSpellsFrame.GetRight = function() return 500 end
+    PlayerSpellsFrame.GetTop = function() return 700 end
+    panel.GetLeft = function() return 620 end
+    panel.GetTop = function() return 670 end
+    panel.scripts.OnDragStart(panel)
+    panel.scripts.OnDragStop(panel)
+    assert(settings.dockX == 120 and settings.dockY == -30, "drag offset not remembered")
+    book.shown = false
+    book.scripts.OnHide(book)
+    book.shown = true
+    book.scripts.OnShow(book)
+    assert(panel.pointX == 120 and panel.pointY == -30, "remembered offset not used when reopening")
+    panel.scripts.OnMouseUp(panel, "RightButton")
+    assert(settings.dockX == nil and panel.pointX == 40, "right-click did not reset the position")
+    book.shown = false
+    book.scripts.OnHide(book)
+end)
+collectorCheck("collector recipes page: recipes and leveling guide for your profession", function()
+    local R = collector.Recipes
+    local alchemy
+    for _, profession in ipairs(collector.recipeData) do
+        if profession.slug == "alchemy" then alchemy = profession end
+    end
+    assert(alchemy and #alchemy.recipes > 0 and #alchemy.guide > 0, "no alchemy recipe data in the collector")
+    GetProfessions = function() return 1 end
+    GetProfessionInfo = function() return "Alchemy", nil, 120, 150, 0, 0, 171 end
+    -- 打开专业窗口时读到的已学配方：旧版按名字、新版按配方 ID
+    local first, second = alchemy.recipes[1], alchemy.recipes[2]
+    spellNames[first.id] = "Elixir of Minor Force"
+    GetNumTradeSkills = function() return 2 end
+    GetTradeSkillInfo = function(index)
+        if index == 1 then return "Elixirs", "header" end
+        return "Elixir of Minor Force", "trivial"
+    end
+    C_TradeSkillUI = {
+        GetAllRecipeIDs = function() return { first.id, second.id } end,
+        GetRecipeInfo = function(id) return { learned = id == second.id } end,
+    }
+    R.RecordKnownRecipes()
+    C_TradeSkillUI, GetNumTradeSkills, GetTradeSkillInfo = nil, nil, nil
+    assert(R.KnownRecipe(first) and R.KnownRecipe(second), "recipes seen in the profession window are not known")
+    -- “配方”页挂在主窗口
+    main.MainFrame:Open("recipes")
+    local page = R.page
+    assert(page and page:IsVisible(), "recipes page not registered in the main window")
+    assert(page.title:GetText() == main.Name(alchemy.name), "learned profession is not selected by default")
+    local recipeRows = 0
+    for _, row in ipairs(page.rows) do
+        if row:IsShown() and row.recipe then recipeRows = recipeRows + 1 end
+    end
+    assert(recipeRows == #alchemy.recipes, ("recipes view shows %d of %d"):format(recipeRows, #alchemy.recipes))
+    local orange
+    for _, recipe in ipairs(alchemy.recipes) do
+        if recipe.skill and recipe.skill[1] > 120 then orange = recipe break end
+    end
+    assert(R.Difficulty(orange, { rank = 120, max = 150 }) == "skillOrange", "recipe above your skill is not orange")
+    assert(R.Difficulty(first, { rank = 120, max = 150 }) == "skillGray", "low recipe is not gray")
+    -- 图标：有成品的用成品物品图标，没有成品的用技能图标
+    local savedIcon, savedTexture = C_Item.GetItemIconByID, C_Spell.GetSpellTexture
+    C_Item.GetItemIconByID = function(id) return id == first.makes and 999001 or 134400 end
+    C_Spell.GetSpellTexture = function() return 999002 end
+    assert(R.RecipeIcon(first):find("999001", 1, true), "recipe with a product does not use the item icon")
+    assert(R.RecipeIcon({ id = 1 }):find("999002", 1, true), "enchant does not use the spell icon")
+    C_Item.GetItemIconByID, C_Spell.GetSpellTexture = savedIcon, savedTexture
+    page.hideLearned.scripts.OnClick(page.hideLearned)
+    local afterHide = 0
+    for _, row in ipairs(page.rows) do
+        if row:IsShown() and row.recipe then afterHide = afterHide + 1 end
+    end
+    assert(afterHide == recipeRows - 2, "hiding learned recipes did not remove the two learned rows")
+    collector.db.settings.recipes.hideLearned = false
+    -- 冲级指南：每段的推荐配方，技能 120 所在的 75-150 段高亮
+    page.views.buttons.guide.scripts.OnClick(page.views.buttons.guide)
+    local picks, highlightedPicks = 0, 0
+    for _, row in ipairs(page.rows) do
+        if row:IsShown() and row.recipe then
+            picks = picks + 1
+            if row.tint.shown then highlightedPicks = highlightedPicks + 1 end
+        end
+    end
+    local expectedPicks, bracketPicks = 0, 0
+    for _, bracket in ipairs(alchemy.guide) do
+        expectedPicks = expectedPicks + #bracket.picks
+        if bracket.from == 75 then bracketPicks = #bracket.picks end
+    end
+    assert(picks == expectedPicks and picks > 0, ("guide shows %d of %d picks"):format(picks, expectedPicks))
+    assert(highlightedPicks == bracketPicks, "the bracket you are in is not highlighted")
+    -- 每个专业两个视图都能画出来，悬停不报错
+    for _, profession in ipairs(collector.recipeData) do
+        for _, view in ipairs({ "recipes", "guide" }) do
+            collector.db.settings.recipes.selected, collector.db.settings.recipes.view = profession.slug, view
+            R.Refresh()
+            for _, row in ipairs(page.rows) do
+                if row:IsShown() and row.recipe then
+                    row.scripts.OnEnter(row)
+                    row.scripts.OnLeave(row)
+                end
+            end
+        end
+    end
+    collector.db.settings.recipes.selected, collector.db.settings.recipes.view = nil, "recipes"
+    main.MainFrame:Hide()
+    GetProfessions, GetProfessionInfo = nil, nil
+end)
+collectorCheck("collector recipe panel follows the game profession window", function()
+    -- 模拟按需加载的暴雪专业窗口（Forever 为 ProfessionsFrame）
+    ProfessionsFrame = CreateFrame("Frame", "ProfessionsFrame", UIParent)
+    local window = ProfessionsFrame
+    window.shown = false
+    fireAll("ADDON_LOADED", "Blizzard_Professions")
+    assert(window.scripts.OnShow and window.scripts.OnHide, "game profession window not hooked")
+    local R = collector.Recipes
+    local alchemy
+    for _, profession in ipairs(collector.recipeData) do
+        if profession.slug == "alchemy" then alchemy = profession end
+    end
+    -- 窗口里打开的是炼金术（子技能线 2937），技能 60/75
+    C_TradeSkillUI = { GetBaseProfessionInfo = function() return { professionID = 2937, professionName = "?" } end }
+    GetProfessions = function() return 1 end
+    GetProfessionInfo = function() return "Alchemy", nil, 60, 75, 0, 0, 171 end
+    window.shown = true
+    window.scripts.OnShow(window)
+    assert(R.panel and R.panel.shown, "panel not shown with the profession window")
+    assert(R.panel.title:GetText() == main.Name(alchemy.name), "panel does not name the open profession")
+    local entries = R.Entries(alchemy)
+    assert(#entries == #alchemy.recipes, ("panel lists %d of %d recipes"):format(#entries, #alchemy.recipes))
+    assert(not entries[1].row.known and entries[#entries].row.known, "unlearned recipes should come first, learned last")
+    GameTooltip.spellID = nil
+    R.panel.list.onEntryEnter(R.panel, entries[1].id)
+    assert(GameTooltip.spellID == entries[1].row.recipe.id, "hover does not show the recipe tooltip")
+    -- 旧版窗口按名字认专业
+    C_TradeSkillUI = nil
+    GetTradeSkillLine = function() return "Alchemy", 60, 75 end
+    assert(R.CurrentProfession(window) == alchemy, "profession not recognized by name")
+    GetTradeSkillLine = nil
+    -- 收起留小按钮；窗口关了面板一起隐藏
+    R.panel.close.scripts.OnClick(R.panel.close)
+    assert(not R.panel.shown and R.tab.shown, "collapse should leave the small button")
+    R.tab.scripts.OnClick(R.tab)
+    assert(R.panel.shown, "button should expand the panel")
+    -- 可拖动并记住相对专业窗口的偏移
+    window.GetRight = function() return 800 end
+    window.GetTop = function() return 600 end
+    R.panel.GetLeft = function() return 850 end
+    R.panel.GetTop = function() return 600 end
+    R.panel.scripts.OnDragStart(R.panel)
+    R.panel.scripts.OnDragStop(R.panel)
+    assert(collector.db.settings.recipePanel.dockX == 50 and collector.db.settings.recipePanel.dockY == 0,
+        "recipe panel offset not remembered")
+    collector.db.settings.recipePanel.dockX = nil
+    window.shown = false
+    window.scripts.OnHide(window)
+    assert(not R.panel.shown and not R.tab.shown, "panel should hide with the profession window")
+    GetProfessions, GetProfessionInfo = nil, nil
+end)
+check("auto quest: accepts and turns in on its own, rewards by the chosen rule, Shift skips, never retries", function()
+    local W = main.modules.AutoQuest
+    local settings = main.db.modules.AutoQuest
+    assert(settings.autoAccept == true and settings.autoTurnIn == true and settings.rewardMode == "manual",
+        "defaults should be auto-accept, auto turn-in, manual reward")
+    local log = {}
+    local shift = false
+    IsShiftKeyDown = function() return shift end
+    local active, available = {}, {}
+    local windowQuest = 0
+    GetQuestID = function() return windowQuest end
+    C_GossipInfo = C_GossipInfo or {}
+    local savedGossip = { C_GossipInfo.GetActiveQuests, C_GossipInfo.GetAvailableQuests,
+        C_GossipInfo.SelectActiveQuest, C_GossipInfo.SelectAvailableQuest }
+    C_GossipInfo.GetActiveQuests = function() return active end
+    C_GossipInfo.GetAvailableQuests = function() return available end
+    C_GossipInfo.SelectActiveQuest = function(id) tinsert(log, "turnin:" .. id) end
+    C_GossipInfo.SelectAvailableQuest = function(id) tinsert(log, "pick:" .. id) end
+    -- 对话菜单：先交已完成的，再接可接的；灰色任务不接；推迟到下一帧
+    active = { { questID = 11, isComplete = false }, { questID = 12, isComplete = true } }
+    available = { { questID = 21, isTrivial = true }, { questID = 22, isTrivial = false } }
+    fireAll("GOSSIP_SHOW")
+    assert(#log == 0, "acted in the same frame; other addons need to read the window first")
+    runTimers()
+    assert(log[#log] == "turnin:12", "completed quest was not turned in first")
+    active = {}
+    fireAll("GOSSIP_SHOW"); runTimers()
+    assert(log[#log] == "pick:22", "the non-gray quest was not picked")
+    -- 失败不重试：接不下（对话菜单又弹出同一个任务）时不再点它
+    local count = #log
+    fireAll("GOSSIP_SHOW"); runTimers()
+    assert(#log == count, "retried a quest that was already tried")
+    -- 按住 Shift、关掉开关：不动
+    available = { { questID = 23, isTrivial = false } }
+    shift = true
+    fireAll("GOSSIP_SHOW"); runTimers()
+    shift = false
+    settings.autoAccept = false
+    fireAll("GOSSIP_SHOW"); runTimers()
+    assert(#log == count, "acted while Shift was held or auto-accept was off")
+    settings.autoAccept = true
+    -- 任务说明：接受一次；同一任务再弹出不再接；游戏确认接下后可以再自动处理
+    AcceptQuest = function() tinsert(log, "accept") end
+    QuestGetAutoAccept = function() return false end
+    windowQuest = 22
+    fireAll("QUEST_DETAIL"); runTimers()
+    assert(log[#log] == "accept", "quest detail was not accepted")
+    count = #log
+    fireAll("QUEST_DETAIL"); runTimers()
+    assert(#log == count, "accepted the same quest twice after a failure")
+    fireAll("QUEST_ACCEPTED", 22)
+    fireAll("QUEST_DETAIL"); runTimers()
+    assert(#log == count + 1, "after a successful accept the quest can be handled again")
+    -- 进行中：能交就继续
+    IsQuestCompletable = function() return true end
+    CompleteQuest = function() tinsert(log, "complete") end
+    windowQuest = 12
+    fireAll("QUEST_PROGRESS"); runTimers()
+    assert(log[#log] == "complete", "quest progress was not continued")
+    -- 奖励：只有一个就交；多个且手动就不动；自动时按规则挑
+    local choices = {}
+    GetNumQuestChoices = function() return #choices end
+    GetQuestItemInfo = function(_, index) return "x", nil, 1, 1, choices[index].usable end
+    GetQuestItemLink = function(_, index) return "item:" .. index end
+    GetQuestMoneyToGet = function() return 0 end
+    GetQuestReward = function(index) tinsert(log, "reward:" .. tostring(index)) end
+    QuestFrame = QuestFrame or CreateFrame("Frame", "QuestFrame", UIParent)
+    QuestFrame.shown = true
+    local savedInfo = C_Item.GetItemInfo
+    C_Item.GetItemInfo = function(link)
+        local index = tonumber(link:match("item:(%d+)"))
+        return "x", link, 1, 1, 1, "", "", 1, "", 1, choices[index] and choices[index].price
+    end
+    local function complete(questID)
+        windowQuest = questID
+        fireAll("QUEST_COMPLETE"); runTimers()
+    end
+    choices = { { usable = true, price = 10 } }
+    complete(101)
+    assert(log[#log] == "reward:1", "single reward was not taken")
+    count = #log
+    complete(101)
+    assert(#log == count, "took the reward of the same quest twice")
+    choices = { { usable = true, price = 10 }, { usable = false, price = 500 }, { usable = true, price = 90 } }
+    complete(102)
+    assert(#log == count, "manual mode picked a reward")
+    settings.rewardMode = "usable"
+    complete(103)
+    assert(log[#log] == "reward:3", "should take the most valuable of the usable rewards")
+    choices = { { usable = false, price = 500 }, { usable = true, price = 5 }, { usable = false, price = 900 } }
+    complete(104)
+    assert(log[#log] == "reward:2", "the only usable reward should win even if cheaper")
+    choices = { { usable = false, price = 10 }, { usable = false, price = 500 } }
+    complete(105)
+    assert(log[#log] == "reward:2", "with nothing usable it should take the most valuable")
+    -- 需要交钱的任务不自动交
+    GetQuestMoneyToGet = function() return 100 end
+    count = #log
+    complete(106)
+    assert(#log == count, "a quest that costs money was turned in")
+    settings.rewardMode = "manual"
+    for _, steps in pairs(W.tried) do for key in pairs(steps) do steps[key] = nil end end
+    C_Item.GetItemInfo = savedInfo
+    QuestFrame.shown = false
+    C_GossipInfo.GetActiveQuests, C_GossipInfo.GetAvailableQuests, C_GossipInfo.SelectActiveQuest,
+        C_GossipInfo.SelectAvailableQuest = unpack(savedGossip, 1, 4)
+    IsShiftKeyDown, GetQuestID = nil, nil
+end)
+check("instance tracker test mode: /wh test opens the same compact sample every time", function()
+    local T = main.modules.InstanceTracker
+    local function open()
+        SlashCmdList.WOWHANDBOOK("test")
+        local f = WowHandbookInstanceFrame
+        assert(f and f.shown, "/wh test did not open the tracker")
+        return f
+    end
+    local function snapshot(f)
+        local parts = { f.title:GetText(), f.progress:GetText() }
+        for _, row in ipairs(f.rows) do
+            if row.shown then tinsert(parts, (row.name:GetText() or "") .. "|" .. (row.tag:GetText() or "")) end
+        end
+        return table.concat(parts, "\n")
+    end
+    main.db.modules.InstanceTracker.collapsed = false
+    local f = open()
+    assert(f.width == 240, "tracker is not the compact width")
+    assert(f.title:GetText() == main.L["Test Crypt"], "sample dungeon name missing")
+    assert(f.progress:GetText():gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "") == "2/5", "sample progress should be 2/5")
+    -- 已击杀的合并成一行，悬停列出是哪几个；还没打的逐行列出，第一个是“下一个”
+    local killedRow, bossRows, questRows = nil, 0, 0
+    for _, row in ipairs(f.rows) do
+        if row.shown then
+            if rawget(row, "killedList") then killedRow = row
+            elseif rawget(row, "boss") then bossRows = bossRows + 1
+            elseif rawget(row, "questID") then questRows = questRows + 1 end
+        end
+    end
+    assert(killedRow and #killedRow.killedList == 2, "killed bosses are not merged into one row")
+    GameTooltip.lines = {}
+    killedRow.scripts.OnEnter(killedRow)
+    local listed = 0
+    for _, line in ipairs(GameTooltip.lines) do
+        if line == main.L["Gravekeeper Thane"] or line == main.L["The Rotting Hound"] then listed = listed + 1 end
+    end
+    killedRow.scripts.OnLeave(killedRow)
+    assert(listed == 2, "merged killed row does not list the killed bosses")
+    assert(bossRows == 3 and questRows == 3, ("sample shows %d bosses and %d quests"):format(bossRows, questRows))
+    local found = false
+    for _, row in ipairs(f.rows) do
+        if row.shown and rawget(row, "questID") == -2 then
+            found = row.tag:GetText():find("3/8", 1, true) and row.tag:GetText():find("0/1", 1, true)
+        end
+    end
+    assert(found, "sample quest in progress does not show its counts")
+    -- 任务区用符号：可交是黄 ?，副本内可接是黄 !，不写文字；标题行悬停说明符号
+    for _, row in ipairs(f.rows) do
+        if row.shown and rawget(row, "questID") == -1 then
+            assert(row.tag:GetText() == T.QUEST_ICON.turnIn, "ready quest is not the turn-in icon")
+        elseif row.shown and rawget(row, "questID") == -3 then
+            assert(row.tag:GetText() == T.QUEST_ICON.inside, "inside quest is not the pick-up icon")
+        end
+    end
+    GameTooltip.lines = {}
+    f.questHover.scripts.OnEnter(f.questHover)
+    local legend = 0
+    for _, line in ipairs(GameTooltip.lines) do
+        for _, icon in pairs(T.QUEST_ICON) do
+            if line:find(icon, 1, true) then legend = legend + 1 break end
+        end
+    end
+    f.questHover.scripts.OnLeave(f.questHover)
+    assert(legend == 5, ("quest legend explains %d of 5 icons"):format(legend))
+    -- 测试模式下点击不跳到手册
+    main.MainFrame:Hide()
+    killedRow.scripts.OnClick(killedRow)
+    assert(not (WowHandbookMainFrame and WowHandbookMainFrame.shown), "clicking in test mode opened the handbook")
+    -- 每次打开都一样
+    local first = snapshot(f)
+    SlashCmdList.WOWHANDBOOK("test")
+    -- 测试环境此时在怒焰裂谷里：退出测试回到真实副本的小窗
+    assert(f.title:GetText() ~= main.L["Test Crypt"], "/wh test again did not leave the sample")
+    f = open()
+    assert(snapshot(f) == first, "test mode is not the same every time")
+    -- 关闭按钮同样退出测试模式
+    f.close.scripts.OnClick(f.close)
+    assert(f.title:GetText() ~= main.L["Test Crypt"], "close did not leave the sample")
+end)
 check("settings page renders", function()
     main.MainFrame:SelectTab("settings")
 end)
@@ -870,6 +1375,50 @@ check("action bars: upgrade all from settings, then undo (R01)", function()
     assert(not module:UpgradeAll(), "upgrade all ran in combat")
     inCombat = false
     actions = { [1] = 1460, [2] = 2136 }
+end)
+check("action bars: an out-of-range button turns red, and back to the game's colors in range", function()
+    local module = main.modules.ActionBars
+    local colors = main.Theme.colors
+    local inRange, usable, noMana = {}, true, false
+    IsActionInRange = function(slot) return inRange[slot] end
+    IsUsableAction = function() return usable, noMana end
+    -- 游戏按钮：可用性变化时自己把图标设回原色
+    local button = newObject("Frame", "ActionButton1")
+    _G.ActionButton1 = button
+    button.action, button.icon = 5, newObject("Texture")
+    button.UpdateUsable = function(self) self.icon:SetVertexColor(1, 1, 1) end
+    local other = newObject("Frame", "ActionButton2")
+    _G.ActionButton2 = other
+    other.action, other.icon = 6, newObject("Texture")
+    module.StartRangeTint()
+    local function color(b) return b.icon.vertexColor and table.concat(b.icon.vertexColor, ",") end
+    local red = table.concat({ colors.actionOutOfRange[1], colors.actionOutOfRange[2], colors.actionOutOfRange[3] }, ",")
+    -- 超出距离：整个图标染红，别的格子不动
+    inRange[5] = false
+    fireAll("ACTION_RANGE_CHECK_UPDATE", 5, false, true)
+    assert(color(button) == red, "out-of-range button is not red")
+    assert(other.icon.vertexColor == nil, "a button in another slot was tinted")
+    -- 游戏重设可用性颜色后仍保持红色
+    button:UpdateUsable()
+    assert(color(button) == red, "red tint lost after the game updated usability")
+    -- 回到距离内：按可用性恢复（缺法力偏蓝）
+    inRange[5], usable, noMana = true, false, true
+    fireAll("ACTION_RANGE_CHECK_UPDATE", 5, true, true)
+    local blue = table.concat({ colors.actionNoMana[1], colors.actionNoMana[2], colors.actionNoMana[3] }, ",")
+    assert(color(button) == blue, "in-range button did not get the game's no-mana color back")
+    -- 没有目标（取不到距离）不染红；关掉设置时恢复
+    inRange[5], usable, noMana = nil, true, false
+    fireAll("PLAYER_TARGET_CHANGED")
+    assert(color(button) ~= red, "tinted without a target")
+    inRange[5] = false
+    fireAll("PLAYER_TARGET_CHANGED")
+    assert(color(button) == red, "not tinted after target change")
+    main.db.modules.ActionBars.rangeTint = false
+    module:Refresh()
+    local c = button.icon.vertexColor
+    assert(c[1] == 1 and c[2] == 1 and c[3] == 1, "turning the option off did not restore the color")
+    main.db.modules.ActionBars.rangeTint = true
+    _G.ActionButton1, _G.ActionButton2, IsActionInRange, IsUsableAction = nil, nil, nil, nil
 end)
 check("vendor sells junk", function()
     fireAll("MERCHANT_SHOW")
@@ -1014,6 +1563,393 @@ check("world map: spirit healers when dead, always or never", function()
     settings.spiritHealers = nil
     dead = false
     provider:RemoveAllData()
+end)
+check("world map: herb and mining nodes follow your professions and skill", function()
+    local provider = WorldMapFrame.providers[5]
+    assert(provider, "gathering provider not added")
+    local spots = main.Data.gathering.maps[1413]
+    assert(spots and #spots.herb > 0 and #spots.ore > 0, "no gathering data for the test map")
+    local function pinsOf()
+        provider:RefreshAllData()
+        local list = {}
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookGatherPinTemplate" then tinsert(list, pin) end
+        end
+        return list
+    end
+    local settings = main.db.modules.WorldMap
+    local herbalism
+    GetNumSkillLines = function() return herbalism and 1 or 0 end
+    GetSkillLineInfo = function() return "Herbalism", false, false, herbalism, 0, 0, 150 end
+    -- 默认：没学草药学、采矿，不显示
+    assert(#pinsOf() == 0, "nodes shown without the professions")
+    -- 草药学 60：只显示草药；够不着的变灰变淡
+    herbalism = 60
+    local list = pinsOf()
+    assert(#list == #spots.herb, ("%d herb pins, expected %d"):format(#list, #spots.herb))
+    local low, high
+    for _, pin in ipairs(list) do
+        if pin.whOk then low = low or pin else high = high or pin end
+    end
+    assert(low and high, "expected both gatherable and too-high herbs at skill 60")
+    -- 小而半透明（统一 0.5）；能采的原色，够不着的染红
+    assert(low.width == 7 and low.alpha == 0.5 and high.alpha == 0.5, "gathering pins are not small and half transparent")
+    local lc, hc = low.whTexture.vertexColor, high.whTexture.vertexColor
+    assert(lc[1] == 1 and lc[2] == 1 and lc[3] == 1, "gatherable herb is tinted")
+    assert(hc[1] == 1 and hc[2] < 0.7 and hc[3] < 0.7, "too-high herb is not tinted red")
+    assert(#low.whLines >= 3 and low.whLines[1] == main.L["Herb"], "herb tooltip has no node lines")
+    waypoint = nil
+    low:OnMouseClickAction("LeftButton")
+    assert(waypoint, "clicking a node should set a waypoint")
+    -- 矿点设为始终显示：没学采矿也显示，全部够不着
+    settings.orePins = "always"
+    assert(#pinsOf() == #spots.herb + #spots.ore, "always: mining nodes not shown")
+    settings.herbPins, settings.orePins = "off", "off"
+    assert(#pinsOf() == 0, "never: nodes still shown")
+    settings.herbPins, settings.orePins = nil, nil
+    GetNumSkillLines, GetSkillLineInfo = nil, nil
+    provider:RemoveAllData()
+end)
+check("professions are recognized by skill line on the retail-style API, by name as a fallback", function()
+    GetProfessions = function() return 1, 2 end
+    GetProfessionInfo = function(index)
+        if index == 1 then return "Kraeuterkunde", nil, 100, 150, 0, 0, 2944 end -- 名字对不上，按子技能线认出
+        return "Mining", nil, 40, 75, 0, 0, 999999                                -- 技能线未知，按名字认出
+    end
+    local skills = main.ProfessionSkills()
+    GetProfessions, GetProfessionInfo = nil, nil
+    assert(skills.herbalism and skills.herbalism.rank == 100 and skills.herbalism.max == 150, "herbalism not found by skill line")
+    assert(skills.mining and skills.mining.rank == 40, "mining not found by name")
+end)
+check("minimap: gathering nodes placed by distance, rotated with the minimap, only inside its circle", function()
+    local W = main.modules.WorldMap
+    local spot = main.Data.gathering.maps[1411].herb[1]
+    local px, py = spot[1] / 100, spot[2] / 100
+    local saved = { C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_CVar }
+    -- 1411 按 1000×1000 码算；世界坐标 x 向北、y 向西
+    C_Map.GetWorldPosFromMapPos = function(_, v) return 1, { x = 1000 - v.y * 1000, y = 1000 - v.x * 1000 } end
+    C_Map.GetPlayerMapPosition = function() return { GetXY = function() return px, py end } end
+    CreateVector2D = function(x, y) return { x = x, y = y } end
+    C_Minimap = { GetViewRadius = function() return 100 end }
+    Minimap:SetWidth(140)
+    Minimap:Show()
+    GetProfessions = function() return 1 end
+    GetProfessionInfo = function() return "Herbalism", nil, 150, 150, 0, 0, 182 end
+    W.RebuildMinimapGather()
+    local shown = {}
+    for _, pin in ipairs(W.minimapGatherPins) do
+        if pin.shown then tinsert(shown, pin) end
+    end
+    assert(#shown > 0, "no minimap pins next to the player")
+    local here
+    for _, pin in ipairs(shown) do
+        local dx, dy = pin.pointX, pin.pointY
+        assert(dx * dx + dy * dy <= 70 * 70, "a pin is drawn outside the minimap circle")
+        if math.abs(dx) < 1e-6 and math.abs(dy) < 1e-6 then here = pin end
+    end
+    assert(here and here.lines[1] == main.L["Herb"], "the node under the player is not at the center")
+    -- 往东 5% = 50 码 = 35 像素（半径 100 码对应半宽 70 像素）；小地图旋转、面朝西时，东边的点在正下方
+    px = px - 0.05
+    W.UpdateMinimapGather(true)
+    assert(math.abs(here.pointX - 35) < 1e-6 and math.abs(here.pointY) < 1e-6, "east offset is wrong")
+    C_CVar = { GetCVar = function(name) return name == "rotateMinimap" and "1" or nil end }
+    GetPlayerFacing = function() return math.pi / 2 end
+    W.UpdateMinimapGather(true)
+    assert(math.abs(here.pointX) < 1e-6 and math.abs(here.pointY + 35) < 1e-6, "rotation is wrong")
+    -- 图层紧贴小地图（系统的采集追踪标记由引擎和地形一起画，插件只能在上面，尽量低）
+    assert(here.frameLevel == Minimap:GetFrameLevel() + 1, "minimap pin is not on the lowest layer")
+    -- 圆圈样式：空心圆环，能采的草药绿色，50% 半透明
+    main.db.modules.WorldMap.minimapGatherStyle = "circle"
+    W.UpdateMinimapGather(true)
+    local green = main.Theme.colors.green
+    assert(here.style == "circle" and tostring(here.icon.texture):find("GatherRing$") and here.width == 12,
+        "circle style does not use the ring")
+    assert(here.icon.vertexColor[1] == green[1] and here.icon.vertexColor[2] == green[2] and here.alpha == 0.5,
+        "gatherable herb ring is not green and half transparent")
+    main.db.modules.WorldMap.minimapGatherStyle = nil
+    W.UpdateMinimapGather(true)
+    assert(here.style == "icon" and here.width == 7, "icon style not restored")
+    -- 关掉小地图显示
+    main.db.modules.WorldMap.minimapGather = false
+    W.RebuildMinimapGather()
+    for _, pin in ipairs(W.minimapGatherPins) do assert(not pin.shown, "pins remain after turning it off") end
+    main.db.modules.WorldMap.minimapGather = nil
+    C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_CVar = unpack(saved, 1, 5)
+    GetProfessions, GetProfessionInfo, GetPlayerFacing = nil, nil, nil
+end)
+check("gathering icons pick the zone's main ore by level, never a rare variant", function()
+    local W = main.modules.WorldMap
+    local nodes = main.Data.gathering.nodes
+    local ORE = { [2770] = "copper", [2771] = "tin", [2772] = "iron", [3858] = "mithril", [10620] = "thorium" }
+    -- 每张地图上混合刷新的点：图标不是稀有变种
+    for mapID in pairs(main.Data.gathering.maps) do
+        local spots, mine = W.GatherSpots(mapID, "ore")
+        for _, spot in ipairs(spots) do
+            local node = W.DescribeSpot("ore", spot, 0, mine[spot], mapID)
+            local hasCommon = false
+            for index = 3, #spot do hasCommon = hasCommon or not nodes[spot[index]].rare end
+            assert(not (hasCommon and node.rare), ("map %d: a rare ore is used as the icon"):format(mapID))
+        end
+    end
+    -- 各区域的主矿：最多的那种图标
+    local function main_ore(mapID)
+        local spots, mine = W.GatherSpots(mapID, "ore")
+        local count = {}
+        for _, spot in ipairs(spots) do
+            local item = W.DescribeSpot("ore", spot, 0, mine[spot], mapID).item
+            count[item] = (count[item] or 0) + 1
+        end
+        local best, n = nil, 0
+        for item, c in pairs(count) do if c > n then best, n = item, c end end
+        return ORE[best]
+    end
+    assert(main_ore(1411) == "copper", "Durotar should show copper")
+    assert(main_ore(1434) == "iron", "Stranglethorn should show iron, got " .. tostring(main_ore(1434)))
+    assert(main_ore(1428) == "thorium", "Burning Steppes should show thorium, got " .. tostring(main_ore(1428)))
+    -- 颜色跟着图标：赤脊山（15 级起，按技能 75 挑主矿）的铜 / 锡混合点图标是锡矿；技能 50 能采铜但采不了锡，要染红
+    local redridge
+    for _, s in ipairs(main.Data.gathering.maps[1433].ore) do
+        local hasCopper, hasTin = false, false
+        for index = 3, #s do
+            hasCopper = hasCopper or nodes[s[index]].item == 2770
+            hasTin = hasTin or nodes[s[index]].item == 2771
+        end
+        if hasCopper and hasTin then redridge = redridge or s end
+    end
+    assert(redridge, "no copper and tin spot in Redridge")
+    local tinNode, ok = W.DescribeSpot("ore", redridge, 50, nil, 1433)
+    assert(tinNode.item == 2771 and tinNode.skill == 65, "Redridge mixed spot should show tin (skill 65)")
+    assert(not ok, "tin icon is not tinted red at mining 50 although copper there is gatherable")
+    local _, ok65 = W.DescribeSpot("ore", redridge, 65, nil, 1433)
+    assert(ok65, "tin icon still red at mining 65")
+    -- 提示：按技能从低到高，稀有的标出来
+    local spot
+    for _, s in ipairs(main.Data.gathering.maps[1413].ore) do
+        for index = 3, #s do if nodes[s[index]].rare then spot = spot or s end end
+    end
+    assert(spot, "no spot with a rare ore in the Barrens")
+    local _, _, lines = W.DescribeSpot("ore", spot, 0, nil, 1413)
+    local rareLine = false
+    for _, line in ipairs(lines) do rareLine = rareLine or line:find(main.L["rare"], 1, true) ~= nil end
+    assert(rareLine, "rare ore is not marked in the tooltip")
+end)
+check("gathering log: records nodes you gather and merges them into the map", function()
+    local W = main.modules.WorldMap
+    local nodes = main.Data.gathering.nodes
+    local copper
+    for index, node in ipairs(nodes) do
+        if node.item == 2770 then copper = copper or index end -- 铜矿石
+    end
+    local spot = main.Data.gathering.maps[1411].ore[1]
+    local px, py = spot[1] / 100, spot[2] / 100
+    local saved = { C_Map.GetPlayerMapPosition, IsInInstance, issecretvalue, WorldMapFrame.shown,
+        C_Map.GetWorldPosFromMapPos, CreateVector2D }
+    C_Map.GetPlayerMapPosition = function() return { GetXY = function() return px, py end } end
+    -- 地图按 1000×1000 码算：1 个百分点 = 10 码，误差 5 码 = 0.5 个百分点的直线距离
+    C_Map.GetWorldPosFromMapPos = function(_, v) return 1, { x = 1000 - v.y * 1000, y = 1000 - v.x * 1000 } end
+    CreateVector2D = function(x, y) return { x = x, y = y } end
+    WorldMapFrame.shown = false -- 地图关着：采集后只更新小地图，不重画大地图上的其他图钉
+    local guid, loot = nil, {}
+    GetLootSourceInfo = function() return guid end
+    GetNumLootItems = function() return #loot end
+    GetLootSlotLink = function(slot) return loot[slot] end
+    main.db.gathered = nil
+    -- 采了数据里已有的铜矿脉：记在已有的点上，提示多一行采过几次
+    local objectID = nodes[copper].objects[1]
+    guid = ("GameObject-0-1-2-3-%d-00000ABC"):format(objectID)
+    W.OnGatherLoot()
+    W.OnGatherLoot()
+    local records = main.db.gathered[1411]
+    assert(#records == 1 and records[1][3] == copper and records[1][4] == 2, "gathering the same vein twice is not one record with count 2")
+    assert(records[1][1] == spot[1] and records[1][2] == spot[2], "record is not snapped to the known spot")
+    -- 误差：离已知点约 4 码（各偏 3 码）采，仍记在那个点上；约 8.5 码（各偏 6 码）就另记一个点
+    px, py = (spot[1] + 0.3) / 100, (spot[2] - 0.3) / 100
+    W.OnGatherLoot()
+    assert(#records == 1 and records[1][4] == 3, "a gather within 5 yards made a second spot")
+    px, py = (spot[1] + 0.6) / 100, (spot[2] - 0.6) / 100
+    W.OnGatherLoot()
+    assert(#records == 2, "a gather 8 yards away was merged into the known spot")
+    table.remove(records)
+    px, py = spot[1] / 100, spot[2] / 100
+    local spots, mine = W.GatherSpots(1411, "ore")
+    assert(#spots == #main.Data.gathering.maps[1411].ore, "a record on a known spot added a new spot")
+    local merged
+    for _, s in ipairs(spots) do if mine[s] then merged = s end end
+    assert(merged and mine[merged] == 3, "known spot does not carry your count")
+    local _, _, lines = W.DescribeSpot("ore", merged, 0, mine[merged])
+    local found = false
+    for _, line in ipairs(lines) do found = found or line:find("3", 1, true) and line:find(main.L["You gathered here %d times"]:sub(1, 6), 1, true) end
+    assert(found, "tooltip has no gathered count")
+    -- 数据里没有的物件，拾取里有铜矿石：按物品认出，记成新的一处
+    px, py = 0.9, 0.9
+    guid, loot = "GameObject-0-1-2-3-999999-00000ABD", { "|cffffffff|Hitem:2770::::|h[Copper Ore]|h|r" }
+    W.OnGatherLoot()
+    spots, mine = W.GatherSpots(1411, "ore")
+    assert(#spots == #main.Data.gathering.maps[1411].ore + 1, "new node was not added as its own spot")
+    assert(spots[#spots][3] == copper and mine[spots[#spots]] == 1, "new spot does not list copper")
+    -- 采完不用开大地图，小地图上马上出现这个新点（玩家就站在它旁边，在小地图正中）
+    do
+        local saved = { C_Map.GetWorldPosFromMapPos, CreateVector2D, C_Minimap, GetProfessions, GetProfessionInfo }
+        C_Map.GetWorldPosFromMapPos = function(_, v) return 1, { x = 1000 - v.y * 1000, y = 1000 - v.x * 1000 } end
+        CreateVector2D = function(x, y) return { x = x, y = y } end
+        C_Minimap = { GetViewRadius = function() return 100 end }
+        GetProfessions = function() return 1 end
+        GetProfessionInfo = function() return "Mining", nil, 50, 75, 0, 0, 186 end
+        Minimap:SetWidth(140)
+        Minimap:Show()
+        px, py = 0.35, 0.95
+        guid, loot = "GameObject-0-1-2-3-999998-00000AC0", { "|cffffffff|Hitem:2770::::|h[Copper Ore]|h|r" }
+        W.OnGatherLoot()
+        local atPlayer = false
+        for _, pin in ipairs(W.minimapGatherPins) do
+            if pin.shown and math.abs(pin.pointX) < 1e-6 and math.abs(pin.pointY) < 1e-6 then atPlayer = true end
+        end
+        assert(atPlayer, "the node just gathered does not show on the minimap right away")
+        C_Map.GetWorldPosFromMapPos, CreateVector2D, C_Minimap, GetProfessions, GetProfessionInfo = unpack(saved, 1, 5)
+        local records = main.db.gathered[1411]
+        table.remove(records) -- 这个点只为验证小地图，不影响下面的计数
+        px, py = 0.9, 0.9
+        guid, loot = "GameObject-0-1-2-3-999999-00000ABD", { "|cffffffff|Hitem:2770::::|h[Copper Ore]|h|r" }
+    end
+    -- 自己记过的新点同样有误差范围：在它旁边约 3 码处再采一次，不另记
+    px, py = 0.902, 0.898
+    W.OnGatherLoot()
+    spots, mine = W.GatherSpots(1411, "ore")
+    assert(#spots == #main.Data.gathering.maps[1411].ore + 1 and mine[spots[#spots]] == 2,
+        "a gather next to your own recorded spot made another spot")
+    -- 不记：来源不是物件、在副本里、来源是秘密值、关掉了设置
+    local count = #main.db.gathered[1411]
+    guid, loot = "Creature-0-1-2-3-500-00000ABE", {}
+    W.OnGatherLoot()
+    guid = ("GameObject-0-1-2-3-%d-00000ABF"):format(objectID)
+    px, py = 0.1, 0.1
+    IsInInstance = function() return true end
+    W.OnGatherLoot()
+    IsInInstance = saved[2]
+    issecretvalue = function() return true end
+    W.OnGatherLoot()
+    issecretvalue = saved[3]
+    main.db.modules.WorldMap.recordGather = false
+    W.OnGatherLoot()
+    main.db.modules.WorldMap.recordGather = nil
+    -- 任务物件：拾取格子标了任务物品，或物品类别是任务物品（12），都不记
+    px, py = 0.5, 0.2
+    guid, loot = "GameObject-0-1-2-3-999997-00000AC1", { "|cffffffff|Hitem:2770::::|h[Copper Ore]|h|r" }
+    GetLootSlotInfo = function() return nil, "Ore", 1, nil, 1, false, true end
+    W.OnGatherLoot()
+    GetLootSlotInfo = nil
+    local savedItem = C_Item
+    C_Item = setmetatable({ GetItemInfoInstant = function() return 2770, nil, nil, nil, nil, 12, 0 end },
+        { __index = savedItem })
+    W.OnGatherLoot()
+    C_Item = savedItem
+    assert(#main.db.gathered[1411] == count, "recorded something it should not")
+    main.db.gathered = nil
+    C_Map.GetPlayerMapPosition, WorldMapFrame.shown = saved[1], saved[4]
+    C_Map.GetWorldPosFromMapPos, CreateVector2D = saved[5], saved[6]
+    GetLootSourceInfo, GetNumLootItems, GetLootSlotLink = nil, nil, nil
+end)
+check("world map: profession trainers for your professions, the next rank stands out", function()
+    local provider = WorldMapFrame.providers[6]
+    assert(provider, "trainer provider not added")
+    local alchemy
+    for _, profession in ipairs(main.Data.professions) do
+        if profession.slug == "alchemy" then alchemy = profession end
+    end
+    -- 部落玩家：找一张有中级炼金训练师（部落或中立、有坐标）的地图
+    local mapID
+    for _, trainer in ipairs(alchemy.trainers) do
+        if trainer.rank == "journeyman" and trainer.x and trainer.faction ~= "A" then mapID = mapID or trainer.map end
+    end
+    assert(mapID, "no horde journeyman alchemy trainer in the data")
+    local map = provider:GetMap()
+    local savedMap = map.GetMapID
+    map.GetMapID = function() return mapID end
+    local function pinsOf()
+        provider:RefreshAllData()
+        local list = {}
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookTrainerPinTemplate" then tinsert(list, pin) end
+        end
+        return list
+    end
+    GetProfessions = function() return 1 end
+    local learned = false
+    GetProfessionInfo = function() if learned then return "Alchemy", nil, 60, 75, 0, 0, 171 end end
+    assert(#pinsOf() == 0, "trainers shown without any profession")
+    learned = true
+    local list = pinsOf()
+    assert(#list > 0, "no alchemy trainer pins")
+    local nextPin
+    for _, pin in ipairs(list) do
+        assert(pin.whLines[2]:find(main.Name(alchemy.name), 1, true), "a non-alchemy trainer is shown")
+        assert(tostring(pin.whTexture.texture):find("trade_alchemy$"), "trainer pin does not use the profession icon")
+        if pin.alpha == 1 then nextPin = pin end
+    end
+    assert(nextPin, "the journeyman trainer (next rank) is not highlighted")
+    waypoint = nil
+    nextPin:OnMouseClickAction("LeftButton")
+    assert(waypoint, "clicking a trainer should set a waypoint")
+    main.db.modules.WorldMap.trainerPins = "all"
+    assert(#pinsOf() >= #list, "all professions shows fewer trainers")
+    main.db.modules.WorldMap.trainerPins = "off"
+    assert(#pinsOf() == 0, "trainers shown while turned off")
+    main.db.modules.WorldMap.trainerPins = nil
+    provider:RemoveAllData()
+    map.GetMapID = savedMap
+    GetProfessions, GetProfessionInfo = nil, nil
+end)
+check("world map: class trainers of your class, spells to train now in the tooltip", function()
+    local W = main.modules.WorldMap
+    local provider = WorldMapFrame.providers[7]
+    assert(provider, "class trainer provider not added")
+    -- 法师（部落）：找一张有本阵营或中立、带坐标的法师训练师与传送门训练师的地图
+    local mapID
+    local count = {}
+    for _, trainer in ipairs(main.Data.classTrainers.mage) do
+        if trainer.x and trainer.faction ~= "A" then
+            count[trainer.map] = count[trainer.map] or { plain = 0, portal = 0 }
+            if trainer.kind == "portal" then count[trainer.map].portal = count[trainer.map].portal + 1
+            else count[trainer.map].plain = count[trainer.map].plain + 1 end
+        end
+    end
+    for id, c in pairs(count) do if c.plain > 0 and c.portal > 0 then mapID = id end end
+    assert(mapID, "no horde map with both mage and portal trainers")
+    local map = provider:GetMap()
+    local savedMap = map.GetMapID
+    map.GetMapID = function() return mapID end
+    local function pinsOf()
+        provider:RefreshAllData()
+        local list = {}
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookClassTrainerPinTemplate" then tinsert(list, pin) end
+        end
+        return list
+    end
+    local list = pinsOf()
+    assert(#list == #W.ClassTrainersForMap(mapID) and #list == count[mapID].plain + count[mapID].portal,
+        ("%d class trainer pins on the map"):format(#list))
+    local plain, portal
+    for _, pin in ipairs(list) do
+        local texture = tostring(pin.whTexture.texture)
+        if texture:find("ClassIcon_Mage$") then plain = plain or pin end
+        if texture:find("Spell_Arcane_PortalIronForge$") then portal = portal or pin end
+        for _, trainer in ipairs(main.Data.classTrainers.warrior) do
+            assert(pin.whLines[1] ~= main.Name(trainer.name), "a warrior trainer is shown to a mage")
+        end
+    end
+    assert(plain and portal, "mage trainer or portal trainer icon is wrong")
+    local spellsLine = plain.whLines[3]
+    assert(spellsLine:find(main.L["Nothing new to train yet"], 1, true) or spellsLine:find("%d"),
+        "mage trainer tooltip has no spells-to-train line")
+    waypoint = nil
+    plain:OnMouseClickAction("LeftButton")
+    assert(waypoint, "clicking a class trainer should set a waypoint")
+    main.db.modules.WorldMap.classTrainerPins = false
+    assert(#pinsOf() == 0, "class trainers shown while turned off")
+    main.db.modules.WorldMap.classTrainerPins = true
+    provider:RemoveAllData()
+    map.GetMapID = savedMap
 end)
 check("spirit healers: game list and plugin data are merged, same spot drawn once", function()
     local W = main.modules.WorldMap
@@ -1634,7 +2570,7 @@ check("instance tracker: shows in an instance, tracks kills per instance copy, q
         UnitGUID = saved
     end
     local function progress()
-        return (f.progress:GetText():gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""))
+        return (f.progress:GetText():gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("(%d)/(%d)", "%1 / %2"))
     end
     assert(progress() == "0 / 4", "progress: " .. progress())
     -- 首领战结束：按本场首领的 creatureID 对应
@@ -1706,7 +2642,15 @@ check("instance tracker: shows in an instance, tracks kills per instance copy, q
     for _, row in ipairs(f.rows) do
         if row.shown and rawget(row, "questID") == questID then questRow = row end
     end
-    assert(questRow and questRow.tag:GetText():find("0/1", 1, true), "quest row has no objective progress")
+    assert(questRow and questRow.tag:GetText():find("3/8", 1, true), "quest row does not show the objective count")
+    -- 多个目标：各自显示数量，接口给的数量优先于文字
+    questObjectives[questID] = { { text = "Ragefire Trogg slain: 3/8", finished = false },
+        { text = "Hide", numFulfilled = 5, numRequired = 5, finished = true } }
+    T.Refresh()
+    -- 已完成的目标换成绿勾，不再写 5/5
+    assert(questRow.tag:GetText():find("3/8", 1, true) and questRow.tag:GetText():find(T.QUEST_ICON.done, 1, true)
+        and not questRow.tag:GetText():find("5/5", 1, true), "quest row does not show every objective count")
+    questObjectives[questID] = { { text = "Ragefire Trogg slain: 3/8", finished = false } }
     GameTooltip.lines = {}
     questRow.scripts.OnEnter(questRow)
     local found = false
@@ -1722,6 +2666,13 @@ check("instance tracker: shows in an instance, tracks kills per instance copy, q
     main.db.modules.InstanceTracker.collapsed = true
     T.Refresh()
     assert(f.height < tall, "collapse did not shrink the window")
+    assert(f.nextRow.shown and f.nextRow.boss and not f.nextRow.killed, "collapsed card does not show the next boss")
+    assert(f.nextRow.name:GetText():find(main.BossName(f.nextRow.boss), 1, true), "collapsed next boss has the wrong name")
+    main.db.modules.InstanceTracker.collapsed = false
+    T.Refresh()
+    assert(not f.nextRow.shown, "next boss row stays when expanded")
+    main.db.modules.InstanceTracker.collapsed = true
+    T.Refresh()
     main.db.modules.InstanceTracker.collapsed = false
     f.close.scripts.OnClick(f.close)
     assert(not f.shown, "close did not hide")

@@ -10,6 +10,12 @@
   补画尚未探索的区域
 - Graveyards.lua：各区域地图上灵魂医者的位置（网站 graveyards.json，来自 QuestieDB 刷新点），
   游戏不提供墓地列表时，大地图用它显示灵魂医者
+- Professions.lua：12 个专业（中英文名、图标、技能线 ID）与各专业训练师（网站 profession-trainers.json：
+  QuestieDB Forever 版训练师与坐标，加游戏内实测坐标与新训练师；阵营、可教到的等级、地图与坐标）
+- ClassTrainers.lua：各职业训练师（网站 class-trainers.json：QuestieDB Forever 版加游戏内实测坐标与新训练师；
+  猎人另有宠物训练师 kind = "pet"，法师另有传送门训练师 kind = "portal"；阵营、地图与坐标）
+- GatheringNodes.lua：草药与矿点（网站 gathering-nodes.json，来自 QuestieDB Forever 版刷新点）：每种采集点
+  采到的物品与所需技能；各区域地图上的位置，同一处可能刷出的几种合并为一个点
 
 只读网站仓库，不写网站仓库。插件只带客户端给不了的内容：ID、关系、坐标、等级；
 名称以网站数据为兜底，界面优先用客户端运行时名称。
@@ -356,6 +362,20 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
 # 另一阵营的玩家实际进不去。
 FACTION_ONLY_DUNGEONS = {"hall-of-thanes": "alliance", "ragefire-chasm": "horde"}
 
+# 网站首领顺序来自客户端 DungeonEncounter 的 OrderIndex，个别副本与实际路线不符；这里按实际路线覆盖
+# （键是副本 slug，有分区时为 "副本-分区"）。列出的首领按此顺序排在前面，没列出的保持原顺序跟在后面。
+# 死亡矿井：重拳先生在绿皮船长之前；曲奇是可选首领，多在范克里夫之后顺路击杀
+BOSS_ORDER = {
+    "deadmines": ["Rhahk'Zor", "Sneed", "Gilnid", "Mr. Smite", "Captain Greenskin", "Edwin VanCleef", "Cookie"],
+}
+
+
+def ordered_bosses(slug: str, names: list) -> list:
+    order = BOSS_ORDER.get(slug)
+    if not order:
+        return names
+    return [name for name in order if name in names] + [name for name in names if name not in order]
+
 
 def build_dungeons(zones: list, zh_names: dict, boss_loot: dict, quests: dict, zone_slug_to_map: dict,
                    drop_details: dict | None = None, boss_details: dict | None = None) -> list:
@@ -375,7 +395,10 @@ def build_dungeons(zones: list, zh_names: dict, boss_loot: dict, quests: dict, z
             loot = section_loot.get("bosses") or {}
             details = (drop_details.get(slug) or {}).get(section_slug or "_root") or {}
             facts = (boss_details.get(slug) or {}).get(section_slug or "_root") or {}
-            boss_names = list((section or entry).get("bosses") or [])
+            boss_names = ordered_bosses(f"{slug}-{section_slug}" if section else slug,
+                                        list((section or entry).get("bosses") or []))
+            # 网站首领列表之外、只来自掉落表的行（稀有精英、物品、杂兵等）标 lootOnly：保留掉落，但不计入首领数和进度
+            site_bosses = set(boss_names)
             boss_names += [name for name in loot if name not in boss_names]
             boss_names += [row["name"] for row in section_loot.get("extra") or [] if row["name"] not in boss_names]
             loot = dict(loot, **{row["name"]: row["items"] for row in section_loot.get("extra") or [] if row["name"] not in loot})
@@ -407,6 +430,7 @@ def build_dungeons(zones: list, zh_names: dict, boss_loot: dict, quests: dict, z
                      "level": (facts.get(name) or {}).get("level"),
                      "npcID": (facts.get(name) or {}).get("npcId"),
                      "displayID": (facts.get(name) or {}).get("displayId"),
+                     "lootOnly": True if site_bosses and name not in site_bosses else None,
                      "items": [
                          item if isinstance(item, dict) else {
                              "id": item,
@@ -653,6 +677,77 @@ def apply_deadmines_site_sync(site: Path, document: dict, zh_quests: dict) -> No
                                     if q["id"] not in excluded | promoted]
 
 
+# 专业训练师可教到的等级：网站按训练师头衔判断；插件界面按这个顺序排列
+TRAINER_RANKS = ("apprentice", "journeyman", "expert", "artisan", "specialization")
+def load_skill_lines(site: Path) -> dict:
+    """{专业英文名: [技能线 ID…]}：客户端 SkillLine 表里专业与副专业（分类 11、9）的主技能线和其下的子技能线。
+    Forever 用正式服的分层技能线（采矿 186，其下 2946），插件按这些 ID 识别玩家学了哪个专业。"""
+    table = latest_db2(site, "SkillLine")
+    if not table:
+        return {}
+    rows = [r for r in read_csv(table) if r.get("CategoryID") in ("9", "11")]
+    names = {r["ID"]: r["DisplayName_lang"] for r in rows if r.get("ParentSkillLineID") in ("0", "")}
+    lines = {name: [int(skill_id)] for skill_id, name in names.items()}
+    for row in rows:
+        parent = row.get("ParentSkillLineID")
+        if parent in names:
+            lines[names[parent]].append(int(row["ID"]))
+    return lines
+
+
+def build_professions(professions: dict, zh_professions: dict, trainers: dict, skill_lines: dict | None = None) -> list:
+    """专业列表（主专业在前，按网站顺序）与各专业训练师。没有坐标的训练师保留地图，x / y 为空。"""
+    zh = {p["slug"]: p["name"] for p in zh_professions.get("professions", [])}
+    skill_lines = skill_lines or {}
+    out = []
+    for profession in professions.get("professions", []):
+        slug = profession["slug"]
+        rows = [{
+            "id": row["id"],
+            "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
+            "faction": row.get("faction"),
+            "rank": row.get("rank") if row.get("rank") in TRAINER_RANKS else None,
+            "map": row.get("map"),
+            "x": row.get("x"),
+            "y": row.get("y"),
+        } for row in (trainers.get("professions") or {}).get(slug, [])]
+        out.append({
+            "slug": slug,
+            "kind": profession.get("kind"),
+            "name": {"enUS": profession["name"], "zhCN": zh.get(slug)},
+            "icon": icon_name(profession.get("icon")),
+            "skillLines": skill_lines.get(profession["name"]),
+            "trainers": rows,
+        })
+    return out
+
+
+def build_class_trainers(trainers: dict) -> dict:
+    """{[职业] = {{id, name = {enUS, zhCN}, faction, kind, map, x, y}}}，职业为小写的职业标识（mage 等）。"""
+    return {class_name: [{
+        "id": row["id"],
+        "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
+        "faction": row.get("faction"),
+        "kind": row.get("kind"),
+        "map": row.get("map"),
+        "x": row.get("x"),
+        "y": row.get("y"),
+    } for row in rows] for class_name, rows in (trainers.get("classes") or {}).items()}
+
+
+def build_gathering(gathering: dict) -> dict:
+    """{nodes = {{kind, item, skill, rare, objects}}, maps = {[uiMapID] = {herb = {{x, y, 种类序号…}}, ore = {…}}}}。
+    种类序号是 nodes 里的位置（从 1 开始）；rare 标出偶尔替换普通矿刷出的稀有变种（银、金、真银、黑铁）；
+    objects 是这种采集点的物件 ID（插件据此认出玩家采了什么）；
+    物品名称、图标运行时向客户端取。"""
+    return {
+        "nodes": [{"kind": n["kind"], "item": n["item"], "skill": n["skill"], "rare": True if n.get("rare") else None,
+                   "objects": n.get("objects")}
+                  for n in gathering.get("nodes", [])],
+        "maps": {int(map_id): kinds for map_id, kinds in (gathering.get("maps") or {}).items()},
+    }
+
+
 def export(site: Path) -> dict:
     generated = site / "src" / "data" / "generated"
     zones = load(generated / "zones.json")["maps"]
@@ -677,6 +772,15 @@ def export(site: Path) -> dict:
     return {"zones": zone_table, "dungeons": dungeons, "quests": quests, "spells": spells,
             "mapOverlays": load_map_overlays(site),
             "graveyards": build_graveyards(load(generated / "graveyards.json")) if (generated / "graveyards.json").exists() else {},
+            "classTrainers": build_class_trainers(load(generated / "class-trainers.json"))
+            if (generated / "class-trainers.json").exists() else {},
+            "gathering": build_gathering(load(generated / "gathering-nodes.json"))
+            if (generated / "gathering-nodes.json").exists() else {"nodes": [], "maps": {}},
+            "professions": build_professions(load(generated / "professions.json"),
+                                             load(generated / "zh" / "professions.json"),
+                                             load(generated / "profession-trainers.json")
+                                             if (generated / "profession-trainers.json").exists() else {},
+                                             load_skill_lines(site)),
             "build": load(generated / "zones.json").get("build")}
 
 
@@ -694,9 +798,24 @@ def main() -> int:
     # 灵魂医者刷新点来自 GPL-3.0 的 Questie，按许可保留署名
     write_lua("Graveyards.lua", "graveyards", data["graveyards"],
               "Spirit healer locations from Questie (https://github.com/Questie/Questie), GPL-3.0.")
+    # 训练师名单与坐标主要来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
+    write_lua("Professions.lua", "professions", data["professions"],
+              "Profession trainer locations from QuestieDB (https://github.com/Questie/QuestieDB), "
+              "the Questie project, GPL-3.0, with positions checked in WoW: Forever.")
+    # 职业训练师位置来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
+    write_lua("ClassTrainers.lua", "classTrainers", data["classTrainers"],
+              "Class trainer locations from QuestieDB (https://github.com/Questie/QuestieDB), "
+              "the Questie project, GPL-3.0, with positions checked in WoW: Forever.")
+    # 采集点刷新位置来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
+    write_lua("GatheringNodes.lua", "gathering", data["gathering"],
+              "Herb and mining node locations from QuestieDB (https://github.com/Questie/QuestieDB), "
+              "the Questie project, GPL-3.0.")
     print(f"区域 {len(data['zones'])}，副本 {len(data['dungeons'])}，任务 {len(data['quests'])}，"
           f"职业 {len(data['spells'])}（技能 {sum(len(v) for v in data['spells'].values())}），"
-          f"地图探索贴图 {len(data['mapOverlays'])} 张地图，灵魂医者 {sum(len(v) for v in data['graveyards'].values())} 个")
+          f"地图探索贴图 {len(data['mapOverlays'])} 张地图，灵魂医者 {sum(len(v) for v in data['graveyards'].values())} 个，"
+          f"专业 {len(data['professions'])}（训练师 {sum(len(p['trainers']) for p in data['professions'])}），"
+          f"职业训练师 {sum(len(v) for v in data['classTrainers'].values())} 个，"
+          f"采集点 {sum(len(v) for m in data['gathering']['maps'].values() for v in m.values())} 处")
     if place_conflicts:
         ids = ", ".join(str(item["id"]) for item in place_conflicts[:10])
         print(f"注意：{len(place_conflicts)} 个地点网站坐标与参照不一致且按地点名推断不出地图，未导出坐标（{ids}…）")
