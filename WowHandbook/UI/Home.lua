@@ -110,7 +110,7 @@ local function CreateCard(parent, titleKey)
     accent:SetPoint("TOPLEFT", 1, -1)
     accent:SetPoint("BOTTOMLEFT", 1, 1)
     accent:SetWidth(2)
-    accent:SetColorTexture(unpack(Theme.colors.gold))
+    Theme:Paint(accent, "gold")
     card.title = UI:Text(card, "Heading", L[titleKey])
     card.title:SetPoint("TOPLEFT", 16, -13)
     card.count = UI:Text(card, "Accent")
@@ -512,7 +512,7 @@ local function CreateStatus(p)
     bar.fill = bar:CreateTexture(nil, "ARTWORK")
     bar.fill:SetPoint("TOPLEFT")
     bar.fill:SetPoint("BOTTOMLEFT")
-    bar.fill:SetColorTexture(unpack(Theme.colors.gold))
+    Theme:Paint(bar.fill, "gold")
     p.xpBar = bar
 end
 
@@ -576,6 +576,6 @@ end
 
 Home.RecommendedZones = RecommendedZones -- 供测试使用
 
-MainFrame:RegisterTab({ id = "home", title = L["Home"], order = 0, create = CreateHomePage, onShow = function()
+MainFrame:RegisterTab({ id = "home", titleKey = "Home", order = 0, create = CreateHomePage, onShow = function()
     Refresh()
 end })

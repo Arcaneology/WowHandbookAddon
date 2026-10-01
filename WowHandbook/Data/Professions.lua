@@ -54,7 +54,7 @@ ns.Data.professions = {
                 faction = "H",
                 rank = "journeyman",
                 map = 1420,
-                x = 59.4,
+                x = 59.5,
                 y = 52.2,
             },
             {
@@ -174,8 +174,8 @@ ns.Data.professions = {
                 faction = "A",
                 rank = "expert",
                 map = 1453,
-                x = 55.7,
-                y = 86.1,
+                x = 55.6,
+                y = 85.9,
             },
             {
                 id = 5500,
@@ -187,7 +187,7 @@ ns.Data.professions = {
                 rank = "journeyman",
                 map = 1453,
                 x = 55.5,
-                y = 85.7,
+                y = 85.5,
             },
             {
                 id = 11046,
@@ -333,6 +333,17 @@ ns.Data.professions = {
                 x = 46.6,
                 y = 74.1,
             },
+            {
+                id = 257019,
+                name = {
+                    enUS = "Nyassa Swiftdraught",
+                },
+                faction = "A",
+                rank = "journeyman",
+                map = 2521,
+                x = 43.7,
+                y = 43.4,
+            },
         },
     },
     {
@@ -403,7 +414,7 @@ ns.Data.professions = {
                 rank = "journeyman",
                 map = 1429,
                 x = 41.7,
-                y = 65.5,
+                y = 65.6,
             },
             {
                 id = 3136,
@@ -463,7 +474,7 @@ ns.Data.professions = {
                 rank = "journeyman",
                 map = 1453,
                 x = 64.1,
-                y = 37.0,
+                y = 37.2,
             },
             {
                 id = 5511,
@@ -669,6 +680,17 @@ ns.Data.professions = {
                 x = 61.3,
                 y = 30.6,
             },
+            {
+                id = 251913,
+                name = {
+                    enUS = "Aedi Thriceforged",
+                },
+                faction = "A",
+                rank = "journeyman",
+                map = 2521,
+                x = 44.8,
+                y = 44.3,
+            },
         },
     },
     {
@@ -700,7 +722,7 @@ ns.Data.professions = {
                 faction = "H",
                 rank = "journeyman",
                 map = 1420,
-                x = 61.8,
+                x = 61.7,
                 y = 51.6,
             },
             {
@@ -761,7 +783,7 @@ ns.Data.professions = {
                 rank = "journeyman",
                 map = 1453,
                 x = 53.0,
-                y = 73.7,
+                y = 73.8,
             },
             {
                 id = 1317,
@@ -773,7 +795,7 @@ ns.Data.professions = {
                 rank = "expert",
                 map = 1453,
                 x = 52.9,
-                y = 74.5,
+                y = 74.3,
             },
             {
                 id = 3345,
@@ -894,6 +916,17 @@ ns.Data.professions = {
                 map = 1458,
                 x = 62.5,
                 y = 60.4,
+            },
+            {
+                id = 257020,
+                name = {
+                    enUS = "Nasalanna Windsinger",
+                },
+                faction = "A",
+                rank = "journeyman",
+                map = 2521,
+                x = 43.2,
+                y = 43.2,
             },
         },
     },
@@ -1049,7 +1082,7 @@ ns.Data.professions = {
                 rank = "expert",
                 map = 1453,
                 x = 62.1,
-                y = 30.3,
+                y = 30.4,
             },
             {
                 id = 11026,
@@ -1426,6 +1459,16 @@ ns.Data.professions = {
                 map = 1458,
                 x = 54.0,
                 y = 49.5,
+            },
+            {
+                id = 257021,
+                name = {
+                    enUS = "Halassa Fernbreeze",
+                },
+                faction = "A",
+                map = 2521,
+                x = 43.0,
+                y = 43.5,
             },
         },
     },
@@ -1811,6 +1854,17 @@ ns.Data.professions = {
                 x = 70.9,
                 y = 58.4,
             },
+            {
+                id = 251993,
+                name = {
+                    enUS = "Indari Sunseam",
+                },
+                faction = "A",
+                rank = "journeyman",
+                map = 2521,
+                x = 44.7,
+                y = 44.5,
+            },
         },
     },
     {
@@ -1876,7 +1930,7 @@ ns.Data.professions = {
                 faction = "A",
                 map = 1431,
                 x = 74.0,
-                y = 49.6,
+                y = 49.7,
             },
             {
                 id = 1681,
@@ -1965,6 +2019,16 @@ ns.Data.professions = {
                 map = 1458,
                 x = 56.0,
                 y = 37.5,
+            },
+            {
+                id = 257022,
+                name = {
+                    enUS = "Messana Crestwind",
+                },
+                faction = "A",
+                map = 2521,
+                x = 44.7,
+                y = 44.5,
             },
         },
     },
@@ -2155,6 +2219,16 @@ ns.Data.professions = {
                 x = 70.2,
                 y = 59.2,
             },
+            {
+                id = 257024,
+                name = {
+                    enUS = "Mendalass Tattermend",
+                },
+                faction = "A",
+                map = 2521,
+                x = 43.2,
+                y = 43.4,
+            },
         },
     },
     {
@@ -2283,8 +2357,8 @@ ns.Data.professions = {
                 faction = "A",
                 rank = "artisan",
                 map = 1453,
-                x = 53.1,
-                y = 81.3,
+                x = 53.3,
+                y = 81.5,
             },
             {
                 id = 9584,
@@ -2465,6 +2539,17 @@ ns.Data.professions = {
                 map = 1458,
                 x = 70.1,
                 y = 29.8,
+            },
+            {
+                id = 251991,
+                name = {
+                    enUS = "Taleen Shimmerthread",
+                },
+                faction = "A",
+                rank = "journeyman",
+                map = 2521,
+                x = 44.8,
+                y = 44.2,
             },
         },
     },
@@ -2774,8 +2859,8 @@ ns.Data.professions = {
                 },
                 faction = "A",
                 map = 1453,
-                x = 53.0,
-                y = 44.7,
+                x = 52.9,
+                y = 44.8,
             },
             {
                 id = 3373,
@@ -3007,7 +3092,7 @@ ns.Data.professions = {
                 },
                 faction = "A",
                 map = 1453,
-                x = 55.0,
+                x = 55.1,
                 y = 69.7,
             },
             {

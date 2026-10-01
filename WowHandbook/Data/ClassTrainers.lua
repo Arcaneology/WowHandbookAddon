@@ -177,7 +177,7 @@ ns.Data.classTrainers = {
             faction = "A",
             map = 1457,
             x = 33.5,
-            y = 8.3,
+            y = 8.6,
         },
         {
             id = 4217,
@@ -189,6 +189,26 @@ ns.Data.classTrainers = {
             map = 1457,
             x = 35.4,
             y = 8.4,
+        },
+        {
+            id = 254081,
+            name = {
+                enUS = "Naeluna Swiftmend",
+            },
+            faction = "A",
+            map = 2521,
+            x = 45.1,
+            y = 44.3,
+        },
+        {
+            id = 251373,
+            name = {
+                enUS = "Xyton Silverwind",
+            },
+            faction = "A",
+            map = 2521,
+            x = 41.7,
+            y = 23.4,
         },
     },
     hunter = {
@@ -710,6 +730,26 @@ ns.Data.classTrainers = {
             x = 42.5,
             y = 9.2,
         },
+        {
+            id = 254084,
+            name = {
+                enUS = "Elayaa Easewind",
+            },
+            faction = "A",
+            map = 2521,
+            x = 45.3,
+            y = 44.3,
+        },
+        {
+            id = 251376,
+            name = {
+                enUS = "Tai'ree Farsight",
+            },
+            faction = "A",
+            map = 2521,
+            x = 42.5,
+            y = 23.7,
+        },
     },
     mage = {
         {
@@ -751,7 +791,7 @@ ns.Data.classTrainers = {
             },
             faction = "H",
             map = 1420,
-            x = 62.0,
+            x = 61.9,
             y = 52.5,
         },
         {
@@ -762,7 +802,7 @@ ns.Data.classTrainers = {
             },
             faction = "H",
             map = 1420,
-            x = 30.9,
+            x = 31.0,
             y = 66.1,
         },
         {
@@ -1068,8 +1108,47 @@ ns.Data.classTrainers = {
             x = 85.5,
             y = 13.5,
         },
+        {
+            id = 251379,
+            name = {
+                enUS = "Dorii Brightwhisper",
+            },
+            faction = "A",
+            map = 2521,
+            x = 41.5,
+            y = 23.6,
+        },
+        {
+            id = 254086,
+            name = {
+                enUS = "Shenaan Spellwind",
+            },
+            faction = "A",
+            map = 2521,
+            x = 45.1,
+            y = 45.8,
+        },
     },
     paladin = {
+        {
+            id = 244808,
+            name = {
+                enUS = "Aramis Hammerhand",
+            },
+            map = 1420,
+            x = 31.1,
+            y = 66.3,
+        },
+        {
+            id = 246152,
+            name = {
+                enUS = "Shari Stilwell",
+                zhCN = "莎莉·斯迪威尔",
+            },
+            map = 1420,
+            x = 60.3,
+            y = 52.6,
+        },
         {
             id = 1232,
             name = {
@@ -1111,8 +1190,8 @@ ns.Data.classTrainers = {
             },
             faction = "A",
             map = 1429,
-            x = 41.1,
-            y = 66.0,
+            x = 41.2,
+            y = 66.1,
         },
         {
             id = 8140,
@@ -1333,8 +1412,8 @@ ns.Data.classTrainers = {
             },
             faction = "A",
             map = 1453,
-            x = 49.6,
-            y = 44.6,
+            x = 49.7,
+            y = 45.0,
         },
         {
             id = 11397,
@@ -1588,8 +1667,8 @@ ns.Data.classTrainers = {
             },
             faction = "H",
             map = 1420,
-            x = 61.8,
-            y = 52.0,
+            x = 61.7,
+            y = 52.1,
         },
         {
             id = 1234,
@@ -1822,6 +1901,26 @@ ns.Data.classTrainers = {
             x = 85.2,
             y = 71.6,
         },
+        {
+            id = 251389,
+            name = {
+                enUS = "Akeri Duskblade",
+            },
+            faction = "A",
+            map = 2521,
+            x = 43.7,
+            y = 24.3,
+        },
+        {
+            id = 254087,
+            name = {
+                enUS = "Miriaan Mistblade",
+            },
+            faction = "A",
+            map = 2521,
+            x = 43.2,
+            y = 43.3,
+        },
     },
     shaman = {
         {
@@ -1945,6 +2044,26 @@ ns.Data.classTrainers = {
             x = 23.6,
             y = 18.8,
         },
+        {
+            id = 254082,
+            name = {
+                enUS = "Aarnor Galestrike",
+            },
+            faction = "A",
+            map = 2521,
+            x = 43.4,
+            y = 44.3,
+        },
+        {
+            id = 251374,
+            name = {
+                enUS = "Windshaper Boro",
+            },
+            faction = "A",
+            map = 2521,
+            x = 42.8,
+            y = 23.6,
+        },
     },
     warlock = {
         {
@@ -1989,7 +2108,7 @@ ns.Data.classTrainers = {
             faction = "H",
             map = 1420,
             x = 61.6,
-            y = 52.4,
+            y = 52.5,
         },
         {
             id = 460,
@@ -2531,6 +2650,26 @@ ns.Data.classTrainers = {
             map = 1458,
             x = 46.9,
             y = 15.2,
+        },
+        {
+            id = 251964,
+            name = {
+                enUS = "Blademaster Ren",
+            },
+            faction = "A",
+            map = 2521,
+            x = 43.6,
+            y = 24.2,
+        },
+        {
+            id = 254088,
+            name = {
+                enUS = "Corsan Earthrazer",
+            },
+            faction = "A",
+            map = 2521,
+            x = 44.9,
+            y = 45.1,
         },
     },
 }

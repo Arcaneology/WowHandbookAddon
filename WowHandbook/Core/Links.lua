@@ -14,6 +14,7 @@ local ROUTES = {
     raid = "/zones/raids/%s/",       -- 团队副本 slug，如 "molten-core"
     quest = "/quests/%d/",           -- 任务 ID，网站重定向到所属副本页
     spellbook = "/spellbook/%s/",    -- 职业 slug，如 "mage"
+    talents = "/talents/%s/",        -- 职业 slug；可带加点分享码（网站天赋模拟器从地址的 # 后读取）
 }
 
 local function LocalePrefix()
@@ -31,7 +32,8 @@ local function ValidArgument(kind, argument)
 end
 
 -- Links:Build("dungeon", "deadmines") -> https://wowhandbook.com/zh/zones/dungeons/deadmines/
-function Links:Build(kind, argument)
+-- fragment（可选）：地址 # 后的部分，只允许数字与连字符（天赋加点分享码）
+function Links:Build(kind, argument, fragment)
     local route = ROUTES[kind]
     assert(route, "unknown link kind: " .. tostring(kind))
     local path = route
@@ -39,7 +41,12 @@ function Links:Build(kind, argument)
         assert(ValidArgument(kind, argument), "invalid argument for link kind " .. kind)
         path = route:format(argument)
     end
-    return BASE_URL .. LocalePrefix() .. path
+    local url = BASE_URL .. LocalePrefix() .. path
+    if fragment and fragment ~= "" then
+        assert(type(fragment) == "string" and fragment:match("^[%d%-]+$"), "invalid link fragment")
+        url = url .. "#" .. fragment
+    end
+    return url
 end
 
 --------------------------------------------------------------------------------
@@ -68,7 +75,7 @@ local function CreateDialog()
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-    Theme:Skin(frame, "window", "line")
+    Theme:Skin(frame, "menu", "line")
     frame:Hide()
     tinsert(UISpecialFrames, frame:GetName()) -- Esc 关闭
 
@@ -76,7 +83,7 @@ local function CreateDialog()
     topLine:SetPoint("TOPLEFT", 1, -1)
     topLine:SetPoint("TOPRIGHT", -1, -1)
     topLine:SetHeight(2)
-    topLine:SetColorTexture(unpack(Theme.colors.gold))
+    Theme:Paint(topLine, "gold")
 
     local title = UI:Text(frame, "Heading", L["Website link"])
     title:SetPoint("TOPLEFT", 18, -16)

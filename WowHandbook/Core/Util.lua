@@ -89,6 +89,48 @@ function ns.ProfessionSkills()
     return learned
 end
 
+-- 专业训练师的等级：数据里的等级取自训练师头衔，是它“最高能教到”的一档，
+-- 高档训练师也教低档（中级训练师也能从零教起）。
+ns.TRAINER_RANK_ORDER = { apprentice = 1, journeyman = 2, expert = 3, artisan = 4, specialization = 5 }
+
+-- 训练师等级的名字：按英文头衔里的等级词（英文头衔统一）固定对应中文，与游戏里训练师头衔的写法一致：
+-- Apprentice 见习、Journeyman 初级（“初级炼金师”）、Master / Artisan 大师级（“大师级××训练师”）；
+-- Expert 的中文头衔不带等级词，用客户端专业技能的“高级”。其他语言走本地化表。
+local RANK_KEYS = { apprentice = "Apprentice", journeyman = "Journeyman", expert = "Expert", artisan = "Artisan",
+    specialization = "Specialization" }
+function ns.TrainerRankName(rank)
+    return L[RANK_KEYS[rank] or rank]
+end
+
+-- 下一步要学的一档：还没学是初级，技能上限 75 学中级、150 学高级、225 学专家级；满了返回 nil
+function ns.NextTrainerRank(skill)
+    if not skill then
+        return "apprentice"
+    elseif skill.max <= 75 then
+        return "journeyman"
+    elseif skill.max <= 150 then
+        return "expert"
+    elseif skill.max <= 225 then
+        return "artisan"
+    end
+end
+
+-- 这些训练师里该去找的那一档：能教到下一档的训练师中，最高可教等级最低的一档（最常见、离新手区最近）。
+-- 例：还没学采矿的玩家要学初级，但多数训练师头衔是“中级”，就高亮中级训练师。没有合适的返回 nil
+function ns.TargetTrainerRank(trainers, skill)
+    local need = ns.NextTrainerRank(skill)
+    local needOrder = need and ns.TRAINER_RANK_ORDER[need]
+    local best
+    for _, trainer in ipairs(needOrder and trainers or {}) do
+        local order = trainer.rank and ns.TRAINER_RANK_ORDER[trainer.rank]
+        if order and order >= needOrder and order ~= ns.TRAINER_RANK_ORDER.specialization
+            and (not best or order < ns.TRAINER_RANK_ORDER[best]) then
+            best = trainer.rank
+        end
+    end
+    return best
+end
+
 -- "A" / "H"
 function ns.PlayerFaction()
     local faction = UnitFactionGroup("player")
@@ -99,6 +141,17 @@ end
 function ns.PlayerClass()
     local _, classFile = UnitClass("player")
     return classFile and classFile:lower()
+end
+
+-- 职业名：取客户端的（按客户端语言）；取不到时用天赋数据里的名字。slug 为数据里的职业键
+function ns.ClassName(slug)
+    local names = LOCALIZED_CLASS_NAMES_MALE
+    local name = names and slug and names[slug:upper()]
+    if name then
+        return name
+    end
+    local data = ns.Data and ns.Data.talents and ns.Data.talents[slug]
+    return data and ns.Name(data.name) or slug
 end
 
 function ns.PlayerLevel()

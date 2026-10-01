@@ -1,5 +1,4 @@
 local ADDON_NAME, ns = ...
-local L = ns.L
 
 -- 完整键表。英文与键相同，因此这里只登记键，便于其他语言对照翻译。
 -- 新增字符串时先加到这里，再到各语言文件翻译。
@@ -119,7 +118,16 @@ local KEYS = {
     "Turning a whole feature on or off takes effect after reloading the UI.",
     "Reload UI",
     "Enabled",
-    "World map scale: %.1f",
+    "World map scale",
+    "General",
+    "Dungeons",
+    "Spells",
+    "Map",
+    "Language",
+    "Interface language",
+    "The language of WoW Handbook's own text. Game names such as items and zones follow the game client.",
+    "Game language",
+    "Reload the UI to apply",
     "About",
     "WoW Handbook is a free, unofficial fan-made addon. It is not affiliated with or endorsed by Blizzard Entertainment. Full guides: wowhandbook.com",
     "Rank %d",
@@ -220,7 +228,8 @@ local KEYS = {
     "%d in progress",
     "Right for you",
     "No dungeon quests",
-    "Gold cards are right for your level. Level colors: gray too low, green easy, gold right for you, red too high.",
+    "%d quests for the other faction",
+    "Gold cards are right for your level. Hover a card for details.",
     "Can't learn yet",
     "Can pick up",
     "Too low",
@@ -229,7 +238,8 @@ local KEYS = {
     "Primary professions",
     "Secondary professions",
     "Trainer",
-    "Teaches",
+    "Trainer rank",
+    "Trainer rank: %s",
     "Location",
     "Apprentice",
     "Journeyman",
@@ -309,9 +319,46 @@ local KEYS = {
     "Bonecaller Oryx slain: 0/1",
     "Killed %d",
     "preview the instance tracker with a sample dungeon",
+    "Appearance",
+    "Color scheme",
+    "The accent color of the WoW Handbook windows. It follows your class by default.",
+    "My class (%s)",
+    "Handbook gold",
+    "Background opacity",
+    "Lower it to see the game through the main window. Text, borders and menus stay solid.",
+    "Talents",
+    "Talent simulator",
+    "Points: %s",
+    "Requires level %d",
+    "You have %d points at level %d",
+    "Rank %d/%d",
+    "Requires %d points in %s",
+    "Next rank:",
+    "Left-click: add a point. Right-click: remove a point.",
+    "Reset this tree",
+    "Reset",
+    "Copy build link",
+    "Open this build in the talent calculator on wowhandbook.com to share it or keep editing.",
+    "No talent data for this class yet.",
+    "open the talent simulator",
+    "Other race",
+    "Only for: %s",
+    "Alliance",
+    "Horde",
+    "Human",
+    "Orc",
+    "Dwarf",
+    "Night Elf",
+    "Undead",
+    "Tauren",
+    "Gnome",
+    "Troll",
+    "Skyborne",
 }
 
+-- 英文就是键本身；登记成英文翻译表，界面语言为英文时直接命中
+local english = ns:NewTranslation("enUS")
 for _, key in ipairs(KEYS) do
-    rawset(L, key, key)
+    english[key] = key
 end
 

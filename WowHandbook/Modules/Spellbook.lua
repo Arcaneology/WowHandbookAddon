@@ -24,8 +24,65 @@ local function RaceAllowed(races)
     return false
 end
 
+-- 种族名：能从客户端取的（按客户端语言）优先，取不到或客户端没有的（如无限版新种族）用本地化表
+local RACE_IDS = { Human = 1, Orc = 2, Dwarf = 3, ["Night Elf"] = 4, Undead = 5, Tauren = 6, Gnome = 7, Troll = 8 }
+local function RaceName(race)
+    local id = RACE_IDS[race]
+    local info = id and C_CreatureInfo and C_CreatureInfo.GetRaceInfo and C_CreatureInfo.GetRaceInfo(id)
+    return info and info.raceName or L[race]
+end
+
+-- 限定种族的技能的标签文字：整个阵营都能学的（法师传送）写阵营名，其余列出种族
+local ALLIANCE_RACES = { Human = true, Dwarf = true, ["Night Elf"] = true, Gnome = true }
+local HORDE_RACES = { Orc = true, Undead = true, Tauren = true, Troll = true }
+local function RaceLabel(races)
+    if #races > 3 then
+        local alliance, horde = 0, 0
+        for _, race in ipairs(races) do
+            alliance = alliance + (ALLIANCE_RACES[race] and 1 or 0)
+            horde = horde + (HORDE_RACES[race] and 1 or 0)
+        end
+        if alliance == 4 and horde == 0 then
+            return FACTION_ALLIANCE or L["Alliance"]
+        elseif horde == 4 and alliance == 0 then
+            return FACTION_HORDE or L["Horde"]
+        end
+    end
+    local names = {}
+    for _, race in ipairs(races) do
+        tinsert(names, RaceName(race))
+    end
+    return table.concat(names, " / ")
+end
+Module.RaceLabel = RaceLabel -- 供测试使用
+
 local function ClassSpells()
     return ns.Data.spells[ns.PlayerClass() or ""] or {}
+end
+
+-- 当前界面语言下重名的技能（如中文里牧师的“惩击”既是 Smite 也是矮人的 Chastise）：{ [小写名字] = true }。
+-- 已学情况平时按名字查；重名的技能按名字会互相冒认，改用技能 ID 判断
+local function SharedNames(spells)
+    local count, shared = {}, {}
+    for _, spell in ipairs(spells) do
+        if not spell.pet then
+            local key = (ns.Name(spell.name) or ""):lower()
+            count[key] = (count[key] or 0) + 1
+            shared[key] = count[key] > 1 or nil
+        end
+    end
+    return shared
+end
+
+-- 重名技能已学到第几级：这一级或更高一级的技能 ID 在玩家技能书里就算学了；没有 ID 可查时当作没学
+local function KnownRankByID(spell)
+    local best = -1
+    for _, rank in ipairs(spell.ranks) do
+        if rank.id and IsPlayerSpell and IsPlayerSpell(rank.id) then
+            best = math.max(best, ns.RankNumber(rank.rank))
+        end
+    end
+    return best >= 0 and { best = best } or nil
 end
 
 -- 恶魔技能 ID -> { pet = 恶魔英文名, key = 技能英文名小写, rank = 等级数字 }（按需建一次）
@@ -94,9 +151,11 @@ function Module.OnPetChanged(_, unit)
 end
 
 -- 每个技能的每个等级展开成一行：{ spell, rank, rankNumber, level, status }
--- status：known（已学）、ready（现在可学）、later（还没到等级）；恶魔技能另有
+-- 默认只含当前种族能学的技能（未学技能面板、首页、地图训练师提示、升级提示都用这份）；
+-- allRaces 为真时（技能书页）也列出其他种族专属的技能，状态为 other。限定种族的行带 races 与 mine（当前种族能不能学）。
+-- status：known（已学）、ready（现在可学）、later（还没到等级）、other（其他种族的技能）；恶魔技能另有
 -- innate（召唤恶魔时自带）、book（到等级了，可向商人买魔典）、unchecked（这只恶魔还没召唤过，不知道学没学）
-local function Rows(petsOnly)
+local function Rows(petsOnly, allRaces)
     local rows = {}
     local known = ns.KnownSpells()
     if petsOnly then
@@ -104,6 +163,7 @@ local function Rows(petsOnly)
     end
     local petSpells = ns.charDB and ns.charDB.petSpells or {}
     local level = ns.PlayerLevel()
+    local shared = SharedNames(ClassSpells())
     for _, spell in ipairs(ClassSpells()) do
         if spell.pet then
             if petsOnly then
@@ -128,12 +188,19 @@ local function Rows(petsOnly)
                         status = status, book = rank.book, price = rank.price, pet = petName, id = rank.id })
                 end
             end
-        elseif not petsOnly and RaceAllowed(spell.races) then
-            local entry = known[(ns.Name(spell.name) or ""):lower()]
+        elseif not petsOnly and (allRaces or RaceAllowed(spell.races)) then
+            local mine = RaceAllowed(spell.races)
+            local key = (ns.Name(spell.name) or ""):lower()
+            local entry = known[key]
+            if shared[key] then
+                entry = KnownRankByID(spell)
+            end
             for _, rank in ipairs(spell.ranks) do
                 local rankNumber = ns.RankNumber(rank.rank)
                 local status
-                if entry and entry.best >= rankNumber then
+                if not mine then
+                    status = "other"
+                elseif entry and entry.best >= rankNumber then
                     status = "known"
                 elseif rank.level <= level then
                     status = "ready"
@@ -141,7 +208,7 @@ local function Rows(petsOnly)
                     status = "later"
                 end
                 tinsert(rows, { spell = spell, rank = rank.rank, rankNumber = rankNumber, level = rank.level, status = status,
-                    id = rank.id })
+                    id = rank.id, races = spell.races, mine = mine })
             end
         end
     end
@@ -166,18 +233,20 @@ local STATUS = {
     book = "|cffe0b458%s|r",
     unchecked = "|cff8a8374%s|r",
     later = "|cff8a8374%s|r",
+    other = "|cff8a8374%s|r",
 }
 local STATUS_LABEL = { known = "Learned", innate = "Innate", ready = "Train now", book = "Buy the grimoire",
-    unchecked = "Summon this demon once to check", later = "Not yet" }
+    unchecked = "Summon this demon once to check", later = "Not yet", other = "Other race" }
 
 -- 整行按三档区分：现在可学高亮（淡金底、金条、名字加亮），
 -- 已学会正常显示，还不能学整行低亮度（名字、图标、状态都调暗）
 local STATUS_GROUP = { known = "learned", innate = "learned", ready = "ready", book = "ready",
-    later = "locked", unchecked = "locked" }
+    later = "locked", unchecked = "locked", other = "other" }
 local GROUP_STYLE = {
     learned = { name = "fff4e8cc" },
     ready = { tint = "goldTint", bar = "gold", name = "ffffe7a8" },
     locked = { name = "ff8a8374", dim = true, alpha = 0.55 },
+    other = { name = "ff8a8374", dim = true, alpha = 0.4 }, -- 其他种族的技能：比“还不能学”更淡
 }
 Module.STATUS_GROUP = STATUS_GROUP -- 供测试使用
 
@@ -226,6 +295,14 @@ local function ShowRowTooltip(row)
         GameTooltip:SetText(ns.Name(row.entry.spell.name) or "?", 1, 0.82, 0)
     end
     GameTooltip:AddLine((L["Learn at level %d"]):format(row.entry.level), 1, 1, 1)
+    if row.entry.races then
+        local label = (L["Only for: %s"]):format(RaceLabel(row.entry.races))
+        if row.entry.mine then
+            GameTooltip:AddLine(label, 0.27, 0.75, 0.45)
+        else
+            GameTooltip:AddLine(label, 1, 0.25, 0.25)
+        end
+    end
     GameTooltip:Show()
 end
 
@@ -383,7 +460,12 @@ end
 
 local function SpellCell(row)
     local style = GROUP_STYLE[STATUS_GROUP[row.status] or "locked"]
-    return Icon(row.spell, style.dim) .. ("|c%s%s|r"):format(style.name, ns.Name(row.spell.name) or "?")
+    local text = Icon(row.spell, style.dim) .. ("|c%s%s|r"):format(style.name, ns.Name(row.spell.name) or "?")
+    -- 限定种族的技能在名字后加种族标签：当前种族能学的绿色，其他种族的灰色
+    if row.races then
+        text = text .. ("  |c%s[%s]|r"):format(row.mine and ns.Theme.hex.green or ns.Theme.hex.muted, RaceLabel(row.races))
+    end
+    return text
 end
 
 local function RankCell(row)
@@ -394,7 +476,7 @@ local function Refresh()
     if not (page and page:IsVisible()) then
         return
     end
-    local rows = Rows()
+    local rows = Rows(false, true)
     local level = ns.PlayerLevel()
     local ready, upcomingLevel = 0, nil
     for _, row in ipairs(rows) do
@@ -482,7 +564,7 @@ local function CreatePage(parent)
     for _, item in ipairs({
         { label = "Can't learn yet", color = "lineSoft", text = "ff8a8374" },
         { label = "Learned", color = "textDim", text = "fff4e8cc" },
-        { label = "Train now", color = "gold", text = "ffe0b458" },
+        { label = "Train now", color = "gold", text = ns.Theme.hex.gold },
     }) do
         local label = UI:Text(p, "Small", ("|c%s%s|r"):format(item.text, L[item.label]))
         if anchor then
@@ -493,7 +575,7 @@ local function CreatePage(parent)
         local swatch = p:CreateTexture(nil, "ARTWORK")
         swatch:SetSize(10, 10)
         swatch:SetPoint("RIGHT", label, "LEFT", -5, 0)
-        swatch:SetColorTexture(unpack(ns.Theme.colors[item.color]))
+        ns.Theme:Paint(swatch, item.color)
         anchor = swatch
     end
 

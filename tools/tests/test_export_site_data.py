@@ -329,6 +329,82 @@ class PetSpellTest(unittest.TestCase):
 
 
 class GraveyardsTest(unittest.TestCase):
+    def test_talents_keep_site_order_with_one_based_prerequisites(self) -> None:
+        talent = {"name": "Deflection", "max": 2, "row": 1, "col": 2, "icon": "/icons/game/ability_parry.jpg",
+                  "ranks": [{"text": "Parry +1%."}, {"text": "Parry +2%."}]}
+        active = {"name": "Riposte", "max": 1, "row": 3, "col": 2, "icon": "/icons/game/ability_warrior_challange.jpg",
+                  "ranks": [{"text": "Strike back."}], "req": 0, "cost": "10 Energy | Instant"}
+        english = {"classes": {"rogue": {"name": "Rogue", "trees": [
+            {"name": "Combat", "icon": "/icons/game/ability_backstab.jpg", "talents": [talent, active]}]}}}
+        chinese = {"classes": {"rogue": {"name": "Rogue", "trees": [{"name": "战斗", "talents": [
+            {"name": "偏斜", "ranks": [{"text": "招架 +1%。"}, {"text": "招架 +2%。"}]},
+            {"name": "还击", "ranks": [{"text": "反击。"}], "cost": "10点能量 | 瞬发"}]}]}}}
+        tree = exporter.build_talents(english, chinese)["rogue"]["trees"][0]
+        self.assertEqual(tree["name"], {"enUS": "Combat", "zhCN": "战斗"})
+        self.assertEqual(tree["icon"], "ability_backstab")
+        first, second = tree["talents"]
+        self.assertEqual((first["max"], first["row"], first["col"], first["req"]), (2, 1, 2, None))
+        self.assertEqual(first["ranks"], {"enUS": ["Parry +1%.", "Parry +2%."], "zhCN": ["招架 +1%。", "招架 +2%。"]})
+        self.assertEqual(second["req"], 1)  # 网站从 0 起，Lua 从 1 起
+        self.assertEqual(second["cost"], {"enUS": "10 Energy | Instant", "zhCN": "10点能量 | 瞬发"})
+        # 每一级都要有说明，否则导出报错而不是带着残缺数据上线
+        broken = {"classes": {"rogue": {"name": "Rogue", "trees": [{"name": "Combat", "talents": [dict(talent, max=3)]}]}}}
+        with self.assertRaises(ValueError):
+            exporter.build_talents(broken, chinese)
+
+    def test_collected_spirit_healers_replace_nearby_points_and_add_new_ones(self) -> None:
+        site_data = {"maps": {"1458": [[68.2, 9.1]], "1429": [[39.5, 60.5], [83.6, 69.7]]}}
+        collected = {1458: [[68.0, 14.0]], 1429: [[39.4, 60.5]], 2521: [[41.1, 22.3]]}
+        result = exporter.build_graveyards(site_data, collected)
+        self.assertEqual(result[1458], [[68.0, 14.0]])                 # 5 以内：换成实测坐标
+        self.assertEqual(result[1429], [[39.4, 60.5], [83.6, 69.7]])   # 没采到的点保留
+        self.assertEqual(result[2521], [[41.1, 22.3]])                 # 新地图：新增
+        self.assertEqual(list(result), [1429, 1458, 2521])
+        self.assertEqual(exporter.build_graveyards(site_data)[1458], [[68.2, 9.1]])
+
+    def test_collected_spirit_healers_read_from_the_snapshot(self) -> None:
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            archive = Path(folder) / "assets" / "addon-collector"
+            archive.mkdir(parents=True)
+            self.assertEqual(exporter.load_collected_spirit_healers(Path(folder)), {})
+            (archive / "latest_WowHandbook_Collector.lua").write_text(
+                'WowHandbookCollectorDB = {\n["npcs"] = {\n[375] = {\n["positions"] = {\n["1429:49.8:39.5"] = 2,\n},\n},\n'
+                '[6491] = {\n["nearPositions"] = {\n["1420:79.2:40.9"] = 1,\n},\n["positions"] = {\n'
+                '["2521:41.1:22.4"] = 1,\n["2521:41.1:22.3"] = 2,\n["1458:68.0:14.0"] = 1,\n},\n},\n'
+                '[7000] = {\n["positions"] = {\n["1:1.0:1.0"] = 1,\n},\n},\n},\n}\n', encoding="utf-8")
+            # 只取灵魂医者的交互坐标；同一处的两个坐标合并，取次数多的
+            self.assertEqual(exporter.load_collected_spirit_healers(Path(folder)),
+                             {2521: [[41.1, 22.3]], 1458: [[68.0, 14.0]]})
+
+    def test_new_trainers_get_their_confirmed_faction_unless_the_source_has_one(self) -> None:
+        rows = [{"id": 254086, "name": "Shenaan Spellwind", "faction": None, "map": 2521, "x": 45.1, "y": 45.8},
+                {"id": 254086, "name": "Same NPC with a source faction", "faction": "AH", "map": 2521},
+                {"id": 999999, "name": "Unknown new trainer", "faction": None, "map": 2521}]
+        mage = exporter.build_class_trainers({"classes": {"mage": rows}})["mage"]
+        self.assertEqual([t["faction"] for t in mage], ["A", "AH", None])
+        professions = exporter.build_professions(
+            {"professions": [{"slug": "alchemy", "name": "Alchemy"}]}, {"professions": []},
+            {"professions": {"alchemy": [{"id": 257019, "name": "Nyassa Swiftdraught", "map": 2521}]}})
+        self.assertEqual(professions[0]["trainers"][0]["faction"], "A")
+
+    def test_starter_island_trainers_get_the_lowest_rank_of_their_profession(self) -> None:
+        def trainer(npc_id, rank, map_id):
+            return {"id": npc_id, "name": f"T{npc_id}", "rank": rank, "map": map_id, "x": 1.0, "y": 1.0}
+        professions = {"professions": [{"slug": "tailoring", "name": "Tailoring"}, {"slug": "mining", "name": "Mining"}]}
+        trainers = {"professions": {
+            "tailoring": [trainer(1, "journeyman", 1429), trainer(2, "expert", 1453), trainer(3, "artisan", 1453),
+                          trainer(4, None, 2521), trainer(5, None, 1411)],
+            # 采集类：其他训练师基本不带等级，出生岛上的也不补
+            "mining": [trainer(6, None, 1429), trainer(7, None, 1426), trainer(8, "artisan", 1453), trainer(9, None, 2521)],
+        }}
+        tailoring, mining = exporter.build_professions(professions, {"professions": []}, trainers)
+        ranks = {row["id"]: row["rank"] for row in tailoring["trainers"] + mining["trainers"]}
+        self.assertEqual(ranks[4], "journeyman")  # 出生岛：补成这个专业最低的一档
+        self.assertIsNone(ranks[5])               # 其他地图没写等级的不动
+        self.assertIsNone(ranks[9])
+        self.assertEqual(ranks[2], "expert")
+
     def test_graveyards_keyed_by_ui_map(self) -> None:
         graveyards = exporter.build_graveyards({"maps": {"1453": [[49.7, 42.5]], "1429": [[83.6, 69.8], [39.5, 60.5]]}})
         self.assertEqual(list(graveyards), [1429, 1453])

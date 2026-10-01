@@ -522,6 +522,7 @@ local function SpiritHealersWanted()
     end
     return false
 end
+Module.SpiritHealersWanted = SpiritHealersWanted -- 小地图共用
 
 -- { {x, y, name} }，坐标 0–100。游戏给出的墓地在前；插件数据里游戏没给的点（相距 SAME_SPOT 格以内算同一个）补在后面。
 -- 原来游戏一给列表就整份丢掉插件数据，游戏列表不全时（如湿地中部）那里就没有图钉。
@@ -746,21 +747,6 @@ end
 -- 专业训练师：trainerPins 为 mine（学了的专业，默认）、all（全部专业）或 off
 --------------------------------------------------------------------------------
 
-local RANK_LABEL = { apprentice = "Apprentice", journeyman = "Journeyman", expert = "Expert", artisan = "Artisan",
-    specialization = "Specialization" }
-
--- 下一步该找的训练师等级：技能上限 75 找中级、150 找高级、225 找专家级；没学找初级（与专业页一致）
-local function NextRank(skill)
-    if not skill then
-        return "apprentice"
-    elseif skill.max <= 75 then
-        return "journeyman"
-    elseif skill.max <= 150 then
-        return "expert"
-    elseif skill.max <= 225 then
-        return "artisan"
-    end
-end
 
 -- 这张地图上要画的训练师：{ {trainer, profession, next} }
 local function TrainersForMap(mapID)
@@ -774,7 +760,14 @@ local function TrainersForMap(mapID)
     for _, profession in ipairs(ns.Data.professions or {}) do
         local skill = skills[profession.slug]
         if mode == "all" or skill then
-            local nextRank = NextRank(skill)
+            -- 该找的一档与专业页一致（Core/Util.lua 的 ns.TargetTrainerRank），按本阵营能用的训练师算
+            local usable = {}
+            for _, trainer in ipairs(profession.trainers or {}) do
+                if not trainer.faction or trainer.faction == "AH" or not faction or trainer.faction == faction then
+                    tinsert(usable, trainer)
+                end
+            end
+            local nextRank = ns.TargetTrainerRank(usable, skill)
             for _, trainer in ipairs(profession.trainers or {}) do
                 if trainer.map == mapID and trainer.x
                     and (not trainer.faction or trainer.faction == "AH" or not faction or trainer.faction == faction) then
@@ -811,7 +804,7 @@ local function CreateTrainerProvider()
             local name = ns.Name(trainer.name) or "?"
             local lines = { name, ns.Name(profession.name) or profession.slug }
             if trainer.rank then
-                lines[2] = lines[2] .. " · " .. L[RANK_LABEL[trainer.rank]]
+                lines[2] = lines[2] .. " · " .. ns.TrainerRankName(trainer.rank)
             end
             if item.next then
                 tinsert(lines, ns.Theme:Color(L["The trainer you need next"], "gold"))
@@ -847,6 +840,15 @@ local function ReadySpells()
     end
     return ready
 end
+Module.ReadySpells = ReadySpells -- 小地图共用
+
+-- 职业训练师的图标：宠物 / 传送门训练师用各自的技能图标，其余用职业图标（小地图共用）
+function Module.ClassTrainerIcon(trainer)
+    local _, classFile = UnitClass("player")
+    classFile = classFile or ""
+    return "Interface\\Icons\\" .. (CLASS_ICON[trainer.kind] or ("ClassIcon_" .. classFile:sub(1, 1) .. classFile:sub(2):lower()))
+end
+Module.CLASS_KIND_LABEL = CLASS_KIND_LABEL
 
 -- 这张地图上要画的本职业训练师：{ trainer, … }
 local function ClassTrainersForMap(mapID)
@@ -886,9 +888,7 @@ local function CreateClassTrainerProvider()
         for _, trainer in ipairs(trainers) do
             local pin = map:AcquirePin(CLASS_TRAINER_PIN)
             SetupPin(pin, "trainer")
-            local icon = CLASS_ICON[trainer.kind] or ("ClassIcon_" .. (classFile or ""):sub(1, 1)
-                .. (classFile or ""):sub(2):lower())
-            pin.whTexture:SetTexture("Interface\\Icons\\" .. icon)
+            pin.whTexture:SetTexture(Module.ClassTrainerIcon(trainer))
             local name = ns.Name(trainer.name) or "?"
             local lines = { name }
             if trainer.kind then

@@ -7,9 +7,10 @@ local ADDON_NAME, ns = ...
 --   manual（默认）留给玩家自己选；usable 先在能用的奖励里挑卖价最高的，都用不了就挑卖价最高的。
 --   卖价要等物品信息到达，最多等 1.5 秒；仍取不到的按 0 算。
 -- · 按住 Shift 和 NPC 对话时本次不自动；需要交钱的任务不自动交。
--- · 失败不重试：每个任务的每一步（对话里点开接 / 接受 / 对话里点开交 / 继续 / 领奖励）本次登录只自动做一次；
---   游戏确认接下（QUEST_ACCEPTED）或交付（QUEST_TURNED_IN）后清掉记录。接不下（如任务日志满了）、交不了时
---   不会反复点同一个任务，留给玩家手动处理。
+-- · 同一次对话里不重复：每个任务的每一步（对话里点开接 / 接受 / 对话里点开交 / 继续 / 领奖励）在一次对话里只自动
+--   做一次，接不下（如任务日志满了）、交不了时不会反复点同一个任务，留给玩家手动处理。对话结束（对话菜单与
+--   任务窗口都关了）后清掉记录，再去点这个 NPC 会重新自动处理一次（用户 2026-10-01 明确：不重复指的是短时间内
+--   不反复交，不是整次登录只试一次）。游戏确认接下（QUEST_ACCEPTED）或交付（QUEST_TURNED_IN）后也清掉记录。
 -- · 自动操作都推迟到下一帧：先让其他插件（任务助手、数据采集等）读完这次窗口的内容，再接受或交付；
 --   执行前确认窗口还开着（期间玩家自己点过就不重复操作）。
 local Module = ns:NewModule("AutoQuest", { autoAccept = true, autoTurnIn = true, rewardMode = "manual" })
@@ -44,6 +45,26 @@ local function Forget(steps, questID)
             tried[step][title] = nil
         end
     end
+end
+
+-- 对话结束：对话菜单与任务窗口都关了。窗口在一次对话里会来回切换（点任务时对话菜单先关、任务窗口再开），
+-- 所以关闭事件后等一会儿再看，两个窗口都不在才算结束，清掉全部记录
+local END_DELAY = 1
+local endPending = false
+local function OnWindowClosed()
+    if endPending then
+        return
+    end
+    endPending = true
+    C_Timer.After(END_DELAY, function()
+        endPending = false
+        if (GossipFrame and GossipFrame:IsShown()) or (QuestFrame and QuestFrame:IsShown()) then
+            return
+        end
+        for _, steps in pairs(tried) do
+            wipe(steps)
+        end
+    end)
 end
 
 -- 当前任务窗口里的任务键
@@ -214,6 +235,8 @@ function Module:OnEnable()
     ns:RegisterEvent("QUEST_TURNED_IN", function(_, questID)
         Forget(TURN_IN_STEPS, questID)
     end)
+    ns:RegisterEvent("GOSSIP_CLOSED", OnWindowClosed)
+    ns:RegisterEvent("QUEST_FINISHED", OnWindowClosed)
     ns:RegisterEvent("GOSSIP_SHOW", NextFrame(OnGossip, "GossipFrame"))
     ns:RegisterEvent("QUEST_GREETING", NextFrame(OnGreeting, "QuestFrame"))
     ns:RegisterEvent("QUEST_DETAIL", NextFrame(OnDetail, "QuestFrame"))

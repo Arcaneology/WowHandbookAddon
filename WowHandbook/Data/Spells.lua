@@ -5132,7 +5132,7 @@ ns.Data.spells = {
         {
             name = {
                 enUS = "Chastise",
-                zhCN = "惩击",
+                zhCN = "责罚",
             },
             tab = {
                 enUS = "Holy",
@@ -5378,34 +5378,6 @@ ns.Data.spells = {
                     rank = "Rank 5",
                     level = 60,
                     id = 25314,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Lightwell",
-                zhCN = "光明之泉",
-            },
-            tab = {
-                enUS = "Holy",
-                zhCN = "神圣",
-            },
-            icon = "spell_holy_summonlightwell",
-            ranks = {
-                {
-                    rank = "Rank 1",
-                    level = 40,
-                    id = 724,
-                },
-                {
-                    rank = "Rank 2",
-                    level = 50,
-                    id = 27870,
-                },
-                {
-                    rank = "Rank 3",
-                    level = 60,
-                    id = 27871,
                 },
             },
         },

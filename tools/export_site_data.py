@@ -642,10 +642,59 @@ def build_spells(spellbook: dict, zh_spellbook: dict, grimoires: dict | None = N
     return classes
 
 
-def build_graveyards(graveyards: dict) -> dict:
-    """{uiMapID: {{x, y}, ...}}，坐标 0–100"""
-    return {int(map_id): [[x, y] for x, y in points] for map_id, points in sorted(graveyards.get("maps", {}).items(),
-                                                                                key=lambda kv: int(kv[0]))}
+SPIRIT_HEALER_NPC = 6491
+# 实测点与已有点相差在这个范围内（地图坐标，0–100）算同一个灵魂医者，用实测坐标替换
+GRAVEYARD_SAME_SPOT = 5.0
+# 同一个灵魂医者交互几次会记下几个略有出入的坐标：相差在这个范围内的合并成一个
+GRAVEYARD_CLUSTER = 1.0
+
+
+def load_collected_spirit_healers(site: Path) -> dict:
+    """游戏内与灵魂医者对话时记下的位置：{uiMapID: [[x, y], ...]}。
+
+    来源是网站仓库本地素材目录里最新一份游戏内实测存档（assets/addon-collector/latest_*.lua，只读取、
+    不属于公开内容）；只取灵魂医者这一个 NPC 的交互坐标。文件不存在时返回空表，导出照常进行。"""
+    folder = site / "assets" / "addon-collector"
+    files = sorted(folder.glob("latest_*.lua")) if folder.exists() else []
+    if not files:
+        return {}
+    text = files[-1].read_text(encoding="utf-8")
+    start = re.search(r"^\[%d\] = \{$" % SPIRIT_HEALER_NPC, text, re.M)
+    if not start:
+        return {}
+    following = re.search(r"^\[\d+\] = \{$", text[start.end():], re.M)
+    block = text[start.end():start.end() + following.start()] if following else text[start.end():]
+    positions = re.search(r'^\["positions"\] = \{\n(.*?)^\},?$', block, re.M | re.S)
+    result: dict = {}
+    for map_id, x, y, count in re.findall(r'\["(\d+):([\d.]+):([\d.]+)"\] = (\d+)', positions.group(1) if positions else ""):
+        result.setdefault(int(map_id), []).append((float(x), float(y), int(count)))
+    merged: dict = {}
+    for map_id, points in result.items():
+        clusters: list = []
+        # 次数多的在前：同一处的几个坐标取记录次数最多的那个
+        for x, y, _ in sorted(points, key=lambda p: (-p[2], p[0], p[1])):
+            if not any(abs(x - cx) <= GRAVEYARD_CLUSTER and abs(y - cy) <= GRAVEYARD_CLUSTER for cx, cy in clusters):
+                clusters.append((x, y))
+        merged[map_id] = [[x, y] for x, y in sorted(clusters)]
+    return merged
+
+
+def build_graveyards(graveyards: dict, collected: dict | None = None) -> dict:
+    """{uiMapID: {{x, y}, ...}}，坐标 0–100。
+
+    collected 是游戏内实测的灵魂医者位置（同样的结构）：与已有点相差 GRAVEYARD_SAME_SPOT 以内的用实测坐标替换，
+    其余作为新点加入（无限版新地图、挪过位置的墓地）。"""
+    result = {int(map_id): [[x, y] for x, y in points] for map_id, points in graveyards.get("maps", {}).items()}
+    for map_id, points in (collected or {}).items():
+        existing = result.setdefault(int(map_id), [])
+        for x, y in points:
+            near = [p for p in existing if abs(p[0] - x) <= GRAVEYARD_SAME_SPOT and abs(p[1] - y) <= GRAVEYARD_SAME_SPOT]
+            if near:
+                closest = min(near, key=lambda p: abs(p[0] - x) + abs(p[1] - y))
+                closest[0], closest[1] = x, y
+            else:
+                existing.append([x, y])
+    return dict(sorted(result.items()))
 
 
 def apply_deadmines_site_sync(site: Path, document: dict, zh_quests: dict) -> None:
@@ -695,6 +744,38 @@ def load_skill_lines(site: Path) -> dict:
     return lines
 
 
+# 无限版新训练师的阵营：来源数据只能从“对玩家友好”推断，推不出阵营；这里按游戏内确认的结果补上。
+# 只在来源没有阵营时生效，来源有了阵营就以来源为准。
+# 泽弗拉斯岛（天裔初始地区，地图 2521）：用户 2026-10-01 确认采到的训练师都是联盟方的。
+TRAINER_FACTION_OVERRIDES = {npc_id: "A" for npc_id in (
+    # 职业训练师
+    251373, 251374, 251376, 251379, 251389, 251964, 254081, 254082, 254084, 254086, 254087, 254088,
+    # 专业训练师
+    251913, 251991, 251993, 257019, 257020, 257021, 257022, 257024,
+)}
+
+
+def trainer_faction(row: dict) -> str | None:
+    return row.get("faction") or TRAINER_FACTION_OVERRIDES.get(row.get("id"))
+
+
+# 新种族出生岛（泽弗拉斯岛）的地图：这里的训练师头衔不写等级（“Alchemist”“Tailor”），
+# 但出生地的训练师就是最低一档（用户 2026-10-01 确认），按同专业其他训练师的最低一档补上
+STARTER_ISLAND_MAPS = {2521}
+
+
+def starter_trainer_rank(rows: list) -> str | None:
+    """出生岛上没写等级的训练师该补的等级：这个专业其他训练师里最低的一档。
+
+    只在这个专业的训练师大多带等级时才补（制造类专业：出生地都是 journeyman）；采集类专业的训练师头衔
+    本来就基本不带等级，其他出生地的同类训练师也没有等级，保持不写。"""
+    ranked = [row["rank"] for row in rows if row.get("rank") in TRAINER_RANKS and row.get("map") not in STARTER_ISLAND_MAPS]
+    others = [row for row in rows if row.get("map") not in STARTER_ISLAND_MAPS]
+    if not ranked or len(ranked) * 2 <= len(others):
+        return None
+    return min(ranked, key=TRAINER_RANKS.index)
+
+
 def build_professions(professions: dict, zh_professions: dict, trainers: dict, skill_lines: dict | None = None) -> list:
     """专业列表（主专业在前，按网站顺序）与各专业训练师。没有坐标的训练师保留地图，x / y 为空。"""
     zh = {p["slug"]: p["name"] for p in zh_professions.get("professions", [])}
@@ -705,12 +786,16 @@ def build_professions(professions: dict, zh_professions: dict, trainers: dict, s
         rows = [{
             "id": row["id"],
             "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
-            "faction": row.get("faction"),
+            "faction": trainer_faction(row),
             "rank": row.get("rank") if row.get("rank") in TRAINER_RANKS else None,
             "map": row.get("map"),
             "x": row.get("x"),
             "y": row.get("y"),
         } for row in (trainers.get("professions") or {}).get(slug, [])]
+        starter_rank = starter_trainer_rank(rows)
+        for row in rows:
+            if row["rank"] is None and row["map"] in STARTER_ISLAND_MAPS:
+                row["rank"] = starter_rank
         out.append({
             "slug": slug,
             "kind": profession.get("kind"),
@@ -727,7 +812,7 @@ def build_class_trainers(trainers: dict) -> dict:
     return {class_name: [{
         "id": row["id"],
         "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
-        "faction": row.get("faction"),
+        "faction": trainer_faction(row),
         "kind": row.get("kind"),
         "map": row.get("map"),
         "x": row.get("x"),
@@ -746,6 +831,49 @@ def build_gathering(gathering: dict) -> dict:
                   for n in gathering.get("nodes", [])],
         "maps": {int(map_id): kinds for map_id, kinds in (gathering.get("maps") or {}).items()},
     }
+
+
+def build_talents(talents: dict, zh_talents: dict) -> dict:
+    """天赋树：{职业: {name, trees: [{name, icon, talents: [{name, icon, max, row, col, req, cost, ranks}]}]}}。
+
+    网站天赋数据取自客户端天赋表，没有技能 ID，游戏里也查不到其他职业、尚未学到的各级天赋说明，
+    所以名字与每一级的说明随数据带上中英两份（中文为客户端简体中文表的原文）。
+    req 是同一棵树里前置天赋的序号，网站从 0 起，这里改为 Lua 的从 1 起；天赋顺序与网站一致，
+    这样模拟器生成的分享码能在网站天赋模拟器里打开。"""
+    classes = {}
+    for class_slug, data in talents["classes"].items():
+        zh_trees = zh_talents["classes"].get(class_slug, {}).get("trees", [])
+        trees = []
+        for tree_index, tree in enumerate(data["trees"]):
+            zh_tree = zh_trees[tree_index] if tree_index < len(zh_trees) else {}
+            zh_list = zh_tree.get("talents", [])
+            rows = []
+            for index, talent in enumerate(tree["talents"]):
+                zh = zh_list[index] if index < len(zh_list) else {}
+                zh_ranks = zh.get("ranks") or []
+                if len(talent["ranks"]) != talent["max"]:
+                    raise ValueError(f"{class_slug} {talent['name']}: {len(talent['ranks'])} rank texts for max {talent['max']}")
+                rows.append({
+                    "name": {"enUS": talent["name"], "zhCN": zh.get("name")},
+                    "icon": icon_name(talent.get("icon")),
+                    "max": talent["max"],
+                    "row": talent["row"],
+                    "col": talent["col"],
+                    "req": talent["req"] + 1 if talent.get("req") is not None else None,
+                    "cost": {"enUS": talent["cost"], "zhCN": zh.get("cost")} if talent.get("cost") else None,
+                    "ranks": {
+                        "enUS": [rank["text"] for rank in talent["ranks"]],
+                        "zhCN": [rank["text"] for rank in zh_ranks] if len(zh_ranks) == talent["max"] else None,
+                    },
+                })
+            trees.append({
+                "name": {"enUS": tree["name"], "zhCN": zh_tree.get("name")},
+                "icon": icon_name(tree.get("icon")),
+                "talents": rows,
+            })
+        # 职业名只带英文作兜底：界面上用客户端的职业名
+        classes[class_slug] = {"name": {"enUS": data["name"]}, "trees": trees}
+    return classes
 
 
 def export(site: Path) -> dict:
@@ -771,7 +899,8 @@ def export(site: Path) -> dict:
                           load_grimoires(site), load_spell_ids(site))
     return {"zones": zone_table, "dungeons": dungeons, "quests": quests, "spells": spells,
             "mapOverlays": load_map_overlays(site),
-            "graveyards": build_graveyards(load(generated / "graveyards.json")) if (generated / "graveyards.json").exists() else {},
+            "graveyards": build_graveyards(load(generated / "graveyards.json"), load_collected_spirit_healers(site))
+            if (generated / "graveyards.json").exists() else {},
             "classTrainers": build_class_trainers(load(generated / "class-trainers.json"))
             if (generated / "class-trainers.json").exists() else {},
             "gathering": build_gathering(load(generated / "gathering-nodes.json"))
@@ -781,6 +910,8 @@ def export(site: Path) -> dict:
                                              load(generated / "profession-trainers.json")
                                              if (generated / "profession-trainers.json").exists() else {},
                                              load_skill_lines(site)),
+            "talents": build_talents(load(generated / "talents.json"), load(generated / "zh" / "talents.json"))
+            if (generated / "talents.json").exists() else {},
             "build": load(generated / "zones.json").get("build")}
 
 
@@ -810,6 +941,9 @@ def main() -> int:
     write_lua("GatheringNodes.lua", "gathering", data["gathering"],
               "Herb and mining node locations from QuestieDB (https://github.com/Questie/QuestieDB), "
               "the Questie project, GPL-3.0.")
+    write_lua("Talents.lua", "talents", data["talents"])
+    print(f"天赋 {sum(len(t['talents']) for c in data['talents'].values() for t in c['trees'])} 个，"
+          f"职业 {len(data['talents'])}")
     print(f"区域 {len(data['zones'])}，副本 {len(data['dungeons'])}，任务 {len(data['quests'])}，"
           f"职业 {len(data['spells'])}（技能 {sum(len(v) for v in data['spells'].values())}），"
           f"地图探索贴图 {len(data['mapOverlays'])} 张地图，灵魂医者 {sum(len(v) for v in data['graveyards'].values())} 个，"

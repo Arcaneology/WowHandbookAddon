@@ -11,22 +11,23 @@ local CONTENT_WIDTH = 762 -- 主窗口内容区宽度
 local YES = "Interface\\RaidFrame\\ReadyCheck-Ready"
 local NO = "Interface\\RaidFrame\\ReadyCheck-NotReady"
 local SECTIONS = {
-    { module = "Dungeons", title = "Dungeon guide", options = {} },
-    { module = "ItemSource", title = "Item sources", options = {} },
-    { module = "MinimapButton", title = "Minimap button", options = {
+    { module = "Dungeons", category = "dungeons", title = "Dungeon guide", options = {} },
+    { module = "ItemSource", category = "dungeons", title = "Item sources", options = {} },
+    { module = "MinimapButton", category = "general", title = "Minimap button", options = {
         { key = "hidden", icon = "INV_Misc_Gear_01", label = "Minimap button", tip = "Show minimap button",
             inverted = true },
     } },
-    { module = "Spellbook", title = "Spellbook", options = {
+    { module = "Spellbook", category = "spells", title = "Spellbook", options = {
         { key = "levelUpNotice", quick = true, icon = "INV_Misc_Book_11", label = "Level-up reminder",
             tip = "Tell me which spells to train when I level up" },
     } },
-    { module = "Professions", title = "Professions", options = {} },
-    { module = "SpellbookPanel", title = "Unlearned spells", options = {
+    { module = "Professions", category = "professions", title = "Professions", options = {} },
+    { module = "SpellbookPanel", category = "spells", title = "Unlearned spells", options = {
         { key = "collapsed", icon = "INV_Misc_Book_09", label = "Spell panel",
             tip = "Show the panel next to the game spellbook", inverted = true },
     } },
-    { module = "ActionBars", title = "Action bars", options = {
+    { module = "Talents", category = "spells", title = "Talent simulator", options = {} },
+    { module = "ActionBars", category = "spells", title = "Action bars", options = {
         { key = "upgradeRanks", quick = true, icon = "Spell_ChargePositive", label = "Upgrade ranks",
             tip = "When I learn a new rank, replace that spell's lower ranks on my bars" },
         { key = "placeNewSpells", quick = true, icon = "INV_Scroll_03", label = "Place new spells",
@@ -34,11 +35,11 @@ local SECTIONS = {
         { key = "rangeTint", quick = true, icon = "Ability_Hunter_SniperShot", label = "Out of range in red",
             tip = "Tint the whole button red when the target is out of range" },
     } },
-    { module = "InstanceTracker", title = "Instance tracker", options = {
+    { module = "InstanceTracker", category = "dungeons", title = "Instance tracker", options = {
         { key = "autoShow", quick = true, icon = "INV_Misc_Bone_HumanSkull_01", label = "Auto-show in instances",
             tip = "Show boss and quest progress when I enter an instance" },
     } },
-    { module = "AutoQuest", title = "Quests", options = {
+    { module = "AutoQuest", category = "quests", title = "Quests", options = {
         { key = "autoAccept", quick = true, icon = "INV_Misc_Book_07", label = "Auto-accept",
             tip = "Accept quests automatically when I talk to an NPC (hold Shift to skip)" },
         { key = "autoTurnIn", quick = true, icon = "INV_Letter_03", label = "Auto turn-in",
@@ -48,11 +49,11 @@ local SECTIONS = {
             { id = "usable", label = "Auto", tip = "Usable first, then the most valuable" },
         } },
     } },
-    { module = "Vendor", title = "Vendor", options = {
+    { module = "Vendor", category = "general", title = "Vendor", options = {
         { key = "sellJunk", quick = true, icon = "INV_Misc_Coin_01", label = "Sell gray items",
             tip = "Sell gray items automatically when I open a vendor" },
     } },
-    { module = "WorldMap", title = "World map", options = {
+    { module = "WorldMap", category = "map", title = "World map", options = {
         { key = "levelLabel", icon = "Ability_Hunter_Pathfinding", label = "Zone levels",
             tip = "Show zone level ranges under the zone name" },
         { key = "flightPins", quick = true, icon = "Ability_Mount_Wyvern_01", label = "Flight paths",
@@ -129,44 +130,6 @@ local function AddTip(frame, option)
     frame:HookScript("OnLeave", GameTooltip_Hide)
 end
 
--- 勾选框选项；inverted 表示存档里存的是相反的意思（如 hidden）。返回下一行的纵坐标
-local function AddCheckbox(panel, settings, option, rowY, onChange)
-    local check = UI:Checkbox(panel, ns.SettingIcon(option, 14) .. L[option.label], function(checked)
-        if option.inverted then
-            settings[option.key] = not checked
-        else
-            settings[option.key] = checked
-        end
-        onChange()
-    end)
-    check:SetPoint("TOPLEFT", 14, rowY)
-    AddTip(check, option)
-    tinsert(controls, { check = check, settings = settings, option = option })
-    return rowY - 24
-end
-
--- 多选一选项：左侧图标与名称，右侧下拉框（选项为图标 + 文字）。返回下一行的纵坐标
-local function AddChoice(panel, settings, option, rowY, onChange)
-    local label = CreateFrame("Frame", nil, panel)
-    label:SetSize(140, 20)
-    label:SetPoint("TOPLEFT", 14, rowY)
-    label:EnableMouse(true)
-    local text = UI:Text(label, "Small", ns.SettingIcon(option, 14) .. L[option.label])
-    text:SetPoint("LEFT")
-    AddTip(label, option)
-    local items = {}
-    for _, choice in ipairs(option.choices) do
-        tinsert(items, { id = choice.id, label = ns.ChoiceText(choice, true) })
-    end
-    local dropdown = UI:Dropdown(panel, items, function(id)
-        settings[option.key] = id
-        onChange()
-    end, 150)
-    dropdown:SetPoint("TOPLEFT", 160, rowY)
-    tinsert(controls, { dropdown = dropdown, settings = settings, option = option })
-    return rowY - 28
-end
-
 -- 选项的当前值：勾选框为是否勾选（考虑 inverted），多选一为选中的 id
 function ns.SettingValue(settings, option)
     if option.choices then
@@ -203,6 +166,237 @@ local function SyncControls()
     end
 end
 
+-- 设置页布局：左侧分类导航，右侧是这一类的设置列表。
+-- 每个功能一段：标题行（功能名，右侧整体开关），下面每个选项一行（左侧图标与名称，右侧勾选框或下拉框），
+-- 行与行之间细分隔线；不再是一格格小卡片。
+local CATEGORIES = {
+    { id = "general", title = "General" },
+    { id = "dungeons", title = "Dungeons" },
+    { id = "quests", title = "Quests" },
+    { id = "spells", title = "Spells" },
+    { id = "professions", title = "Professions" },
+    { id = "map", title = "Map" },
+    { id = "about", title = "About" },
+}
+local NAV_WIDTH, ROW_HEIGHT, HEADER_HEIGHT = 128, 30, 34
+local LANGUAGE_NAMES = { enUS = "English", zhCN = "简体中文" } -- 语言名用各自的语言写，不翻译
+
+-- 一行：左侧图标与名称（悬停看完整说明），底部细分隔线。返回行框架
+local function OptionRow(list, y, width, labelText, option)
+    local row = CreateFrame("Frame", nil, list)
+    row:SetSize(width, ROW_HEIGHT)
+    row:SetPoint("TOPLEFT", 0, -y)
+    local label = CreateFrame("Frame", nil, row)
+    label:SetPoint("LEFT", 12, 0)
+    label:SetSize(width - 200, ROW_HEIGHT)
+    label:EnableMouse(true)
+    local text = UI:Text(label, "Body", labelText)
+    text:SetPoint("LEFT")
+    if option then
+        AddTip(label, option)
+    end
+    local line = row:CreateTexture(nil, "BORDER")
+    line:SetPoint("BOTTOMLEFT", 12, 0)
+    line:SetPoint("BOTTOMRIGHT", -12, 0)
+    line:SetHeight(1)
+    line:SetColorTexture(unpack(ns.Theme.colors.lineSoft))
+    return row
+end
+
+-- 一段：功能名 + 整体开关，下面是它的选项。返回下一段的纵坐标
+local function AddSection(list, y, width, section)
+    local module = ns.modules[section.module]
+    if not module then
+        return y
+    end
+    local settings = ns:GetModuleSettings(module)
+    local header = CreateFrame("Frame", nil, list)
+    header:SetSize(width, HEADER_HEIGHT)
+    header:SetPoint("TOPLEFT", 0, -y)
+    local heading = UI:Text(header, "Heading", L[section.title])
+    heading:SetPoint("BOTTOMLEFT", 12, 8)
+    local enabled = UI:Checkbox(header, L["Enabled"], function(checked)
+        settings.enabled = checked
+    end)
+    enabled:SetPoint("BOTTOMRIGHT", -12, 5)
+    enabled:SetChecked(settings.enabled ~= false)
+    y = y + HEADER_HEIGHT
+    local function Changed()
+        if module.Refresh then
+            module:Refresh()
+        end
+    end
+    for _, option in ipairs(section.options) do
+        local row = OptionRow(list, y, width, ns.SettingIcon(option, 16) .. L[option.label], option)
+        if option.choices then
+            local items = {}
+            for _, choice in ipairs(option.choices) do
+                tinsert(items, { id = choice.id, label = ns.ChoiceText(choice, true) })
+            end
+            local dropdown = UI:Dropdown(row, items, function(id)
+                settings[option.key] = id
+                Changed()
+            end, 160)
+            dropdown:SetPoint("RIGHT", -12, 0)
+            tinsert(controls, { dropdown = dropdown, settings = settings, option = option })
+        else
+            local check = UI:Checkbox(row, "", function(checked)
+                if option.inverted then
+                    settings[option.key] = not checked
+                else
+                    settings[option.key] = checked
+                end
+                Changed()
+            end)
+            check:SetPoint("RIGHT", -12, 0)
+            tinsert(controls, { check = check, settings = settings, option = option })
+        end
+        y = y + ROW_HEIGHT
+    end
+    if section.module == "WorldMap" then
+        local row = OptionRow(list, y, width, ns.SettingIcon({ icon = "INV_Misc_Spyglass_03" }, 16) .. L["World map scale"])
+        local value = UI:Text(row, "Body")
+        local function ShowScale()
+            value:SetText(("%.1f"):format(settings.mapScale or 1))
+        end
+        local function Step(delta)
+            settings.mapScale = math.min(1.6, math.max(0.6, floor(((settings.mapScale or 1) + delta) * 10 + 0.5) / 10))
+            ShowScale()
+            module:ApplyScale()
+        end
+        local plus = UI:Button(row, "+", 24, 20)
+        plus:SetPoint("RIGHT", -12, 0)
+        plus:SetScript("OnClick", function() Step(0.1) end)
+        value:SetPoint("RIGHT", plus, "LEFT", -8, 0)
+        local minus = UI:Button(row, "-", 24, 20)
+        minus:SetPoint("RIGHT", value, "LEFT", -8, 0)
+        minus:SetScript("OnClick", function() Step(-0.1) end)
+        ShowScale()
+        y = y + ROW_HEIGHT
+    elseif section.module == "ActionBars" then
+        -- 整条动作条一次升级到最高等级，以及撤销最近一次改动（自动或手动）
+        local row = OptionRow(list, y, width, "")
+        local undo = UI:Button(row, L["Undo last change"], 120, 22)
+        undo:SetPoint("RIGHT", -12, 0)
+        undo:SetScript("OnClick", function() module:Undo() end)
+        local upgradeAll = UI:Button(row, L["Upgrade all now"], 140, 22)
+        upgradeAll:SetPoint("RIGHT", undo, "LEFT", -6, 0)
+        upgradeAll:SetScript("OnClick", function() module:UpgradeAll() end)
+        y = y + ROW_HEIGHT + 4
+    end
+    return y + 14
+end
+
+-- 通用：界面语言（重载界面后生效）
+local function AddLanguage(list, y, width)
+    local header = CreateFrame("Frame", nil, list)
+    header:SetSize(width, HEADER_HEIGHT)
+    header:SetPoint("TOPLEFT", 0, -y)
+    local heading = UI:Text(header, "Heading", L["Language"])
+    heading:SetPoint("BOTTOMLEFT", 12, 8)
+    y = y + HEADER_HEIGHT
+    local option = { label = "Interface language",
+        tip = "The language of WoW Handbook's own text. Game names such as items and zones follow the game client." }
+    local row = OptionRow(list, y, width, ns.SettingIcon({ icon = "INV_Misc_Book_09" }, 16) .. L[option.label], option)
+    local items = { { id = "auto", label = L["Game language"] } }
+    for _, locale in ipairs(ns.LANGUAGES) do
+        tinsert(items, { id = locale, label = LANGUAGE_NAMES[locale] })
+    end
+    local note = UI:Text(row, "Muted", "")
+    local dropdown = UI:Dropdown(row, items, function(id)
+        ns.db.language = id ~= "auto" and id or nil
+        note:SetText(L["Reload the UI to apply"])
+    end, 160)
+    dropdown:SetPoint("RIGHT", -12, 0)
+    dropdown:SetValue(ns.db.language or "auto")
+    note:SetPoint("RIGHT", dropdown, "LEFT", -10, 0)
+    list.languageDropdown = dropdown -- 供测试使用
+    return y + ROW_HEIGHT + 14
+end
+
+-- 通用：外观——配色方案（跟随职业、网站金色或指定职业色）与主窗口背景不透明度，改动立即生效
+local function AddAppearance(list, y, width)
+    local Theme = ns.Theme
+    local appearance = ns.db.appearance
+    local header = CreateFrame("Frame", nil, list)
+    header:SetSize(width, HEADER_HEIGHT)
+    header:SetPoint("TOPLEFT", 0, -y)
+    local heading = UI:Text(header, "Heading", L["Appearance"])
+    heading:SetPoint("BOTTOMLEFT", 12, 8)
+    y = y + HEADER_HEIGHT
+
+    local schemeOption = { label = "Color scheme",
+        tip = "The accent color of the WoW Handbook windows. It follows your class by default." }
+    local row = OptionRow(list, y, width, ns.SettingIcon({ icon = "INV_Misc_Gem_Variety_02" }, 16) .. L[schemeOption.label],
+        schemeOption)
+    local items = {}
+    for _, scheme in ipairs(Theme.SCHEMES) do
+        local label
+        if scheme == "class" then
+            label = (L["My class (%s)"]):format(ns.ClassName(ns.PlayerClass()) or "")
+        elseif scheme == "gold" then
+            label = L["Handbook gold"]
+        else
+            label = ns.ClassName(scheme)
+        end
+        tinsert(items, { id = scheme, label = ("|cff%s%s|r"):format(Theme:AccentHex(scheme), label) })
+    end
+    local dropdown = UI:Dropdown(row, items, function(id)
+        appearance.scheme = id
+        ns:ApplyAppearance()
+    end, 160)
+    dropdown:SetPoint("RIGHT", -12, 0)
+    dropdown:SetValue(appearance.scheme)
+    list.schemeDropdown = dropdown -- 供测试使用
+    y = y + ROW_HEIGHT
+
+    local opacityOption = { label = "Background opacity",
+        tip = "Lower it to see the game through the main window. Text, borders and menus stay solid." }
+    row = OptionRow(list, y, width, ns.SettingIcon({ icon = "INV_Misc_Spyglass_03" }, 16) .. L[opacityOption.label],
+        opacityOption)
+    local value = UI:Text(row, "Body")
+    local function ShowOpacity()
+        value:SetText(("%d%%"):format(appearance.opacity))
+    end
+    local function Step(delta)
+        appearance.opacity = math.min(Theme.MAX_OPACITY, math.max(Theme.MIN_OPACITY, appearance.opacity + delta))
+        ShowOpacity()
+        ns:ApplyAppearance()
+    end
+    local plus = UI:Button(row, "+", 24, 20)
+    plus:SetPoint("RIGHT", -12, 0)
+    plus:SetScript("OnClick", function() Step(10) end)
+    value:SetPoint("RIGHT", plus, "LEFT", -8, 0)
+    local minus = UI:Button(row, "-", 24, 20)
+    minus:SetPoint("RIGHT", value, "LEFT", -8, 0)
+    minus:SetScript("OnClick", function() Step(-10) end)
+    ShowOpacity()
+    list.opacityPlus, list.opacityMinus, list.opacityValue = plus, minus, value -- 供测试使用
+    return y + ROW_HEIGHT + 14
+end
+
+-- 关于：网站与非官方声明
+local function AddAbout(list, y, width)
+    local about = UI:Panel(list, "raised", "lineSoft")
+    about:SetPoint("TOPLEFT", 0, -y)
+    about:SetSize(width, 96)
+    local aboutTitle = UI:Text(about, "Heading", L["About"])
+    aboutTitle:SetPoint("TOPLEFT", 14, -12)
+    local version = UI:Text(about, "Muted", ns.version)
+    version:SetPoint("LEFT", aboutTitle, "RIGHT", 8, 0)
+    local disclaimer = "WoW Handbook is a free, unofficial fan-made addon. "
+        .. "It is not affiliated with or endorsed by Blizzard Entertainment. Full guides: wowhandbook.com"
+    local aboutText = UI:Text(about, "Small", L[disclaimer])
+    aboutText:SetPoint("TOPLEFT", aboutTitle, "BOTTOMLEFT", 0, -8)
+    aboutText:SetPoint("RIGHT", -14, 0)
+    local copy = UI:Button(about, L["Copy website link"], 150, 24, "primary")
+    copy:SetPoint("BOTTOMLEFT", 14, 12)
+    copy:SetScript("OnClick", function()
+        ns.Links:ShowCopyDialog(ns.Links:Build("home"))
+    end)
+    return y + 96, about
+end
+
 local function CreatePage(parent)
     UI = ns.UI
     local p = CreateFrame("Frame", nil, parent)
@@ -212,110 +406,70 @@ local function CreatePage(parent)
     title:SetPoint("TOPLEFT", PAD, -18)
     local note = UI:Text(p, "Muted", L["Turning a whole feature on or off takes effect after reloading the UI."])
     note:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
-
     local reload = UI:Button(p, L["Reload UI"], 110, 24)
     reload:SetPoint("TOPRIGHT", -PAD, -20)
     reload:SetScript("OnClick", function()
         C_UI.Reload()
     end)
 
-    -- 设置主体放在滚动区域里：模块和选项再多也不会越出窗口或与“关于”重叠
+    -- 右侧：一个滚动区域，切换分类时重建里面的列表
     local scroll = UI:ScrollArea(p)
-    scroll:SetPoint("TOPLEFT", PAD, -60)
+    scroll:SetPoint("TOPLEFT", PAD + NAV_WIDTH + 16, -64)
     scroll:SetPoint("BOTTOMRIGHT", -PAD - 10, 12)
-    local body = scroll.child
-    local GAP = 16
-    local columnWidth = (CONTENT_WIDTH - PAD * 2 - 10 - GAP) / 2
-    local column = 0
-    local columnY = { 0, 0 }
-    for _, section in ipairs(SECTIONS) do
-        local module = ns.modules[section.module]
-        if module then
-            local settings = ns:GetModuleSettings(module)
-            local x = column * (columnWidth + GAP)
-            local top = columnY[column + 1]
-            local panel = UI:Panel(body, "panel", "lineSoft")
-            panel:SetPoint("TOPLEFT", x, top)
-            panel:SetWidth(columnWidth)
-            local heading = UI:Text(panel, "Heading", L[section.title])
-            heading:SetPoint("TOPLEFT", 14, -12)
-            local enabled = UI:Checkbox(panel, L["Enabled"], function(checked)
-                settings.enabled = checked
-            end)
-            enabled:SetPoint("TOPRIGHT", -14, -9)
-            enabled:SetChecked(settings.enabled ~= false)
-            local rowY = -38
-            local function Changed()
-                if module.Refresh then
-                    module:Refresh()
+    local width = CONTENT_WIDTH - PAD * 2 - NAV_WIDTH - 16 - 10
+    local lists = {}
+    local navButtons = {}
+
+    local function Show(id)
+        p.category = id
+        for key, list in pairs(lists) do
+            list:SetShown(key == id)
+        end
+        if not lists[id] then
+            local list = CreateFrame("Frame", nil, scroll.child)
+            list:SetPoint("TOPLEFT")
+            list:SetWidth(width)
+            local y = 0
+            if id == "general" then
+                y = AddLanguage(list, y, width)
+                y = AddAppearance(list, y, width)
+            end
+            if id == "about" then
+                local about
+                y, about = AddAbout(list, y, width)
+                p.about = about -- 供测试使用
+            end
+            for _, section in ipairs(SECTIONS) do
+                if section.category == id then
+                    y = AddSection(list, y, width, section)
                 end
             end
-            for _, option in ipairs(section.options) do
-                if option.choices then
-                    rowY = AddChoice(panel, settings, option, rowY, Changed)
-                else
-                    rowY = AddCheckbox(panel, settings, option, rowY, Changed)
-                end
-            end
-            if section.module == "WorldMap" then
-                local scaleLabel = UI:Text(panel, "Small")
-                scaleLabel:SetPoint("TOPLEFT", 14, rowY - 4)
-                local function ShowScale()
-                    scaleLabel:SetText((L["World map scale: %.1f"]):format(settings.mapScale or 1))
-                end
-                local function Step(delta)
-                    settings.mapScale = math.min(1.6, math.max(0.6, floor(((settings.mapScale or 1) + delta) * 10 + 0.5) / 10))
-                    ShowScale()
-                    module:ApplyScale()
-                end
-                local minus = UI:Button(panel, "-", 24, 20)
-                minus:SetPoint("TOPLEFT", 160, rowY - 1)
-                minus:SetScript("OnClick", function() Step(-0.1) end)
-                local plus = UI:Button(panel, "+", 24, 20)
-                plus:SetPoint("LEFT", minus, "RIGHT", 4, 0)
-                plus:SetScript("OnClick", function() Step(0.1) end)
-                ShowScale()
-                rowY = rowY - 28
-            elseif section.module == "ActionBars" then
-                -- 整条动作条一次升级到最高等级，以及撤销最近一次改动（自动或手动）
-                local upgradeAll = UI:Button(panel, L["Upgrade all now"], 140, 22)
-                upgradeAll:SetPoint("TOPLEFT", 14, rowY - 2)
-                upgradeAll:SetScript("OnClick", function() module:UpgradeAll() end)
-                local undo = UI:Button(panel, L["Undo last change"], 120, 22, "ghost")
-                undo:SetPoint("LEFT", upgradeAll, "RIGHT", 6, 0)
-                undo:SetScript("OnClick", function() module:Undo() end)
-                rowY = rowY - 30
-            end
-            local height = -rowY + 8
-            panel:SetHeight(height)
-            columnY[column + 1] = top - height - 12
-            column = 1 - column
+            list:SetHeight(y)
+            list.contentHeight = y
+            lists[id] = list
+            SyncControls()
+        end
+        scroll:SetContentHeight(lists[id].contentHeight)
+        p.list, p.contentHeight = lists[id], lists[id].contentHeight -- 供测试使用
+        for key, button in pairs(navButtons) do
+            button:SetSelected(key == id)
         end
     end
+    p.ShowCategory = Show -- 供测试使用
 
-    -- 关于：网站与非官方声明，接在两列设置之后
-    local aboutTop = math.min(columnY[1], columnY[2])
-    local about = UI:Panel(body, "raised", "lineSoft")
-    about:SetPoint("TOPLEFT", 0, aboutTop)
-    about:SetWidth(columnWidth * 2 + GAP)
-    about:SetHeight(76)
-    local aboutTitle = UI:Text(about, "Heading", L["About"])
-    aboutTitle:SetPoint("TOPLEFT", 14, -12)
-    local disclaimer = "WoW Handbook is a free, unofficial fan-made addon. "
-        .. "It is not affiliated with or endorsed by Blizzard Entertainment. Full guides: wowhandbook.com"
-    local aboutText = UI:Text(about, "Small", L[disclaimer])
-    aboutText:SetPoint("TOPLEFT", aboutTitle, "BOTTOMLEFT", 0, -6)
-    aboutText:SetPoint("RIGHT", -180, 0)
-    local copy = UI:Button(about, L["Copy website link"], 150, 24, "primary")
-    copy:SetPoint("RIGHT", -14, 0)
-    copy:SetScript("OnClick", function()
-        ns.Links:ShowCopyDialog(ns.Links:Build("home"))
-    end)
-    p.contentHeight = -aboutTop + 76 + 8 -- 供测试使用
-    scroll:SetContentHeight(p.contentHeight)
-    p.scroll, p.about = scroll, about
-    SyncControls()
+    -- 左侧：分类导航
+    for index, category in ipairs(CATEGORIES) do
+        local button = UI:Button(p, L[category.title], NAV_WIDTH, 26, "ghost")
+        button.label:ClearAllPoints()
+        button.label:SetPoint("LEFT", 12, 0)
+        button:SetPoint("TOPLEFT", PAD, -64 - (index - 1) * 30)
+        button:SetScript("OnClick", function() Show(category.id) end)
+        navButtons[category.id] = button
+    end
+
+    p.scroll = scroll
+    Show("general")
     return p
 end
 
-ns.MainFrame:RegisterTab({ id = "settings", title = L["Settings"], order = 800, create = CreatePage, onShow = SyncControls })
+ns.MainFrame:RegisterTab({ id = "settings", titleKey = "Settings", order = 800, create = CreatePage, onShow = SyncControls })

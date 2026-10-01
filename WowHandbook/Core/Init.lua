@@ -8,13 +8,11 @@ ns.version = GetMetadata(ADDON_NAME, "Version") or "dev"
 -- 输出
 --------------------------------------------------------------------------------
 
-local CHAT_PREFIX = "|cff46bf72" .. L["WoW Handbook"] .. "|r: "
-
 function ns:Print(message, ...)
     if select("#", ...) > 0 then
         message = message:format(...)
     end
-    DEFAULT_CHAT_FRAME:AddMessage(CHAT_PREFIX .. tostring(message))
+    DEFAULT_CHAT_FRAME:AddMessage("|cff46bf72" .. L["WoW Handbook"] .. "|r: " .. tostring(message))
 end
 
 --------------------------------------------------------------------------------
@@ -109,6 +107,8 @@ local CHAR_DB_SCHEMA = 1
 
 local DB_DEFAULTS = {
     modules = {},
+    -- 外观：配色方案（class 跟随当前角色的职业）与主窗口背景不透明度（百分数）
+    appearance = { scheme = "class", opacity = 100 },
 }
 
 local CHAR_DB_DEFAULTS = {}
@@ -141,6 +141,17 @@ local function InitSavedVariables()
     ApplyDefaults(WowHandbookCharDB, CHAR_DB_DEFAULTS)
     ns.db = WowHandbookDB
     ns.charDB = WowHandbookCharDB
+    -- 界面语言：设置里选的（默认跟随客户端），在任何模块启用、界面创建之前生效
+    ns:ApplyLanguage(ns.db.language)
+    ns:ApplyAppearance()
+end
+
+-- 按存档应用配色方案与背景透明度（主题在 UI/Theme.lua，界面创建之前与设置改动时调用）
+function ns:ApplyAppearance()
+    if self.Theme and self.Theme.Apply then
+        local appearance = self.db.appearance
+        self.Theme:Apply(appearance.scheme, appearance.opacity)
+    end
 end
 
 --------------------------------------------------------------------------------
@@ -231,6 +242,7 @@ end
 
 local function OnPlayerLogin(event)
     ns:UnregisterEvent(event, OnPlayerLogin)
+    ns:ApplyAppearance() -- 登录时职业一定取得到：跟随职业的配色在这里定下来
     EnableModules()
 end
 

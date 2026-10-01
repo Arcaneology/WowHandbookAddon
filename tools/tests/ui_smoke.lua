@@ -254,6 +254,10 @@ frameMethods.SetAllPoints = function(self, relative)
     if type(relative) == "table" then self.relativeTo = relative end
 end
 frameMethods.SetAlpha = function(self, alpha) self.alpha = alpha end
+frameMethods.SetColorTexture = function(self, r, g, b, alpha) self.color = { r, g, b, alpha } end
+frameMethods.SetBackdropColor = function(self, r, g, b, alpha) self.backdropColor = { r, g, b, alpha } end
+frameMethods.SetBackdropBorderColor = function(self, r, g, b, alpha) self.borderColor = { r, g, b, alpha } end
+frameMethods.SetTextColor = function(self, r, g, b, alpha) self.textColor = { r, g, b, alpha } end
 frameMethods.SetDesaturated = function(self, desaturated) self.desaturated = desaturated and true or false end
 frameMethods.SetVertexColor = function(self, r, g, b) self.vertexColor = { r, g, b } end
 frameMethods.SetTexCoord = function(self, left, right, top, bottom) self.texCoord = { left, right, top, bottom } end
@@ -774,11 +778,101 @@ check("spellbook is one full table; hovering a row shows the spell tooltip", fun
             end
         end
     end
-    assert(spells == #main.modules.Spellbook.Rows(), ("table shows %d of %d spells"):format(spells, #main.modules.Spellbook.Rows()))
+    local all = #main.modules.Spellbook.Rows(false, true)
+    assert(spells == all, ("table shows %d of %d spells"):format(spells, all))
     assert(hovered, "no row with a spell ID")
     hovered.scripts.OnEnter(hovered)
     assert(GameTooltip.spellID == hovered.entry.id, "row hover did not show the spell tooltip")
     hovered.scripts.OnLeave(hovered)
+end)
+check("race spells: the side panel lists only your race, the big spellbook lists all with race tags", function()
+    local Spellbook = main.modules.Spellbook
+    local savedClass, savedRace, savedInfo = playerClass, UnitRace, C_CreatureInfo
+    playerClass = { "Priest", "PRIEST" }
+    UnitRace = function() return "Troll", "Troll" end
+    -- 客户端给得出的种族名用客户端的；给不出的用本地化表
+    C_CreatureInfo = { GetRaceInfo = function(id) return id == 8 and { raceName = "CLIENT-TROLL" } or nil end }
+    -- 每个牧师种族两个专属技能
+    local perRace = {}
+    for _, spell in ipairs(main.Data.spells.priest) do
+        if spell.races then
+            assert(#spell.races == 1, "priest race spell shared by several races: " .. spell.name.enUS)
+            perRace[spell.races[1]] = (perRace[spell.races[1]] or 0) + 1
+        end
+    end
+    for _, race in ipairs({ "Human", "Dwarf", "Night Elf", "Gnome", "Undead", "Troll" }) do
+        assert(perRace[race] == 2, ("%s priests should have 2 race spells, data has %s"):format(race, tostring(perRace[race])))
+    end
+    -- 默认行（未学技能面板、首页、训练师提示用）：只有本种族的
+    local own = 0
+    for _, row in ipairs(Spellbook.Rows()) do
+        assert(row.status ~= "other" and (not row.races or row.mine), "another race's spell in the default rows")
+        if row.races then
+            assert(row.races[1] == "Troll", "wrong race spell for a troll: " .. row.spell.name.enUS)
+            own = own + 1
+        end
+    end
+    assert(own > 0, "troll race spells missing from the default rows")
+    -- 两个技能在当前语言下重名时（网站中文数据曾把 Smite 与矮人的 Chastise 都写成“惩击”）：
+    -- 学了一个不能把另一个也算成已学，重名的按技能 ID 判断。这里临时把两者改成同名来测
+    local smite, chastise
+    for _, spell in ipairs(main.Data.spells.priest) do
+        if spell.name.enUS == "Smite" then smite = spell elseif spell.name.enUS == "Chastise" then chastise = spell end
+    end
+    local savedChastiseName = chastise.name
+    chastise.name = smite.name
+    UnitRace = function() return "Dwarf", "Dwarf" end
+    local savedKnownSpells, savedIsPlayerSpell, savedLevel = main.KnownSpells, IsPlayerSpell, playerLevel
+    playerLevel = 20
+    main.KnownSpells = function() return { [main.Name(smite.name):lower()] = { best = 3, ids = {} } } end
+    IsPlayerSpell = function(id) return id == smite.ranks[2].id end
+    for _, row in ipairs(Spellbook.Rows()) do
+        if row.spell == chastise then
+            assert(row.status ~= "known", "Chastise counted as learned because Smite shares its name")
+        elseif row.spell == smite and row.rankNumber <= 2 then
+            assert(row.status == "known", "Smite rank " .. row.rankNumber .. " not recognized by its spell ID")
+        end
+    end
+    main.KnownSpells, IsPlayerSpell, playerLevel = savedKnownSpells, savedIsPlayerSpell, savedLevel
+    chastise.name = savedChastiseName
+    UnitRace = function() return "Troll", "Troll" end
+    -- 技能书页：全部列出；本种族的带绿色标签、照常显示状态，其他种族的灰色标签、状态写“其他种族”
+    main.MainFrame:SelectTab("home")
+    main.MainFrame:SelectTab("spellbook")
+    local page = Spellbook.page
+    local mine, others, tagged = 0, 0, {}
+    for _, row in ipairs(page.tableRows) do
+        if row.shown and row.entry and row.entry.races then
+            local text = row.cells.spell:GetText()
+            local race = row.entry.races[1]
+            tagged[race] = true
+            if row.entry.mine then
+                mine = mine + 1
+                assert(text:find("|c" .. main.Theme.hex.green .. "[CLIENT-TROLL]|r", 1, true), "own race tag wrong: " .. text)
+                assert(row.group ~= "other" and row.cells.status:GetText():find(main.L["Other race"], 1, true) == nil,
+                    "own race spell marked as another race's")
+            else
+                others = others + 1
+                assert(text:find("|c" .. main.Theme.hex.muted .. "[" .. main.L[race] .. "]|r", 1, true),
+                    "other race tag wrong: " .. text)
+                assert(row.group == "other" and row.alpha < 0.55, "other race row not dimmed")
+                assert(row.cells.status:GetText():find(main.L["Other race"], 1, true), "other race row has no status")
+            end
+            row.scripts.OnEnter(row)
+            row.scripts.OnLeave(row)
+        end
+    end
+    assert(mine == own and others > mine, ("race rows: %d mine, %d others"):format(mine, others))
+    for _, race in ipairs({ "Human", "Dwarf", "Night Elf", "Gnome", "Undead", "Troll" }) do
+        assert(tagged[race], "no tagged spell for " .. race)
+    end
+    -- 整个阵营都能学的技能（法师传送）标阵营，不列五个种族
+    assert(Spellbook.RaceLabel({ "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" }) == main.L["Alliance"], "no faction label")
+    assert(Spellbook.RaceLabel({ "Orc", "Skyborne", "Tauren", "Troll", "Undead" }) == main.L["Horde"], "no faction label")
+    assert(Spellbook.RaceLabel({ "Dwarf", "Human" }) == main.L["Dwarf"] .. " / " .. main.L["Human"], "race list label wrong")
+    playerClass, UnitRace, C_CreatureInfo = savedClass, savedRace, savedInfo
+    main.MainFrame:SelectTab("home")
+    main.MainFrame:SelectTab("spellbook")
 end)
 check("spellbook page has no website link", function()
     main.MainFrame:Open("spellbook")
@@ -870,6 +964,16 @@ check("unknown events are skipped and the professions module still loads", funct
     assert(main:RegisterEvent("CRAFT_UPDATE", function() end) == false, "failed registration was not caught")
     C_EventUtils = { IsEventValid = function(e) return not UNKNOWN_EVENTS[e] end }
 end)
+check("professions page: a profession whose trainers have no rank opens without an error", function()
+    -- 采矿训练师头衔不写等级：还没学采矿时，“下一步”没有目标，不能报错（bug.txt 2026-10-01）
+    GetNumSkillLines = function() return 0 end
+    main.db.modules.Professions.selected = "mining"
+    main.MainFrame:SelectTab("professions")
+    main.modules.Professions.Refresh()
+    local page = main.modules.Professions.page
+    assert(page.summary:GetText() and not page.summary:GetText():find("nil", 1, true), "summary broken")
+    main.db.modules.Professions.selected = nil
+end)
 check("professions page lists trainers for your faction and highlights the next rank", function()
     -- 已学炼金术 120/150（部落）：默认选中炼金术，只列部落与中立训练师，高级训练师一档高亮
     GetNumSkillLines = function() return 2 end
@@ -882,6 +986,16 @@ check("professions page lists trainers for your faction and highlights the next 
     local module = main.modules.Professions
     local page = module.page
     assert(module.NextRank({ rank = 120, max = 150 }) == "expert", "next rank after journeyman should be expert")
+    -- 训练师头衔是最高可教的一档：还没学的专业要学初级，但只有中级以上的训练师时高亮中级（中级也从零教起）
+    local sample = { { rank = "expert" }, { rank = "journeyman" }, { rank = "artisan" }, { rank = "specialization" }, {} }
+    assert(main.TargetTrainerRank(sample, nil) == "journeyman", "a beginner is not sent to journeyman trainers")
+    assert(main.TargetTrainerRank(sample, { rank = 70, max = 75 }) == "journeyman", "75 cap should find journeyman")
+    assert(main.TargetTrainerRank(sample, { rank = 140, max = 150 }) == "expert", "150 cap should find expert")
+    assert(main.TargetTrainerRank(sample, { rank = 300, max = 300 }) == nil, "maxed skill still has a target")
+    assert(main.TargetTrainerRank({ { rank = "apprentice" }, { rank = "journeyman" } }, nil) == "apprentice",
+        "an apprentice trainer is not preferred for a beginner")
+    -- 等级名按英文头衔的等级词走本地化表（中文里 Journeyman 对应训练师头衔“初级炼金师”的“初级”）
+    assert(main.TrainerRankName("journeyman") == main.L["Journeyman"], "rank name does not use the locale table")
     local alchemy
     for _, profession in ipairs(main.Data.professions) do
         if profession.slug == "alchemy" then alchemy = profession end
@@ -1132,6 +1246,23 @@ check("auto quest: accepts and turns in on its own, rewards by the chosen rule, 
     local count = #log
     fireAll("GOSSIP_SHOW"); runTimers()
     assert(#log == count, "retried a quest that was already tried")
+    -- 对话结束（两个窗口都关了）后再点这个 NPC：重新自动处理一次；窗口还开着时的关闭事件不算结束
+    local savedGossipFrame, savedQuestFrame = GossipFrame, QuestFrame
+    local gossipOpen = true
+    GossipFrame = { IsShown = function() return gossipOpen end }
+    QuestFrame = { IsShown = function() return false end }
+    fireAll("QUEST_FINISHED"); runTimers(2)
+    fireAll("GOSSIP_SHOW"); runTimers()
+    assert(#log == count, "retried while the conversation was still open")
+    gossipOpen = false
+    fireAll("GOSSIP_CLOSED"); runTimers(2)
+    gossipOpen = true
+    fireAll("GOSSIP_SHOW"); runTimers()
+    assert(#log == count + 1 and log[#log] == "pick:22", "did not try again after the conversation ended")
+    count = #log
+    fireAll("GOSSIP_SHOW"); runTimers()
+    assert(#log == count, "retried twice in the same conversation")
+    GossipFrame, QuestFrame = savedGossipFrame, savedQuestFrame
     -- 按住 Shift、关掉开关：不动
     available = { { questID = 23, isTrivial = false } }
     shift = true
@@ -1677,6 +1808,112 @@ check("minimap: gathering nodes placed by distance, rotated with the minimap, on
     C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_CVar = unpack(saved, 1, 5)
     GetProfessions, GetProfessionInfo, GetPlayerFacing = nil, nil, nil
 end)
+check("minimap: trainers and spirit healers follow the world map settings, plain icons without a border", function()
+    local W = main.modules.WorldMap
+    local settings = main.db.modules.WorldMap
+    local saved = { C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_Map.GetBestMapForUnit,
+        UnitIsDeadOrGhost }
+    -- 找一个本阵营的法师训练师，站在他身上
+    local trainer
+    for _, candidate in ipairs(main.Data.classTrainers.mage) do
+        if candidate.x and not candidate.kind and (candidate.faction == "H" or candidate.faction == "AH") then
+            trainer = candidate
+            break
+        end
+    end
+    assert(trainer, "no horde mage trainer in the data")
+    local px, py = trainer.x / 100, trainer.y / 100
+    C_Map.GetBestMapForUnit = function() return trainer.map end
+    C_Map.GetWorldPosFromMapPos = function(_, v) return 1, { x = 1000 - v.y * 1000, y = 1000 - v.x * 1000 } end
+    C_Map.GetPlayerMapPosition = function() return { GetXY = function() return px, py end } end
+    CreateVector2D = function(x, y) return { x = x, y = y } end
+    C_Minimap = { GetViewRadius = function() return 100 end }
+    UnitIsDeadOrGhost = function() return false end
+    Minimap:SetWidth(140)
+    Minimap:Show()
+    settings.herbPins, settings.orePins = "off", "off"
+    local function shown(style)
+        local list = {}
+        for _, pin in ipairs(W.minimapGatherPins) do
+            if pin.shown and (not style or pin.style == style) then tinsert(list, pin) end
+        end
+        return list
+    end
+    W.RebuildMinimapGather()
+    local pins = shown("classTrainer")
+    assert(#pins > 0, "class trainer missing from the minimap")
+    local here
+    for _, pin in ipairs(pins) do
+        if math.abs(pin.pointX) < 1e-6 and math.abs(pin.pointY) < 1e-6 then here = pin end
+    end
+    assert(here and here.lines[1] == main.Name(trainer.name), "the trainer under the player is not at the center")
+    -- 大小合适、不带边框：13 像素的方形图标，没有边框模板与圆形遮罩，盖在采集点上面
+    assert(here.width == 13 and here.height == 13, "trainer pin size is " .. tostring(here.width))
+    assert(here.template == nil and rawget(here, "masks") == nil and rawget(here.icon, "masks") == nil, "minimap pin has a border or mask")
+    assert(here.icon.texture == "Interface\\Icons\\ClassIcon_Mage", "wrong class trainer icon: " .. tostring(here.icon.texture))
+    assert(here.frameLevel == Minimap:GetFrameLevel() + 2, "trainer pin is not above the gathering pins")
+    here.scripts.OnEnter(here)
+    -- 大地图关掉职业训练师，小地图也没有
+    settings.classTrainerPins = false
+    W.RebuildMinimapGather()
+    assert(#shown("classTrainer") == 0, "class trainer still on the minimap after turning it off")
+    settings.classTrainerPins = nil
+    -- 专业训练师：全部专业时显示这张地图上的；不显示时没有
+    settings.trainerPins = "all"
+    local professionTrainer = W.TrainersForMap(trainer.map)[1]
+    if professionTrainer then
+        px, py = professionTrainer.trainer.x / 100, professionTrainer.trainer.y / 100
+        W.RebuildMinimapGather()
+        local found
+        for _, pin in ipairs(shown("trainer")) do
+            if pin.lines[1] == main.Name(professionTrainer.trainer.name) then found = pin end
+        end
+        assert(found and found.width == 13 and found.icon.texture:find("^Interface\\Icons\\"), "profession trainer missing or wrong")
+    end
+    settings.trainerPins = "off"
+    W.RebuildMinimapGather()
+    assert(#shown("trainer") == 0, "profession trainers on the minimap while turned off")
+    settings.trainerPins = nil
+    -- 灵魂医者：默认只在死亡时；始终显示时活着也有
+    local yard
+    for mapID, points in pairs(main.Data.graveyards) do
+        if points[1] then yard = { map = mapID, x = points[1][1], y = points[1][2] } break end
+    end
+    C_Map.GetBestMapForUnit = function() return yard.map end
+    px, py = yard.x / 100, yard.y / 100
+    W.RebuildMinimapGather()
+    assert(#shown("graveyard") == 0, "spirit healer shown while alive with the default setting")
+    UnitIsDeadOrGhost = function() return true end
+    fireAll("PLAYER_DEAD")
+    runTimers(2)
+    assert(#shown("graveyard") > 0, "spirit healer not shown after dying")
+    UnitIsDeadOrGhost = function() return false end
+    fireAll("PLAYER_UNGHOST")
+    runTimers(2)
+    assert(#shown("graveyard") == 0, "spirit healer still shown after coming back to life")
+    settings.spiritHealers = "always"
+    W.RebuildMinimapGather()
+    local healer = shown("graveyard")[1]
+    assert(healer and healer.width == 13 and healer.icon.texture == "Interface\\Icons\\spell_holy_guardianspirit"
+        and healer.alpha == 1, "spirit healer pin wrong")
+    -- 没有单独的小地图开关：大地图设置关掉，小地图就没有；“小地图显示采集点”那个开关不影响训练师与灵魂医者
+    settings.minimapGather = false
+    W.RebuildMinimapGather()
+    assert(#shown("graveyard") > 0, "the gathering switch must not hide spirit healers")
+    settings.spiritHealers, settings.classTrainerPins, settings.trainerPins = "off", false, "off"
+    W.RebuildMinimapGather()
+    assert(#shown() == 0, "pins remain after turning everything off on the world map")
+    for _, section in ipairs(main.SettingsSections) do
+        for _, option in ipairs(section.options) do
+            assert(option.key ~= "minimapPoi", "there should be no separate minimap switch for trainers")
+        end
+    end
+    settings.minimapGather, settings.classTrainerPins, settings.trainerPins = nil, nil, nil
+    settings.spiritHealers, settings.herbPins, settings.orePins = nil, nil, nil
+    C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_Map.GetBestMapForUnit,
+        UnitIsDeadOrGhost = unpack(saved, 1, 6)
+    W.RebuildMinimapGather()
+end)
 check("gathering icons pick the zone's main ore by level, never a rare variant", function()
     local W = main.modules.WorldMap
     local nodes = main.Data.gathering.nodes
@@ -1965,7 +2202,8 @@ check("spirit healers: game list and plugin data are merged, same spot drawn onc
     C_DeathInfo = saved
     assert(#spots == 2, ("expected 2 spirit healers in the Wetlands, got %d"):format(#spots))
     assert(spots[1][3] == "Menethil Harbor", "game graveyard not first")
-    assert(math.abs(spots[2][1] - 49.3) < 1e-6 and math.abs(spots[2][2] - 41.8) < 1e-6, "central Wetlands spirit healer missing")
+    -- 湿地中部的灵魂医者（坐标随实测数据微调，按大致位置判断）
+    assert(math.abs(spots[2][1] - 49.3) < 1 and math.abs(spots[2][2] - 41.8) < 1, "central Wetlands spirit healer missing")
 end)
 check("world map: native-style flight pins", function()
     assert(WorldMapFrame.provider, "data provider not added")
@@ -2225,10 +2463,19 @@ check("home dashboard: status and cards, no coming-up timeline", function()
             assert(dungeon.kind ~= "raid", "raid recommended before max level: " .. dungeon.slug)
         end
     end
-    -- 领主大厅只对联盟显示：部落角色的推荐里不应出现
+    -- 领主大厅不推荐给部落角色，但副本手册里照样列出（怒焰裂谷对联盟同理）
     playerLevel = 14
     for _, item in ipairs(main.modules.Dungeons.Summary(4, 4).recommended) do
-        assert(main.Data.dungeons[item.index].slug ~= "hall-of-thanes", "Hall of Thanes shown to Horde")
+        assert(main.Data.dungeons[item.index].slug ~= "hall-of-thanes", "Hall of Thanes recommended to Horde")
+    end
+    do
+        local D = main.modules.Dungeons
+        D:ShowHome()
+        local listed = {}
+        for _, card in ipairs(D.page.home.cards) do
+            if card.shown ~= false and card.index then listed[main.Data.dungeons[card.index].slug] = true end
+        end
+        assert(listed["hall-of-thanes"] and listed["ragefire-chasm"], "the dungeon guide does not list both factions' dungeons")
     end
     playerLevel = savedLevel
     Home.Refresh()
@@ -2375,21 +2622,206 @@ check("known spell cache refreshes without the spellbook modules (R04)", functio
     fireAll("SPELLS_CHANGED")
     assert(after["frost nova"], "cache not invalidated by the core")
 end)
-check("settings: body scrolls and About sits below every panel (R06)", function()
+check("settings: category nav with one list of rows, About on its own page, language switch", function()
     main.MainFrame:SelectTab("settings")
     local page
     for _, f in ipairs(allFrames) do
-        if rawget(f, "about") then page = f end
+        if rawget(f, "ShowCategory") then page = f end
     end
-    assert(page and page.scroll and page.about.parent == page.scroll.scrollChild, "settings body not in a scroll area")
-    local lowest = 0
-    for _, child in ipairs(page.scroll.scrollChild.children) do
-        if child ~= page.about and child.pointY then
-            lowest = math.min(lowest, child.pointY - child.height)
+    assert(page and page.scroll and page.list.parent == page.scroll.scrollChild, "settings body not in a scroll area")
+    -- 每个分类都能打开，列表高度覆盖全部内容
+    for _, id in ipairs({ "general", "dungeons", "quests", "spells", "professions", "map", "about" }) do
+        page.ShowCategory(id)
+        assert(page.category == id and page.list.shown ~= false, "category did not open: " .. id)
+        assert(page.contentHeight > 0, "empty category: " .. id)
+    end
+    assert(page.about and page.about.parent == page.list, "About is not on the About page")
+    -- 语言：选了中文存进存档，重载前不改当前界面
+    page.ShowCategory("general")
+    local before = main.locale
+    local dropdown = page.list.languageDropdown
+    assert(dropdown, "no language setting")
+    dropdown.onChange("zhCN")
+    assert(main.db.language == "zhCN" and main.locale == before, "language choice not saved, or applied before reload")
+    main:ApplyLanguage(main.db.language)
+    assert(main.L["Copy website link"] == "复制网站链接", "Chinese not applied after choosing it")
+    main:ApplyLanguage("enUS")
+    assert(main.L["Copy website link"] == "Copy website link", "English not applied")
+    dropdown.onChange("auto")
+    assert(main.db.language == nil, "game language not stored as the default")
+    main:ApplyLanguage(nil)
+    assert(main.locale == before, "auto does not follow the client")
+end)
+check("appearance: accent follows the class by default, schemes and background opacity apply at once", function()
+    local Theme = main.Theme
+    local function near(color, r, g, b) return math.abs(color[1] - r) + math.abs(color[2] - g) + math.abs(color[3] - b) < 0.01 end
+    -- 测试角色是法师：默认配色跟随职业
+    assert(main.db.appearance.scheme == "class" and main.db.appearance.opacity == 100, "wrong appearance defaults")
+    assert(near(Theme.colors.gold, 0x3f / 255, 0xc7 / 255, 0xeb / 255), "accent does not follow the mage class color")
+    assert(Theme.hex.gold == "ff3fc7eb", "inline accent hex not updated: " .. Theme.hex.gold)
+    assert(Theme:Color("x", "gold") == "|cff3fc7ebx|r", "Theme:Color does not use the scheme accent")
+    main.MainFrame:Open("settings")
+    local page
+    for _, f in ipairs(allFrames) do
+        if rawget(f, "ShowCategory") then page = f end
+    end
+    page.ShowCategory("general")
+    local list = page.list
+    assert(list.schemeDropdown and #list.schemeDropdown.items == 11, "scheme list should be: my class, gold and 9 classes")
+    -- 换成金色：颜色表原地改写，已创建的窗口、导航立即重刷
+    local frame = WowHandbookMainFrame
+    list.schemeDropdown.onChange("gold")
+    assert(main.db.appearance.scheme == "gold" and near(Theme.colors.gold, 0xe0 / 255, 0xb4 / 255, 0x58 / 255),
+        "gold scheme not applied")
+    assert(Theme.hex.gold == "ffe0b458", "gold hex not restored")
+    assert(near(WowHandbookFontHeading.textColor, 0xe0 / 255, 0xb4 / 255, 0x58 / 255), "heading font did not follow the scheme")
+    local selectedNav
+    for _, button in ipairs(frame.navButtons) do
+        if button.tabID == "settings" then selectedNav = button end
+    end
+    assert(near(selectedNav.label.textColor, 0xe0 / 255, 0xb4 / 255, 0x58 / 255), "selected nav label not repainted")
+    assert(near(selectedNav.accent.color, 0xe0 / 255, 0xb4 / 255, 0x58 / 255), "nav accent bar not repainted")
+    list.schemeDropdown.onChange("druid")
+    assert(Theme.hex.gold == "ffff7c0a" and near(selectedNav.accent.color, 1, 0x7c / 255, 0x0a / 255), "class scheme not applied")
+    assert(Theme.colors.goldDim[1] < Theme.colors.gold[1] and Theme.colors.selected[4] < 0.2, "derived accent colors wrong")
+    -- 背景不透明度：每次 10%，不低于 30%；只影响大面积底色，菜单与文字不变
+    assert(math.abs(frame.backdropColor[4] - 0.97) < 0.001, "window should start solid")
+    list.opacityMinus:Click()
+    assert(main.db.appearance.opacity == 90 and list.opacityValue:GetText() == "90%", "opacity step not saved or shown")
+    assert(math.abs(frame.backdropColor[4] - 0.97 * 0.9) < 0.001, "window background did not become translucent")
+    assert(math.abs(Theme.colors.sidebar[4] - 0.9) < 0.001 and math.abs(Theme.colors.panel[4] - 0.9) < 0.001,
+        "sidebar and cards did not follow the opacity")
+    assert(Theme.colors.menu[4] == 0.97 and Theme.colors.text[4] == 1 and Theme.colors.line[4] == 1,
+        "menus, text and borders must stay solid")
+    for _ = 1, 12 do list.opacityMinus:Click() end
+    assert(main.db.appearance.opacity == 30, "opacity went below the minimum")
+    for _ = 1, 12 do list.opacityPlus:Click() end
+    assert(main.db.appearance.opacity == 100 and math.abs(frame.backdropColor[4] - 0.97) < 0.001, "opacity did not return to solid")
+    -- 幽灵按钮未悬停时是透明的，不会在半透明窗口上叠出深色块
+    assert(Theme.colors.none[4] == 0, "no transparent color for ghost buttons")
+    list.schemeDropdown.onChange("class")
+    assert(Theme.hex.gold == "ff3fc7eb", "did not return to the class scheme")
+end)
+check("talent simulator: every class renders, points follow the game rules, builds are saved and shareable", function()
+    local Module = main.modules.Talents
+    assert(Module and Module.enabled, "talent module not enabled")
+    local Rules = Module.Rules
+    main.MainFrame:Open("talents")
+    local page = Module.page
+    assert(page and page:IsVisible(), "talent page did not open")
+    -- 默认是当前角色的职业（法师），三棵树都画出来
+    assert(Module.State.class == "mage", "should start on the player's class: " .. tostring(Module.State.class))
+    local classes = main.Data.talents
+    for _, class in ipairs(main.Theme.CLASS_ORDER) do
+        assert(classes[class] and #classes[class].trees == 3, "no talent data for " .. class)
+        page.classDropdown.onChange(class)
+        assert(Module.State.class == class, "class did not switch")
+        for t, tree in ipairs(classes[class].trees) do
+            local panel = page.trees[t]
+            assert(panel.shown and panel.title:GetText() == main.Name(tree.name), "tree header wrong for " .. class)
+            local shown = 0
+            for _, button in ipairs(panel.buttons) do
+                if button.shown then shown = shown + 1 end
+            end
+            assert(shown == #tree.talents, ("%s tree %d: %d buttons for %d talents"):format(class, t, shown, #tree.talents))
+            for index, talent in ipairs(tree.talents) do
+                assert(talent.max >= 1 and talent.max <= 5 and #talent.ranks.enUS == talent.max and #talent.ranks.zhCN == talent.max,
+                    "rank texts missing: " .. talent.name.enUS)
+                assert(talent.row >= 1 and talent.row <= 7 and talent.col >= 1 and talent.col <= 4, "talent off the grid")
+                assert(not talent.req or (tree.talents[talent.req] and tree.talents[talent.req].row <= talent.row),
+                    "bad prerequisite: " .. talent.name.enUS)
+                panel.buttons[index].scripts.OnEnter(panel.buttons[index]) -- 鼠标提示不报错
+            end
         end
     end
-    assert(page.about.pointY <= lowest, ("About at %s overlaps a panel ending at %s"):format(page.about.pointY, lowest))
-    assert(page.contentHeight >= -page.about.pointY + page.about.height, "content height too small")
+    -- 战士武器系：第一层可点，第二层要先投 5 点
+    page.classDropdown.onChange("warrior")
+    Module.Reset()
+    Module.Refresh()
+    local trees = classes.warrior.trees
+    local arms, panel = trees[1], page.trees[1]
+    local first, second
+    for index, talent in ipairs(arms.talents) do
+        if talent.row == 1 and not first then first = index end
+        if talent.row == 2 and not talent.req and not second then second = index end
+    end
+    assert(panel.buttons[second].icon.desaturated == true, "a locked talent should look dimmed")
+    panel.buttons[second]:Click()
+    assert(Module.State.build[1][second] == 0, "row 2 took a point before 5 points in the tree")
+    for _ = 1, arms.talents[first].max + 2 do panel.buttons[first]:Click() end
+    assert(Module.State.build[1][first] == arms.talents[first].max, "left-click did not fill the talent to its maximum")
+    assert(panel.buttons[first].count:GetText() == ("%d/%d"):format(arms.talents[first].max, arms.talents[first].max),
+        "rank label not updated")
+    -- 第一层凑满 5 点后第二层开放
+    for index, talent in ipairs(arms.talents) do
+        if talent.row == 1 then
+            while Rules.PointsBelow(arms, Module.State.build[1], 2) < 5 and Module.Spend(1, index, 1) do end
+        end
+    end
+    Module.Refresh()
+    assert(Rules.PointsBelow(arms, Module.State.build[1], 2) == 5, "could not put 5 points in row 1")
+    assert(panel.buttons[second].icon.desaturated == false, "row 2 did not open after 5 points")
+    panel.buttons[second]:Click()
+    assert(Module.State.build[1][second] == 1, "row 2 did not take a point after 5 points")
+    -- 第二层有点时，第一层不能减到 5 点以下
+    panel.buttons[first].scripts.OnClick(panel.buttons[first], "RightButton")
+    assert(Rules.PointsBelow(arms, Module.State.build[1], 2) == 5, "right-click removed a point the next row depends on")
+    panel.buttons[second].scripts.OnClick(panel.buttons[second], "RightButton")
+    assert(Module.State.build[1][second] == 0, "right-click did not remove a point")
+    -- 前置天赋：没点满前置不能点
+    local dependent
+    for index, talent in ipairs(arms.talents) do
+        if talent.req then dependent = index break end
+    end
+    local req = arms.talents[dependent].req
+    local ranks = Rules.Empty(trees)[1]
+    for index, talent in ipairs(arms.talents) do
+        if talent.row < arms.talents[dependent].row and index ~= req then ranks[index] = talent.max end
+    end
+    assert(Rules.RowOpen(arms, ranks, arms.talents[dependent].row) and not Rules.IsAvailable(arms, ranks, dependent),
+        "a talent opened without its prerequisite")
+    ranks[req] = arms.talents[req].max
+    assert(Rules.IsAvailable(arms, ranks, dependent), "a talent stayed locked with its prerequisite maxed")
+    -- 总共 51 点
+    Module.Reset()
+    local spent = true
+    while spent do
+        spent = false
+        for t, tree in ipairs(trees) do
+            for index in ipairs(tree.talents) do
+                if Module.Spend(t, index, 1) then spent = true end
+            end
+        end
+    end
+    assert(Rules.Total(Module.State.build) == 51 and Rules.RequiredLevel(51) == 60, "the build should stop at 51 points")
+    assert(Rules.PointsAtLevel(9) == 0 and Rules.PointsAtLevel(10) == 1 and Rules.PointsAtLevel(60) == 51, "points per level wrong")
+    -- 分享码与网站格式一致：每个天赋一位数字，末尾的 0 去掉；存档按职业保存，换职业再回来还在
+    local code = Module.Code()
+    assert(code:match("^[%d%-]+$") and Rules.Encode(Rules.Decode(trees, code)) == code, "share code does not round-trip")
+    assert(main.db.modules.Talents.builds.warrior == code, "build not saved")
+    page.classDropdown.onChange("mage")
+    page.classDropdown.onChange("warrior")
+    assert(Module.Code() == code, "build lost after switching class")
+    assert(Rules.Encode(Rules.Decode(trees, "9")) == "" and Rules.Encode(Rules.Decode(trees, "abc")) == "",
+        "an illegal code should decode to an empty build")
+    assert(Rules.Encode({ { 3, 0, 2, 0 }, { 0, 0 }, { 0, 1 } }) == "302--01", "share code format differs from the website")
+    -- 网站链接：职业页加分享码；空加点不带 #
+    page.link:Click()
+    local expected = main.Links:Build("talents", "warrior") .. "#" .. code
+    assert(WowHandbookLinkDialog.shown and WowHandbookLinkDialog.url == expected, "wrong build link: " .. tostring(WowHandbookLinkDialog.url))
+    assert(expected:find("/talents/warrior/#", 1, true), "talent link has the wrong route")
+    WowHandbookLinkDialog:Hide()
+    panel.reset:Click()
+    assert(Rules.TreeTotal(Module.State.build[1]) == 0 and Rules.Total(Module.State.build) > 0, "tree reset should clear one tree only")
+    page.resetAll:Click()
+    assert(Module.Code() == "" and main.db.modules.Talents.builds.warrior == nil, "reset did not clear the build")
+    assert(main.Links:Build("talents", "warrior"):sub(-1) == "/", "an empty build should link to the plain class page")
+    assert(not pcall(main.Links.Build, main.Links, "talents", "warrior", "x<y"), "unsafe link fragment accepted")
+    -- /wh talents 打开模拟器
+    main.MainFrame:SelectTab("home")
+    SlashCmdList.WOWHANDBOOK("talents")
+    assert(page:IsVisible(), "/wh talents did not open the simulator")
+    page.classDropdown.onChange("mage")
 end)
 check("hidden pages stop refreshing; item requests are deduplicated with backoff (R07)", function()
     local D = main.modules.Dungeons
@@ -2451,9 +2883,24 @@ check("dungeon home: one grid, suitable dungeons highlighted, faction watermarks
                 watermarks = watermarks + 1
                 assert(tostring(card.watermark.texture):find("Media\\Faction"), "watermark is not the site emblem")
             end
-            assert(card.facts:GetText() ~= "" and card.quests:GetText() ~= "", "card rows empty")
+            assert(card.quests:GetText() ~= "", "card stats row empty")
+            assert(not card.meta:GetText():find(main.L["Level"], 1, true), "card still spells out the level label")
         end
     end
+    -- 卡片用图标代替文字，完整说明在悬停提示里
+    local rfcCard
+    for _, card in ipairs(cards) do
+        if card.shown and main.Data.dungeons[card.index].slug == "ragefire-chasm" then rfcCard = card end
+    end
+    assert(rfcCard.quests:GetText():find(D.CARD_ICON.boss, 1, true), "card has no boss icon")
+    assert(not rfcCard.where:GetText():find(main.L["Entrance in %s"]:gsub("%%s", ""), 1, true), "card still says entrance in")
+    GameTooltip.lines = {}
+    rfcCard:onHover(true)
+    local tip = table.concat(GameTooltip.lines, "\n")
+    assert(tip:find((main.L["%d bosses"]):format(main.BossCount(main.Data.dungeons[rfcCard.index])), 1, true),
+        "card tooltip has no boss count")
+    assert(tip:find(main.L["Entrance in %s"]:gsub("%%s", ""), 1, true), "card tooltip has no entrance")
+    rfcCard:onHover(false)
     assert(highlighted > 0 and watermarks > 0, ("highlighted %d watermarks %d"):format(highlighted, watermarks))
     assert(D.homeFirstSuitableRow ~= nil, "no suitable row found at level 16")
     playerLevel = saved
@@ -2511,6 +2958,45 @@ check("external class quests have their own section and do not inflate dungeon r
     assert(#D.QuestEntries(dungeon) == 0, "paladin quest offered to another class")
     main.Data.quests[1654], playerClass = savedQuest, savedClass
     UnitFactionGroup = savedFaction
+end)
+check("dungeon card: a dungeon whose quests are all for the other faction says so", function()
+    local D = main.modules.Dungeons
+    local savedFaction = UnitFactionGroup
+    local savedQuests = { main.Data.quests[-101], main.Data.quests[-102] }
+    main.Data.quests[-101], main.Data.quests[-102] = { faction = "A", min = 10 }, { faction = "A", min = 12 }
+    local dungeon = { quests = { -101, -102 } }
+    UnitFactionGroup = function() return "Horde" end
+    local total, _, _, _, others = D.QuestSummary(dungeon)
+    assert(total == 0 and others == 2, ("horde sees total %d others %d"):format(total, others))
+    UnitFactionGroup = function() return "Alliance" end
+    total, _, _, _, others = D.QuestSummary(dungeon)
+    assert(total == 2 and others == 0, "alliance does not see its own quests")
+    main.Data.quests[-101], main.Data.quests[-102] = savedQuests[1], savedQuests[2]
+    UnitFactionGroup = savedFaction
+end)
+check("dungeon card: only final dungeon quests count, and the badge follows accepted and done", function()
+    local D = main.modules.Dungeons
+    local saved = { main.Data.quests[-201], main.Data.quests[-202], main.Data.quests[-203] }
+    local savedCompleted, savedActive = completedQuests, activeQuests
+    -- -201 是 -202 的任务链前置步骤：副本任务只有 -202 与 -203 两个
+    main.Data.quests[-201] = { min = 10 }
+    main.Data.quests[-202] = { min = 12, before = { -201 } }
+    main.Data.quests[-203] = { min = 12 }
+    local dungeon = { quests = { -201, -202, -203 } }
+    completedQuests, activeQuests = {}, {}
+    local total, done, _, active = D.QuestSummary(dungeon)
+    assert(total == 2, ("chain step counted as a dungeon quest: total %d"):format(total))
+    assert(D.QuestBadge(total, done, active) == D.CARD_ICON.ready, "untaken quests are not shown with !")
+    -- 前置正在做、另一个也接了：都接了没做完，用 ?
+    activeQuests = { [-201] = true, [-203] = true }
+    total, done, _, active = D.QuestSummary(dungeon)
+    assert(active == 2 and D.QuestBadge(total, done, active) == D.CARD_ICON.active, "all taken but unfinished is not ?")
+    -- 全部完成：绿勾
+    completedQuests, activeQuests = { [-201] = true, [-202] = true, [-203] = true }, {}
+    total, done, _, active = D.QuestSummary(dungeon)
+    assert(done == 2 and D.QuestBadge(total, done, active) == D.CARD_ICON.done, "all done is not a check")
+    completedQuests, activeQuests = savedCompleted, savedActive
+    main.Data.quests[-201], main.Data.quests[-202], main.Data.quests[-203] = saved[1], saved[2], saved[3]
 end)
 check("dungeon card: quests in the log are not counted as to pick up", function()
     local D = main.modules.Dungeons

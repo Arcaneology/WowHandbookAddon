@@ -19,7 +19,7 @@ local selectedID
 -- 页面注册
 --------------------------------------------------------------------------------
 
--- definition = { id = "唯一 ID", title = "导航文字", order = 数字（小的在前），
+-- definition = { id = "唯一 ID", title = "导航文字"（或 titleKey = 本地化键，显示时按当前界面语言翻译），order = 数字（小的在前），
 --                create = function(parent) return 页面框架 end, onShow = function(page) end（可选） }
 function MainFrame:RegisterTab(definition)
     assert(type(definition.id) == "string" and type(definition.create) == "function", "invalid tab definition")
@@ -68,7 +68,7 @@ local function Create()
     topLine:SetPoint("TOPLEFT", 1, -1)
     topLine:SetPoint("TOPRIGHT", -1, -1)
     topLine:SetHeight(2)
-    topLine:SetColorTexture(unpack(Theme.colors.gold))
+    Theme:Paint(topLine, "gold")
 
     -- 标题栏（拖动窗口）
     local header = CreateFrame("Frame", nil, f)
@@ -87,7 +87,7 @@ local function Create()
     local mark = header:CreateTexture(nil, "ARTWORK")
     mark:SetSize(10, 10)
     mark:SetPoint("LEFT", 18, 0)
-    mark:SetColorTexture(unpack(Theme.colors.gold))
+    Theme:Paint(mark, "gold")
     mark:SetRotation(math.rad(45))
 
     local title = UI:Text(header, "Title", L["WoW Handbook"])
@@ -160,7 +160,7 @@ function MainFrame:LayoutNav()
             button.accent:SetPoint("TOPLEFT")
             button.accent:SetPoint("BOTTOMLEFT")
             button.accent:SetWidth(3)
-            button.accent:SetColorTexture(unpack(Theme.colors.gold))
+            Theme:Paint(button.accent, "gold")
             button.label = UI:Text(button, "Body")
             button.label:SetPoint("LEFT", 18, 0)
             button:SetScript("OnClick", function(navButton)
@@ -174,7 +174,7 @@ function MainFrame:LayoutNav()
         button:SetPoint("TOPLEFT", 0, -12 - (index - 1) * 36)
         button:SetPoint("RIGHT", -1, 0)
         button.tabID = definition.id
-        button.label:SetText(definition.title)
+        button.label:SetText(definition.titleKey and ns.L[definition.titleKey] or definition.title)
         button:Show()
         PaintNav(button)
     end
@@ -200,6 +200,21 @@ function MainFrame:SelectTab(id)
         definition.onShow(page)
     end
 end
+
+-- 配色方案或背景透明度变化：登记过的框架与贴图由主题重刷，这里补上导航的选中态，
+-- 并让当前页面重新生成内容（文字里内嵌的强调色跟着换）
+Theme:OnChange(function()
+    if not frame then
+        return
+    end
+    for _, button in ipairs(frame.navButtons) do
+        PaintNav(button)
+    end
+    local definition, page = tabsByID[selectedID], frame.pages[selectedID]
+    if definition and page and page:IsVisible() and definition.onShow then
+        definition.onShow(page)
+    end
+end)
 
 local function Ensure()
     if not frame then

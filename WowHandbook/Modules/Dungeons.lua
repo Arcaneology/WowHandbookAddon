@@ -45,27 +45,49 @@ local function QuestClassLabel(quest)
     end
 end
 
--- 本阵营（或通用）的任务：总数、已完成数、现在可接（还没接）的数量、已接未交的数量。
+-- 本阵营（或通用）的任务：总数、已完成数、现在可接（还没接）的数量、已接未交的数量，
+-- 以及只属于对方阵营的任务数（如部落角色看死亡矿井、监狱：任务全是联盟的，卡片要说明而不是写“暂无”）。
 -- 额外与外部关联任务不计普通副本统计，职业任务只展示给对应职业。
+-- 只数最终的副本任务：已是别的副本任务的任务链前置步骤的不单独计数（与任务列表的合并规则一致）。
+-- 一条链上：最终任务已完成算完成；链上正做着的一步（或最终任务本身）已接算进行中；链上下一步现在能接算可接。
 local function QuestSummary(dungeon)
     local faction = ns.PlayerFaction()
-    local total, done, ready, active = 0, 0, 0, 0
+    local total, done, ready, active, others = 0, 0, 0, 0, 0
+    local own, info = {}, {}
     for _, questID in ipairs(dungeon.quests or {}) do
         local quest = ns.Data.quests[questID]
-        if quest and not quest.extra and not quest.relatedExternal and QuestClassOK(quest)
-            and not (quest.faction and faction and quest.faction ~= faction) then
-            total = total + 1
-            local kind = Classify(questID)
-            if kind == "done" then
-                done = done + 1
-            elseif kind == "ready" then
-                ready = ready + 1
-            elseif kind == "active" then
-                active = active + 1
+        local counted = quest and not quest.extra and not quest.relatedExternal and QuestClassOK(quest)
+        if counted and quest.faction and faction and quest.faction ~= faction then
+            others = others + 1
+        elseif counted and not info[questID] then
+            local kind, chain, nextStep = Classify(questID)
+            info[questID] = { kind = kind, chain = chain, nextStep = nextStep }
+            tinsert(own, questID)
+        end
+    end
+    local covered = {}
+    for _, questID in ipairs(own) do
+        for _, stepID in ipairs(info[questID].chain) do
+            if stepID ~= questID and info[stepID] then
+                covered[stepID] = true
             end
         end
     end
-    return total, done, ready, active
+    for _, questID in ipairs(own) do
+        if not covered[questID] then
+            total = total + 1
+            local item = info[questID]
+            local stepStatus = item.kind == "chain" and item.nextStep and ns.QuestStatus(item.nextStep)
+            if item.kind == "done" then
+                done = done + 1
+            elseif item.kind == "active" or stepStatus == "active" then
+                active = active + 1
+            elseif item.kind == "ready" or stepStatus == "available" then
+                ready = ready + 1
+            end
+        end
+    end
+    return total, done, ready, active, others
 end
 Module.QuestSummary = QuestSummary -- 供测试使用
 
@@ -168,6 +190,68 @@ local function Suitable(dungeon)
 end
 Module.Suitable = Suitable -- 供测试使用
 
+-- 卡片上用图标代替文字：任务沿用游戏的任务标记，首领骷髅，掉落背包，入口地图；完整说明在悬停提示里
+local function Icon(path, crop)
+    return ("|T%s:13:13:0:0%s|t"):format(path, crop and ":64:64:5:59:5:59" or "")
+end
+local CARD_ICON = {
+    ready = Icon("Interface\\GossipFrame\\AvailableQuestIcon"),
+    active = Icon("Interface\\GossipFrame\\ActiveQuestIcon"),
+    done = Icon("Interface\\RaidFrame\\ReadyCheck-Ready"),
+    boss = Icon("Interface\\TargetingFrame\\UI-TargetingFrame-Skull"),
+    loot = Icon("Interface\\Icons\\INV_Misc_Bag_08", true),
+    entrance = Icon("Interface\\Icons\\INV_Misc_Map_01", true),
+}
+Module.CARD_ICON = CARD_ICON -- 供测试使用
+
+-- 卡片上任务的状态符号：还有没接的任务用黄 !；都接了但没做完用黄 ?；全部完成才用绿勾
+function Module.QuestBadge(total, done, active)
+    if done >= total then
+        return CARD_ICON.done
+    elseif done + active >= total then
+        return CARD_ICON.active
+    end
+    return CARD_ICON.ready
+end
+
+-- 悬停提示：卡片上省掉的文字都在这里
+local function CardTooltip(card)
+    local dungeon = ns.Data.dungeons[card.index]
+    GameTooltip:SetOwner(card, "ANCHOR_RIGHT")
+    GameTooltip:SetText(DungeonName(dungeon), 1, 0.82, 0)
+    local levels = dungeon.levels
+    local kind = dungeon.kind == "raid" and L["Raid"] or L["Dungeon"]
+    GameTooltip:AddLine(levels and ("%s %s  ·  %s"):format(L["Level"], ns.LevelRange(levels), kind) or kind, 0.85, 0.8, 0.69)
+    local total, done, ready, active, others = QuestSummary(dungeon)
+    if ready > 0 then
+        GameTooltip:AddLine(CARD_ICON.ready .. " " .. (L["%d to pick up"]):format(ready), 1, 1, 1)
+    end
+    if active > 0 then
+        GameTooltip:AddLine(CARD_ICON.active .. " " .. (L["%d in progress"]):format(active), 1, 1, 1)
+    end
+    if total > 0 then
+        GameTooltip:AddLine(CARD_ICON.done .. " " .. (L["Quests %d/%d"]):format(done, total), 1, 1, 1)
+    elseif others > 0 then
+        GameTooltip:AddLine((L["%d quests for the other faction"]):format(others), 0.54, 0.51, 0.45)
+    else
+        GameTooltip:AddLine(L["No dungeon quests"], 0.54, 0.51, 0.45)
+    end
+    if dungeon.dataPending then
+        GameTooltip:AddLine(L["Data coming soon"], 0.54, 0.51, 0.45)
+    elseif not dungeon.aggregateOnly then
+        GameTooltip:AddLine(CARD_ICON.boss .. " " .. (L["%d bosses"]):format(ns.BossCount(dungeon)), 1, 1, 1)
+    end
+    local loot = LootCount(dungeon)
+    if loot > 0 then
+        GameTooltip:AddLine(CARD_ICON.loot .. " " .. (L["%d items"]):format(loot), 1, 1, 1)
+    end
+    local mapID = ns.DungeonEntrance(card.index) or (dungeon.entrance and dungeon.entrance.map)
+    if mapID then
+        GameTooltip:AddLine(CARD_ICON.entrance .. " " .. (L["Entrance in %s"]):format(ns.MapName(mapID)), 1, 1, 1)
+    end
+    GameTooltip:Show()
+end
+
 local function FillCard(card, index)
     local dungeon = ns.Data.dungeons[index]
     card.index = index
@@ -186,46 +270,44 @@ local function FillCard(card, index)
         card.watermark:SetAlpha(WATERMARK_ALPHA)
     end
 
+    -- 三行布局：
+    --   第一行  副本名 ........................ 等级区间（按等级着色）
+    --   第二行  任务标记与数字 · 首领 · 掉落（全是图标加数字）
+    --   底行    入口区域 ...................... “适合你”或“团本”
+    -- 对方阵营的任务、没有任务等说明只在悬停提示里写，卡片上不占位置
     local suitable = Suitable(dungeon)
     card:SetHighlighted(suitable)
-    card.badge:SetShown(suitable)
-
     card.name:SetText(DungeonName(dungeon))
-    local meta = {}
-    if levels then
-        tinsert(meta, ("|c%s%s %s|r"):format(color, L["Level"], ns.LevelRange(levels)))
-    end
-    tinsert(meta, dungeon.kind == "raid" and L["Raid"] or L["Dungeon"])
-    card.meta:SetText(table.concat(meta, "  ·  "))
+    card.meta:SetText(levels and ("|c%s%s|r"):format(color, ns.LevelRange(levels)) or "")
 
-    -- 第三行：任务；第四行：首领与掉落。分开两行，不再挤在一行里被截断
-    local total, done, ready, active = QuestSummary(dungeon)
-    local quests = {}
-    if ready > 0 then
-        tinsert(quests, ("|cffe0b458%s|r"):format((L["%d to pick up"]):format(ready)))
-    end
-    if active > 0 then
-        tinsert(quests, ("|cff6f95d6%s|r"):format((L["%d in progress"]):format(active)))
-    end
+    -- 任务：一个状态符号加“已完成/总数”。还有没接的任务用黄 !；都接了但没做完用黄 ?；全部完成才用绿勾
+    local total, done, _, active = QuestSummary(dungeon)
+    local stats = {}
     if total > 0 then
-        tinsert(quests, ("|cff8a8374%s|r"):format((L["Quests %d/%d"]):format(done, total)))
+        tinsert(stats, Module.QuestBadge(total, done, active) .. ("|cffd9ccb0%d/%d|r"):format(done, total))
     end
-    card.quests:SetText(#quests > 0 and table.concat(quests, "  ·  ") or ("|cff8a8374" .. L["No dungeon quests"] .. "|r"))
-
-    local facts = {}
     if dungeon.dataPending then
-        tinsert(facts, L["Data coming soon"])
+        tinsert(stats, "|cff8a8374" .. L["Data coming soon"] .. "|r")
     elseif not dungeon.aggregateOnly then
-        tinsert(facts, (L["%d bosses"]):format(ns.BossCount(dungeon)))
+        tinsert(stats, CARD_ICON.boss .. "|cffd9ccb0" .. ns.BossCount(dungeon) .. "|r")
     end
     local loot = LootCount(dungeon)
     if loot > 0 then
-        tinsert(facts, (L["%d items"]):format(loot))
+        tinsert(stats, CARD_ICON.loot .. "|cffd9ccb0" .. loot .. "|r")
     end
-    card.facts:SetText("|cff8a8374" .. table.concat(facts, "  ·  ") .. "|r")
+    if #stats == 0 then
+        tinsert(stats, "|cff8a8374" .. L["Data coming soon"] .. "|r")
+    end
+    card.quests:SetText(table.concat(stats, "    "))
 
     local mapID = ns.DungeonEntrance(index) or (dungeon.entrance and dungeon.entrance.map)
-    card.where:SetText(mapID and ("|cff8a8374" .. (L["Entrance in %s"]):format(ns.MapName(mapID)) .. "|r") or "")
+    card.where:SetText(mapID and (CARD_ICON.entrance .. " |cff8a8374" .. ns.MapName(mapID) .. "|r") or "")
+    if suitable then
+        card.badge:SetText(L["Right for you"])
+    elseif dungeon.kind == "raid" then
+        card.badge:SetText("|cff8a8374" .. L["Raid"] .. "|r")
+    end
+    card.badge:SetShown(suitable or dungeon.kind == "raid")
     card:Show()
 end
 
@@ -239,25 +321,33 @@ local function CreateCard(parent)
         -- 悬停时水印更清楚、转正一点，与网站一致
         self.watermark:SetAlpha(hovered and WATERMARK_HOVER_ALPHA or WATERMARK_ALPHA)
         self.watermark:SetRotation(math.rad(hovered and -2 or -6))
+        if hovered then
+            CardTooltip(self)
+        elseif GameTooltip:GetOwner() == self then
+            GameTooltip:Hide()
+        end
     end
-    card.badge = UI:Text(card, "Accent", L["Right for you"])
-    card.badge:SetPoint("TOPRIGHT", -12, -14)
+    -- 第一行：副本名（左）与等级区间（右）
+    card.meta = UI:Text(card, "Body")
+    card.meta:SetPoint("TOPRIGHT", -12, -13)
+    card.meta:SetJustifyH("RIGHT")
     card.name = UI:Text(card, "Heading")
-    card.name:SetPoint("TOPLEFT", 16, -14)
-    card.name:SetPoint("RIGHT", card.badge, "LEFT", -6, 0)
+    card.name:SetPoint("TOPLEFT", 16, -13)
+    card.name:SetPoint("RIGHT", card.meta, "LEFT", -8, 0)
     card.name:SetWordWrap(false)
-    card.meta = UI:Text(card, "Small")
-    card.meta:SetPoint("TOPLEFT", card.name, "BOTTOMLEFT", 0, -7)
+    -- 第二行：图标加数字
     card.quests = UI:Text(card, "Small")
-    card.quests:SetPoint("TOPLEFT", card.meta, "BOTTOMLEFT", 0, -7)
-    card.facts = UI:Text(card, "Small")
-    card.facts:SetPoint("TOPLEFT", card.quests, "BOTTOMLEFT", 0, -5)
+    card.quests:SetPoint("TOPLEFT", card.name, "BOTTOMLEFT", 0, -9)
+    card.quests:SetPoint("RIGHT", -12, 0)
+    card.quests:SetWordWrap(false)
+    -- 底行：入口区域（左）与“适合你”或“团本”（右）
+    card.badge = UI:Text(card, "Accent")
+    card.badge:SetPoint("BOTTOMRIGHT", -12, 11)
+    card.badge:SetJustifyH("RIGHT")
     card.where = UI:Text(card, "Small")
-    card.where:SetPoint("BOTTOMLEFT", 16, 12)
-    for _, text in ipairs({ card.meta, card.quests, card.facts, card.where }) do
-        text:SetPoint("RIGHT", -12, 0)
-        text:SetWordWrap(false)
-    end
+    card.where:SetPoint("BOTTOMLEFT", 16, 11)
+    card.where:SetPoint("RIGHT", card.badge, "LEFT", -8, 0)
+    card.where:SetWordWrap(false)
     card:SetScript("OnClick", function(self)
         Module:ShowDetail(self.index)
     end)
@@ -268,7 +358,7 @@ end
 -- 主页：一张网格列出全部副本，适合你等级的高亮
 --------------------------------------------------------------------------------
 
-local COLUMNS, CARD_HEIGHT = 3, 124
+local COLUMNS, CARD_HEIGHT = 3, 84
 
 local function Matches(text, search)
     return search == "" or (text and text:lower():find(search, 1, true) ~= nil)
@@ -282,7 +372,8 @@ local function RefreshHome()
     local search = state.search:lower()
     local shown, firstSuitableRow = 0, nil
     for index, dungeon in ipairs(ns.Data.dungeons) do
-        if FactionOK(dungeon) and Matches(DungeonName(dungeon), search) then
+        -- 副本手册列出全部副本（对方阵营的也列出，卡片上有阵营色条与水印）；只有推荐才按阵营筛选
+        if Matches(DungeonName(dungeon), search) then
             shown = shown + 1
             local card = home.cards[shown] or CreateCard(child)
             home.cards[shown] = card
@@ -324,8 +415,7 @@ local function CreateHome(parent)
     home:SetAllPoints()
     local title = UI:Text(home, "Title", L["Dungeon guide"])
     title:SetPoint("TOPLEFT", PAD, -18)
-    local subtitle = UI:Text(home, "Muted", L["Gold cards are right for your level. Level colors: gray too low, green easy, "
-        .. "gold right for you, red too high."])
+    local subtitle = UI:Text(home, "Muted", L["Gold cards are right for your level. Hover a card for details."])
     subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
 
     home.search = UI:SearchBox(home, 150, L["Search"], function(text)
@@ -806,9 +896,12 @@ local function RefreshQuestView(detail, dungeon)
         questState.selectedRow = nil
     end
     view.list:SetData(entries, selectedRow)
+    -- 只数列表里的任务行（最终的副本任务），任务链前置步骤与展开的步骤不算
     local total = 0
-    for _ in pairs(info) do
-        total = total + 1
+    for _, entry in ipairs(entries) do
+        if type(entry.id) == "number" and not entry.step and not entry.divider then
+            total = total + 1
+        end
     end
     view.count:SetText(others > 0 and (L["%d quests · %d for the other faction"]):format(total, others)
         or (L["%d quests"]):format(total))
@@ -1017,7 +1110,8 @@ local function CreateDetail(parent)
     local detail = CreateFrame("Frame", nil, parent)
     detail:SetAllPoints()
 
-    local back = UI:Button(detail, "<  " .. L["All instances"], 130, 24, "ghost")
+    -- 返回按钮用有边框的普通样式（ghost 没有边框，看不出是按钮）
+    local back = UI:Button(detail, "<  " .. L["All instances"], 130, 24)
     back:SetPoint("TOPLEFT", PAD - 6, -14)
     back:SetScript("OnClick", function()
         Module:ShowHome()

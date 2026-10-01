@@ -9,9 +9,7 @@ local UI
 
 local page
 
-local RANK_ORDER = { apprentice = 1, journeyman = 2, expert = 3, artisan = 4, specialization = 5 }
-local RANK_LABEL = { apprentice = "Apprentice", journeyman = "Journeyman", expert = "Expert", artisan = "Artisan",
-    specialization = "Specialization" }
+local RANK_ORDER = ns.TRAINER_RANK_ORDER
 
 local function Color(text, name)
     return ns.Theme:Color(text, name)
@@ -33,18 +31,8 @@ end
 local LearnedSkills = ns.ProfessionSkills
 Module.LearnedSkills = LearnedSkills -- 供测试使用
 
--- 下一步要找的训练师等级：技能上限 75 找中级、150 找高级、225 找专家级；还没学找初级
-local function NextRank(skill)
-    if not skill then
-        return "apprentice"
-    elseif skill.max <= 75 then
-        return "journeyman"
-    elseif skill.max <= 150 then
-        return "expert"
-    elseif skill.max <= 225 then
-        return "artisan"
-    end
-end
+-- 下一步要学的一档（见 Core/Util.lua）；要找哪一档训练师用 ns.TargetTrainerRank
+local NextRank = ns.NextTrainerRank
 Module.NextRank = NextRank
 
 -- 本阵营能用的训练师（阵营未知的也列出），按等级、当前所在地图优先、地图名排序
@@ -84,7 +72,7 @@ local CELLS = { "a", "b", "c" }
 local COLUMNS = {
     trainers = {
         { key = "a", label = "Trainer", width = 220 },
-        { key = "b", label = "Teaches", width = 110 },
+        { key = "b", label = "Trainer rank", width = 110 },
         { key = "c", label = "Location" },
     },
 }
@@ -98,7 +86,7 @@ local function ShowTrainerTooltip(row, trainer)
     GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
     GameTooltip:SetText(TrainerTitle(trainer), 1, 0.82, 0)
     if trainer.rank then
-        GameTooltip:AddLine(L[RANK_LABEL[trainer.rank]], 1, 1, 1)
+        GameTooltip:AddLine((L["Trainer rank: %s"]):format(ns.TrainerRankName(trainer.rank)), 1, 1, 1)
     end
     GameTooltip:AddLine(ns.MapName(trainer.map) or "?", 0.85, 0.8, 0.69)
     if trainer.x then
@@ -131,12 +119,12 @@ local function CreateRow(parent)
     row.stripe:SetColorTexture(unpack(ns.Theme.colors.stripe))
     row.tint = row:CreateTexture(nil, "BACKGROUND", nil, 1)
     row.tint:SetAllPoints()
-    row.tint:SetColorTexture(unpack(ns.Theme.colors.goldTint))
+    ns.Theme:Paint(row.tint, "goldTint")
     row.bar = row:CreateTexture(nil, "ARTWORK")
     row.bar:SetPoint("TOPLEFT")
     row.bar:SetPoint("BOTTOMLEFT")
     row.bar:SetWidth(3)
-    row.bar:SetColorTexture(unpack(ns.Theme.colors.gold))
+    ns.Theme:Paint(row.bar, "gold")
     row.highlight = row:CreateTexture(nil, "BORDER")
     row.highlight:SetAllPoints()
     row.highlight:SetColorTexture(unpack(ns.Theme.colors.raised))
@@ -247,13 +235,13 @@ end
 
 local function RenderTrainers(t, profession, skill)
     local trainers = Trainers(profession)
-    local nextRank = NextRank(skill)
+    local nextRank = ns.TargetTrainerRank(trainers, skill)
     t:Header(COLUMNS.trainers)
     for index, trainer in ipairs(trainers) do
         local target = trainer.rank ~= nil and trainer.rank == nextRank
         t:Row(COLUMNS.trainers, { trainer = trainer }, {
             a = Color(TrainerTitle(trainer), target and "gold" or "text"),
-            b = trainer.rank and L[RANK_LABEL[trainer.rank]] or Color("-", "muted"),
+            b = trainer.rank and ns.TrainerRankName(trainer.rank) or Color("-", "muted"),
             c = Location(trainer),
         }, index % 2 == 1, target)
     end
@@ -265,11 +253,9 @@ local function RenderTrainers(t, profession, skill)
     if skill then
         tinsert(parts, (L["Your skill %d/%d"]):format(skill.rank, skill.max))
     end
-    for _, trainer in ipairs(trainers) do
-        if trainer.rank == nextRank then
-            tinsert(parts, Color((L["Next: %s trainer"]):format(L[RANK_LABEL[nextRank]]), "gold"))
-            break
-        end
+    -- 没有带等级的训练师时（如采矿训练师头衔不写等级）不写“下一步”
+    if nextRank then
+        tinsert(parts, Color((L["Next: %s trainer"]):format(ns.TrainerRankName(nextRank)), "gold"))
     end
     return parts, L["Click: mark on map"]
 end

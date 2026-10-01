@@ -7,8 +7,9 @@ local C = Theme.colors
 local UI = {}
 ns.UI = UI
 
+-- 贴图上纯色并登记，配色方案变化时自动重刷
 local function SetColor(texture, name)
-    texture:SetColorTexture(unpack(C[name]))
+    Theme:Paint(texture, name)
 end
 
 --------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ local function PaintButton(button)
     elseif variant == "primary" then
         background, border, text = hovered and "raised" or "panel", hovered and "gold" or "goldDim", "gold"
     elseif variant == "ghost" then
-        background, border, text = hovered and "raised" or "window", hovered and "line" or "window", hovered and "text" or "textDim"
+        background, border, text = hovered and "raised" or "none", hovered and "line" or "none", hovered and "text" or "textDim"
     else
         background, border, text = hovered and "raised" or "panel", hovered and "goldDim" or "line", "text"
     end
@@ -74,6 +75,7 @@ function UI:Button(parent, text, width, height, variant)
     button:HookScript("OnLeave", PaintButton)
     button:HookScript("OnEnable", PaintButton)
     button:HookScript("OnDisable", PaintButton)
+    Theme:Track(button, PaintButton)
     button:SetScript("OnMouseDown", function(self)
         if self:IsEnabled() then
             label:SetPoint("CENTER", 0, -1)
@@ -162,6 +164,7 @@ end
 
 function UI:Dropdown(parent, items, onChange, width)
     local dropdown = UI:Button(parent, "", width or 150, 24)
+    dropdown.onChange = onChange -- 供测试使用
     dropdown.label:ClearAllPoints()
     dropdown.label:SetPoint("LEFT", 10, 0)
     dropdown.label:SetPoint("RIGHT", -22, 0)
@@ -173,7 +176,7 @@ function UI:Dropdown(parent, items, onChange, width)
     arrow:SetVertexColor(unpack(C.muted))
 
     -- 菜单挂在 UIParent 上，放在滚动区域里的下拉框展开时不会被裁掉；下拉框隐藏时一起隐藏
-    local menu = UI:Panel(UIParent, "window", "line")
+    local menu = UI:Panel(UIParent, "menu", "line")
     menu:SetFrameStrata("DIALOG")
     menu:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -2)
     menu:SetWidth(width or 150)
@@ -363,7 +366,7 @@ function UI:ScrollBar(parent, onScroll)
 
     thumb:SetScript("OnMouseDown", function()
         local grab = thumb:GetTop() - CursorY()
-        thumbTexture:SetColorTexture(unpack(C.gold))
+        SetColor(thumbTexture, "gold")
         thumb:SetScript("OnUpdate", function()
             onScroll(PositionFromCursor(grab))
         end)
@@ -480,7 +483,7 @@ function UI:List(parent, rowHeight, onSelect)
         end)
         row:SetScript("OnEnter", function(self)
             if self:IsEnabled() and self.entryID ~= list.selectedID then
-                SetColor(self.background, "raised")
+                self.background:SetColorTexture(unpack(C.raised))
             end
             -- 可选：list.onEntryEnter(行, 条目ID) 用来显示鼠标提示
             if list.onEntryEnter and self.entryID then
@@ -518,9 +521,9 @@ function UI:List(parent, rowHeight, onSelect)
                 if entry.divider then
                     row.background:SetColorTexture(0, 0, 0, 0)
                 elseif selected then
-                    SetColor(row.background, "selected")
+                    row.background:SetColorTexture(unpack(C.selected))
                 elseif (self.offset + i) % 2 == 0 then
-                    SetColor(row.background, "stripe")
+                    row.background:SetColorTexture(unpack(C.stripe))
                 else
                     row.background:SetColorTexture(0, 0, 0, 0)
                 end
@@ -559,6 +562,11 @@ function UI:List(parent, rowHeight, onSelect)
     function list:ResetScroll()
         self.offset = 0
     end
+
+    -- 行底色每次刷新时现取颜色；配色方案变化时整表重刷
+    Theme:Track(list, function(self)
+        self:Refresh()
+    end)
 
     list:EnableMouseWheel(true)
     list:SetScript("OnMouseWheel", function(self, delta)
@@ -651,10 +659,9 @@ function UI:ItemButton(parent, size)
     button:SetScript("OnEnter", ItemButtonOnEnter)
     button:SetScript("OnLeave", GameTooltip_Hide)
     button:SetScript("OnClick", ItemButtonOnClick)
-    function button:SetItem(itemID)
-        self.itemID = itemID
-        self.icon:SetTexture(C_Item.GetItemIconByID(itemID) or 134400)
-        local quality = C_Item.GetItemQualityByID and C_Item.GetItemQualityByID(itemID)
+    local function PaintBorder(self)
+        local quality = self.itemID and C_Item.GetItemQualityByID and C_Item.GetItemQualityByID(self.itemID)
+        self:SetBackdropColor(unpack(C.panel))
         if quality and C_Item.GetItemQualityColor then
             local r, g, b = C_Item.GetItemQualityColor(quality)
             self:SetBackdropBorderColor(r, g, b, 1)
@@ -662,6 +669,63 @@ function UI:ItemButton(parent, size)
             self:SetBackdropBorderColor(unpack(C.line))
         end
     end
+    function button:SetItem(itemID)
+        self.itemID = itemID
+        self.icon:SetTexture(C_Item.GetItemIconByID(itemID) or 134400)
+        PaintBorder(self)
+    end
+    Theme:Track(button, PaintBorder)
+    return button
+end
+
+-- 图标按钮：带边框的方形图标，右下角可显示一小段文字（如天赋的“2/5”）。左右键点击都触发 OnClick。
+-- SetIcon(贴图路径)、SetCount(文字, 颜色名)、SetBorder(颜色名)、SetDimmed(是否变灰变淡)
+function UI:IconButton(parent, size)
+    local button = CreateFrame("Button", nil, parent, "BackdropTemplate")
+    button:SetSize(size or 36, size or 36)
+    Theme:Skin(button, "panel", "line")
+    button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    button.border = "line"
+    button.icon = button:CreateTexture(nil, "ARTWORK")
+    button.icon:SetPoint("TOPLEFT", 2, -2)
+    button.icon:SetPoint("BOTTOMRIGHT", -2, 2)
+    button.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+    button.count = UI:Text(button, "Small")
+    button.count:SetPoint("BOTTOMRIGHT", 3, -5)
+    button.count:SetJustifyH("RIGHT")
+    -- 文字底衬：压在图标右下角上，数字在任何图标上都看得清
+    local badge = button:CreateTexture(nil, "ARTWORK", nil, 2)
+    badge:SetPoint("TOPLEFT", button.count, "TOPLEFT", -3, 2)
+    badge:SetPoint("BOTTOMRIGHT", button.count, "BOTTOMRIGHT", 2, -2)
+    SetColor(badge, "menu")
+    button.badge = badge
+    badge:Hide()
+
+    local function Paint(self)
+        self:SetBackdropColor(unpack(C.panel))
+        self:SetBackdropBorderColor(unpack(C[self.border]))
+        if self.countColor then
+            self.count:SetTextColor(unpack(C[self.countColor]))
+        end
+    end
+    function button:SetIcon(path)
+        self.icon:SetTexture(path)
+    end
+    function button:SetCount(text, color)
+        self.count:SetText(text or "")
+        self.countColor = color or "text"
+        badge:SetShown(text ~= nil and text ~= "")
+        Paint(self)
+    end
+    function button:SetBorder(color)
+        self.border = color or "line"
+        Paint(self)
+    end
+    function button:SetDimmed(dimmed)
+        self.icon:SetDesaturated(dimmed and true or false)
+        self.icon:SetAlpha(dimmed and 0.45 or 1)
+    end
+    Theme:Track(button, Paint)
     return button
 end
 
@@ -801,7 +865,7 @@ local function MenuTip(owner, title, tip)
 end
 
 function UI:CheckMenu(name)
-    local menu = UI:Panel(UIParent, "window", "line")
+    local menu = UI:Panel(UIParent, "menu", "line")
     if name then
         _G[name] = menu -- 具名框架才能放进 UISpecialFrames 让 Esc 关闭（名字以 WowHandbook 开头）
         tinsert(UISpecialFrames, name)
@@ -1158,11 +1222,15 @@ function UI:Card(parent)
         self.highlighted = highlighted and true or false
         Paint(self, false)
     end
-    -- 左侧色条颜色（十六进制 "ffe0b458"）
+    Theme:Track(card, function(self)
+        Paint(self, false)
+    end)
+    -- 左侧色条颜色（十六进制 "ffe0b458"）；指定后不再跟随配色方案
     function card:SetAccentHex(hex)
         local r = tonumber(hex:sub(3, 4), 16) / 255
         local g = tonumber(hex:sub(5, 6), 16) / 255
         local b = tonumber(hex:sub(7, 8), 16) / 255
+        Theme:Track(self.accent, nil)
         self.accent:SetColorTexture(r, g, b, 1)
     end
     return card
