@@ -354,6 +354,14 @@ local KEYS = {
     "Gnome",
     "Troll",
     "Skyborne",
+    "A free companion for World of Warcraft: Forever: dungeons, quests, talents, spells and trainers, all inside the game.",
+    "Version",
+    "Author",
+    "Game",
+    "Website",
+    "License",
+    "World of Warcraft: Forever",
+    "Organization",
 }
 
 -- 英文就是键本身；登记成英文翻译表，界面语言为英文时直接命中

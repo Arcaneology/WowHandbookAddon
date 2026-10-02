@@ -1,5 +1,4 @@
 local ADDON_NAME, ns = ...
-local L = ns.L
 local Theme, UI = ns.Theme, ns.UI
 
 -- 主窗口：顶部标题栏，左侧导航，右侧内容页。功能模块和其他插件通过 RegisterTab 注册页面，
@@ -9,6 +8,9 @@ ns.MainFrame = MainFrame
 
 local FRAME_WIDTH, FRAME_HEIGHT = 940, 600
 local HEADER_HEIGHT, SIDEBAR_WIDTH = 44, 176
+-- 标题字标：512×64 的贴图按 0.375 倍显示
+local WORDMARK = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\Wordmark"
+local WORDMARK_WIDTH, WORDMARK_HEIGHT = 192, 24
 
 local frame
 local tabs = {}       -- 已注册的页面定义，按 order 排序
@@ -90,10 +92,19 @@ local function Create()
     Theme:Paint(mark, "gold")
     mark:SetRotation(math.rad(45))
 
-    local title = UI:Text(header, "Title", L["WoW Handbook"])
-    title:SetPoint("LEFT", mark, "RIGHT", 12, 0)
-    local version = UI:Text(header, "Muted", ns.version)
-    version:SetPoint("LEFT", title, "RIGHT", 8, -1)
+    -- 标题用字标贴图：站名“WoW Handbook”以网站的标题字体渲染成图片（tools/make_wordmark.py），
+    -- 插件不带字体文件。贴图是白字加透明通道，这里按正文色着色；各语言界面都显示这个站名。
+    -- 版本号不放在标题栏，见设置页的“关于”
+    local title = header:CreateTexture(nil, "ARTWORK")
+    title:SetTexture(WORDMARK)
+    title:SetSize(WORDMARK_WIDTH, WORDMARK_HEIGHT)
+    title:SetPoint("LEFT", mark, "RIGHT", 10, 0)
+    Theme:Track(title, function(texture)
+        local color = Theme.colors.text
+        texture:SetVertexColor(color[1], color[2], color[3])
+    end)
+    title:SetVertexColor(Theme.colors.text[1], Theme.colors.text[2], Theme.colors.text[3])
+    f.title = title -- 供测试使用
 
     local close = UI:CloseButton(header, function()
         f:Hide()

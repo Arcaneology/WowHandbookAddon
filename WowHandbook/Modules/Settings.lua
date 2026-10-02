@@ -375,26 +375,55 @@ local function AddAppearance(list, y, width)
     return y + ROW_HEIGHT + 14
 end
 
--- 关于：网站与非官方声明
+-- 关于：插件与作者信息（版本号只在这里显示，不放主窗口标题栏）、非官方声明与网站链接
+local ABOUT_ROW = 22
 local function AddAbout(list, y, width)
     local about = UI:Panel(list, "raised", "lineSoft")
     about:SetPoint("TOPLEFT", 0, -y)
-    about:SetSize(width, 96)
-    local aboutTitle = UI:Text(about, "Heading", L["About"])
-    aboutTitle:SetPoint("TOPLEFT", 14, -12)
-    local version = UI:Text(about, "Muted", ns.version)
-    version:SetPoint("LEFT", aboutTitle, "RIGHT", 8, 0)
+    local aboutTitle = UI:Text(about, "Title", L["WoW Handbook"])
+    aboutTitle:SetPoint("TOPLEFT", 14, -14)
+    local intro = UI:Text(about, "Small",
+        L["A free companion for World of Warcraft: Forever: dungeons, quests, talents, spells and trainers, all inside the game."])
+    intro:SetPoint("TOPLEFT", aboutTitle, "BOTTOMLEFT", 0, -8)
+    intro:SetPoint("RIGHT", -14, 0)
+
+    -- 信息行：左侧名称，右侧内容
+    local rows = {
+        { "Version", ns.version },
+        { "Author", ns.author },
+        { "Organization", ns.organization },
+        { "Game", L["World of Warcraft: Forever"] .. " 1.60.x" },
+        { "Website", "wowhandbook.com" },
+        { "License", "GPL-3.0" },
+    }
+    local top = 74
+    about.rows = {} -- 供测试使用
+    for index, row in ipairs(rows) do
+        local label = UI:Text(about, "Muted", L[row[1]])
+        label:SetPoint("TOPLEFT", 14, -top - (index - 1) * ABOUT_ROW)
+        local value = UI:Text(about, "Body", row[2])
+        value:SetPoint("TOPLEFT", 130, -top - (index - 1) * ABOUT_ROW)
+        about.rows[row[1]] = value
+    end
+    local bottom = top + #rows * ABOUT_ROW
+
+    local line = ns.Theme:Fill(about, "lineSoft", "ARTWORK")
+    line:SetPoint("TOPLEFT", 14, -bottom - 6)
+    line:SetPoint("TOPRIGHT", -14, -bottom - 6)
+    line:SetHeight(1)
     local disclaimer = "WoW Handbook is a free, unofficial fan-made addon. "
         .. "It is not affiliated with or endorsed by Blizzard Entertainment. Full guides: wowhandbook.com"
     local aboutText = UI:Text(about, "Small", L[disclaimer])
-    aboutText:SetPoint("TOPLEFT", aboutTitle, "BOTTOMLEFT", 0, -8)
+    aboutText:SetPoint("TOPLEFT", 14, -bottom - 18)
     aboutText:SetPoint("RIGHT", -14, 0)
     local copy = UI:Button(about, L["Copy website link"], 150, 24, "primary")
-    copy:SetPoint("BOTTOMLEFT", 14, 12)
+    copy:SetPoint("BOTTOMLEFT", 14, 14)
     copy:SetScript("OnClick", function()
         ns.Links:ShowCopyDialog(ns.Links:Build("home"))
     end)
-    return y + 96, about
+    local height = bottom + 18 + 40 + 24 + 22
+    about:SetSize(width, height)
+    return y + height, about
 end
 
 local function CreatePage(parent)

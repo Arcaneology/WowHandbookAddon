@@ -2636,6 +2636,26 @@ check("settings: category nav with one list of rows, About on its own page, lang
         assert(page.contentHeight > 0, "empty category: " .. id)
     end
     assert(page.about and page.about.parent == page.list, "About is not on the About page")
+    -- 版本号与作者只在“关于”里；主窗口标题栏不再显示版本号
+    assert(page.about.rows.Version:GetText() == main.version and page.about.rows.Author:GetText() == main.author,
+        "About does not show the version and author")
+    assert(page.about.rows.Organization:GetText() == main.organization, "About does not show the organization")
+    local toc = assert(io.open("WowHandbook/WowHandbook.toc")):read("a")
+    assert(toc:find("## Author: AntaresBuild", 1, true) and toc:find("## X-Organization: ArcaneStudio", 1, true),
+        "TOC author or organization changed unexpectedly")
+    assert(page.about.rows.Website:GetText() == "wowhandbook.com" and page.about.rows.License:GetText() == "GPL-3.0",
+        "About is missing the website or license")
+    -- 标题栏是字标贴图（网站标题字体渲染的图片），不带版本号；贴图文件存在且边长是 2 的幂
+    local title = WowHandbookMainFrame.title
+    assert(title.kind == "Texture" and title.texture == "Interface\\AddOns\\WowHandbook\\Media\\Wordmark",
+        "title bar should show the wordmark texture: " .. tostring(title.texture))
+    assert(title.width == 192 and title.height == 24 and title.vertexColor[1] == main.Theme.colors.text[1],
+        "wordmark size or tint wrong")
+    local tga = assert(io.open("WowHandbook/Media/Wordmark.tga", "rb"), "Wordmark.tga missing")
+    local head = tga:read(18)
+    tga:close()
+    local w, h = head:byte(13) + head:byte(14) * 256, head:byte(15) + head:byte(16) * 256
+    assert(w == 512 and h == 64 and head:byte(3) == 2 and head:byte(17) == 32, "Wordmark.tga is not a 512x64 32-bit TGA")
     -- 语言：选了中文存进存档，重载前不改当前界面
     page.ShowCategory("general")
     local before = main.locale

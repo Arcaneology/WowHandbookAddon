@@ -1,6 +1,6 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.3.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.4.0.
 
 ## Summary
 
@@ -38,6 +38,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 - **Color scheme**: the accent color follows your class by default. Switch to the classic handbook gold or any class color in Settings; the change applies at once.
 - **Background opacity**: make the main window translucent, from 100% down to 30%. Text, borders and menus stay solid.
 - **Interface language**: follow the game, or pick English or Simplified Chinese.
+- **About**: the version, author and links live in Settings > About; the title bar shows the handbook's own wordmark.
 
 ### Convenience
 
@@ -56,7 +57,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.3.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.4.0。
 
 ### 简介
 
@@ -94,6 +95,7 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 - **配色方案**：强调色默认跟随你的职业，可在设置里改回手册金色或任一职业色，改动立即生效。
 - **背景不透明度**：主窗口可调成半透明（100% 到 30%），文字、边框与菜单保持清晰。
 - **界面语言**：跟随游戏，或指定 English / 简体中文。
+- **关于**：版本号、作者与链接在“设置 → 关于”里；标题栏显示手册自己的字标。
 
 #### 便利功能
 
@@ -123,7 +125,11 @@ WoW Handbook is an addon: it runs inside the World of Warcraft: Forever client, 
 
 ## Credits
 
-Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0).
+Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
+
+## Author
+
+AntaresBuild, ArcaneStudio.
 
 ## License
 

@@ -3,6 +3,8 @@ local L = ns.L
 
 local GetMetadata = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
 ns.version = GetMetadata(ADDON_NAME, "Version") or "dev"
+ns.author = GetMetadata(ADDON_NAME, "Author") or "AntaresBuild"
+ns.organization = GetMetadata(ADDON_NAME, "X-Organization") or "ArcaneStudio"
 
 --------------------------------------------------------------------------------
 -- 输出

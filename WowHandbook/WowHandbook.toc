@@ -3,8 +3,9 @@
 ## Title-zhCN: WoW 手册
 ## Notes: Dungeon quests and loot, spells by level and more for World of Warcraft: Forever.
 ## Notes-zhCN: 魔兽世界：无限的副本任务与掉落、按等级学习的技能等游戏助手。
-## Author: WoW Handbook
-## Version: 0.3.0
+## Author: AntaresBuild
+## X-Organization: ArcaneStudio
+## Version: 0.4.0
 ## SavedVariables: WowHandbookDB
 ## SavedVariablesPerCharacter: WowHandbookCharDB
 ## X-Website: https://wowhandbook.com

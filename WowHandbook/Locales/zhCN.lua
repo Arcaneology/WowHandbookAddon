@@ -373,3 +373,13 @@ L["Tauren"] = "牛头人"
 L["Gnome"] = "侏儒"
 L["Troll"] = "巨魔"
 L["Skyborne"] = "天裔"
+
+-- 设置页“关于”
+L["A free companion for World of Warcraft: Forever: dungeons, quests, talents, spells and trainers, all inside the game."] = "《魔兽世界：无限》的免费游戏助手：副本、任务、天赋、技能与训练师，全部在游戏内完成。"
+L["Version"] = "版本"
+L["Author"] = "作者"
+L["Game"] = "游戏"
+L["Website"] = "网站"
+L["License"] = "许可"
+L["World of Warcraft: Forever"] = "魔兽世界：无限"
+L["Organization"] = "所属机构"
