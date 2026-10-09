@@ -1,10 +1,10 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.4.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.5.0.
 
 ## Summary
 
-WoW Forever companion: dungeon guides with quest chains and loot, a talent simulator, spells by level, class and profession trainers and herb and ore nodes on your maps, auto quest accept and turn-in, red out-of-range buttons. Type /wh to open.
+WoW Forever companion: dungeon guides with quest chains and loot, a talent simulator, spells by level, class and profession trainers, herb and ore nodes, zeppelins, boats and zone paths on your maps, auto quest accept and turn-in, red out-of-range buttons. Type /wh to open.
 
 ## Description
 
@@ -12,7 +12,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ### Dungeons and quests
 
-- **Dungeon guide**: dungeons matched to your level, the quests to pick up before you go in, full quest chains, and boss loot you can filter by class and armor type.
+- **Dungeon guide**: dungeons matched to your level (including the new Excavation Site: Wetlands), the quests to pick up before you go in, full quest chains, and boss loot you can filter by class and armor type.
 - **Instance tracker**: a slim window inside a dungeon shows boss progress in its title bar, folds killed bosses into one line, and marks your dungeon quests with the familiar quest icons (? ready to turn in, ! pick up here) and counts such as 3/8. Collapsed, it still shows the next boss.
 - **Map pins** for quest givers and dungeon entrances.
 - **Auto quest**: accept quests and turn in finished ones as soon as you talk to an NPC. When a quest offers several rewards, pick one yourself (default) or let the addon choose: a usable reward first, the most valuable one otherwise. Hold Shift while talking to an NPC to skip it once. A quest that cannot be accepted or turned in is not retried in the same conversation; talk to the NPC again and the addon tries once more.
@@ -31,6 +31,9 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 - **Herbs and mining nodes** on the world map and minimap, shown once you learn Herbalism or Mining. Each spot shows the main node of the zone, with every possible node and its required skill in the tooltip. Nodes above your skill are tinted red. On the minimap, choose item icons or small circles that frame the game's own tracking dots. Spots you gather yourself are remembered and added to the map; quest-only nodes are left out.
 - **Trainers and spirit healers on the minimap**: the class trainers, profession trainers and spirit healers you chose to see on the world map also appear on the minimap as small borderless icons. One switch turns them off.
+- **Zeppelins and boats**: every zeppelin tower and boat landing on the world map and minimap, one icon per berth, with a zeppelin or ship icon in your faction's color (blue for the Alliance, red for the Horde, gold for neutral boats). The tooltip names where it goes: the next stop for a two-way line, the next two stops for the Menethil Harbor, Southshore and Auberdine loop.
+- **Zone paths**: arrows on the world map mark where one zone connects to the next (for example Ashenvale to Stonetalon Mountains) and the entrances to the capitals. Each arrow points toward the zone it leads to, and the tooltip names it.
+- **Transmogrifiers** on the world map and minimap, for your faction, with a click to set a waypoint.
 - Zone level ranges, flight points (grey when not yet discovered), dungeon entrances, spirit healers, the full map including unexplored areas, and map scaling.
 
 ### Look and language
@@ -57,11 +60,11 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.4.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.5.0。
 
 ### 简介
 
-《魔兽世界：无限》一站式助手：按等级推荐副本与任务链、首领掉落，天赋模拟器，按等级技能书，地图上的职业与专业训练师，大地图与小地图的草药和矿点，自动接交任务，超出距离的技能整块染红，动作条自动升级与自动卖灰。游戏内输入 `/wh` 打开。
+《魔兽世界：无限》一站式助手：按等级推荐副本与任务链、首领掉落，天赋模拟器，按等级技能书，地图上的职业与专业训练师，大地图与小地图的草药、矿点、飞艇与船，区域路口，自动接交任务，超出距离的技能整块染红，动作条自动升级与自动卖灰。游戏内输入 `/wh` 打开。
 
 ### 详细介绍
 
@@ -69,7 +72,7 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 #### 副本与任务
 
-- **副本手册**：按等级推荐副本，列出进本前要接的任务与完整任务链，首领掉落可按职业与护甲类型筛选。
+- **副本手册**：按等级推荐副本（含新副本“挖掘场：湿地”），列出进本前要接的任务与完整任务链，首领掉落可按职业与护甲类型筛选。
 - **副本进度小窗**：进副本后显示首领进度与本副本任务。首领进度放在标题栏，已击杀的合并成一行；任务用熟悉的任务标记（? 可交、! 可接）和 3/8 这样的数量显示；收起时仍显示下一个首领。
 - **地图图钉**：接交任务 NPC 与副本入口。
 - **自动任务**：和 NPC 对话时自动接任务、自动交已完成的任务。有多个奖励时可以自己选（默认），也可以交给插件：优先选能用的，其次选最值钱的。按住 Shift 对话可跳过一次；接不下或交不了的任务在同一次对话里不会反复尝试，关掉对话再点 NPC 会重新处理一次。
@@ -88,6 +91,9 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 - **草药与矿点**：学会草药学或采矿后在大地图和小地图上显示。每个点显示该区域的主要草药或矿，悬停列出可能刷出的全部种类与所需技能；技能不够的染红。小地图可选物品图标或小圆圈（圆圈正好框住游戏自带的采集追踪点）。自己采过的点会记下并显示在地图上（只掉任务物品的任务采集物不记）。
 - **小地图上的训练师与灵魂医者**：大地图上选了要显示的职业训练师、专业训练师与灵魂医者，小地图上也以无边框小图标显示，可单独关闭。
+- **飞艇与船**：大地图与小地图上标出每个飞艇塔与码头，一个泊位一个图标，飞艇塔用飞艇、码头用船，颜色按阵营（联盟蓝、部落红、中立金）。悬停显示去向：双向航线写下一站，米奈希尔港、南海镇、奥伯丁的环线写接下来两站。
+- **区域路口**：大地图上用箭头标出区域之间的路口（比如灰谷到石爪山脉）与通往首都的入口，箭头指向通往的区域，悬停写出去向。
+- **幻化师**：大地图与小地图显示本阵营的幻化师，点击设为导航。
 - 区域等级范围、飞行点（未发现的灰显）、副本入口、灵魂医者、完整地图（含未探索区域）与地图缩放。
 
 #### 外观与语言
@@ -125,7 +131,7 @@ WoW Handbook is an addon: it runs inside the World of Warcraft: Forever client, 
 
 ## Credits
 
-Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
+Zeppelin tower locations also come from QuestieDB. Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
 
 ## Author
 

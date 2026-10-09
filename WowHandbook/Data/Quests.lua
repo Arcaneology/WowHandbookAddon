@@ -8187,8 +8187,8 @@ ns.Data.quests = {
                 zhCN = "莫宾·光祸",
             },
             map = 1458,
-            x = 57.4,
-            y = 88.8,
+            x = 58.1,
+            y = 89.0,
         },
         finish = {
             kind = "npc",
@@ -8198,6 +8198,8 @@ ns.Data.quests = {
                 zhCN = "莫宾·光祸",
             },
             map = 1458,
+            x = 58.1,
+            y = 89.0,
         },
         summary = {
             enUS = "Collect 25 Intact Limbs within The Ruins of Lordaeron for Morbin Lightbane in the Undercity.",
@@ -8390,6 +8392,8 @@ ns.Data.quests = {
                 zhCN = "死亡卫士克里斯托夫",
             },
             map = 1420,
+            x = 65.2,
+            y = 60.2,
         },
         summary = {
             enUS = "Kill Rath'mael in the Ruins of Lordaeron for Deathguard Kristof in Brill.",
@@ -13298,6 +13302,679 @@ ns.Data.quests = {
             },
         },
     },
+    [95646] = {
+        name = {
+            enUS = "Horrors in the Highland",
+            zhCN = "高地的恐魔",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 1244,
+            name = {
+                enUS = "Rethiel the Greenwarden",
+                zhCN = "绿色守卫者雷希耶尔",
+            },
+            map = 1437,
+            x = 56.37,
+            y = 40.4,
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 1244,
+            name = {
+                enUS = "Rethiel the Greenwarden",
+                zhCN = "绿色守卫者雷希耶尔",
+            },
+            map = 1437,
+            x = 56.37,
+            y = 40.4,
+        },
+        before = { 276, 277, 275 },
+        summary = {
+            enUS = "Kill a Highland Horror in the Excavation Site and bring its root core to Rethiel the Greenwarden.",
+            zhCN = "在挖掘场击杀一只高地惊魂，把它的根核带给绿色守卫者雷希耶尔。",
+        },
+        objectives = {
+            enUS = { "Horrible Rootcore" },
+            zhCN = { "可怕的根核" },
+        },
+        rewards = {
+            xp = 3150,
+            choices = {
+                {
+                    id = 271667,
+                    count = 1,
+                },
+                {
+                    id = 271670,
+                    count = 1,
+                },
+                {
+                    id = 271664,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [95737] = {
+        name = {
+            enUS = "Seeking Caitlin",
+            zhCN = "寻找凯特林",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 3970,
+            name = {
+                enUS = "Llana",
+                zhCN = "蓝纳",
+            },
+            map = 1440,
+            x = 34.98,
+            y = 48.46,
+        },
+        finish = {
+            kind = "npc",
+            id = 1480,
+            name = {
+                enUS = "Caitlin Grassman",
+                zhCN = "凯特林·格拉斯曼",
+            },
+            map = 1437,
+            x = 11.88,
+            y = 58.82,
+        },
+        after = { 95647, 95809 },
+        summary = {
+            enUS = "Speak with Caitlin Grassman in Menethil Harbor.",
+            zhCN = "到米奈希尔港找凯特林·格拉斯曼谈谈。",
+        },
+        rewards = {
+            xp = 630,
+        },
+    },
+    [95647] = {
+        name = {
+            enUS = "Lost in the Thicket Things",
+            zhCN = "迷失在灌木丛中",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 1480,
+            name = {
+                enUS = "Caitlin Grassman",
+                zhCN = "凯特林·格拉斯曼",
+            },
+            map = 1437,
+            x = 11.88,
+            y = 58.82,
+        },
+        inside = true,
+        before = { 95737 },
+        after = { 95809 },
+        summary = {
+            enUS = "Find Ardin Grassman in the Excavation Site.",
+            zhCN = "在挖掘场里找到阿丁·格拉斯曼 (Ardin Grassman)。",
+        },
+        objectives = {
+            enUS = { "Learn what happened to Ardin Grassman" },
+            zhCN = { "查明阿丁·格拉斯曼的遭遇" },
+        },
+        rewards = {
+            xp = 2500,
+        },
+    },
+    [95809] = {
+        name = {
+            enUS = "Heartwoven",
+            zhCN = "编织之心",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Ardin Grassman",
+                zhCN = "阿丁·格拉斯曼 (Ardin Grassman)",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 1480,
+            name = {
+                enUS = "Caitlin Grassman",
+                zhCN = "凯特林·格拉斯曼",
+            },
+            map = 1437,
+            x = 11.88,
+            y = 58.82,
+        },
+        before = { 95737, 95647 },
+        summary = {
+            enUS = "Return to Caitlin Grassman in Menethil Harbor.",
+            zhCN = "回到米奈希尔港，找凯特林·格拉斯曼复命。",
+        },
+        objectives = {
+            enUS = { "Reed-woven Heart (provided)" },
+            zhCN = { "芦苇编织的心（任务提供）" },
+        },
+        rewards = {
+            xp = 3150,
+            items = {
+                {
+                    id = 2459,
+                    count = 1,
+                },
+                {
+                    id = 280766,
+                    count = 1,
+                },
+            },
+            choices = {
+                {
+                    id = 1710,
+                    count = 1,
+                },
+                {
+                    id = 3827,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [95772] = {
+        name = {
+            enUS = "Songblade Search",
+            zhCN = "寻找桑布雷德",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 956,
+            name = {
+                enUS = "Dorin Songblade",
+                zhCN = "多林·桑布雷德",
+            },
+            map = 1433,
+            x = 25.7,
+            y = 46.4,
+        },
+        after = { 95795 },
+        summary = {
+            enUS = "Look for Dorin Songblade's brother, Daewyn, in Whelgar's Excavation Site.",
+            zhCN = "到维尔加挖掘场里寻找多林·桑布雷德的兄弟戴温 (Daewyn)。",
+        },
+        rewards = {
+            xp = 3150,
+        },
+    },
+    [95795] = {
+        name = {
+            enUS = "Fallen in the Fen",
+            zhCN = "沼泽中的陨落者",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Daewyn Songblade",
+                zhCN = "戴温·桑布雷德 (Daewyn Songblade)",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 956,
+            name = {
+                enUS = "Dorin Songblade",
+                zhCN = "多林·桑布雷德",
+            },
+            map = 1433,
+            x = 25.7,
+            y = 46.4,
+        },
+        before = { 95772 },
+        summary = {
+            enUS = "Return to Dorin Songblade.",
+            zhCN = "回去找多林·桑布雷德。",
+        },
+        rewards = {
+            xp = 3150,
+            choices = {
+                {
+                    id = 271769,
+                    count = 1,
+                },
+                {
+                    id = 271768,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [98815] = {
+        name = {
+            enUS = "Highland Hides",
+            zhCN = "高地兽皮",
+        },
+        level = 28,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 2094,
+            name = {
+                enUS = "James Halloran",
+                zhCN = "詹姆斯·哈洛兰",
+            },
+            map = 1437,
+            x = 8.55,
+            y = 55.74,
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 2094,
+            name = {
+                enUS = "James Halloran",
+                zhCN = "詹姆斯·哈洛兰",
+            },
+            map = 1437,
+            x = 8.55,
+            y = 55.74,
+        },
+        summary = {
+            enUS = "Return 4 Thicket Raptor Hides to James Halloran, the tanner, in Menethil Harbor.",
+            zhCN = "把 4 张灌木迅猛龙皮带给米奈希尔港的制皮匠詹姆斯·哈洛兰。",
+        },
+        objectives = {
+            enUS = { "Thicket Raptor Hide ×4" },
+            zhCN = { "灌木丛迅猛龙皮 ×4" },
+        },
+        rewards = {
+            xp = 1150,
+        },
+    },
+    [95663] = {
+        name = {
+            enUS = "Dragonmaw Rumors",
+            zhCN = "龙喉传闻",
+        },
+        level = 31,
+        min = 24,
+        faction = "H",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 2787,
+            name = {
+                enUS = "Zaruk",
+                zhCN = "萨鲁克",
+            },
+            map = 1417,
+            x = 74.54,
+            y = 35.64,
+        },
+        finish = {
+            kind = "npc",
+            id = 13155,
+            name = {
+                enUS = "Deathstalker Agent",
+                zhCN = "亡灵哨兵特工 (Deathstalker Agent)",
+            },
+            map = 1437,
+        },
+        after = { 95682 },
+        summary = {
+            enUS = "Travel to the Wetlands and meet the Deathstalker Agent in the hills above the Dragonmaw camp.",
+            zhCN = "前往湿地，在龙喉营地上方的山丘里与亡灵哨兵特工会合。",
+        },
+        rewards = {
+            xp = 250,
+        },
+    },
+    [95682] = {
+        name = {
+            enUS = "Open the Maw",
+            zhCN = "打开巨口",
+        },
+        level = 31,
+        min = 24,
+        faction = "H",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 13155,
+            name = {
+                enUS = "Deathstalker Agent",
+                zhCN = "亡灵哨兵特工 (Deathstalker Agent)",
+            },
+            map = 1437,
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 13155,
+            name = {
+                enUS = "Deathstalker Agent",
+                zhCN = "亡灵哨兵特工 (Deathstalker Agent)",
+            },
+            map = 1437,
+        },
+        before = { 95663 },
+        summary = {
+            enUS = "Slay the Dragonmaw forces within the Excavation Site and return to the Deathstalker Agent outside with anything you recover.",
+            zhCN = "击杀挖掘场里的龙喉势力，把缴获的东西带回外面的亡灵哨兵特工。",
+        },
+        objectives = {
+            enUS = { "Dragonmaw Saboteur slain ×2", "Dragonmaw Warder slain ×4", "Dragonmaw Dispatch" },
+            zhCN = { "击杀龙喉破坏者 ×2", "击杀龙喉守卫者 ×4", "龙喉急件" },
+        },
+        rewards = {
+            xp = 3150,
+            items = {
+                {
+                    id = 271745,
+                    count = 1,
+                },
+            },
+            choices = {
+                {
+                    id = 271740,
+                    count = 1,
+                },
+                {
+                    id = 271732,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [95697] = {
+        name = {
+            enUS = "Changing Tastes",
+            zhCN = "换换口味",
+        },
+        level = 31,
+        min = 24,
+        faction = "H",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 3368,
+            name = {
+                enUS = "Borstan",
+                zhCN = "博斯坦",
+            },
+            map = 1454,
+            x = 57.2,
+            y = 53.32,
+        },
+        finish = {
+            kind = "npc",
+            id = 3368,
+            name = {
+                enUS = "Borstan",
+                zhCN = "博斯坦",
+            },
+            map = 1454,
+            x = 57.2,
+            y = 53.32,
+        },
+        summary = {
+            enUS = "Enter the Excavation Site in the Wetlands and bring back Thicket Raptor Meat.",
+            zhCN = "进入湿地的挖掘场，带回灌木迅猛龙肉。",
+        },
+        objectives = {
+            enUS = { "Thicket Raptor Meat ×4" },
+            zhCN = { "灌木丛迅猛龙肉 ×4" },
+        },
+        rewards = {
+            xp = 3150,
+            items = {
+                {
+                    id = 250185,
+                    count = 1,
+                },
+                {
+                    id = 250077,
+                    count = 1,
+                },
+            },
+            choices = {
+                {
+                    id = 280766,
+                    count = 1,
+                },
+                {
+                    id = 280805,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [95810] = {
+        name = {
+            enUS = "Lost Relic Carry",
+            zhCN = "送交失落圣物",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "item",
+            id = 270865,
+            name = {
+                enUS = "Titan Relic",
+                zhCN = "泰坦圣物",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 1077,
+            name = {
+                enUS = "Prospector Whelgar",
+                zhCN = "勘察员维尔加",
+            },
+            map = 1437,
+            x = 38.81,
+            y = 52.39,
+        },
+        after = { 98824 },
+        summary = {
+            enUS = "Bring the Titan Relic to Prospector Whelgar in the Wetlands excavation site.",
+            zhCN = "把泰坦圣物带给湿地挖掘场的勘察员维尔加。",
+        },
+        objectives = {
+            enUS = { "Titan Relic" },
+            zhCN = { "泰坦圣物" },
+        },
+        rewards = {
+            xp = 630,
+        },
+    },
+    [98824] = {
+        name = {
+            enUS = "Prehistoric Prism",
+            zhCN = "史前棱镜",
+        },
+        level = 31,
+        min = 24,
+        faction = "A",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 1077,
+            name = {
+                enUS = "Prospector Whelgar",
+                zhCN = "勘察员维尔加",
+            },
+            map = 1437,
+            x = 38.81,
+            y = 52.39,
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 5387,
+            name = {
+                enUS = "High Explorer Magellas",
+                zhCN = "资深探险家麦格拉斯",
+            },
+            map = 1455,
+            x = 69.93,
+            y = 18.55,
+        },
+        before = { 95810 },
+        summary = {
+            enUS = "Bring the Titan Relic to High Explorer Magellas in Ironforge's Hall of Explorers.",
+            zhCN = "把泰坦圣物带给铁炉堡探险者大厅的资深探险家麦格拉斯。",
+        },
+        objectives = {
+            enUS = { "Titan Relic" },
+            zhCN = { "泰坦圣物" },
+        },
+        rewards = {
+            xp = 3150,
+            money = 6000,
+            choices = {
+                {
+                    id = 271716,
+                    count = 1,
+                },
+                {
+                    id = 271767,
+                    count = 1,
+                },
+                {
+                    id = 271766,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [95664] = {
+        name = {
+            enUS = "Elder Knowledge",
+            zhCN = "长者的知识",
+        },
+        level = 31,
+        min = 24,
+        faction = "H",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "item",
+            id = 270866,
+            name = {
+                enUS = "Titan Relic",
+                zhCN = "泰坦圣物",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 9087,
+            name = {
+                enUS = "Bashana Runetotem",
+                zhCN = "巴珊娜·符文图腾",
+            },
+            map = 1456,
+            x = 71.06,
+            y = 34.19,
+        },
+        after = { 98823 },
+        summary = {
+            enUS = "Take the Titan Relic to the Elder Rise in Thunder Bluff and look for someone who can tell you more about it.",
+            zhCN = "把泰坦圣物带到雷霆崖的长者高地，找一位能告诉你更多线索的人。",
+        },
+        objectives = {
+            enUS = { "Titan Relic" },
+            zhCN = { "泰坦圣物" },
+        },
+        rewards = {
+            xp = 630,
+        },
+    },
+    [98823] = {
+        name = {
+            enUS = "Earthen Echo",
+            zhCN = "大地回响",
+        },
+        level = 31,
+        min = 24,
+        faction = "H",
+        instances = { "excavation-site-wetlands" },
+        start = {
+            kind = "npc",
+            id = 9087,
+            name = {
+                enUS = "Bashana Runetotem",
+                zhCN = "巴珊娜·符文图腾",
+            },
+            map = 1456,
+            x = 71.06,
+            y = 34.19,
+        },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Muln Earthfury",
+                zhCN = "穆恩·大地之怒 (Muln Earthfury)",
+            },
+            map = 1412,
+        },
+        before = { 95664 },
+        summary = {
+            enUS = "Bring the Titan Relic to Muln Earthfury at the Skywatcher Plateau in northwest Mulgore.",
+            zhCN = "把泰坦圣物带给莫高雷西北部观天者台地的穆恩·大地之怒 (Muln Earthfury)。",
+        },
+        objectives = {
+            enUS = { "Titan Relic" },
+            zhCN = { "泰坦圣物" },
+        },
+        rewards = {
+            xp = 3150,
+            money = 6000,
+            choices = {
+                {
+                    id = 271766,
+                    count = 1,
+                },
+                {
+                    id = 271767,
+                    count = 1,
+                },
+                {
+                    id = 271719,
+                    count = 1,
+                },
+            },
+        },
+    },
     [1654] = {
         name = {
             enUS = "The Test of Righteousness",
@@ -15815,7 +16492,7 @@ ns.Data.quests = {
     [92742] = {
         name = {
             enUS = "Testing the Wells",
-            zhCN = "Testing the Wells",
+            zhCN = "检测水井",
         },
         level = 12,
         min = 12,
@@ -15841,7 +16518,7 @@ ns.Data.quests = {
     [92744] = {
         name = {
             enUS = "Murloc Gills",
-            zhCN = "Murloc Gills",
+            zhCN = "鱼人的鳃",
         },
         level = 12,
         min = 12,
@@ -15868,12 +16545,13 @@ ns.Data.quests = {
     [92745] = {
         name = {
             enUS = "The State of the Mines",
-            zhCN = "The State of the Mines",
+            zhCN = "矿井的现状",
         },
         level = 14,
         min = 12,
         summary = {
             enUS = "Slay 4 Kobold Diggers in the Jangolode Mine and 6 Riverpaw Miners in the Gold Coast Quarry.",
+            zhCN = "在詹戈洛德矿洞击杀 4 个狗头人掘地工，在金海岸矿洞击杀 6 个河爪矿工。",
         },
         faction = "A",
         start = {
@@ -15894,12 +16572,13 @@ ns.Data.quests = {
     [92747] = {
         name = {
             enUS = "Moonbrook Espionage",
-            zhCN = "Moonbrook Espionage",
+            zhCN = "月溪镇谍报",
         },
         level = 15,
         min = 12,
         summary = {
             enUS = "Collect 8 Suspicious Industrial Supplies from Moonbrook.",
+            zhCN = "在月溪镇收集 8 份可疑的工业补给。",
         },
         faction = "A",
         start = {
@@ -15920,12 +16599,13 @@ ns.Data.quests = {
     [92748] = {
         name = {
             enUS = "Explosive Consultation",
-            zhCN = "Explosive Consultation",
+            zhCN = "爆破咨询",
         },
         level = 16,
         min = 12,
         summary = {
             enUS = "Travel to the Dwarven District in Stormwind and find an engineer who can help.",
+            zhCN = "前往暴风城矮人区，找一位帮得上忙的工程师。",
         },
         faction = "A",
         start = {
@@ -15946,12 +16626,13 @@ ns.Data.quests = {
     [92749] = {
         name = {
             enUS = "A Dynamite Plan",
-            zhCN = "A Dynamite Plan",
+            zhCN = "炸药计划",
         },
         level = 16,
         min = 12,
         summary = {
             enUS = "Obtain 10 Coarse Dynamite from crafting, trading, or the auction house, then return to Sprite Jumpsprocket in the Dwarven District of Stormwind.",
+            zhCN = "通过制作、交易或拍卖行备齐 10 个劣质炸药，然后回到暴风城矮人区找斯普莱特。",
         },
         faction = "A",
         start = {
@@ -15959,7 +16640,7 @@ ns.Data.quests = {
             id = 11026,
             name = {
                 enUS = "Sprite Jumpsprocket",
-                zhCN = "Sprite Jumpsprocket",
+                zhCN = "斯普莱特",
             },
             map = 1453,
             x = 61.9,
@@ -15972,12 +16653,13 @@ ns.Data.quests = {
     [92750] = {
         name = {
             enUS = "Detonation at a Distance",
-            zhCN = "Detonation at a Distance",
+            zhCN = "远程引爆",
         },
         level = 16,
         min = 12,
         summary = {
             enUS = "Talk to someone in Stormwind Intelligence about acquiring a remote detonator.",
+            zhCN = "找军情七处的人打听怎么弄到远程引爆器。",
         },
         faction = "A",
         start = {
@@ -15985,7 +16667,7 @@ ns.Data.quests = {
             id = 11026,
             name = {
                 enUS = "Sprite Jumpsprocket",
-                zhCN = "Sprite Jumpsprocket",
+                zhCN = "斯普莱特",
             },
             map = 1453,
             x = 61.9,
@@ -15998,12 +16680,13 @@ ns.Data.quests = {
     [92751] = {
         name = {
             enUS = "Detonation at a Distance",
-            zhCN = "Detonation at a Distance",
+            zhCN = "远程引爆",
         },
         level = 16,
         min = 12,
         summary = {
             enUS = "Bring the Remote Detonator Kit to Sprite Jumpsprocket in the Dwarven District of Stormwind.",
+            zhCN = "把远程引爆器套件带给暴风城矮人区的斯普莱特。",
         },
         faction = "A",
         start = {
@@ -16011,7 +16694,7 @@ ns.Data.quests = {
             id = 1325,
             name = {
                 enUS = "Jasper Fel",
-                zhCN = "Jasper Fel",
+                zhCN = "贾斯伯·菲尔",
             },
             map = 1453,
             x = 80.2,
@@ -16024,7 +16707,7 @@ ns.Data.quests = {
     [92752] = {
         name = {
             enUS = "Explosive Consultation",
-            zhCN = "Explosive Consultation",
+            zhCN = "爆破咨询",
         },
         level = 16,
         min = 12,
@@ -16038,7 +16721,7 @@ ns.Data.quests = {
             id = 11026,
             name = {
                 enUS = "Sprite Jumpsprocket",
-                zhCN = "Sprite Jumpsprocket",
+                zhCN = "斯普莱特",
             },
             map = 1453,
             x = 61.9,
@@ -16051,7 +16734,7 @@ ns.Data.quests = {
     [92819] = {
         name = {
             enUS = "Destruction in Deadmines",
-            zhCN = "Destruction in Deadmines",
+            zhCN = "死亡矿井中的爆破",
         },
         level = 18,
         min = 12,
@@ -16071,6 +16754,69 @@ ns.Data.quests = {
         before = { 92753 },
         chainOnly = true,
         newInForeverChain = true,
+    },
+    [275] = {
+        name = {
+            enUS = "Blisters on The Land",
+            zhCN = "大地上的脓疱",
+        },
+        level = 26,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 1244,
+            name = {
+                enUS = "Rethiel the Greenwarden",
+                zhCN = "绿色守卫者雷希耶尔",
+            },
+            map = 1437,
+            x = 56.37,
+            y = 40.4,
+        },
+        after = { 95646 },
+        chainOnly = true,
+    },
+    [276] = {
+        name = {
+            enUS = "Tramping Paws",
+            zhCN = "践踏之爪",
+        },
+        level = 21,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 1244,
+            name = {
+                enUS = "Rethiel the Greenwarden",
+                zhCN = "绿色守卫者雷希耶尔",
+            },
+            map = 1437,
+            x = 56.37,
+            y = 40.4,
+        },
+        after = { 95646 },
+        chainOnly = true,
+    },
+    [277] = {
+        name = {
+            enUS = "Fire Taboo",
+            zhCN = "火焰管制",
+        },
+        level = 23,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 1244,
+            name = {
+                enUS = "Rethiel the Greenwarden",
+                zhCN = "绿色守卫者雷希耶尔",
+            },
+            map = 1437,
+            x = 56.37,
+            y = 40.4,
+        },
+        after = { 95646 },
+        chainOnly = true,
     },
     [153] = {
         level = 15,

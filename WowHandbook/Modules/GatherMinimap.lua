@@ -2,8 +2,8 @@ local ADDON_NAME, ns = ...
 
 -- 小地图上的草药与矿点（大地图模块 WorldMap 的一部分，显示哪些点与大地图同一套设置：herbPins / orePins；
 -- minimapGather 关掉只关小地图）。只画玩家当前所在区域地图的点。
--- 同一套图钉也画专业训练师、职业训练师与灵魂医者：显示与否完全跟随大地图的 trainerPins / classTrainerPins /
--- spiritHealers（大地图显示，小地图就显示，没有单独的开关）；比采集点大一号的方形图标，不带边框与圆形徽章。
+-- 同一套图钉也画专业训练师、职业训练师、幻化师、灵魂医者与飞艇塔、码头：显示与否完全跟随大地图的 trainerPins /
+-- classTrainerPins / transmogPins / spiritHealers / transportPins（大地图显示，小地图就显示，没有单独的开关）；比采集点大一号的方形图标，不带边框与圆形徽章。
 --
 -- 位置换算：玩家与采集点在同一张区域地图上的坐标（0–1）相减，乘以这张地图的实际宽高（码，用
 -- C_Map.GetWorldPosFromMapPos 取地图两角的世界坐标得出），再按小地图当前的可视半径（码）换成像素；
@@ -134,7 +134,12 @@ local function Update(force)
             if spot.poi then
                 pin:SetSize(POI_SIZE, POI_SIZE)
                 pin.icon:SetTexture(spot.icon)
-                pin.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+                -- 飞艇与船的贴图自带透明边，不裁；其余图标裁掉边角
+                if spot.poi == "transport" then
+                    pin.icon:SetTexCoord(0, 1, 0, 1)
+                else
+                    pin.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+                end
                 pin.icon:SetVertexColor(1, 1, 1)
             elseif ring then
                 pin:SetSize(RING_SIZE, RING_SIZE)
@@ -199,6 +204,17 @@ local function AddPoiSpots(mapID)
             end
             tinsert(state.spots, { x = trainer.x / 100, y = trainer.y / 100, poi = "classTrainer", lines = lines,
                 icon = Module.ClassTrainerIcon(trainer), alpha = alpha })
+        end
+    end
+    for _, npc in ipairs(Module.TransmogrifiersForMap(mapID)) do
+        tinsert(state.spots, { x = npc.x / 100, y = npc.y / 100, poi = "transmog",
+            lines = { ns.Name(npc.name) or "?", L["Transmogrifier"] }, icon = Module.TRANSMOG_ICON, alpha = 1 })
+    end
+    -- 飞艇塔与码头：跟随大地图的 transportPins，一个泊位一个箭头
+    if Settings().transportPins ~= false and ns.Transport then
+        for _, entry in ipairs(ns.Transport.HubsForMap(mapID, ns.PlayerFaction())) do
+            tinsert(state.spots, { x = entry.spot.x / 100, y = entry.spot.y / 100, poi = "transport",
+                lines = Module.TransportPinLines(entry), icon = ns.Transport.IconTexture(entry), alpha = 1 })
         end
     end
     if Module.SpiritHealersWanted() then

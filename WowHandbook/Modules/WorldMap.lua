@@ -18,11 +18,13 @@ local L = ns.L
 --   （Modules/GatherLog.lua）。
 -- · 职业训练师：显示你职业的训练师（本阵营与中立；猎人另有宠物训练师、法师另有传送门训练师），可关闭；
 --   悬停看名字与现在可学的技能数，有可学技能时不透明、没有时半透明；点击设为导航。
+-- · 幻化师：显示本阵营的幻化师（暴风城、奥格瑞玛、奥特兰克山脉的达拉然），可关闭；点击设为导航。
 -- · 专业训练师：默认显示你学了的专业的训练师（本阵营与中立），可改为全部专业或不显示；下一步该找的那一档
 --   不透明，其余半透明；悬停看名字、专业与能教到的等级，点击设为导航。
 local Module = ns:NewModule("WorldMap", { levelLabel = true, flightPins = true, revealMap = true, mapScale = 1,
     dungeonPins = true, spiritHealers = "dead", herbPins = "auto", orePins = "auto", minimapGather = true,
-    recordGather = true, minimapGatherStyle = "icon", trainerPins = "mine", classTrainerPins = true })
+    recordGather = true, minimapGatherStyle = "icon", trainerPins = "mine", classTrainerPins = true,
+    transmogPins = true, transportPins = true, pathPins = true })
 
 local PIN_TEMPLATE = "WowHandbookFlightPinTemplate"
 local BLIZZARD_PIN_TEMPLATE = "FlightPointPinTemplate"
@@ -324,6 +326,10 @@ local GRAVEYARD_PIN = "WowHandbookGraveyardPinTemplate"
 local GATHER_PIN = "WowHandbookGatherPinTemplate"
 local TRAINER_PIN = "WowHandbookTrainerPinTemplate"
 local CLASS_TRAINER_PIN = "WowHandbookClassTrainerPinTemplate"
+local TRANSMOG_PIN = "WowHandbookTransmogPinTemplate"
+local TRANSPORT_PIN = "WowHandbookTransportPinTemplate"
+local PATH_PIN = "WowHandbookPathPinTemplate"
+local TRANSMOG_ICON = "Interface\\Icons\\INV_Shirt_White_01" -- 小地图共用
 local ICONS = {
     dungeon = { level = "PIN_FRAME_LEVEL_DUNGEON_ENTRANCE", atlas = "Dungeon",
         texture = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull", size = 22 },
@@ -335,6 +341,14 @@ local ICONS = {
     -- 专业训练师：专业图标做成圆形徽章，贴图在放置时换成对应专业
     trainer = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\Icons\\inv_misc_questionmark",
         size = 20, round = true },
+    -- 幻化师：衬衫图标做成圆形徽章
+    transmog = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = TRANSMOG_ICON, size = 20, round = true },
+    -- 飞艇与船：飞艇塔用飞艇、码头用船，颜色按阵营（Media/Transport*，tools/make_transport_icons.py 生成）；
+    -- 实际贴图在放置时由 Transport.IconTexture 换成，提示里写去向
+    transport = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\AddOns\\WowHandbook\\Media\\TransportShipGold",
+        size = 22 },
+    -- 区域路口：金色小箭头（Media/PathArrow），按路口方向旋转，悬停写通往哪里
+    path = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\AddOns\\WowHandbook\\Media\\PathArrow", size = 18 },
     -- 采集点：小图标，贴图在放置时换成采到的物品图标；比任务等图标低一层，不挡住它们
     gather = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\Icons\\inv_misc_questionmark", size = 7 },
 }
@@ -910,6 +924,153 @@ local function CreateClassTrainerProvider()
     return classTrainerProvider
 end
 
+--------------------------------------------------------------------------------
+-- 幻化师：transmogPins 开关（默认开）；本阵营与中立的
+--------------------------------------------------------------------------------
+
+Module.TRANSMOG_ICON = TRANSMOG_ICON
+
+local function TransmogrifiersForMap(mapID)
+    if Settings().transmogPins == false then
+        return {}
+    end
+    local faction = ns.PlayerFaction()
+    local list = {}
+    for _, npc in ipairs(ns.Data.transmogrifiers or {}) do
+        if npc.map == mapID and npc.x and (not npc.faction or not faction or npc.faction == faction) then
+            tinsert(list, npc)
+        end
+    end
+    return list
+end
+Module.TransmogrifiersForMap = TransmogrifiersForMap -- 小地图共用
+
+local transmogProvider
+
+local function CreateTransmogProvider()
+    transmogProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function transmogProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(TRANSMOG_PIN)
+    end
+    function transmogProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        for _, npc in ipairs(mapID and TransmogrifiersForMap(mapID) or {}) do
+            local pin = map:AcquirePin(TRANSMOG_PIN)
+            SetupPin(pin, "transmog")
+            local name = ns.Name(npc.name) or "?"
+            SetPinBehavior(pin, { name, L["Transmogrifier"], L["Click to set a waypoint here."] }, function()
+                ns.Waypoints:Set(mapID, npc.x, npc.y, name)
+            end)
+            pin:SetPosition(npc.x / 100, npc.y / 100)
+        end
+    end
+    return transmogProvider
+end
+
+--------------------------------------------------------------------------------
+-- 飞艇与船：transportPins 开关（默认开）。双向航线只提示下一站，环线提示接下来的两站。
+--------------------------------------------------------------------------------
+
+local transportProvider
+
+local function TransportLines(entry)
+    local lines = { L[entry.kind == "zeppelin" and "Zeppelin tower" or "Boat landing"] }
+    for _, line in ipairs(entry.lines) do
+        local names = {}
+        for _, hubID in ipairs(line.to) do
+            tinsert(names, ns.Transport.HubName(hubID))
+        end
+        tinsert(lines, ("%s → %s"):format(ns.Transport.KindName(line.kind), table.concat(names, " → ")))
+    end
+    if entry.spot.approximate then
+        tinsert(lines, L["Position is approximate."])
+    end
+    return lines
+end
+
+-- 图钉提示：第一行“地名 · 飞艇塔 / 码头”，其余是各航线的去向；小地图共用
+function Module.TransportPinLines(entry)
+    local lines = TransportLines(entry)
+    lines[1] = ns.Transport.HubName(entry.id) .. " · " .. lines[1]
+    return lines
+end
+
+local function CreateTransportProvider()
+    transportProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function transportProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(TRANSPORT_PIN)
+    end
+    function transportProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        if not (mapID and Settings().transportPins ~= false) then
+            return
+        end
+        for _, entry in ipairs(ns.Transport.HubsForMap(mapID, ns.PlayerFaction())) do
+            local pin = map:AcquirePin(TRANSPORT_PIN)
+            SetupPin(pin, "transport")
+            local texture = ns.Transport.IconTexture(entry)
+            pin.whTexture:SetTexture(texture)
+            pin.whHighlight:SetTexture(texture)
+            SetPinBehavior(pin, Module.TransportPinLines(entry))
+            pin:SetPosition(entry.spot.x / 100, entry.spot.y / 100)
+        end
+    end
+    return transportProvider
+end
+
+--------------------------------------------------------------------------------
+-- 区域路口：pathPins 开关（默认开）。区域之间、区域与首都之间的通道，箭头指向通往的方向，悬停写去向。
+-- 数据 Data/ZonePaths.lua 按地图记录位置、方向（逆时针角度，箭头贴图朝右为 0）与通往的地图。
+--------------------------------------------------------------------------------
+
+local pathProvider
+
+local PATH_TITLE = { path = "Path to %s", entrance = "Entrance to %s", exit = "Exit to %s" }
+
+local function MapName(mapID)
+    local info = C_Map.GetMapInfo and C_Map.GetMapInfo(mapID)
+    return info and info.name or (L["Map %d"]):format(mapID)
+end
+
+function Module.PathLines(spot)
+    local lines = { (L[PATH_TITLE[spot.kind] or PATH_TITLE.path]):format(MapName(spot.to)) }
+    if spot.to2 then
+        tinsert(lines, (L["Also leads to %s"]):format(MapName(spot.to2)))
+    end
+    return lines
+end
+
+local function CreatePathProvider()
+    pathProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function pathProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(PATH_PIN)
+    end
+    function pathProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        local spots = mapID and Settings().pathPins ~= false and ns.Data.zonePaths and ns.Data.zonePaths[mapID]
+        if not spots then
+            return
+        end
+        for _, spot in ipairs(spots) do
+            local pin = map:AcquirePin(PATH_PIN)
+            SetupPin(pin, "path")
+            local rotation = math.rad(spot.angle)
+            pin.whTexture:SetRotation(rotation)
+            pin.whHighlight:SetRotation(rotation)
+            pin.whAngle = spot.angle -- 供测试使用
+            SetPinBehavior(pin, Module.PathLines(spot))
+            pin:SetPosition(spot.x / 100, spot.y / 100)
+        end
+    end
+    return pathProvider
+end
+
 function Module:ApplyScale()
     if WorldMapFrame and not InCombatLockdown() then
         local scale = Settings().mapScale or 1
@@ -921,7 +1082,7 @@ end
 
 function Module:Refresh()
     for _, dataProvider in ipairs({ provider, revealProvider, dungeonProvider, graveyardProvider, gatherProvider,
-        trainerProvider, classTrainerProvider }) do
+        trainerProvider, classTrainerProvider, transmogProvider, transportProvider, pathProvider }) do
         if dataProvider and dataProvider.GetMap and dataProvider:GetMap() then
             dataProvider:RefreshAllData()
         end
@@ -941,6 +1102,9 @@ local function Attach()
     WorldMapFrame:AddDataProvider(CreateGatherProvider())
     WorldMapFrame:AddDataProvider(CreateTrainerProvider())
     WorldMapFrame:AddDataProvider(CreateClassTrainerProvider())
+    WorldMapFrame:AddDataProvider(CreateTransmogProvider())
+    WorldMapFrame:AddDataProvider(CreateTransportProvider())
+    WorldMapFrame:AddDataProvider(CreatePathProvider())
     local label = FindAreaLabel()
     if label then
         HookAreaLabel(label)

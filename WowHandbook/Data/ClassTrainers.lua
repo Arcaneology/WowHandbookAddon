@@ -2297,6 +2297,17 @@ ns.Data.classTrainers = {
             x = 88.9,
             y = 15.9,
         },
+        {
+            id = 6251,
+            name = {
+                enUS = "Strahad Farsan",
+                zhCN = "斯坦哈德·法尔杉",
+            },
+            faction = "AH",
+            map = 1413,
+            x = 62.6,
+            y = 35.5,
+        },
     },
     warrior = {
         {

@@ -7,6 +7,7 @@ assets/
 # 打包产物（发布页截图 dist/media/ 例外，按版本保存）
 dist/*
 !dist/media/
+!dist/posts/
 *.zip
 
 # 本机工具缓存

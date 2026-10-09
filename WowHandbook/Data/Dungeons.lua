@@ -109,7 +109,7 @@ ns.Data.dungeons = {
                     enUS = "Magmatus",
                 },
                 level = 16,
-                npcID = 11520,
+                npcID = 261316,
                 displayID = 7970,
                 lootOnly = true,
                 items = {
@@ -2737,7 +2737,18 @@ ns.Data.dungeons = {
                     zhCN = "盐脊",
                 },
                 level = 24,
-                npcID = 18401,
+                npcID = 260322,
+                items = {
+                    {
+                        id = 273023,
+                    },
+                    {
+                        id = 273022,
+                    },
+                    {
+                        id = 273024,
+                    },
+                },
             },
             {
                 name = {
@@ -2745,14 +2756,25 @@ ns.Data.dungeons = {
                     zhCN = "暗齿",
                 },
                 level = 24,
-                npcID = 18402,
+                npcID = 260325,
+                items = {
+                    {
+                        id = 273025,
+                    },
+                    {
+                        id = 273027,
+                    },
+                    {
+                        id = 273026,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Highland Horror",
                 },
                 level = 24,
-                npcID = 18403,
+                npcID = 260808,
             },
             {
                 name = {
@@ -2760,8 +2782,38 @@ ns.Data.dungeons = {
                     zhCN = "遗迹守卫者",
                 },
                 level = 24,
-                npcID = 18404,
+                npcID = 260326,
+                items = {
+                    {
+                        id = 273029,
+                    },
+                    {
+                        id = 273028,
+                    },
+                    {
+                        id = 273030,
+                    },
+                    {
+                        id = 270865,
+                    },
+                },
             },
+        },
+        quests = {
+            95646,
+            95647,
+            95663,
+            95664,
+            95682,
+            95697,
+            95737,
+            95772,
+            95795,
+            95809,
+            95810,
+            98815,
+            98823,
+            98824,
         },
     },
     {
@@ -2783,7 +2835,7 @@ ns.Data.dungeons = {
                     zhCN = "奥术畸体",
                 },
                 level = 24,
-                npcID = 18401,
+                npcID = 245999,
             },
             {
                 name = {
@@ -2791,7 +2843,7 @@ ns.Data.dungeons = {
                     zhCN = "邪能古树",
                 },
                 level = 24,
-                npcID = 18402,
+                npcID = 246003,
             },
             {
                 name = {
@@ -2799,7 +2851,6 @@ ns.Data.dungeons = {
                     zhCN = "法力吞噬者",
                 },
                 level = 24,
-                npcID = 18403,
             },
             {
                 name = {
@@ -2807,7 +2858,6 @@ ns.Data.dungeons = {
                     zhCN = "法力元素",
                 },
                 level = 24,
-                npcID = 18404,
             },
             {
                 name = {
@@ -2815,7 +2865,7 @@ ns.Data.dungeons = {
                     zhCN = "不稳定的哨兵",
                 },
                 level = 24,
-                npcID = 18405,
+                npcID = 246017,
             },
             {
                 name = {
@@ -2823,7 +2873,7 @@ ns.Data.dungeons = {
                     zhCN = "大法师之影",
                 },
                 level = 24,
-                npcID = 18406,
+                npcID = 246020,
             },
             {
                 name = {
@@ -2831,7 +2881,7 @@ ns.Data.dungeons = {
                     zhCN = "被无视的琳恩",
                 },
                 level = 24,
-                npcID = 18407,
+                npcID = 247032,
             },
             {
                 name = {
@@ -2839,7 +2889,7 @@ ns.Data.dungeons = {
                     zhCN = "墓穴骑士阿特雷克斯",
                 },
                 level = 24,
-                npcID = 18408,
+                npcID = 247126,
             },
             {
                 name = {
@@ -2847,7 +2897,6 @@ ns.Data.dungeons = {
                     zhCN = "法力怨魂",
                 },
                 level = 24,
-                npcID = 18409,
             },
         },
     },

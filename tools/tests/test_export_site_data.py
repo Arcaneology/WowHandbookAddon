@@ -250,6 +250,21 @@ class DungeonSectionsTest(unittest.TestCase):
         # 网站还没有首领列表时不标记，掉落表的行照常当首领
         self.assertIsNone(result["new-dungeon"]["bosses"][0]["lootOnly"])
 
+    def test_boss_npc_id_overrides_replace_placeholder_ids(self) -> None:
+        zones = [{"slug": "city-of-dalaran", "name": "City of Dalaran", "kind": "dungeon", "levels": [28, 33],
+                  "bosses": ["Arcane Anomaly", "Mana Wraith"]},
+                 {"slug": "deadmines", "name": "The Deadmines", "kind": "dungeon", "levels": [17, 26],
+                  "bosses": ["Sneed"]}]
+        facts = {"city-of-dalaran": {"_root": {"Arcane Anomaly": {"npcId": 18401, "level": 24},
+                                               "Mana Wraith": {"npcId": 18409, "level": 24}}},
+                 "deadmines": {"_root": {"Sneed": {"npcId": 643}}}}
+        result = {d["slug"]: d for d in exporter.build_dungeons(zones, {}, {}, {}, {}, None, facts)}
+        ids = {b["name"]["enUS"]: b["npcID"] for b in result["city-of-dalaran"]["bosses"]}
+        # 有可靠 ID 的换成真实 ID，没有的去掉占位值；等级等其余资料不动
+        self.assertEqual(ids, {"Arcane Anomaly": 245999, "Mana Wraith": None})
+        self.assertEqual(result["city-of-dalaran"]["bosses"][0]["level"], 24)
+        self.assertEqual(result["deadmines"]["bosses"][0]["npcID"], 643)
+
     def test_deadmines_bosses_follow_the_actual_route(self) -> None:
         zones = [{"slug": "deadmines", "name": "The Deadmines", "kind": "dungeon", "levels": [17, 26],
                   "bosses": ["Rhahk'Zor", "Sneed", "Gilnid", "Captain Greenskin", "Mr. Smite", "Cookie",
@@ -289,6 +304,66 @@ class ClassTrainersTest(unittest.TestCase):
              "map": 1438, "x": 56.1, "y": 59.7, "position": "questie"}]}})
         self.assertEqual(result["hunter"][0], {"id": 3306, "name": {"enUS": "Keldas", "zhCN": "凯尔达斯"},
                                                "faction": "A", "kind": "pet", "map": 1438, "x": 56.1, "y": 59.7})
+
+
+class TransmogrifiersTest(unittest.TestCase):
+    def test_rows_are_sorted_and_keep_faction_and_position(self) -> None:
+        result = exporter.build_transmogrifiers([
+            {"name": "B", "faction": "H", "map": 1454, "x": 46.2, "y": 53.6},
+            {"name": "A", "faction": "A", "map": 1453, "x": 48.0, "y": 84.6}])
+        self.assertEqual([row["map"] for row in result], [1453, 1454])
+        self.assertEqual(result[0], {"name": {"enUS": "A", "zhCN": None}, "faction": "A", "map": 1453, "x": 48.0, "y": 84.6})
+
+    def test_shipped_list_has_the_three_known_npcs(self) -> None:
+        names = {row["name"] for row in exporter.TRANSMOGRIFIERS}
+        self.assertEqual(names, {"Fyrenz Vishonar", "Mon'ye", "Spellweaver Thaldris"})
+
+
+class TransportTest(unittest.TestCase):
+    def test_shipped_source_is_consistent(self) -> None:
+        source = exporter.load(exporter.REPO_ROOT / "tools" / "data" / "transport.json")
+        result = exporter.build_transport(source)
+        self.assertEqual(len(result["hubs"]), len(source["hubs"]))
+        for hub in result["hubs"].values():
+            self.assertTrue(("x" in hub and "y" in hub) or hub.get("taxiNodes"), "hub without a position source")
+        loops = [route for route in result["routes"] if route.get("loop")]
+        self.assertEqual([route["stops"] for route in loops], [["menethil", "southshore", "auberdine"]])
+
+    def test_route_with_an_unknown_stop_or_a_two_stop_loop_is_rejected(self) -> None:
+        hubs = [{"id": "a", "kind": "dock", "map": 1}, {"id": "b", "kind": "dock", "map": 1}]
+        with self.assertRaises(SystemExit):
+            exporter.build_transport({"hubs": hubs, "routes": [{"id": "X", "kind": "boat", "stops": ["a", "missing"]}]})
+        with self.assertRaises(SystemExit):
+            exporter.build_transport({"hubs": hubs, "routes": [{"id": "X", "kind": "boat", "stops": ["a", "b"], "loop": True}]})
+
+
+class ClassTrainerExtrasTest(unittest.TestCase):
+    def test_ratchet_warlock_trainer_is_added_once_and_the_site_wins_when_it_has_him(self) -> None:
+        added = exporter.build_class_trainers({"classes": {"warlock": []}})["warlock"]
+        ratchet = [row for row in added if row["id"] == 6251]
+        self.assertEqual(len(ratchet), 1)
+        self.assertEqual((ratchet[0]["map"], ratchet[0]["x"], ratchet[0]["y"], ratchet[0]["faction"]), (1413, 62.6, 35.5, "AH"))
+        site_has_him = {"classes": {"warlock": [{"id": 6251, "name": "Strahad Farsan", "map": 1413, "x": 60.0, "y": 30.0}]}}
+        merged = exporter.build_class_trainers(site_has_him)["warlock"]
+        self.assertEqual([(row["x"], row["y"]) for row in merged], [(60.0, 30.0)])
+
+
+class ZonePathTest(unittest.TestCase):
+    def test_shipped_paths_have_known_directions_and_ashenvale_reaches_stonetalon(self) -> None:
+        source = exporter.load(exporter.REPO_ROOT / "tools" / "data" / "zone-paths.json")
+        result = exporter.build_zone_paths(source)
+        self.assertEqual(sum(len(spots) for spots in result.values()), len(source["paths"]))
+        self.assertTrue(all(spot["angle"] in exporter.PATH_ANGLES.values() for spots in result.values() for spot in spots))
+        # 灰谷 1440 通往石爪山脉 1442，方向左下
+        ashenvale = [spot for spot in result[1440] if spot["to"] == 1442]
+        self.assertEqual([spot["angle"] for spot in ashenvale], [225])
+
+    def test_unknown_direction_or_coordinates_outside_the_map_are_rejected(self) -> None:
+        good = {"map": 1, "x": 1, "y": 1, "to": 2, "dir": "R", "kind": "path"}
+        with self.assertRaises(SystemExit):
+            exporter.build_zone_paths({"paths": [dict(good, dir="X")]})
+        with self.assertRaises(SystemExit):
+            exporter.build_zone_paths({"paths": [dict(good, x=120)]})
 
 
 class GatheringTest(unittest.TestCase):

@@ -1,0 +1,259 @@
+{
+  "_note": "公共交通数据源（手工整理）：飞艇管理员坐标来自 QuestieDB Forever（Questie 项目，GPL-3.0），码头与泊位坐标取自旧世地图数据并在游戏内核对，航线配对来自暴雪官方旅行博客与社区资料，飞行点编号来自游戏 TaxiNodes。枢纽的 area 是游戏区域表的区域编号（已对照 Forever 1.60.1.70205 核对），提示里的地名运行时按它向客户端取。berths 按去向记录同一枢纽里各泊位的坐标（键是去向的枢纽 id），每个泊位在地图上有自己的图钉；没有坐标的泊位用就近飞行点（taxiNodes）。米奈希尔港与奥伯丁之间没有直达船，只通过环线 L1（米奈希尔港、南海镇、奥伯丁）相连；奥伯丁与暴风城之间有双向的船。",
+  "hubs": [
+    {
+      "id": "orgrimmar",
+      "kind": "zeppelin",
+      "area": 1637,
+      "map": 1411,
+      "x": 50.8,
+      "y": 13.2,
+      "name": {
+        "enUS": "Orgrimmar",
+        "zhCN": "奥格瑞玛"
+      }
+    },
+    {
+      "id": "undercity",
+      "kind": "zeppelin",
+      "area": 1497,
+      "map": 1420,
+      "x": 61.3,
+      "y": 59.0,
+      "name": {
+        "enUS": "Undercity",
+        "zhCN": "幽暗城"
+      }
+    },
+    {
+      "id": "gromgol",
+      "kind": "zeppelin",
+      "area": 117,
+      "map": 1434,
+      "x": 31.5,
+      "y": 29.6,
+      "name": {
+        "enUS": "Grom'gol Base Camp",
+        "zhCN": "格罗姆高营地"
+      }
+    },
+    {
+      "id": "ratchet",
+      "kind": "dock",
+      "area": 392,
+      "map": 1413,
+      "x": 63.7,
+      "y": 38.6,
+      "taxiNodes": [
+        80
+      ],
+      "name": {
+        "enUS": "Ratchet",
+        "zhCN": "棘齿城"
+      }
+    },
+    {
+      "id": "bootybay",
+      "kind": "dock",
+      "area": 35,
+      "map": 1434,
+      "x": 25.9,
+      "y": 73.1,
+      "taxiNodes": [
+        9,
+        18,
+        19
+      ],
+      "name": {
+        "enUS": "Booty Bay",
+        "zhCN": "藏宝海湾"
+      }
+    },
+    {
+      "id": "menethil",
+      "kind": "dock",
+      "area": 150,
+      "map": 1437,
+      "berths": {
+        "theramore": {
+          "x": 5.0,
+          "y": 63.5
+        },
+        "southshore": {
+          "x": 4.6,
+          "y": 57.1
+        }
+      },
+      "taxiNodes": [
+        7
+      ],
+      "name": {
+        "enUS": "Menethil Harbor",
+        "zhCN": "米奈希尔港"
+      }
+    },
+    {
+      "id": "southshore",
+      "kind": "dock",
+      "area": 271,
+      "map": 1424,
+      "x": 50.6,
+      "y": 69.8,
+      "taxiNodes": [
+        14,
+        46
+      ],
+      "name": {
+        "enUS": "Southshore",
+        "zhCN": "南海镇"
+      }
+    },
+    {
+      "id": "auberdine",
+      "kind": "dock",
+      "area": 442,
+      "map": 1439,
+      "berths": {
+        "menethil": {
+          "x": 32.4,
+          "y": 43.8
+        },
+        "rutheran": {
+          "x": 33.2,
+          "y": 40.1
+        },
+        "stormwind": {
+          "x": 30.7,
+          "y": 41.0
+        }
+      },
+      "taxiNodes": [
+        26
+      ],
+      "name": {
+        "enUS": "Auberdine",
+        "zhCN": "奥伯丁"
+      }
+    },
+    {
+      "id": "rutheran",
+      "kind": "dock",
+      "area": 702,
+      "map": 1438,
+      "x": 54.9,
+      "y": 96.8,
+      "taxiNodes": [
+        27
+      ],
+      "name": {
+        "enUS": "Rut'theran Village",
+        "zhCN": "鲁瑟兰村"
+      }
+    },
+    {
+      "id": "theramore",
+      "kind": "dock",
+      "area": 513,
+      "map": 1445,
+      "x": 71.6,
+      "y": 56.5,
+      "taxiNodes": [
+        32
+      ],
+      "name": {
+        "enUS": "Theramore Isle",
+        "zhCN": "塞拉摩岛"
+      }
+    },
+    {
+      "id": "stormwind",
+      "kind": "dock",
+      "area": 1519,
+      "map": 1453,
+      "x": 22.4,
+      "y": 56.2,
+      "taxiNodes": [
+        2
+      ],
+      "name": {
+        "enUS": "Stormwind City",
+        "zhCN": "暴风城"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "id": "Z1",
+      "kind": "zeppelin",
+      "stops": [
+        "orgrimmar",
+        "undercity"
+      ],
+      "faction": "H"
+    },
+    {
+      "id": "Z2",
+      "kind": "zeppelin",
+      "stops": [
+        "orgrimmar",
+        "gromgol"
+      ],
+      "faction": "H"
+    },
+    {
+      "id": "Z3",
+      "kind": "zeppelin",
+      "stops": [
+        "undercity",
+        "gromgol"
+      ],
+      "faction": "H"
+    },
+    {
+      "id": "B1",
+      "kind": "boat",
+      "stops": [
+        "ratchet",
+        "bootybay"
+      ]
+    },
+    {
+      "id": "B3",
+      "kind": "boat",
+      "stops": [
+        "menethil",
+        "theramore"
+      ],
+      "faction": "A"
+    },
+    {
+      "id": "B4",
+      "kind": "boat",
+      "stops": [
+        "auberdine",
+        "rutheran"
+      ],
+      "faction": "A"
+    },
+    {
+      "id": "L1",
+      "kind": "boat",
+      "stops": [
+        "menethil",
+        "southshore",
+        "auberdine"
+      ],
+      "loop": true,
+      "faction": "A"
+    },
+    {
+      "id": "B6",
+      "kind": "boat",
+      "stops": [
+        "auberdine",
+        "stormwind"
+      ],
+      "faction": "A"
+    }
+  ]
+}

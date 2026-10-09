@@ -69,6 +69,12 @@ local SECTIONS = {
         } },
         { key = "classTrainerPins", quick = true, icon = "INV_Misc_Book_04", label = "Class trainers",
             tip = "Show my class trainers on the map, with how many spells I can train now" },
+        { key = "transmogPins", quick = true, icon = "INV_Shirt_White_01", label = "Transmogrifiers",
+            tip = "Show transmogrifiers on the map" },
+        { key = "transportPins", quick = true, icon = "INV_Misc_Map02", label = "Zeppelins and boats",
+            tip = "Show zeppelin towers and boat landings on the map, with where they go" },
+        { key = "pathPins", quick = true, icon = "INV_Misc_Map_01", label = "Zone paths",
+            tip = "Show the paths between zones, and the entrances to capitals, as arrows on the map" },
         { key = "trainerPins", quick = true, icon = "INV_Misc_Book_08", label = "Profession trainers", choices = {
             { id = "mine", label = "Mine", tip = "My professions" },
             { id = "all", label = "All", tip = "All professions" },

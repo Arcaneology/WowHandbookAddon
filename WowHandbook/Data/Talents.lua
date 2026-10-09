@@ -142,7 +142,7 @@ ns.Data.talents = {
                             zhCN = "15点怒气 | 瞬发 | 20秒冷却时间",
                         },
                         ranks = {
-                            enUS = { "A brutal attack that deals 40% weapon damage. Deals an additional 80% weapon damage against Giants, Dragonkin, and mounted targets. Mounted targets are dismounted." },
+                            enUS = { "A brutal attack that deals 40% weapon damage, plus an additional 80% weapon damage against Giants, Dragonkin, and mounted targets." },
                             zhCN = { "一次残忍的攻击，造成40%的武器伤害。对巨人、龙类以及骑乘状态下的目标额外造成80%的武器伤害。骑乘状态下的目标会被迫下马。" },
                         },
                     },
@@ -185,7 +185,7 @@ ns.Data.talents = {
                         col = 1,
                         ranks = {
                             enUS = { "Your Main Hand melee attacks against enemies afflicted by your Rend have a 4% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 8% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 12% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 16% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 20% chance to allow the use of your Overpower ability on the target. Lasts 6 sec." },
-                            zhCN = { "Your Main Hand melee attacks against enemies afflicted by your Rend have a 4% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 8% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 12% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 16% chance to allow the use of your Overpower ability on the target. Lasts 6 sec.", "Your Main Hand melee attacks against enemies afflicted by your Rend have a 20% chance to allow the use of your Overpower ability on the target. Lasts 6 sec." },
+                            zhCN = { "你的主手近战攻击击中受你的撕裂影响的敌人时，有4%的几率使你可以对目标使用压制。持续6秒。", "你的主手近战攻击击中受你的撕裂影响的敌人时，有8%的几率使你可以对目标使用压制。持续6秒。", "你的主手近战攻击击中受你的撕裂影响的敌人时，有12%的几率使你可以对目标使用压制。持续6秒。", "你的主手近战攻击击中受你的撕裂影响的敌人时，有16%的几率使你可以对目标使用压制。持续6秒。", "你的主手近战攻击击中受你的撕裂影响的敌人时，有20%的几率使你可以对目标使用压制。持续6秒。" },
                         },
                     },
                     {
@@ -230,8 +230,8 @@ ns.Data.talents = {
                         row = 6,
                         col = 1,
                         ranks = {
-                            enUS = { "Reduces the global cooldown and cast time of your Slam ability by 0.25 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 1.5 sec.", "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 3.0 sec." },
-                            zhCN = { "Reduces the global cooldown and cast time of your Slam ability by 0.25 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 1.5 sec.", "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 3.0 sec." },
+                            enUS = { "Reduces the global cooldown and cast time of your Slam ability by 0.25 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 3.0 sec.", "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 3.0 sec." },
+                            zhCN = { "使你的猛击技能的公共冷却时间和施法时间缩短0.25秒。此外，猛击不再打断或延迟你的近战挥击计时，且猛击的冷却时间缩短3.0秒。", "使你的猛击技能的公共冷却时间和施法时间缩短0.50秒。此外，猛击不再打断或延迟你的近战挥击计时，且猛击的冷却时间缩短3.0秒。" },
                         },
                     },
                     {
@@ -286,7 +286,7 @@ ns.Data.talents = {
                         row = 1,
                         col = 2,
                         ranks = {
-                            enUS = { "Increases the radius of your Battle Shout and Demoralizing Shout abilities by 10%.", "Increases the radius of your Battle Shout and Demoralizing Shout abilities by 20%.", "Increases the radius of your Battle Shout and Demoralizing Shout abilities by 30%.", "Increases the radius of your Battle Shout and Demoralizing Shout abilities by 40%.", "Increases the radius of your Battle Shout and Demoralizing Shout abilities by 50%." },
+                            enUS = { "Increases the area of effect of your Shouts by 10% and reduces their Rage cost by 5%.", "Increases the area of effect of your Shouts by 20% and reduces their Rage cost by 10%.", "Increases the area of effect of your Shouts by 30% and reduces their Rage cost by 15%.", "Increases the area of effect of your Shouts by 40% and reduces their Rage cost by 20%.", "Increases the area of effect of your Shouts by 50% and reduces their Rage cost by 25%." },
                             zhCN = { "使你的战斗怒吼和挫志怒吼的作用半径提高10%。", "使你的战斗怒吼和挫志怒吼的作用半径提高20%。", "使你的战斗怒吼和挫志怒吼的作用半径提高30%。", "使你的战斗怒吼和挫志怒吼的作用半径提高40%。", "使你的战斗怒吼和挫志怒吼的作用半径提高50%。" },
                         },
                     },
@@ -306,16 +306,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Iron Will",
-                            zhCN = "钢铁意志",
+                            enUS = "Lingering Rage",
+                            zhCN = "绵延怒意",
                         },
-                        icon = "spell_magic_magearmor",
+                        icon = "ability_warrior_secondwind",
                         max = 5,
                         row = 2,
                         col = 2,
                         ranks = {
-                            enUS = { "Reduces the duration of Stun and Fear effects inflicted on you by 3%.", "Reduces the duration of Stun and Fear effects inflicted on you by 6%.", "Reduces the duration of Stun and Fear effects inflicted on you by 9%.", "Reduces the duration of Stun and Fear effects inflicted on you by 12%.", "Reduces the duration of Stun and Fear effects inflicted on you by 15%." },
-                            zhCN = { "使你受到的昏迷和恐惧效果的持续时间缩短3%。", "使你受到的昏迷和恐惧效果的持续时间缩短6%。", "使你受到的昏迷和恐惧效果的持续时间缩短9%。", "使你受到的昏迷和恐惧效果的持续时间缩短12%。", "使你受到的昏迷和恐惧效果的持续时间缩短15%。" },
+                            enUS = { "Increases the time before your Rage begins to decay after leaving combat by 2 sec.", "Increases the time before your Rage begins to decay after leaving combat by 4 sec.", "Increases the time before your Rage begins to decay after leaving combat by 6 sec.", "Increases the time before your Rage begins to decay after leaving combat by 8 sec.", "Increases the time before your Rage begins to decay after leaving combat by 10 sec." },
+                            zhCN = { "脱离战斗后，你的怒气开始衰减前的时间延长2秒。", "脱离战斗后，你的怒气开始衰减前的时间延长4秒。", "脱离战斗后，你的怒气开始衰减前的时间延长6秒。", "脱离战斗后，你的怒气开始衰减前的时间延长8秒。", "脱离战斗后，你的怒气开始衰减前的时间延长10秒。" },
                         },
                     },
                     {
@@ -328,22 +328,22 @@ ns.Data.talents = {
                         row = 2,
                         col = 3,
                         ranks = {
-                            enUS = { "Gives you a 12% chance to generate 1 additional Rage when you deal melee damage with a weapon. This effect is increased to 2 Rage for two-handed weapons.", "Gives you a 24% chance to generate 1 additional Rage when you deal melee damage with a weapon. This effect is increased to 2 Rage for two-handed weapons.", "Gives you a 36% chance to generate 1 additional Rage when you deal melee damage with a weapon. This effect is increased to 2 Rage for two-handed weapons.", "Gives you a 48% chance to generate 1 additional Rage when you deal melee damage with a weapon. This effect is increased to 2 Rage for two-handed weapons.", "Gives you a 60% chance to generate 1 additional Rage when you deal melee damage with a weapon. This effect is increased to 2 Rage for two-handed weapons." },
+                            enUS = { "Gives you a 12% chance to generate 1 additional Rage when you deal melee damage with a weapon.", "Gives you a 24% chance to generate 1 additional Rage when you deal melee damage with a weapon.", "Gives you a 36% chance to generate 1 additional Rage when you deal melee damage with a weapon.", "Gives you a 48% chance to generate 1 additional Rage when you deal melee damage with a weapon.", "Gives you a 60% chance to generate 1 additional Rage when you deal melee damage with a weapon." },
                             zhCN = { "使你有12%的几率在使用武器造成近战伤害后额外获得1点怒气。使用双手武器时，该效果提高至2点怒气。", "使你有24%的几率在使用武器造成近战伤害后额外获得1点怒气。使用双手武器时，该效果提高至2点怒气。", "使你有36%的几率在使用武器造成近战伤害后额外获得1点怒气。使用双手武器时，该效果提高至2点怒气。", "使你有48%的几率在使用武器造成近战伤害后额外获得1点怒气。使用双手武器时，该效果提高至2点怒气。", "使你有60%的几率在使用武器造成近战伤害后额外获得1点怒气。使用双手武器时，该效果提高至2点怒气。" },
                         },
                     },
                     {
                         name = {
-                            enUS = "Improved Cleave",
-                            zhCN = "强化顺劈斩",
+                            enUS = "Furious Precision",
+                            zhCN = "狂怒精准",
                         },
-                        icon = "ability_warrior_cleave",
+                        icon = "ability_warrior_incite",
                         max = 3,
                         row = 3,
                         col = 1,
                         ranks = {
-                            enUS = { "Reduces the Rage cost of your Cleave ability by 1.", "Reduces the Rage cost of your Cleave ability by 2.", "Reduces the Rage cost of your Cleave ability by 3." },
-                            zhCN = { "使你的顺劈斩技能消耗的怒气降低1点。", "使你的顺劈斩技能消耗的怒气降低2点。", "使你的顺劈斩技能消耗的怒气降低3点。" },
+                            enUS = { "Increases your chance to hit with off-hand attacks by 4%.", "Increases your chance to hit with off-hand attacks by 7%.", "Increases your chance to hit with off-hand attacks by 10%." },
+                            zhCN = { "使你的副手攻击命中几率提高4%。", "使你的副手攻击命中几率提高7%。", "使你的副手攻击命中几率提高10%。" },
                         },
                     },
                     {
@@ -360,7 +360,7 @@ ns.Data.talents = {
                             zhCN = "10点怒气 | 瞬发",
                         },
                         ranks = {
-                            enUS = { "Causes all nearby enemies to be Dazed, reducing movement speed by 50% for 6 sec." },
+                            enUS = { "Causes all enemies within 10 yds to be Dazed, reducing movement speed by 50% for 6 sec." },
                             zhCN = { "使附近的所有敌人眩晕，移动速度降低50%，持续6秒。" },
                         },
                     },
@@ -374,22 +374,8 @@ ns.Data.talents = {
                         row = 3,
                         col = 3,
                         ranks = {
-                            enUS = { "Regenerates 1% of your total Health over 6 sec after being the victim of a critical strike, dealing damage with Bloodthirst, or suffering more than 20% of your maximum Health from a single attack.", "Regenerates 2% of your total Health over 6 sec after being the victim of a critical strike, dealing damage with Bloodthirst, or suffering more than 20% of your maximum Health from a single attack.", "Regenerates 3% of your total Health over 6 sec after being the victim of a critical strike, dealing damage with Bloodthirst, or suffering more than 20% of your maximum Health from a single attack." },
+                            enUS = { "Regenerates 1% of your total Health over 6 sec after being the victim of a critical strike or suffering more than 20% of your maximum Health from a single attack.", "Regenerates 2% of your total Health over 6 sec after being the victim of a critical strike or suffering more than 20% of your maximum Health from a single attack.", "Regenerates 3% of your total Health over 6 sec after being the victim of a critical strike or suffering more than 20% of your maximum Health from a single attack." },
                             zhCN = { "受到爆击、使用嗜血造成伤害，或单次攻击使你损失超过最大生命值20%后，在6秒内恢复总生命值的1%。", "受到爆击、使用嗜血造成伤害，或单次攻击使你损失超过最大生命值20%后，在6秒内恢复总生命值的2%。", "受到爆击、使用嗜血造成伤害，或单次攻击使你损失超过最大生命值20%后，在6秒内恢复总生命值的3%。" },
-                        },
-                    },
-                    {
-                        name = {
-                            enUS = "Boundless Rage",
-                            zhCN = "无尽怒气",
-                        },
-                        icon = "ability_warrior_intensifyrage",
-                        max = 3,
-                        row = 3,
-                        col = 4,
-                        ranks = {
-                            enUS = { "Increases your maximum Rage by 10.", "Increases your maximum Rage by 20.", "Increases your maximum Rage by 30." },
-                            zhCN = { "使你的最大怒气值上限提高10点。", "使你的最大怒气值上限提高20点。", "使你的最大怒气值上限提高30点。" },
                         },
                     },
                     {
@@ -402,8 +388,8 @@ ns.Data.talents = {
                         row = 4,
                         col = 1,
                         ranks = {
-                            enUS = { "Increases your off-hand weapon damage by 5%, off-hand Rage generation by 20%, and chance to hit with off-hand attacks by 2%.", "Increases your off-hand weapon damage by 10%, off-hand Rage generation by 40%, and chance to hit with off-hand attacks by 4%.", "Increases your off-hand weapon damage by 15%, off-hand Rage generation by 60%, and chance to hit with off-hand attacks by 6%.", "Increases your off-hand weapon damage by 20%, off-hand Rage generation by 80%, and chance to hit with off-hand attacks by 8%.", "Increases your off-hand weapon damage by 25%, off-hand Rage generation by 100%, and chance to hit with off-hand attacks by 10%." },
-                            zhCN = { "使你的副手武器伤害提高5%，副手攻击产生的怒气提高20%，副手攻击的命中几率提高2%。", "使你的副手武器伤害提高10%，副手攻击产生的怒气提高40%，副手攻击的命中几率提高4%。", "使你的副手武器伤害提高15%，副手攻击产生的怒气提高60%，副手攻击的命中几率提高6%。", "使你的副手武器伤害提高20%，副手攻击产生的怒气提高80%，副手攻击的命中几率提高8%。", "使你的副手武器伤害提高25%，副手攻击产生的怒气提高100%，副手攻击的命中几率提高10%。" },
+                            enUS = { "Increases the damage done by your off-hand weapon by 5% and the Rage generated by your off-hand attacks by 10%.", "Increases the damage done by your off-hand weapon by 10% and the Rage generated by your off-hand attacks by 20%.", "Increases the damage done by your off-hand weapon by 15% and the Rage generated by your off-hand attacks by 30%.", "Increases the damage done by your off-hand weapon by 20% and the Rage generated by your off-hand attacks by 40%.", "Increases the damage done by your off-hand weapon by 25% and the Rage generated by your off-hand attacks by 50%." },
+                            zhCN = { "使你的副手武器伤害提高5%，副手攻击产生的怒气提高10%。", "使你的副手武器伤害提高10%，副手攻击产生的怒气提高20%。", "使你的副手武器伤害提高15%，副手攻击产生的怒气提高30%。", "使你的副手武器伤害提高20%，副手攻击产生的怒气提高40%。", "使你的副手武器伤害提高25%，副手攻击产生的怒气提高50%。" },
                         },
                     },
                     {
@@ -416,8 +402,8 @@ ns.Data.talents = {
                         row = 4,
                         col = 2,
                         ranks = {
-                            enUS = { "Causes your Whirlwind to also strike with your off-hand weapon, and reduces the Rage cost of your Cleave ability by 2." },
-                            zhCN = { "使你的旋风斩也用副手武器发动攻击，并使顺劈斩消耗的怒气降低2点。" },
+                            enUS = { "Reduces the Rage cost of your Cleave and Whirlwind abilities by 3." },
+                            zhCN = { "使你的顺劈斩和旋风斩的怒气消耗降低3点。" },
                         },
                     },
                     {
@@ -450,16 +436,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Precision",
-                            zhCN = "精确",
+                            enUS = "Improved Berserker Rage",
+                            zhCN = "强化狂暴之怒",
                         },
-                        icon = "ability_marksmanship",
-                        max = 3,
+                        icon = "spell_nature_ancestralguardian",
+                        max = 2,
                         row = 5,
                         col = 1,
                         ranks = {
-                            enUS = { "Improves your chance to hit by 1%.", "Improves your chance to hit by 2%.", "Improves your chance to hit by 3%." },
-                            zhCN = { "使你击中目标的几率提高1%。", "使你击中目标的几率提高2%。", "使你击中目标的几率提高3%。" },
+                            enUS = { "Your Berserker Rage ability will instantly generate 5 Rage and has a 50% chance to remove all movement impairing effects when activated.", "Your Berserker Rage ability will instantly generate 10 Rage and has a 100% chance to remove all movement impairing effects when activated." },
+                            zhCN = { "你的狂暴之怒激活时会立即获得5点怒气，并有50%的几率移除所有移动限制效果。", "你的狂暴之怒激活时会立即获得10点怒气，并有100%的几率移除所有移动限制效果。" },
                         },
                     },
                     {
@@ -496,31 +482,32 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Improved Berserker Rage",
-                            zhCN = "强化狂暴之怒",
-                        },
-                        icon = "spell_nature_ancestralguardian",
-                        max = 2,
-                        row = 6,
-                        col = 1,
-                        ranks = {
-                            enUS = { "Your Berserker Rage ability will instantly generate 5 Rage and has a 50% chance to remove all movement impairing effects when activated.", "Your Berserker Rage ability will instantly generate 10 Rage and has a 100% chance to remove all movement impairing effects when activated." },
-                            zhCN = { "你的狂暴之怒激活时会立即获得5点怒气，并有50%的几率移除所有移动限制效果。", "你的狂暴之怒激活时会立即获得10点怒气，并有100%的几率移除所有移动限制效果。" },
-                        },
-                    },
-                    {
-                        name = {
                             enUS = "Flurry",
                             zhCN = "乱舞",
                         },
                         icon = "ability_ghoulfrenzy",
                         max = 5,
                         row = 6,
-                        col = 3,
-                        req = 11,
+                        col = 2,
+                        req = 13,
                         ranks = {
                             enUS = { "Increases your melee attack speed by 5% for your next 3 swings after dealing a melee critical strike.", "Increases your melee attack speed by 10% for your next 3 swings after dealing a melee critical strike.", "Increases your melee attack speed by 15% for your next 3 swings after dealing a melee critical strike.", "Increases your melee attack speed by 20% for your next 3 swings after dealing a melee critical strike.", "Increases your melee attack speed by 25% for your next 3 swings after dealing a melee critical strike." },
                             zhCN = { "近战攻击造成爆击后，使你接下来的3次攻击的近战攻击速度提高5%。", "近战攻击造成爆击后，使你接下来的3次攻击的近战攻击速度提高10%。", "近战攻击造成爆击后，使你接下来的3次攻击的近战攻击速度提高15%。", "近战攻击造成爆击后，使你接下来的3次攻击的近战攻击速度提高20%。", "近战攻击造成爆击后，使你接下来的3次攻击的近战攻击速度提高25%。" },
+                        },
+                    },
+                    {
+                        name = {
+                            enUS = "Gore Drinker",
+                            zhCN = "饮血者",
+                        },
+                        icon = "racial_troll_berserk",
+                        max = 2,
+                        row = 6,
+                        col = 3,
+                        req = 10,
+                        ranks = {
+                            enUS = { "Your Enrage, Berserker Rage, Bloodrage, Death Wish, and Bloodthirst abilities cause your next 3 melee attacks to restore 0.5% of your maximum Health.", "Your Enrage, Berserker Rage, Bloodrage, Death Wish, and Bloodthirst abilities cause your next 3 melee attacks to restore 1.0% of your maximum Health." },
+                            zhCN = { "你的激怒、狂暴之怒、血性狂暴、死亡之愿和嗜血使你接下来的3次近战攻击恢复你最大生命值的0.5%。", "你的激怒、狂暴之怒、血性狂暴、死亡之愿和嗜血使你接下来的3次近战攻击恢复你最大生命值的1.0%。" },
                         },
                     },
                     {
@@ -532,14 +519,13 @@ ns.Data.talents = {
                         max = 1,
                         row = 7,
                         col = 2,
-                        req = 14,
                         cost = {
                             enUS = "30 Rage | Instant | 6 sec cooldown",
                             zhCN = "30点怒气 | 瞬发 | 6秒冷却时间",
                         },
                         ranks = {
-                            enUS = { "Instantly attack the target causing damage equal to 35% of your Attack Power plus 30 and increasing your movement speed by 10% for 10 sec." },
-                            zhCN = { "立即攻击目标，造成相当于攻击强度35%外加30点的伤害，并使移动速度提高10%，持续10秒。" },
+                            enUS = { "Instantly attack the target causing damage equal to 45% of your Attack Power plus 30 and increasing your movement speed by 10% for 10 sec." },
+                            zhCN = { "立即攻击目标，造成相当于攻击强度45%外加30点的伤害，并使移动速度提高10%，持续10秒。" },
                         },
                     },
                 },
@@ -551,6 +537,20 @@ ns.Data.talents = {
                 },
                 icon = "inv_shield_06",
                 talents = {
+                    {
+                        name = {
+                            enUS = "Improved Bloodrage",
+                            zhCN = "强化血性狂暴",
+                        },
+                        icon = "ability_racial_bloodrage",
+                        max = 2,
+                        row = 1,
+                        col = 1,
+                        ranks = {
+                            enUS = { "Increases all the Rage generated by your Bloodrage ability by 25%.", "Increases all the Rage generated by your Bloodrage ability by 50%." },
+                            zhCN = { "使你的血性狂暴技能产生的所有怒气提高25%。", "使你的血性狂暴技能产生的所有怒气提高50%。" },
+                        },
+                    },
                     {
                         name = {
                             enUS = "Shield Specialization",
@@ -567,13 +567,27 @@ ns.Data.talents = {
                     },
                     {
                         name = {
+                            enUS = "Iron Will",
+                            zhCN = "钢铁意志",
+                        },
+                        icon = "spell_magic_magearmor",
+                        max = 5,
+                        row = 1,
+                        col = 3,
+                        ranks = {
+                            enUS = { "Reduces the duration of Stun and Fear effects inflicted on you by 3%.", "Reduces the duration of Stun and Fear effects inflicted on you by 6%.", "Reduces the duration of Stun and Fear effects inflicted on you by 9%.", "Reduces the duration of Stun and Fear effects inflicted on you by 12%.", "Reduces the duration of Stun and Fear effects inflicted on you by 15%." },
+                            zhCN = { "使你受到的昏迷和恐惧效果的持续时间缩短3%。", "使你受到的昏迷和恐惧效果的持续时间缩短6%。", "使你受到的昏迷和恐惧效果的持续时间缩短9%。", "使你受到的昏迷和恐惧效果的持续时间缩短12%。", "使你受到的昏迷和恐惧效果的持续时间缩短15%。" },
+                        },
+                    },
+                    {
+                        name = {
                             enUS = "Anticipation",
                             zhCN = "预知",
                         },
                         icon = "spell_nature_mirrorimage",
                         max = 5,
-                        row = 1,
-                        col = 3,
+                        row = 2,
+                        col = 1,
                         ranks = {
                             enUS = { "Increases your Defense Skill by 4.", "Increases your Defense Skill by 8.", "Increases your Defense Skill by 12.", "Increases your Defense Skill by 16.", "Increases your Defense Skill by 20." },
                             zhCN = { "使你的防御技能提高4点。", "使你的防御技能提高8点。", "使你的防御技能提高12点。", "使你的防御技能提高16点。", "使你的防御技能提高20点。" },
@@ -581,30 +595,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Improved Bloodrage",
-                            zhCN = "强化血性狂暴",
+                            enUS = "Improved Revenge",
+                            zhCN = "强化复仇",
                         },
-                        icon = "ability_racial_bloodrage",
-                        max = 2,
-                        row = 2,
-                        col = 1,
-                        ranks = {
-                            enUS = { "Increases all the Rage generated by your Bloodrage ability by 25%.", "Increases all the Rage generated by your Bloodrage ability by 50%." },
-                            zhCN = { "使你的血性狂暴技能产生的所有怒气提高25%。", "使你的血性狂暴技能产生的所有怒气提高50%。" },
-                        },
-                    },
-                    {
-                        name = {
-                            enUS = "Toughness",
-                            zhCN = "坚韧",
-                        },
-                        icon = "spell_holy_devotion",
-                        max = 5,
+                        icon = "ability_warrior_revenge",
+                        max = 3,
                         row = 2,
                         col = 3,
                         ranks = {
-                            enUS = { "Increases your Armor value from items by 2%.", "Increases your Armor value from items by 4%.", "Increases your Armor value from items by 6%.", "Increases your Armor value from items by 8%.", "Increases your Armor value from items by 10%." },
-                            zhCN = { "使你从物品获得的护甲值提高2%。", "使你从物品获得的护甲值提高4%。", "使你从物品获得的护甲值提高6%。", "使你从物品获得的护甲值提高8%。", "使你从物品获得的护甲值提高10%。" },
+                            enUS = { "Increases damage dealt by your Revenge ability by 20%.", "Increases damage dealt by your Revenge ability by 40%.", "Increases damage dealt by your Revenge ability by 60%." },
+                            zhCN = { "使你的复仇技能造成的伤害提高20%。", "使你的复仇技能造成的伤害提高40%。", "使你的复仇技能造成的伤害提高60%。" },
                         },
                     },
                     {
@@ -630,7 +630,6 @@ ns.Data.talents = {
                         max = 1,
                         row = 3,
                         col = 1,
-                        req = 3,
                         cost = {
                             enUS = "Instant | 3 min cooldown",
                             zhCN = "瞬发 | 3分钟冷却时间",
@@ -649,7 +648,7 @@ ns.Data.talents = {
                         max = 2,
                         row = 3,
                         col = 2,
-                        req = 1,
+                        req = 2,
                         ranks = {
                             enUS = { "Grants you a 50% chance to generate 5 Rage when you Dodge or Parry while a shield is equipped.", "Grants you a 100% chance to generate 5 Rage when you Dodge or Parry while a shield is equipped." },
                             zhCN = { "使你有50%的几率在装备盾牌并躲闪或招架时产生5点怒气。", "使你有100%的几率在装备盾牌并躲闪或招架时产生5点怒气。" },
@@ -657,16 +656,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Improved Revenge",
-                            zhCN = "强化复仇",
+                            enUS = "Improved Disarm",
+                            zhCN = "强化缴械",
                         },
-                        icon = "ability_warrior_revenge",
+                        icon = "ability_warrior_disarm",
                         max = 3,
                         row = 3,
                         col = 3,
                         ranks = {
-                            enUS = { "Increases damage dealt by your Revenge ability by 20%.", "Increases damage dealt by your Revenge ability by 40%.", "Increases damage dealt by your Revenge ability by 60%." },
-                            zhCN = { "使你的复仇技能造成的伤害提高20%。", "使你的复仇技能造成的伤害提高40%。", "使你的复仇技能造成的伤害提高60%。" },
+                            enUS = { "Reduces the cooldown of your Disarm ability by 7 secs.", "Reduces the cooldown of your Disarm ability by 13 secs.", "Reduces the cooldown of your Disarm ability by 20 secs." },
+                            zhCN = { "使你的缴械技能冷却时间缩短7秒。", "使你的缴械技能冷却时间缩短13秒。", "使你的缴械技能冷却时间缩短20秒。" },
                         },
                     },
                     {
@@ -699,30 +698,30 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Improved Disarm",
-                            zhCN = "强化缴械",
-                        },
-                        icon = "ability_warrior_disarm",
-                        max = 3,
-                        row = 4,
-                        col = 2,
-                        ranks = {
-                            enUS = { "Reduces the cooldown of your Disarm ability by 7 secs.", "Reduces the cooldown of your Disarm ability by 13 secs.", "Reduces the cooldown of your Disarm ability by 20 secs." },
-                            zhCN = { "使你的缴械技能冷却时间缩短7秒。", "使你的缴械技能冷却时间缩短13秒。", "使你的缴械技能冷却时间缩短20秒。" },
-                        },
-                    },
-                    {
-                        name = {
                             enUS = "Vanguard",
                             zhCN = "先锋",
                         },
                         icon = "ability_warrior_shieldcharge",
                         max = 1,
                         row = 4,
-                        col = 3,
+                        col = 2,
                         ranks = {
                             enUS = { "Your Charge ability is now usable while in Defensive Stance." },
                             zhCN = { "你的冲锋技能现在可以在防御姿态下使用。" },
+                        },
+                    },
+                    {
+                        name = {
+                            enUS = "Improved Shield Bash",
+                            zhCN = "强化盾击",
+                        },
+                        icon = "ability_warrior_shieldbash",
+                        max = 2,
+                        row = 4,
+                        col = 3,
+                        ranks = {
+                            enUS = { "Gives your Shield Bash ability a 50% chance to Silence the target for 3 sec.", "Gives your Shield Bash ability a 100% chance to Silence the target for 3 sec." },
+                            zhCN = { "使你的盾击技能有50%的几率令目标沉默3秒。", "使你的盾击技能有100%的几率令目标沉默3秒。" },
                         },
                     },
                     {
@@ -759,16 +758,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Improved Shield Bash",
-                            zhCN = "强化盾击",
+                            enUS = "Focused Rage",
+                            zhCN = "怒火聚焦",
                         },
-                        icon = "ability_warrior_shieldbash",
-                        max = 2,
+                        icon = "ability_warrior_focusedrage",
+                        max = 3,
                         row = 5,
                         col = 3,
                         ranks = {
-                            enUS = { "Gives your Shield Bash ability a 50% chance to Silence the target for 3 sec.", "Gives your Shield Bash ability a 100% chance to Silence the target for 3 sec." },
-                            zhCN = { "使你的盾击技能有50%的几率令目标沉默3秒。", "使你的盾击技能有100%的几率令目标沉默3秒。" },
+                            enUS = { "Reduces the Rage cost of your offensive abilities by 1.", "Reduces the Rage cost of your offensive abilities by 2.", "Reduces the Rage cost of your offensive abilities by 3." },
+                            zhCN = { "使你的进攻技能消耗的怒气降低1点。", "使你的进攻技能消耗的怒气降低2点。", "使你的进攻技能消耗的怒气降低3点。" },
                         },
                     },
                     {
@@ -778,25 +777,11 @@ ns.Data.talents = {
                         },
                         icon = "inv_shield_04",
                         max = 5,
-                        row = 5,
-                        col = 4,
-                        ranks = {
-                            enUS = { "Increases all damage you deal by 2% while a shield is equipped.", "Increases all damage you deal by 4% while a shield is equipped.", "Increases all damage you deal by 6% while a shield is equipped.", "Increases all damage you deal by 8% while a shield is equipped.", "Increases all damage you deal by 10% while a shield is equipped." },
-                            zhCN = { "装备盾牌时，你造成的所有伤害提高2%。", "装备盾牌时，你造成的所有伤害提高4%。", "装备盾牌时，你造成的所有伤害提高6%。", "装备盾牌时，你造成的所有伤害提高8%。", "装备盾牌时，你造成的所有伤害提高10%。" },
-                        },
-                    },
-                    {
-                        name = {
-                            enUS = "Focused Rage",
-                            zhCN = "怒火聚焦",
-                        },
-                        icon = "ability_warrior_focusedrage",
-                        max = 3,
                         row = 6,
                         col = 3,
                         ranks = {
-                            enUS = { "Reduces the Rage cost of your offensive abilities by 1.", "Reduces the Rage cost of your offensive abilities by 2.", "Reduces the Rage cost of your offensive abilities by 3." },
-                            zhCN = { "使你的进攻技能消耗的怒气降低1点。", "使你的进攻技能消耗的怒气降低2点。", "使你的进攻技能消耗的怒气降低3点。" },
+                            enUS = { "Increases all damage you deal by 2% while a shield is equipped.", "Increases all damage you deal by 4% while a shield is equipped.", "Increases all damage you deal by 6% while a shield is equipped.", "Increases all damage you deal by 8% while a shield is equipped.", "Increases all damage you deal by 10% while a shield is equipped." },
+                            zhCN = { "装备盾牌时，你造成的所有伤害提高2%。", "装备盾牌时，你造成的所有伤害提高4%。", "装备盾牌时，你造成的所有伤害提高6%。", "装备盾牌时，你造成的所有伤害提高8%。", "装备盾牌时，你造成的所有伤害提高10%。" },
                         },
                     },
                     {
@@ -808,7 +793,7 @@ ns.Data.talents = {
                         max = 1,
                         row = 7,
                         col = 2,
-                        req = 14,
+                        req = 15,
                         cost = {
                             enUS = "20 Rage | Instant | 6 sec cooldown",
                             zhCN = "20点怒气 | 瞬发 | 6秒冷却时间",
@@ -932,7 +917,7 @@ ns.Data.talents = {
                             zhCN = "瞬发 | 3分钟冷却时间",
                         },
                         ranks = {
-                            enUS = { "Grants you immunity to Silence and Interrupt effects. Lasts 6 sec." },
+                            enUS = { "Grants you immunity to Silence and Interrupt effects for 6 sec." },
                             zhCN = { "使你免疫沉默和中断效果。持续6秒。" },
                         },
                     },
@@ -1069,7 +1054,7 @@ ns.Data.talents = {
                         col = 3,
                         ranks = {
                             enUS = { "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 3%, and all other spells by 1%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 6%, and all other spells by 2%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 9%, and all other spells by 3%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 12%, and all other spells by 4%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 15%, and all other spells by 5%." },
-                            zhCN = { "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 3%, and all other spells by 1%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 6%, and all other spells by 2%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 9%, and all other spells by 3%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 12%, and all other spells by 4%.", "Increases the critical strike chance of your Holy Shock and Holy Strike spells by 15%, and all other spells by 5%." },
+                            zhCN = { "使你的神圣震击和神圣打击的爆击几率提高3%，其他所有法术的爆击几率提高1%。", "使你的神圣震击和神圣打击的爆击几率提高6%，其他所有法术的爆击几率提高2%。", "使你的神圣震击和神圣打击的爆击几率提高9%，其他所有法术的爆击几率提高3%。", "使你的神圣震击和神圣打击的爆击几率提高12%，其他所有法术的爆击几率提高4%。", "使你的神圣震击和神圣打击的爆击几率提高15%，其他所有法术的爆击几率提高5%。" },
                         },
                     },
                     {
@@ -1087,8 +1072,8 @@ ns.Data.talents = {
                             zhCN = "730点法力值 | 20码射程 | 1.5秒施法时间 | 6秒冷却时间",
                         },
                         ranks = {
-                            enUS = { "Applies Light's Vigil to the target for 30 sec. Your next Holy Shock cast on them triggers no cooldown and causes enemy targets to suffer 175 Holy damage and refund 75% of Light's Vigil's Mana cost, or allied targets to heal their party for 325. The Paladin may only have one Light's Vigil active per party." },
-                            zhCN = { "Applies Light's Vigil to the target for 30 sec. Your next Holy Shock cast on them triggers no cooldown and causes enemy targets to suffer 175 Holy damage and refund 75% of Light's Vigil's Mana cost, or allied targets to heal their party for 325. The Paladin may only have one Light's Vigil active per party." },
+                            enUS = { "Applies Light's Vigil to the target for 30 sec. Your next Holy Shock cast on them triggers no cooldown and causes enemy targets to suffer 175 Holy damage and refund 75% of Light's Vigil's Mana cost, or allied targets to heal their party for 325. You may only have one Light's Vigil active per party." },
+                            zhCN = { "对目标施加圣光守望，持续30秒。你对其施放的下一个神圣震击不触发冷却，并使敌方目标受到175点神圣伤害，同时返还圣光守望75%的法力值消耗；友方目标则使其队伍成员受到325点治疗。每个队伍中只能同时存在一个圣光守望。" },
                         },
                     },
                 },
@@ -1124,8 +1109,8 @@ ns.Data.talents = {
                         row = 1,
                         col = 3,
                         ranks = {
-                            enUS = { "Damaging melee attacks against you have a 10% chance to increase your chance to block by 6%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 12%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 18%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 24%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 30%. Lasts 10 sec or 5 blocks." },
-                            zhCN = { "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高6%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高12%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高18%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高24%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高30%。持续10秒或格挡5次。" },
+                            enUS = { "Damaging melee attacks against you have a 10% chance to increase your chance to block by 4%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 8%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 12%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 16%. Lasts 10 sec or 5 blocks.", "Damaging melee attacks against you have a 10% chance to increase your chance to block by 20%. Lasts 10 sec or 5 blocks." },
+                            zhCN = { "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高4%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高8%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高12%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高16%。持续10秒或格挡5次。", "对你造成伤害的近战攻击有10%的几率使你的格挡几率提高20%。持续10秒或格挡5次。" },
                         },
                     },
                     {
@@ -1316,7 +1301,7 @@ ns.Data.talents = {
                         row = 6,
                         col = 3,
                         ranks = {
-                            enUS = { "Increases the threat generated by your Holy Strike ability 5%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 2% for 6 sec.", "Increases the threat generated by your Holy Strike ability 10%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 4% for 6 sec.", "Increases the threat generated by your Holy Strike ability 15%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 6% for 6 sec.", "Increases the threat generated by your Holy Strike ability 20%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 8% for 6 sec.", "Increases the threat generated by your Holy Strike ability 25%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 10% for 6 sec." },
+                            enUS = { "Increases the threat generated by your Holy Strike ability by 5%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 2% for 6 sec.", "Increases the threat generated by your Holy Strike ability by 10%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 4% for 6 sec.", "Increases the threat generated by your Holy Strike ability by 15%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 6% for 6 sec.", "Increases the threat generated by your Holy Strike ability by 20%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 8% for 6 sec.", "Increases the threat generated by your Holy Strike ability by 25%. While Righteous Fury is active, Holy Strike also reduces your damage taken by 10% for 6 sec." },
                             zhCN = { "使你的神圣打击产生的威胁值提高5%。在正义之怒激活时，神圣打击还会使你受到的伤害降低2%，持续6秒。", "使你的神圣打击产生的威胁值提高10%。在正义之怒激活时，神圣打击还会使你受到的伤害降低4%，持续6秒。", "使你的神圣打击产生的威胁值提高15%。在正义之怒激活时，神圣打击还会使你受到的伤害降低6%，持续6秒。", "使你的神圣打击产生的威胁值提高20%。在正义之怒激活时，神圣打击还会使你受到的伤害降低8%，持续6秒。", "使你的神圣打击产生的威胁值提高25%。在正义之怒激活时，神圣打击还会使你受到的伤害降低10%，持续6秒。" },
                         },
                     },
@@ -1335,8 +1320,8 @@ ns.Data.talents = {
                             zhCN = "150点法力值 | 瞬发 | 10秒冷却时间",
                         },
                         ranks = {
-                            enUS = { "Increases chance to block by 20% for 10 sec, and deals 110 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges." },
-                            zhCN = { "使你的格挡几率提高20%，持续10秒。在此期间每次成功格挡都会对攻击者造成110点神圣伤害。神圣之盾造成的伤害额外产生20%的威胁值。每次格挡消耗一层充能。共4层。" },
+                            enUS = { "Increases chance to block by 30% for 10 sec, and deals 110 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges." },
+                            zhCN = { "使你的格挡几率提高30%，持续10秒。在此期间每次成功格挡都会对攻击者造成110点神圣伤害。神圣之盾造成的伤害额外产生20%的威胁值。每次格挡消耗一层充能。共4层。" },
                         },
                     },
                 },
@@ -1532,7 +1517,7 @@ ns.Data.talents = {
                         req = 7,
                         ranks = {
                             enUS = { "Increases your Physical and Holy damage dealt by 1% for 30 sec after landing a non-periodic critical strike. Stacks up to 3 times.", "Increases your Physical and Holy damage dealt by 2% for 30 sec after landing a non-periodic critical strike. Stacks up to 3 times.", "Increases your Physical and Holy damage dealt by 3% for 30 sec after landing a non-periodic critical strike. Stacks up to 3 times." },
-                            zhCN = { "Increases your Physical and Holy damage dealt by 1% for 30 sec after landing a non-periodic critical strike. Stacks up to 3 times.", "Increases your Physical and Holy damage dealt by 2% for 30 sec after landing a non-periodic critical strike. Stacks up to 3 times.", "Increases your Physical and Holy damage dealt by 3% for 30 sec after landing a non-periodic critical strike. Stacks up to 3 times." },
+                            zhCN = { "非周期性伤害造成爆击后，你造成的物理和神圣伤害提高1%，持续30秒。最多叠加3次。", "非周期性伤害造成爆击后，你造成的物理和神圣伤害提高2%，持续30秒。最多叠加3次。", "非周期性伤害造成爆击后，你造成的物理和神圣伤害提高3%，持续30秒。最多叠加3次。" },
                         },
                     },
                     {
@@ -1563,8 +1548,8 @@ ns.Data.talents = {
                         row = 6,
                         col = 2,
                         ranks = {
-                            enUS = { "Increases your spell damage and healing by up to 33% of your Intellect.", "Increases your spell damage and healing by up to 66% of your Intellect.", "Increases your spell damage and healing by up to 100% of your Intellect." },
-                            zhCN = { "使你的法术伤害和治疗效果最多提高相当于你智力33%的数值。", "使你的法术伤害和治疗效果最多提高相当于你智力66%的数值。", "使你的法术伤害和治疗效果最多提高相当于你智力100%的数值。" },
+                            enUS = { "Increases your spell damage by up to 20% of your Intellect.", "Increases your spell damage by up to 40% of your Intellect.", "Increases your spell damage by up to 60% of your Intellect." },
+                            zhCN = { "使你的法术伤害和治疗效果最多提高相当于你智力20%的数值。", "使你的法术伤害和治疗效果最多提高相当于你智力40%的数值。", "使你的法术伤害和治疗效果最多提高相当于你智力60%的数值。" },
                         },
                     },
                     {
@@ -1578,7 +1563,7 @@ ns.Data.talents = {
                         col = 3,
                         ranks = {
                             enUS = { "Reduces the cast time of your Hammer of Wrath by 0.5 sec, and reduces all threat you generate by 10% while Righteous Fury is not active.", "Reduces the cast time of your Hammer of Wrath by 1.0 sec, and reduces all threat you generate by 20% while Righteous Fury is not active." },
-                            zhCN = { "使你的愤怒之锤施法时间缩短0.5秒，并在正义之怒未激活时使你产生的所有威胁值降低10%。", "使你的愤怒之锤施法时间缩短1.0秒，并在正义之怒未激活时使你产生的所有威胁值降低20%。" },
+                            zhCN = { "使你的愤怒之锤施法时间缩短0.5秒，并在正义之怒未激活时，你产生的所有威胁值降低10%。", "使你的愤怒之锤施法时间缩短1.0秒，并在正义之怒未激活时，你产生的所有威胁值降低20%。" },
                         },
                     },
                     {
@@ -1591,8 +1576,8 @@ ns.Data.talents = {
                         row = 7,
                         col = 2,
                         ranks = {
-                            enUS = { "Reduces the Mana cost of your Seal spells by 20%, and when you replace your Seal of Command, Seal of Righteousness, Seal of Fury, or Seal of Justice with a different Seal, gain an Echo of that Seal. Your next melee attack applies the replaced Seal's effects, consuming the Echo." },
-                            zhCN = { "Reduces the Mana cost of your Seal spells by 20%, and when you replace your Seal of Command, Seal of Righteousness, Seal of Fury, or Seal of Justice with a different Seal, gain an Echo of that Seal. Your next melee attack applies the replaced Seal's effects, consuming the Echo." },
+                            enUS = { "Reduces the Mana cost of your Seal spells by 20%, and when you replace your Seal of Command, Seal of Righteousness, Seal of Fury, or Seal of Justice with a different Seal, you gain an Echo of that Seal. Your next melee attack applies the replaced Seal's effects, consuming the Echo." },
+                            zhCN = { "使你的圣印法术的法力值消耗降低20%。当你用另一个圣印替换命令圣印、正义圣印、愤怒圣印或公正圣印时，你会获得该圣印的回响。你的下一次近战攻击会触发被替换圣印的效果，并消耗该回响。" },
                         },
                     },
                 },
@@ -1906,12 +1891,12 @@ ns.Data.talents = {
                             enUS = "Improved Stings",
                             zhCN = "强化钉刺",
                         },
-                        icon = "hunter_pvp_spidersting",
+                        icon = "ability_hunter_quickshot",
                         max = 3,
                         row = 2,
                         col = 1,
                         ranks = {
-                            enUS = { "Increased the damage of your Serpent Sting ability by 6%, reduces the cooldown of your Viper Sting ability by 2 sec, and increases the duration of your Scorpid Sting ability by 15 sec.", "Increased the damage of your Serpent Sting ability by 13%, reduces the cooldown of your Viper Sting ability by 4 sec, and increases the duration of your Scorpid Sting ability by 30 sec.", "Increased the damage of your Serpent Sting ability by 20%, reduces the cooldown of your Viper Sting ability by 6 sec, and increases the duration of your Scorpid Sting ability by 45 sec." },
+                            enUS = { "Increases the damage of your Serpent Sting ability by 6%, reduces the cooldown of your Viper Sting ability by 2 sec, and increases the duration of your Scorpid Sting ability by 15 sec.", "Increases the damage of your Serpent Sting ability by 13%, reduces the cooldown of your Viper Sting ability by 4 sec, and increases the duration of your Scorpid Sting ability by 30 sec.", "Increases the damage of your Serpent Sting ability by 20%, reduces the cooldown of your Viper Sting ability by 6 sec, and increases the duration of your Scorpid Sting ability by 45 sec." },
                             zhCN = { "使你的毒蛇钉刺伤害提高6%，蝰蛇钉刺冷却时间缩短2秒，毒蝎钉刺持续时间延长15秒。", "使你的毒蛇钉刺伤害提高13%，蝰蛇钉刺冷却时间缩短4秒，毒蝎钉刺持续时间延长30秒。", "使你的毒蛇钉刺伤害提高20%，蝰蛇钉刺冷却时间缩短6秒，毒蝎钉刺持续时间延长45秒。" },
                         },
                     },
@@ -1999,8 +1984,8 @@ ns.Data.talents = {
                             zhCN = "180点法力值 | 瞬发",
                         },
                         ranks = {
-                            enUS = { "Increases the Ranged Attack Power of party members within 45 yards by 30. Lasts 30 min." },
-                            zhCN = { "使45码内的小队成员的远程攻击强度提高30点。持续30分钟。" },
+                            enUS = { "Increases the Ranged Attack Power of party members within 45 yds by 30." },
+                            zhCN = { "使45码范围内队伍成员的远程攻击强度提高30点。" },
                         },
                     },
                     {
@@ -2090,12 +2075,12 @@ ns.Data.talents = {
                         col = 2,
                         req = 10,
                         cost = {
-                            enUS = "365 Mana | 35 yd range | 4 sec cast | 15 sec cooldown",
-                            zhCN = "365点法力值 | 35码射程 | 4秒施法时间 | 15秒冷却时间",
+                            enUS = "365 Mana | 45 yd range | 4 sec cast | 15 sec cooldown",
+                            zhCN = "365点法力值 | 45码射程 | 4秒施法时间 | 15秒冷却时间",
                         },
                         ranks = {
-                            enUS = { "A steady snipe that increases ranged damage by 160." },
-                            zhCN = { "一次稳定狙击，使远程伤害提高160点。" },
+                            enUS = { "A long-range shot that deals ranged damage plus 160 and increases the range of your next 3 Shots by 10 yards for 10 sec." },
+                            zhCN = { "一次远程射击，造成远程伤害并额外造成160点伤害，同时使你接下来3次射击的射程提高10码，持续10秒。" },
                         },
                     },
                 },
@@ -2131,8 +2116,8 @@ ns.Data.talents = {
                         row = 1,
                         col = 3,
                         ranks = {
-                            enUS = { "Increases your Parry chance by 2%.", "Increases your Parry chance by 4%.", "Increases your Parry chance by 6%.", "Increases your Parry chance by 8%.", "Increases your Parry chance by 10%." },
-                            zhCN = { "使你的招架几率提高2%。", "使你的招架几率提高4%。", "使你的招架几率提高6%。", "使你的招架几率提高8%。", "使你的招架几率提高10%。" },
+                            enUS = { "Increases your Parry chance by 1%.", "Increases your Parry chance by 2%.", "Increases your Parry chance by 3%.", "Increases your Parry chance by 4%.", "Increases your Parry chance by 5%." },
+                            zhCN = { "使你的招架几率提高1%。", "使你的招架几率提高2%。", "使你的招架几率提高3%。", "使你的招架几率提高4%。", "使你的招架几率提高5%。" },
                         },
                     },
                     {
@@ -2256,12 +2241,12 @@ ns.Data.talents = {
                             enUS = "Predator's Edge",
                             zhCN = "掠食者之锋",
                         },
-                        icon = "ability_hunter_hatchettoss",
+                        icon = "ability_dualwield",
                         max = 5,
                         row = 4,
                         col = 2,
                         ranks = {
-                            enUS = { "Increases your melee critical strike damage by 6% and your offhand weapon damage by 10%.", "Increases your melee critical strike damage by 12% and your offhand weapon damage by 20%.", "Increases your melee critical strike damage by 18% and your offhand weapon damage by 30%.", "Increases your melee critical strike damage by 24% and your offhand weapon damage by 40%.", "Increases your melee critical strike damage by 30% and your offhand weapon damage by 50%." },
+                            enUS = { "Increases your melee critical strike damage by 6% and your Off Hand weapon damage by 10%.", "Increases your melee critical strike damage by 12% and your Off Hand weapon damage by 20%.", "Increases your melee critical strike damage by 18% and your Off Hand weapon damage by 30%.", "Increases your melee critical strike damage by 24% and your Off Hand weapon damage by 40%.", "Increases your melee critical strike damage by 30% and your Off Hand weapon damage by 50%." },
                             zhCN = { "使你的近战爆击伤害提高6%，副手武器伤害提高10%。", "使你的近战爆击伤害提高12%，副手武器伤害提高20%。", "使你的近战爆击伤害提高18%，副手武器伤害提高30%。", "使你的近战爆击伤害提高24%，副手武器伤害提高40%。", "使你的近战爆击伤害提高30%，副手武器伤害提高50%。" },
                         },
                     },
@@ -2323,7 +2308,7 @@ ns.Data.talents = {
                         col = 3,
                         ranks = {
                             enUS = { "Reduces the cooldown of your Trap and Deterrence abilities by 20%.", "Reduces the cooldown of your Trap and Deterrence abilities by 40%." },
-                            zhCN = { "使你的陷阱和威慑技能的冷却时间缩短20%。", "使你的陷阱和威慑技能的冷却时间缩短40%。" },
+                            zhCN = { "使你的陷阱和威慑的冷却时间缩短20%。", "使你的陷阱和威慑的冷却时间缩短40%。" },
                         },
                     },
                     {
@@ -2369,7 +2354,7 @@ ns.Data.talents = {
                         col = 2,
                         req = 14,
                         ranks = {
-                            enUS = { "Your Mongoose Bite also causes the target to Bleed for damage over 21 sec equal to 40% of the damage done by Mongoose Bite." },
+                            enUS = { "Your Mongoose Bite also causes the target to Bleed for damage equal to 40% of the damage done by Mongoose Bite over 21 sec" },
                             zhCN = { "你的猫鼬撕咬还会使目标流血，在21秒内造成相当于猫鼬撕咬伤害40%的伤害。" },
                         },
                     },
@@ -2637,7 +2622,7 @@ ns.Data.talents = {
                             zhCN = "25点能量 | 100码射程 | 瞬发",
                         },
                         ranks = {
-                            enUS = { "Finishing move that increases the damage of your Poisons by 30% and your chance to apply Poisons by 10%. Lasts longer per combo point:\n1 point : 9 seconds\n2 points: 12 seconds\n3 points: 15 seconds\n4 points: 18 seconds\n5 points: 21 seconds" },
+                            enUS = { "Finishing move that increases the damage of your Poisons by 30% and your chance to apply Poisons by 10%. Lasts longer per combo point:\n1 point : 9 sec\n2 points: 12 sec\n3 points: 15 sec\n4 points: 18 sec\n5 points: 21 sec" },
                             zhCN = { "终结技，使你的毒药造成的伤害提高30%，毒药施加几率提高10%。连击点数越多，持续时间越长：\n1点：9秒\n2点：12秒\n3点：15秒\n4点：18秒\n5点：21秒" },
                         },
                     },
@@ -2964,7 +2949,7 @@ ns.Data.talents = {
                         row = 2,
                         col = 1,
                         ranks = {
-                            enUS = { "Gives you a 33% chance to add a Combo Point to your target after Dodging an attack or fully resisting a spell.", "Gives you a 67% chance to add a Combo Point to your target after Dodging an attack or fully resisting a spell.", "Gives you a 100% chance to add a Combo Point to your target after Dodging an attack or fully resisting a spell." },
+                            enUS = { "Gives you a 33% chance to add a Combo Point to your target after Dodging one of their attacks or fully resisting one of their spells.", "Gives you a 67% chance to add a Combo Point to your target after Dodging one of their attacks or fully resisting one of their spells.", "Gives you a 100% chance to add a Combo Point to your target after Dodging one of their attacks or fully resisting one of their spells." },
                             zhCN = { "使你在躲闪攻击或完全抵抗法术后有33%的几率为目标增加一个连击点数。", "使你在躲闪攻击或完全抵抗法术后有67%的几率为目标增加一个连击点数。", "使你在躲闪攻击或完全抵抗法术后有100%的几率为目标增加一个连击点数。" },
                         },
                     },
@@ -3339,7 +3324,7 @@ ns.Data.talents = {
                             zhCN = "瞬发 | 3分钟冷却时间",
                         },
                         ranks = {
-                            enUS = { "When activated, reduces the Mana cost of your next spell by 100% and increases its critical effect chance by 25% if it is capable of a critical effect." },
+                            enUS = { "When activated, reduces the Mana cost of your next spell by 100% and increases its critical effect chance by 25% if it is a non-periodic spell and capable of a critical effect." },
                             zhCN = { "激活之后，你的下一个法术所消耗的法力值减少100%，造成爆击或极效治疗的几率提高25%（如果它有可能造成这些效果的话）。" },
                         },
                     },
@@ -3645,7 +3630,7 @@ ns.Data.talents = {
                         req = 5,
                         ranks = {
                             enUS = { "Increases your Holy damage done by 2%, and gives a 5% chance each time your Holy Fire spell deals periodic damage for your next Holy Nova to cost no Mana.", "Increases your Holy damage done by 5%, and gives a 10% chance each time your Holy Fire spell deals periodic damage for your next Holy Nova to cost no Mana." },
-                            zhCN = { "使你造成的神圣伤害提高2%，并且每次神圣之火造成周期性伤害时有5%的几率使你的下一个神圣新星不消耗法力值。", "使你造成的神圣伤害提高5%，并且每次神圣之火造成周期性伤害时有10%的几率使你的下一个神圣新星不消耗法力值。" },
+                            zhCN = { "使你造成的神圣伤害提高2%，并且每次神圣之火造成周期性伤害时，有5%的几率使你的下一个神圣新星不消耗法力值。", "使你造成的神圣伤害提高5%，并且每次神圣之火造成周期性伤害时，有10%的几率使你的下一个神圣新星不消耗法力值。" },
                         },
                     },
                     {
@@ -3788,8 +3773,8 @@ ns.Data.talents = {
                         row = 1,
                         col = 3,
                         ranks = {
-                            enUS = { "Gives you a 20% chance to gain a 100% bonus to your Spirit for 15 sec after killing a non-trivial target. For the duration, your Mana will regenerate at a 50% of normal rate while casting.", "Gives you a 40% chance to gain a 100% bonus to your Spirit for 15 sec after killing a non-trivial target. For the duration, your Mana will regenerate at a 50% of normal rate while casting.", "Gives you a 60% chance to gain a 100% bonus to your Spirit for 15 sec after killing a non-trivial target. For the duration, your Mana will regenerate at a 50% of normal rate while casting.", "Gives you a 80% chance to gain a 100% bonus to your Spirit for 15 sec after killing a non-trivial target. For the duration, your Mana will regenerate at a 50% of normal rate while casting.", "Gives you a 100% chance to gain a 100% bonus to your Spirit for 15 sec after killing a non-trivial target. For the duration, your Mana will regenerate at a 50% of normal rate while casting." },
-                            zhCN = { "在消灭一个能为你提供经验值或荣誉值的敌人后，有20%的几率使你的精神提高100%，持续15秒。在此期间，你在施法时仍可保持50%的正常法力回复速度。", "在消灭一个能为你提供经验值或荣誉值的敌人后，有40%的几率使你的精神提高100%，持续15秒。在此期间，你在施法时仍可保持50%的正常法力回复速度。", "在消灭一个能为你提供经验值或荣誉值的敌人后，有60%的几率使你的精神提高100%，持续15秒。在此期间，你在施法时仍可保持50%的正常法力回复速度。", "在消灭一个能为你提供经验值或荣誉值的敌人后，有80%的几率使你的精神提高100%，持续15秒。在此期间，你在施法时仍可保持50%的正常法力回复速度。", "在消灭一个能为你提供经验值或荣誉值的敌人后，有100%的几率使你的精神提高100%，持续15秒。在此期间，你在施法时仍可保持50%的正常法力回复速度。" },
+                            enUS = { "Gives you a 20% chance to increase your Spirit by 100% for 15 sec after killing a non-trivial target or when an enemy afflicted by your Vampiric Embrace dies. For the duration, 50% of your Mana regeneration will continue while casting.", "Gives you a 40% chance to increase your Spirit by 100% for 15 sec after killing a non-trivial target or when an enemy afflicted by your Vampiric Embrace dies. For the duration, 50% of your Mana regeneration will continue while casting.", "Gives you a 60% chance to increase your Spirit by 100% for 15 sec after killing a non-trivial target or when an enemy afflicted by your Vampiric Embrace dies. For the duration, 50% of your Mana regeneration will continue while casting.", "Gives you a 80% chance to increase your Spirit by 100% for 15 sec after killing a non-trivial target or when an enemy afflicted by your Vampiric Embrace dies. For the duration, 50% of your Mana regeneration will continue while casting.", "Gives you a 100% chance to increase your Spirit by 100% for 15 sec after killing a non-trivial target or when an enemy afflicted by your Vampiric Embrace dies. For the duration, 50% of your Mana regeneration will continue while casting." },
+                            zhCN = { "使你在杀死一个非无价值目标后，或在受你的吸血鬼的拥抱影响的敌人死亡时，有20%的几率使你的精神提高100%，持续15秒。持续期间，你有50%的法力恢复在施法时继续生效。", "使你在杀死一个非无价值目标后，或在受你的吸血鬼的拥抱影响的敌人死亡时，有40%的几率使你的精神提高100%，持续15秒。持续期间，你有50%的法力恢复在施法时继续生效。", "使你在杀死一个非无价值目标后，或在受你的吸血鬼的拥抱影响的敌人死亡时，有60%的几率使你的精神提高100%，持续15秒。持续期间，你有50%的法力恢复在施法时继续生效。", "使你在杀死一个非无价值目标后，或在受你的吸血鬼的拥抱影响的敌人死亡时，有80%的几率使你的精神提高100%，持续15秒。持续期间，你有50%的法力恢复在施法时继续生效。", "使你在杀死一个非无价值目标后，或在受你的吸血鬼的拥抱影响的敌人死亡时，有100%的几率使你的精神提高100%，持续15秒。持续期间，你有50%的法力恢复在施法时继续生效。" },
                         },
                     },
                     {
@@ -3924,8 +3909,8 @@ ns.Data.talents = {
                             zhCN = "40点法力值 | 30码射程 | 瞬发 | 1分钟冷却时间",
                         },
                         ranks = {
-                            enUS = { "Afflicts your target with Shadow energy that causes all party members to be healed for 20% of any Shadow spell damage you deal for 30 sec. Vampiric Embrace also grants a chance for your Spirit Tap talent to trigger when enemies afflicted by it die." },
-                            zhCN = { "以暗影能量笼罩目标，使你在30秒内对其造成的所有暗影法术伤害的20%转化为对全体小队成员的治疗。吸血鬼的拥抱还会使受其影响的敌人死亡时，有几率触发你的精神分流天赋。" },
+                            enUS = { "Afflicts your target with Shadow energy that causes all party members to be healed for 20% of any Shadow spell damage you deal for 30 sec." },
+                            zhCN = { "用暗影能量折磨目标，使所有队伍成员在30秒内获得你造成的任何暗影法术伤害的20%作为治疗。" },
                         },
                     },
                     {
@@ -3970,8 +3955,8 @@ ns.Data.talents = {
                         row = 5,
                         col = 3,
                         ranks = {
-                            enUS = { "Reduces the mana cost of your Devouring Plague by 25%.\n\nTargets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 5 yards for the remaining duration.", "Reduces the mana cost of your Devouring Plague by 50%.\n\nTargets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 10 yards for the remaining duration." },
-                            zhCN = { "Reduces the mana cost of your Devouring Plague by 25%.\n\nTargets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 5 yards for the remaining duration.", "Reduces the mana cost of your Devouring Plague by 50%.\n\nTargets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 10 yards for the remaining duration." },
+                            enUS = { "Reduces the mana cost of your Devouring Plague by 25%.\n\nTargets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 5 yds for the remaining duration.", "Reduces the mana cost of your Devouring Plague by 50%.\n\nTargets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 10 yds for the remaining duration." },
+                            zhCN = { "使你的噬灵瘟疫的法力值消耗降低25%。\n\n在噬灵瘟疫持续期间死亡的目标会将其扩散给5码内的一名附近敌人，持续时间为剩余时间。", "使你的噬灵瘟疫的法力值消耗降低50%。\n\n在噬灵瘟疫持续期间死亡的目标会将其扩散给10码内的一名附近敌人，持续时间为剩余时间。" },
                         },
                     },
                     {
@@ -4537,7 +4522,7 @@ ns.Data.talents = {
                         },
                         ranks = {
                             enUS = { "Increases your attack speed by 30% for 25 sec." },
-                            zhCN = { "Increases your attack speed by 30% for 25 sec." },
+                            zhCN = { "使你的攻击速度提高30%，持续25秒。" },
                         },
                     },
                 },
@@ -5241,16 +5226,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Hot Streak",
-                            zhCN = "炽热连击",
+                            enUS = "Heating Up",
+                            zhCN = "升温",
                         },
-                        icon = "ability_mage_hotstreak",
+                        icon = "spell_fire_firebolt",
                         max = 1,
                         row = 4,
                         col = 3,
                         req = 9,
                         ranks = {
-                            enUS = { "Your non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch grant Hot Streak for 20 sec. Hot Streak reduces the cast time of Pyroblast by 25%, stacking up to 3 times." },
+                            enUS = { "Non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch reduce the cast time of your next Pyroblast cast within 20 sec by 25%, stacking up to 3 times." },
                             zhCN = { "你的火球术、霜火之箭、火焰冲击和灼烧的非周期性爆击会使你获得炽热连击，持续20秒。炽热连击使炎爆术的施法时间缩短25%，最多叠加3次。" },
                         },
                     },
@@ -5329,8 +5314,8 @@ ns.Data.talents = {
                             zhCN = "瞬发 | 3分钟冷却时间",
                         },
                         ranks = {
-                            enUS = { "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 4 non-periodic critical strikes with Fire spells." },
-                            zhCN = { "激活后，你的火焰伤害法术每次命中都会使你的火焰伤害法术爆击几率提高10%。该效果会持续到你用火焰法术造成4次非周期性爆击为止。" },
+                            enUS = { "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells." },
+                            zhCN = { "激活后，你的火焰伤害法术每次命中都会使你的火焰伤害法术爆击几率提高10%。该效果会持续到你用火焰法术造成3次非周期性爆击为止。" },
                         },
                     },
                 },
@@ -5700,7 +5685,7 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Soul Harvesting",
+                            enUS = "Soul Harvest",
                             zhCN = "灵魂收割",
                         },
                         icon = "inv_elemental_primal_shadow",
@@ -5708,8 +5693,8 @@ ns.Data.talents = {
                         row = 2,
                         col = 2,
                         ranks = {
-                            enUS = { "You gain Soul Harvest for 10 sec if a victim is killed while afflicted with your Drain Soul. Soul Harvest allows your Mana to regenerate at 50% of normal speed while you are casting spells, and grants a 50% increase to your Mana regeneration.", "You gain Soul Harvest for 10 sec if a victim is killed while afflicted with your Drain Soul. Soul Harvest allows your Mana to regenerate at 100% of normal speed while you are casting spells, and grants a 100% increase to your Mana regeneration." },
-                            zhCN = { "若受你的吸取灵魂影响的目标被击杀，你会获得灵魂收割，持续10秒。灵魂收割使你在施法时以正常速度的50%回复法力，并使法力回复提高50%。", "若受你的吸取灵魂影响的目标被击杀，你会获得灵魂收割，持续10秒。灵魂收割使你在施法时以正常速度的100%回复法力，并使法力回复提高100%。" },
+                            enUS = { "Killing a non-trivial target afflicted by your Drain Soul increases your Mana regeneration by 50% for 10 sec and allows 50% of normal Mana regeneration to continue while casting.", "Killing a non-trivial target afflicted by your Drain Soul increases your Mana regeneration by 100% for 10 sec and allows 100% of normal Mana regeneration to continue while casting." },
+                            zhCN = { "杀死一个受你的吸取灵魂影响的非无价值目标后，使你的法力恢复速度提高50%，持续10秒，并使正常法力恢复的50%在施法时继续生效。", "杀死一个受你的吸取灵魂影响的非无价值目标后，使你的法力恢复速度提高100%，持续10秒，并使正常法力恢复的100%在施法时继续生效。" },
                         },
                     },
                     {
@@ -5894,7 +5879,7 @@ ns.Data.talents = {
                             zhCN = "200点法力值 | 30码射程 | 引导",
                         },
                         ranks = {
-                            enUS = { "Tears the target apart from within, dealing 36 Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10%. Lasts 6 sec." },
+                            enUS = { "Tears the target apart from within, inflicting 36 Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10% for 6 sec." },
                             zhCN = { "从内部撕裂目标，每1秒造成36点暗影伤害，并使目标受到你其他暗影持续伤害效果的伤害提高10%。持续6秒。" },
                         },
                     },
@@ -6685,7 +6670,7 @@ ns.Data.talents = {
                             zhCN = "基础法力值的35% | 瞬发",
                         },
                         ranks = {
-                            enUS = { "Transforms the Druid into Moonkin Form. While in this form, the armor contribution from items is increased by 360%, Omen of Clarity gains 100% increased chance to trigger, and all party members within 45 yards have their critical strike chance increased by 3%, exclusive with Leader of the Pack. The Moonkin cannot cast healing spells while shapeshifted.\n\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects." },
+                            enUS = { "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party members within 45 yards have their Critical Strike chance increased by 3%, exclusive with Leader of the Pack. Also protects the caster from Polymorph effects and prevents the use of healing spells.\n\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects." },
                             zhCN = { "使德鲁伊变为枭兽形态。在此形态下，物品提供的护甲值提高360%，清晰预兆的触发几率提高100%，45码范围内所有小队成员的致命一击几率提高3%，与兽群领袖效果不叠加。枭兽形态下无法施放治疗法术。变形可以解除施法者身上的变形术和移动限制效果。" },
                         },
                     },
@@ -6709,7 +6694,7 @@ ns.Data.talents = {
                         col = 2,
                         ranks = {
                             enUS = { "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 1 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 2 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 3 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 4 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 5 Rage or Energy." },
-                            zhCN = { "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 1 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 2 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 3 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 4 Rage or Energy.", "Reduces the cost of your Maul, Primal Bite, Swipe, Claw, and Rake abilities by 5 Rage or Energy." },
+                            zhCN = { "使你的槌击、原始撕咬、挥击、爪击和扫击的怒气或能量消耗降低1点。", "使你的槌击、原始撕咬、挥击、爪击和扫击的怒气或能量消耗降低2点。", "使你的槌击、原始撕咬、挥击、爪击和扫击的怒气或能量消耗降低3点。", "使你的槌击、原始撕咬、挥击、爪击和扫击的怒气或能量消耗降低4点。", "使你的槌击、原始撕咬、挥击、爪击和扫击的怒气或能量消耗降低5点。" },
                         },
                     },
                     {
@@ -6784,6 +6769,20 @@ ns.Data.talents = {
                     },
                     {
                         name = {
+                            enUS = "Shredding Attacks",
+                            zhCN = "撕碎攻击",
+                        },
+                        icon = "spell_shadow_vampiricaura",
+                        max = 3,
+                        row = 3,
+                        col = 1,
+                        ranks = {
+                            enUS = { "Reduces the Energy cost of your Shred ability by 6 and reduces the Rage cost of your Lacerate ability by 1.", "Reduces the Energy cost of your Shred ability by 12 and reduces the Rage cost of your Lacerate ability by 2.", "Reduces the Energy cost of your Shred ability by 18 and reduces the Rage cost of your Lacerate ability by 3." },
+                            zhCN = { "使你的撕碎消耗的能量值降低6点，割伤消耗的怒气降低1点。", "使你的撕碎消耗的能量值降低12点，割伤消耗的怒气降低2点。", "使你的撕碎消耗的能量值降低18点，割伤消耗的怒气降低3点。" },
+                        },
+                    },
+                    {
+                        name = {
                             enUS = "Savage Fury",
                             zhCN = "野蛮暴怒",
                         },
@@ -6830,35 +6829,40 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Shredding Attacks",
-                            zhCN = "撕碎攻击",
+                            enUS = "Shifting Power",
+                            zhCN = "变换之力",
                         },
-                        icon = "spell_shadow_vampiricaura",
-                        max = 3,
+                        icon = "spell_druid_displacement",
+                        max = 1,
                         row = 4,
                         col = 1,
+                        req = 7,
+                        cost = {
+                            enUS = "55% of base mana | Instant | 16 sec cooldown",
+                            zhCN = "基础法力值的55% | 瞬发 | 16秒冷却时间",
+                        },
                         ranks = {
-                            enUS = { "Reduces the Energy cost of your Shred ability by 6 and reduces the Rage cost of your Lacerate ability by 1.", "Reduces the Energy cost of your Shred ability by 12 and reduces the Rage cost of your Lacerate ability by 2.", "Reduces the Energy cost of your Shred ability by 18 and reduces the Rage cost of your Lacerate ability by 3." },
-                            zhCN = { "使你的撕碎消耗的能量值降低6点，割伤消耗的怒气降低1点。", "使你的撕碎消耗的能量值降低12点，割伤消耗的怒气降低2点。", "使你的撕碎消耗的能量值降低18点，割伤消耗的怒气降低3点。" },
+                            enUS = { "Instantly convert 55% of your base Mana into 40 Energy. Shifting Power's cost is reduced by effects that reduce the cost of Shapeshifting." },
+                            zhCN = { "立即将基础法力值转化为40点能量的55%。变换之力的消耗会被降低变形消耗的效果所降低。" },
                         },
                     },
                     {
                         name = {
                             enUS = "Primal Bite",
-                            zhCN = "Primal Bite",
+                            zhCN = "原始撕咬",
                         },
                         icon = "ability_racial_cannibalize",
                         max = 1,
                         row = 4,
                         col = 2,
-                        req = 7,
+                        req = 8,
                         cost = {
                             enUS = "20 Rage | Instant | 6 sec cooldown",
                             zhCN = "20点怒气 | 瞬发 | 6秒冷却时间",
                         },
                         ranks = {
-                            enUS = { "Bite the target for 100% normal damage plus 26." },
-                            zhCN = { "Bite the target for 100% normal damage plus 26." },
+                            enUS = { "Bite the target, dealing 100% normal damage plus 26 and generating a high amount of threat." },
+                            zhCN = { "撕咬目标，造成100%的普通伤害并额外造成26点伤害，同时产生大量威胁值。" },
                         },
                     },
                     {
@@ -6884,7 +6888,7 @@ ns.Data.talents = {
                         max = 2,
                         row = 4,
                         col = 4,
-                        req = 9,
+                        req = 10,
                         ranks = {
                             enUS = { "Gives you a 50% chance to gain an additional 5 Rage any time you get a critical strike while in Bear Form or Dire Bear Form. In addition, your non-periodic critical strikes from Cat Form abilities that generate Combo Points have a 50% chance to add an additional Combo Point.", "Gives you a 100% chance to gain an additional 5 Rage any time you get a critical strike while in Bear Form or Dire Bear Form. In addition, your non-periodic critical strikes from Cat Form abilities that generate Combo Points have a 100% chance to add an additional Combo Point." },
                             zhCN = { "使你在熊形态或巨熊形态下造成爆击时，有50%的几率额外获得5点怒气。此外，你的猎豹形态下可产生连击点数的技能的非周期性爆击有50%的几率额外增加一个连击点数。", "使你在熊形态或巨熊形态下造成爆击时，有100%的几率额外获得5点怒气。此外，你的猎豹形态下可产生连击点数的技能的非周期性爆击有100%的几率额外增加一个连击点数。" },
@@ -6892,16 +6896,17 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "Predatory Instincts",
-                            zhCN = "掠食本能",
+                            enUS = "Improved Shifting Power",
+                            zhCN = "强化变换之力",
                         },
-                        icon = "ability_druid_predatoryinstincts",
+                        icon = "ability_hunter_aspectmastery",
                         max = 2,
                         row = 5,
                         col = 1,
+                        req = 11,
                         ranks = {
-                            enUS = { "Increases the critical strike damage bonus of your melee abilities by 10%.", "Increases the critical strike damage bonus of your melee abilities by 20%." },
-                            zhCN = { "使你的近战技能的爆击伤害加成提高10%。", "使你的近战技能的爆击伤害加成提高20%。" },
+                            enUS = { "Reduces the cooldown of your Shifting Power spell by 4 sec.", "Reduces the cooldown of your Shifting Power spell by 8 sec." },
+                            zhCN = { "使你的变换之力的冷却时间缩短4秒。", "使你的变换之力的冷却时间缩短8秒。" },
                         },
                     },
                     {
@@ -6920,16 +6925,16 @@ ns.Data.talents = {
                     },
                     {
                         name = {
-                            enUS = "King of the Jungle",
-                            zhCN = "丛林之王",
+                            enUS = "Predatory Instincts",
+                            zhCN = "掠食本能",
                         },
-                        icon = "ability_druid_kingofthejungle",
-                        max = 3,
+                        icon = "ability_druid_predatoryinstincts",
+                        max = 2,
                         row = 5,
                         col = 4,
                         ranks = {
-                            enUS = { "Tiger's Fury now instantly grants you 20 Energy.", "Tiger's Fury now instantly grants you 40 Energy.", "Tiger's Fury now instantly grants you 60 Energy." },
-                            zhCN = { "猛虎之怒现在会立即使你获得20点能量。", "猛虎之怒现在会立即使你获得40点能量。", "猛虎之怒现在会立即使你获得60点能量。" },
+                            enUS = { "Increases the critical strike damage bonus of your melee abilities by 10%.", "Increases the critical strike damage bonus of your melee abilities by 20%." },
+                            zhCN = { "使你的近战技能的爆击伤害加成提高10%。", "使你的近战技能的爆击伤害加成提高20%。" },
                         },
                     },
                     {
@@ -6955,7 +6960,7 @@ ns.Data.talents = {
                         max = 5,
                         row = 6,
                         col = 3,
-                        req = 12,
+                        req = 13,
                         ranks = {
                             enUS = { "Increases damage done by your melee abilities on Bleeding targets by 2%.", "Increases damage done by your melee abilities on Bleeding targets by 4%.", "Increases damage done by your melee abilities on Bleeding targets by 6%.", "Increases damage done by your melee abilities on Bleeding targets by 8%.", "Increases damage done by your melee abilities on Bleeding targets by 10%." },
                             zhCN = { "使你的近战技能对流血目标造成的伤害提高2%。", "使你的近战技能对流血目标造成的伤害提高4%。", "使你的近战技能对流血目标造成的伤害提高6%。", "使你的近战技能对流血目标造成的伤害提高8%。", "使你的近战技能对流血目标造成的伤害提高10%。" },
@@ -6970,14 +6975,14 @@ ns.Data.talents = {
                         max = 1,
                         row = 7,
                         col = 2,
-                        req = 15,
+                        req = 16,
                         cost = {
                             enUS = "Instant | 3 min cooldown",
                             zhCN = "瞬发 | 3分钟冷却时间",
                         },
                         ranks = {
                             enUS = { "Requires Cat Form, Bear Form, Dire Bear Form\nCauses your Primal Bite ability to strike up to 3 targets, removes its cooldown, and increases the critical strike chance of your Combo Point-generating abilities by 100%. Clears and grants immunity to Fear effects for the duration. Lasts 15 sec." },
-                            zhCN = { "Requires Cat Form, Bear Form, Dire Bear Form\nCauses your Primal Bite ability to strike up to 3 targets, removes its cooldown, and increases the critical strike chance of your Combo Point-generating abilities by 100%. Clears and grants immunity to Fear effects for the duration. Lasts 15 sec." },
+                            zhCN = { "需要猎豹形态、熊形态或巨熊形态\n使你的原始撕咬最多打击3个目标，取消其冷却时间，并使你的连击点生成技能的爆击几率提高100%。持续期间解除并免疫恐惧效果。持续15秒。" },
                         },
                     },
                 },

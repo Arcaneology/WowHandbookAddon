@@ -34,6 +34,30 @@
             </OnLoad>
         </Scripts>
     </Frame>
+    <!-- 幻化师图钉：同样混入基础图钉方法，图标与提示在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookTransmogPinTemplate" hidden="true" enableMouse="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MapCanvasPinMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <!-- 飞艇与船图钉：同样混入基础图钉方法，图标与提示在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookTransportPinTemplate" hidden="true" enableMouse="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MapCanvasPinMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <!-- 区域路口图钉：同样混入基础图钉方法，箭头图标、旋转与提示在 Modules/WorldMap.lua 里设置 -->
+    <Frame name="WowHandbookPathPinTemplate" hidden="true" enableMouse="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Mixin(self, MapCanvasPinMixin)
+            </OnLoad>
+        </Scripts>
+    </Frame>
     <!-- 草药与矿点图钉：同样混入基础图钉方法，图标（采到的物品）与提示在 Modules/WorldMap.lua 里设置 -->
     <Frame name="WowHandbookGatherPinTemplate" hidden="true" enableMouse="true" virtual="true">
         <Scripts>

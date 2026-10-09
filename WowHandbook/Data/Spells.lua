@@ -571,6 +571,24 @@ ns.Data.spells = {
         },
         {
             name = {
+                enUS = "Berserker Rage",
+                zhCN = "狂暴之怒",
+            },
+            tab = {
+                enUS = "Fury",
+                zhCN = "狂怒",
+            },
+            icon = "spell_nature_ancestralguardian",
+            ranks = {
+                {
+                    rank = "",
+                    level = 30,
+                    id = 18499,
+                },
+            },
+        },
+        {
+            name = {
                 enUS = "Berserker Stance",
                 zhCN = "狂暴姿态",
             },
@@ -612,24 +630,6 @@ ns.Data.spells = {
                     rank = "Rank 3",
                     level = 52,
                     id = 20617,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Berserker Rage",
-                zhCN = "狂暴之怒",
-            },
-            tab = {
-                enUS = "Fury",
-                zhCN = "狂怒",
-            },
-            icon = "spell_nature_ancestralguardian",
-            ranks = {
-                {
-                    rank = "",
-                    level = 32,
-                    id = 18499,
                 },
             },
         },
@@ -11668,24 +11668,6 @@ ns.Data.spells = {
                     rank = "Rank 4",
                     level = 54,
                     id = 9904,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Tiger's Fury",
-                zhCN = "猛虎之怒",
-            },
-            tab = {
-                enUS = "Feral Combat",
-                zhCN = "野性战斗",
-            },
-            icon = "ability_mount_jungletiger",
-            ranks = {
-                {
-                    rank = "",
-                    level = 24,
-                    id = 5217,
                 },
             },
         },

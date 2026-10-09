@@ -14,6 +14,7 @@
   QuestieDB Forever 版训练师与坐标，加游戏内实测坐标与新训练师；阵营、可教到的等级、地图与坐标）
 - ClassTrainers.lua：各职业训练师（网站 class-trainers.json：QuestieDB Forever 版加游戏内实测坐标与新训练师；
   猎人另有宠物训练师 kind = "pet"，法师另有传送门训练师 kind = "portal"；阵营、地图与坐标）
+- Transmogrifiers.lua：幻化师（用户 2026-10-07 提供的位置，写在本脚本的 TRANSMOGRIFIERS；阵营、地图与坐标）
 - GatheringNodes.lua：草药与矿点（网站 gathering-nodes.json，来自 QuestieDB Forever 版刷新点）：每种采集点
   采到的物品与所需技能；各区域地图上的位置，同一处可能刷出的几种合并为一个点
 
@@ -370,6 +371,21 @@ BOSS_ORDER = {
 }
 
 
+# 首领 NPC ID 的覆盖（键是网站副本 slug）。网站 bossDetails 里这几个新副本的 npcId 是参照数据带来的连号占位值
+# （18401 起，两个副本互相重复），领主大厅的 Magmatus 则写成了怒焰裂谷塔拉加曼的 ID。这里按 Forever Guide 1.26.1
+# 的首领表改成客户端里的生物 ID；值为 None 表示没有可靠 ID，导出时不带 npcID，副本进度改按名字匹配。
+# 网站 bossDetails 修正后删掉对应条目。
+BOSS_NPC_IDS = {
+    "hall-of-thanes": {"Magmatus": 261316},
+    "excavation-site-wetlands": {"Saltspine": 260322, "Shadetooth": 260325, "Highland Horror": 260808,
+                                 "Relic Guardian": 260326},
+    "city-of-dalaran": {"Arcane Anomaly": 245999, "Fel Ancient": 246003, "Unstable Sentinel": 246017,
+                        "Shade of the Archmage": 246020, "Lyn the Ignored": 247032,
+                        "Atrexis the Grave Knight": 247126,
+                        "Mana Devourer": None, "Mana Elemental": None, "Mana Wraith": None},
+}
+
+
 def ordered_bosses(slug: str, names: list) -> list:
     order = BOSS_ORDER.get(slug)
     if not order:
@@ -395,6 +411,7 @@ def build_dungeons(zones: list, zh_names: dict, boss_loot: dict, quests: dict, z
             loot = section_loot.get("bosses") or {}
             details = (drop_details.get(slug) or {}).get(section_slug or "_root") or {}
             facts = (boss_details.get(slug) or {}).get(section_slug or "_root") or {}
+            npc_ids = BOSS_NPC_IDS.get(slug) or {}
             boss_names = ordered_bosses(f"{slug}-{section_slug}" if section else slug,
                                         list((section or entry).get("bosses") or []))
             # 网站首领列表之外、只来自掉落表的行（稀有精英、物品、杂兵等）标 lootOnly：保留掉落，但不计入首领数和进度
@@ -428,7 +445,7 @@ def build_dungeons(zones: list, zh_names: dict, boss_loot: dict, quests: dict, z
                 "bosses": [
                     {"name": {"enUS": name, "zhCN": zh_names.get(name)},
                      "level": (facts.get(name) or {}).get("level"),
-                     "npcID": (facts.get(name) or {}).get("npcId"),
+                     "npcID": npc_ids[name] if name in npc_ids else (facts.get(name) or {}).get("npcId"),
                      "displayID": (facts.get(name) or {}).get("displayId"),
                      "lootOnly": True if site_bosses and name not in site_bosses else None,
                      "items": [
@@ -807,8 +824,22 @@ def build_professions(professions: dict, zh_professions: dict, trainers: dict, s
     return out
 
 
+# 网站数据里漏掉、用户在游戏里实测补上的职业训练师（采集插件记录的交互坐标）：职业标识 -> 训练师；
+# 网站数据里已有同一个 NPC 就以网站为准（网站补全后这里可以删）
+CLASS_TRAINER_EXTRAS = {
+    "warlock": [
+        # 棘齿城的术士训练师（采集于 2026-10-10，中立，两个阵营都能学）
+        {"id": 6251, "name": "Strahad Farsan", "nameZh": "斯坦哈德·法尔杉", "faction": "AH", "map": 1413, "x": 62.6, "y": 35.5},
+    ],
+}
+
+
 def build_class_trainers(trainers: dict) -> dict:
     """{[职业] = {{id, name = {enUS, zhCN}, faction, kind, map, x, y}}}，职业为小写的职业标识（mage 等）。"""
+    classes = {name: list(rows) for name, rows in (trainers.get("classes") or {}).items()}
+    for class_name, extras in CLASS_TRAINER_EXTRAS.items():
+        known = {row["id"] for row in classes.get(class_name, [])}
+        classes.setdefault(class_name, []).extend(row for row in extras if row["id"] not in known)
     return {class_name: [{
         "id": row["id"],
         "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
@@ -817,7 +848,26 @@ def build_class_trainers(trainers: dict) -> dict:
         "map": row.get("map"),
         "x": row.get("x"),
         "y": row.get("y"),
-    } for row in rows] for class_name, rows in (trainers.get("classes") or {}).items()}
+    } for row in rows] for class_name, rows in classes.items()}
+
+
+# 幻化师：用户 2026-10-07 提供的位置（地图 ID 与 /way 坐标）；名字取游戏内英文名，中文名待采集
+TRANSMOGRIFIERS = [
+    {"name": "Fyrenz Vishonar", "faction": "A", "map": 1453, "x": 48.0, "y": 84.6},
+    {"name": "Mon'ye", "faction": "H", "map": 1454, "x": 46.2, "y": 53.6},
+    {"name": "Spellweaver Thaldris", "faction": "A", "map": 1416, "x": 17.8, "y": 60.6},
+]
+
+
+def build_transmogrifiers(rows: list) -> list:
+    """[{name = {enUS, zhCN}, faction, map, x, y}]：同一地图内按坐标排序，输出稳定。"""
+    return [{
+        "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
+        "faction": row.get("faction"),
+        "map": row["map"],
+        "x": row["x"],
+        "y": row["y"],
+    } for row in sorted(rows, key=lambda r: (r["map"], r["x"], r["y"]))]
 
 
 def build_gathering(gathering: dict) -> dict:
@@ -831,6 +881,46 @@ def build_gathering(gathering: dict) -> dict:
                   for n in gathering.get("nodes", [])],
         "maps": {int(map_id): kinds for map_id, kinds in (gathering.get("maps") or {}).items()},
     }
+
+
+def build_transport(source: dict) -> dict:
+    """公共交通：枢纽（飞艇塔、码头）与航线。源数据在 tools/data/transport.json。
+    航线 stops 是按顺序的停靠点：两站为双向往返；三站以上且 loop 为真是单向环线（最后一站回到第一站）。"""
+    hubs = {}
+    for hub in source["hubs"]:
+        hubs[hub["id"]] = {key: hub[key] for key in ("kind", "area", "map", "x", "y", "berths", "taxiNodes", "name") if key in hub}
+    for hub_id, hub in hubs.items():
+        for target, spot in (hub.get("berths") or {}).items():
+            if target not in hubs or "x" not in spot or "y" not in spot:
+                raise SystemExit(f"枢纽 {hub_id} 的泊位 {target} 不是已有枢纽，或缺坐标")
+    routes = []
+    for route in source["routes"]:
+        stops = route["stops"]
+        if len(stops) < 2 or any(stop not in hubs for stop in stops):
+            raise SystemExit(f"航线 {route['id']} 的停靠点不全在枢纽表里")
+        if route.get("loop") and len(stops) < 3:
+            raise SystemExit(f"航线 {route['id']} 是环线，至少要三个停靠点")
+        routes.append({key: route[key] for key in ("id", "kind", "stops", "loop", "faction") if key in route})
+    return {"hubs": hubs, "routes": routes}
+
+
+# 路口箭头方向：L 左、R 右、O 上（北）、U 下（南），两两组合；换成逆时针角度（度），箭头贴图朝右为 0
+PATH_ANGLES = {"R": 0, "RO": 45, "O": 90, "LO": 135, "L": 180, "LU": 225, "U": 270, "RU": 315}
+PATH_KINDS = ("path", "entrance", "exit")
+
+
+def build_zone_paths(source: dict) -> dict:
+    """区域路口：{ 地图: [ { x, y, to, to2, kind, angle } ] }，源数据在 tools/data/zone-paths.json。"""
+    maps: dict[int, list] = {}
+    for entry in source["paths"]:
+        if entry["dir"] not in PATH_ANGLES or entry["kind"] not in PATH_KINDS:
+            raise SystemExit(f"区域路口 {entry} 的方向或类型不认识")
+        if not (0 <= entry["x"] <= 100 and 0 <= entry["y"] <= 100):
+            raise SystemExit(f"区域路口 {entry} 的坐标不在 0–100 内")
+        spot = {"x": entry["x"], "y": entry["y"], "to": entry["to"], "to2": entry.get("to2"),
+                "kind": entry["kind"], "angle": PATH_ANGLES[entry["dir"]]}
+        maps.setdefault(entry["map"], []).append({key: value for key, value in spot.items() if value is not None})
+    return maps
 
 
 def build_talents(talents: dict, zh_talents: dict) -> dict:
@@ -903,6 +993,9 @@ def export(site: Path) -> dict:
             if (generated / "graveyards.json").exists() else {},
             "classTrainers": build_class_trainers(load(generated / "class-trainers.json"))
             if (generated / "class-trainers.json").exists() else {},
+            "transmogrifiers": build_transmogrifiers(TRANSMOGRIFIERS),
+            "transport": build_transport(load(REPO_ROOT / "tools" / "data" / "transport.json")),
+            "zonePaths": build_zone_paths(load(REPO_ROOT / "tools" / "data" / "zone-paths.json")),
             "gathering": build_gathering(load(generated / "gathering-nodes.json"))
             if (generated / "gathering-nodes.json").exists() else {"nodes": [], "maps": {}},
             "professions": build_professions(load(generated / "professions.json"),
@@ -937,6 +1030,12 @@ def main() -> int:
     write_lua("ClassTrainers.lua", "classTrainers", data["classTrainers"],
               "Class trainer locations from QuestieDB (https://github.com/Questie/QuestieDB), "
               "the Questie project, GPL-3.0, with positions checked in WoW: Forever.")
+    write_lua("Transmogrifiers.lua", "transmogrifiers", data["transmogrifiers"])
+    # 飞艇塔位置来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
+    write_lua("Transport.lua", "transport", data["transport"],
+              "Zeppelin tower locations from QuestieDB (https://github.com/Questie/QuestieDB), "
+              "the Questie project, GPL-3.0.")
+    write_lua("ZonePaths.lua", "zonePaths", data["zonePaths"])
     # 采集点刷新位置来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
     write_lua("GatheringNodes.lua", "gathering", data["gathering"],
               "Herb and mining node locations from QuestieDB (https://github.com/Questie/QuestieDB), "
@@ -948,7 +1047,7 @@ def main() -> int:
           f"职业 {len(data['spells'])}（技能 {sum(len(v) for v in data['spells'].values())}），"
           f"地图探索贴图 {len(data['mapOverlays'])} 张地图，灵魂医者 {sum(len(v) for v in data['graveyards'].values())} 个，"
           f"专业 {len(data['professions'])}（训练师 {sum(len(p['trainers']) for p in data['professions'])}），"
-          f"职业训练师 {sum(len(v) for v in data['classTrainers'].values())} 个，"
+          f"职业训练师 {sum(len(v) for v in data['classTrainers'].values())} 个，幻化师 {len(data['transmogrifiers'])} 个，"
           f"采集点 {sum(len(v) for m in data['gathering']['maps'].values() for v in m.values())} 处")
     if place_conflicts:
         ids = ", ".join(str(item["id"]) for item in place_conflicts[:10])

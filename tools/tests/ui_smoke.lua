@@ -261,6 +261,7 @@ frameMethods.SetTextColor = function(self, r, g, b, alpha) self.textColor = { r,
 frameMethods.SetDesaturated = function(self, desaturated) self.desaturated = desaturated and true or false end
 frameMethods.SetVertexColor = function(self, r, g, b) self.vertexColor = { r, g, b } end
 frameMethods.SetTexCoord = function(self, left, right, top, bottom) self.texCoord = { left, right, top, bottom } end
+frameMethods.SetRotation = function(self, radians) self.rotation = radians end
 frameMethods.SetScrollChild = function(self, child) self.scrollChild = child end
 frameMethods.SetText = function(self, t) self.text = t or "" end
 frameMethods.GetText = function(self) return self.text end
@@ -1808,6 +1809,39 @@ check("minimap: gathering nodes placed by distance, rotated with the minimap, on
     C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_CVar = unpack(saved, 1, 5)
     GetProfessions, GetProfessionInfo, GetPlayerFacing = nil, nil, nil
 end)
+check("minimap: zeppelin towers and boat berths get their own icons, following the world map switch", function()
+    local W = main.modules.WorldMap
+    local settings = main.db.modules.WorldMap
+    local saved = { C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_Map.GetBestMapForUnit,
+        main.PlayerFaction }
+    local orgrimmar = main.Data.transport.hubs.orgrimmar
+    C_Map.GetBestMapForUnit = function() return orgrimmar.map end
+    C_Map.GetWorldPosFromMapPos = function(_, v) return 1, { x = 1000 - v.y * 1000, y = 1000 - v.x * 1000 } end
+    C_Map.GetPlayerMapPosition = function() return { GetXY = function() return orgrimmar.x / 100, orgrimmar.y / 100 end } end
+    CreateVector2D = function(x, y) return { x = x, y = y } end
+    C_Minimap = { GetViewRadius = function() return 100 end }
+    main.PlayerFaction = function() return "H" end
+    Minimap:SetWidth(140)
+    Minimap:Show()
+    W.RebuildMinimapGather()
+    local arrow
+    for _, pin in ipairs(W.minimapGatherPins) do
+        if pin.shown and pin.style == "transport" then arrow = pin end
+    end
+    assert(arrow, "no transport arrow on the minimap")
+    assert(tostring(arrow.icon.texture):find("TransportZeppelinRed$"), "the Horde zeppelin tower should be a red zeppelin")
+    local coords = arrow.icon.texCoord
+    assert(coords and coords[1] == 0 and coords[2] == 1 and coords[3] == 0 and coords[4] == 1, "the arrow must not be cropped")
+    assert(arrow.lines[1]:find(main.Transport.HubName("orgrimmar"), 1, true), "minimap tooltip lacks the place name")
+    settings.transportPins = false
+    W.RebuildMinimapGather()
+    for _, pin in ipairs(W.minimapGatherPins) do
+        assert(not (pin.shown and pin.style == "transport"), "arrow remains with the world map switch off")
+    end
+    settings.transportPins = nil
+    C_Map.GetWorldPosFromMapPos, C_Map.GetPlayerMapPosition, CreateVector2D, C_Minimap, C_Map.GetBestMapForUnit,
+        main.PlayerFaction = unpack(saved, 1, 6)
+end)
 check("minimap: trainers and spirit healers follow the world map settings, plain icons without a border", function()
     local W = main.modules.WorldMap
     local settings = main.db.modules.WorldMap
@@ -2187,6 +2221,190 @@ check("world map: class trainers of your class, spells to train now in the toolt
     main.db.modules.WorldMap.classTrainerPins = true
     provider:RemoveAllData()
     map.GetMapID = savedMap
+end)
+check("world map: transmogrifiers of your faction, off switch, waypoint on click", function()
+    local W = main.modules.WorldMap
+    local provider = WorldMapFrame.providers[8]
+    assert(provider, "transmogrifier provider not added")
+    assert(#main.Data.transmogrifiers == 3, "expected the three transmogrifiers")
+    local savedFaction = main.PlayerFaction
+    local map = provider:GetMap()
+    local savedMap = map.GetMapID
+    local function pinsOf(mapID)
+        map.GetMapID = function() return mapID end
+        provider:RefreshAllData()
+        local list = {}
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookTransmogPinTemplate" then tinsert(list, pin) end
+        end
+        return list
+    end
+    main.PlayerFaction = function() return "A" end
+    local stormwind = pinsOf(1453)
+    assert(#stormwind == 1 and stormwind[1].whLines[1] == "Fyrenz Vishonar", "Stormwind transmogrifier missing for the Alliance")
+    assert(#pinsOf(1454) == 0, "an Alliance player sees the Orgrimmar transmogrifier")
+    assert(#pinsOf(1416) == 1, "Dalaran transmogrifier missing for the Alliance")
+    main.PlayerFaction = function() return "H" end
+    assert(#pinsOf(1453) == 0 and #pinsOf(1416) == 0, "a Horde player sees Alliance transmogrifiers")
+    local orgrimmar = pinsOf(1454)
+    assert(#orgrimmar == 1 and orgrimmar[1].whLines[1] == "Mon'ye" and orgrimmar[1].whLines[2] == main.L["Transmogrifier"],
+        "Orgrimmar transmogrifier tooltip is wrong")
+    waypoint = nil
+    orgrimmar[1]:OnMouseClickAction("LeftButton")
+    assert(waypoint, "clicking a transmogrifier should set a waypoint")
+    main.db.modules.WorldMap.transmogPins = false
+    assert(#pinsOf(1454) == 0, "transmogrifiers shown while turned off")
+    main.db.modules.WorldMap.transmogPins = nil
+    provider:RemoveAllData()
+    map.GetMapID = savedMap
+    main.PlayerFaction = savedFaction
+end)
+check("world map: zeppelin and boat pins show the next stop, loops the next two", function()
+    local provider = WorldMapFrame.providers[9]
+    assert(provider, "transport provider not added")
+    local savedFaction, savedTaxi = main.PlayerFaction, C_TaxiMap.GetTaxiNodesForMap
+    local function name(id) return main.Transport.HubName(id) end
+    local map = provider:GetMap()
+    local savedMap = map.GetMapID
+    local function pinsOf(mapID)
+        map.GetMapID = function() return mapID end
+        provider:RefreshAllData()
+        local list = {}
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookTransportPinTemplate" then tinsert(list, pin) end
+        end
+        return list
+    end
+    C_TaxiMap.GetTaxiNodesForMap = function(mapID)
+        if mapID == 1437 then
+            return { { nodeID = 7, position = { GetXY = function() return 0.10, 0.60 end } } }
+        elseif mapID == 1439 then
+            return { { nodeID = 26, position = { GetXY = function() return 0.35, 0.45 end } } }
+        elseif mapID == 1424 then
+            return { { nodeID = 14, position = { GetXY = function() return 0.50, 0.50 end } } }
+        end
+        return {}
+    end
+    main.PlayerFaction = function() return "H" end
+    local durotar = pinsOf(1411)
+    assert(#durotar == 1, "Orgrimmar zeppelin tower missing for the Horde")
+    assert(durotar[1].whLines[2] == main.L["Zeppelin"] .. " → " .. name("undercity")
+        and durotar[1].whLines[3] == main.L["Zeppelin"] .. " → " .. name("gromgol"),
+        "a two-stop zeppelin line should only name its other end: " .. table.concat(durotar[1].whLines, " | "))
+    assert(#pinsOf(1437) == 0, "a Horde player sees Alliance boats")
+    main.PlayerFaction = function() return "A" end
+    assert(#pinsOf(1411) == 0, "an Alliance player sees Horde zeppelins")
+    local wetlands = pinsOf(1437)
+    assert(#wetlands == 2, "Menethil Harbor needs one pin per berth (Theramore, Southshore ferry), got " .. #wetlands)
+    local byText = {}
+    for _, pin in ipairs(wetlands) do
+        local text = table.concat(pin.whLines, "\n")
+        if text:find(name("theramore"), 1, true) then byText.theramore = { pin = pin, text = text } end
+        if text:find(" → " .. name("southshore") .. " → " .. name("auberdine"), 1, true) then
+            byText.loop = { pin = pin, text = text }
+        end
+    end
+    assert(byText.theramore and byText.loop, "a Menethil berth is missing a destination")
+    assert(not byText.loop.text:find(name("auberdine") .. " → " .. name("menethil"), 1, true), "the loop named more than two stops")
+    assert(not byText.loop.text:find(main.L["Boat"] .. " → " .. name("auberdine") .. "\n", 1, true)
+        and not byText.loop.text:find(main.L["Boat"] .. " → " .. name("auberdine") .. "$"),
+        "Menethil Harbor has no direct boat to Auberdine, only the loop through Southshore")
+    for _, entry in pairs(byText) do
+        assert(not entry.text:find(main.L["Position is approximate."], 1, true),
+            "a berth with recorded coordinates must not say it is approximate")
+    end
+    local berthSpots = {}
+    for _, entry in ipairs(main.Transport.HubsForMap(1437, "A")) do
+        berthSpots[("%.1f:%.1f"):format(entry.spot.x, entry.spot.y)] = true
+    end
+    assert(berthSpots["5.0:63.5"] and berthSpots["4.6:57.1"], "berth coordinates not used")
+    assert(#pinsOf(1439) == 3, "Auberdine needs one pin per berth (Menethil, Rut'theran, Stormwind)")
+    for _, pin in ipairs(wetlands) do
+        assert(tostring(pin.whTexture.texture):find("TransportShipBlue$"), "an Alliance boat berth should be a blue ship")
+    end
+    local neutral = main.Transport.IconTexture({ kind = "dock", lines = { { faction = "A" }, {} } })
+    assert(neutral:find("TransportShipGold$"), "a berth any faction can use should be gold")
+    assert(main.Transport.IconTexture({ kind = "zeppelin", lines = { { faction = "H" } } }):find("TransportZeppelinRed$"),
+        "a Horde zeppelin tower should be a red zeppelin")
+    assert(not table.concat(pinsOf(1424)[1].whLines, "\n"):find(main.L["Position is approximate."], 1, true),
+        "Southshore has a measured position")
+    local southshoreHub = main.Data.transport.hubs.southshore
+    local savedX, savedY = southshoreHub.x, southshoreHub.y
+    southshoreHub.x, southshoreHub.y = nil, nil
+    local southshore = pinsOf(1424)
+    southshoreHub.x, southshoreHub.y = savedX, savedY
+    assert(#southshore == 1, "Southshore landing missing")
+    assert(table.concat(southshore[1].whLines, "\n"):find(main.L["Position is approximate."], 1, true),
+        "a landing without recorded coordinates must say it is approximate")
+    main.db.modules.WorldMap.transportPins = false
+    assert(#pinsOf(1437) == 0, "transport pins shown while turned off")
+    main.db.modules.WorldMap.transportPins = nil
+    provider:RemoveAllData()
+    map.GetMapID = savedMap
+    C_TaxiMap.GetTaxiNodesForMap = savedTaxi
+    main.PlayerFaction = savedFaction
+end)
+check("transport: place names come from the client by area id, with the data's own names as fallback", function()
+    local saved = C_Map.GetAreaInfo
+    C_Map.GetAreaInfo = function(id) return id == 150 and "Client Menethil" or nil end
+    assert(main.Transport.HubName("menethil") == "Client Menethil", "the client name is not used")
+    assert(main.Transport.HubName("orgrimmar") == main.Name(main.Data.transport.hubs.orgrimmar.name),
+        "a missing client name must fall back to the data name")
+    C_Map.GetAreaInfo = saved
+    for id, hub in pairs(main.Data.transport.hubs) do
+        assert(hub.area, "hub " .. id .. " has no area id")
+    end
+end)
+check("world map: zone paths point toward the neighbour, rotate by direction and follow the switch", function()
+    local provider = WorldMapFrame.providers[10]
+    assert(provider, "path provider not added")
+    local map = provider:GetMap()
+    local savedMap, savedInfo = map.GetMapID, C_Map.GetMapInfo
+    C_Map.GetMapInfo = function(id) return { name = "Map" .. id } end
+    local function pinsOf(mapID)
+        map.GetMapID = function() return mapID end
+        provider:RefreshAllData()
+        local list = {}
+        for _, pin in ipairs(pins) do
+            if pin.template == "WowHandbookPathPinTemplate" then tinsert(list, pin) end
+        end
+        return list
+    end
+    -- 灰谷（1440）通往石爪山脉（1442）：数据里方向为左下，逆时针 225 度
+    local ashenvale, found = pinsOf(1440), nil
+    assert(#ashenvale >= 5, "Ashenvale has several paths, got " .. #ashenvale)
+    for _, pin in ipairs(ashenvale) do
+        if pin.whLines[1] == main.L["Path to %s"]:format("Map1442") then found = pin end
+    end
+    assert(found, "the path from Ashenvale to Stonetalon is missing")
+    assert(found.whAngle == 225, "wrong direction for Ashenvale to Stonetalon: " .. tostring(found.whAngle))
+    assert(math.abs(found.whTexture.rotation - math.rad(225)) < 1e-9, "the arrow texture is not rotated")
+    assert(tostring(found.whTexture.texture):find("PathArrow$"), "paths use the gold arrow")
+    -- 首都出口与入口也有，提示用词不同
+    local orgrimmar = pinsOf(1454)
+    local toDurotar
+    for _, pin in ipairs(orgrimmar) do
+        if pin.whLines[1] == main.L["Exit to %s"]:format("Map1411") then toDurotar = pin end
+    end
+    assert(toDurotar and toDurotar.whAngle == 270, "Orgrimmar exit to Durotar missing or not pointing down")
+    local durotar = pinsOf(1411)
+    local entrance
+    for _, pin in ipairs(durotar) do
+        if pin.whLines[1] == main.L["Entrance to %s"]:format("Map1454") then entrance = pin end
+    end
+    assert(entrance, "Durotar entrance to Orgrimmar missing")
+    -- 一个路口通往两张地图：多一行
+    local winterspring = pinsOf(1452)
+    local both
+    for _, pin in ipairs(winterspring) do
+        if pin.whLines[2] then both = pin end
+    end
+    assert(both and both.whLines[2] == main.L["Also leads to %s"]:format("Map1448"), "a path to two zones names both")
+    main.db.modules.WorldMap.pathPins = false
+    assert(#pinsOf(1440) == 0, "paths shown while turned off")
+    main.db.modules.WorldMap.pathPins = nil
+    provider:RemoveAllData()
+    map.GetMapID, C_Map.GetMapInfo = savedMap, savedInfo
 end)
 check("spirit healers: game list and plugin data are merged, same spot drawn once", function()
     local W = main.modules.WorldMap
