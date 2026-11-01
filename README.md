@@ -143,4 +143,16 @@ GPL-3.0. See [LICENSE](LICENSE).
 
 WoW Handbook is an unofficial, fan-made addon. It is not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and its game data are trademarks and property of Blizzard Entertainment.
 
-Full guides, quest walkthroughs and loot tables: [wowhandbook.com](https://wowhandbook.com)
+## Full guides on wowhandbook.com
+
+The addon covers what you need in game. The free companion site [wowhandbook.com](https://wowhandbook.com/) has the full guides:
+
+- [Dungeons](https://wowhandbook.com/zones/dungeons/): level 10 to 60 dungeon progression with locations, quests, bosses and loot.
+- [Spellbook](https://wowhandbook.com/spellbook/): every trainable spell for all nine classes, with full tooltips and what is new since Classic.
+- [Talent calculator](https://wowhandbook.com/talents/): open the builds you copy from the in-game simulator and keep adjusting them.
+- [Classes](https://wowhandbook.com/classes/): what changed for each class and where it shines.
+- [Professions](https://wowhandbook.com/professions/): materials, current recipes and leveling routes.
+- [World map](https://wowhandbook.com/zones/): regions by level, capital maps, quest routes and dungeon entrances.
+- [Addon page](https://wowhandbook.com/addon/): download and release notes.
+
+中文完整攻略：[副本](https://wowhandbook.com/zh/zones/dungeons/) · [技能书](https://wowhandbook.com/zh/spellbook/) · [天赋模拟器](https://wowhandbook.com/zh/talents/) · [职业](https://wowhandbook.com/zh/classes/) · [专业](https://wowhandbook.com/zh/professions/) · [世界地图](https://wowhandbook.com/zh/zones/) · [插件下载与更新](https://wowhandbook.com/zh/addon/)
