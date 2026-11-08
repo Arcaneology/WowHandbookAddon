@@ -134,7 +134,7 @@ end
 Module.RecordPetSpells = RecordPetSpells
 
 -- 召唤或更换恶魔后记录它的技能：恶魔技能书就绪有延迟，统一 1 秒后读，期间重复事件合并。
--- 技能书页与未学技能面板共用这一个处理函数（同一函数重复注册只算一次）。
+-- 技能书页与其他用到技能表的地方共用这一个处理函数（同一函数重复注册只算一次）。
 local petPending = false
 function Module.OnPetChanged(_, unit)
     if unit and unit ~= "player" then
@@ -151,7 +151,7 @@ function Module.OnPetChanged(_, unit)
 end
 
 -- 每个技能的每个等级展开成一行：{ spell, rank, rankNumber, level, status }
--- 默认只含当前种族能学的技能（未学技能面板、首页、地图训练师提示、升级提示都用这份）；
+-- 默认只含当前种族能学的技能（首页、地图训练师提示、升级提示与技能书里的“按等级学习”页都用这份）；
 -- allRaces 为真时（技能书页）也列出其他种族专属的技能，状态为 other。限定种族的行带 races 与 mine（当前种族能不能学）。
 -- status：known（已学）、ready（现在可学）、later（还没到等级）、other（其他种族的技能）；恶魔技能另有
 -- innate（召唤恶魔时自带）、book（到等级了，可向商人买魔典）、unchecked（这只恶魔还没召唤过，不知道学没学）
@@ -194,6 +194,13 @@ local function Rows(petsOnly, allRaces)
             local entry = known[key]
             if shared[key] then
                 entry = KnownRankByID(spell)
+            else
+                -- 技能书里的名字会临时变化（猎人召出宠物后“召唤宠物”显示为“召唤 + 宠物名”），按名字对不上时
+                -- 再按技能 ID 查；取两者里学得更高的一级
+                local byID = KnownRankByID(spell)
+                if byID and (not entry or byID.best > entry.best) then
+                    entry = byID
+                end
             end
             for _, rank in ipairs(spell.ranks) do
                 local rankNumber = ns.RankNumber(rank.rank)
@@ -224,7 +231,7 @@ local function Rows(petsOnly, allRaces)
     return rows
 end
 
-Module.Rows = Rows -- 未学技能面板共用
+Module.Rows = Rows -- 供其他模块共用
 
 local STATUS = {
     known = "|cff46bf72%s|r",

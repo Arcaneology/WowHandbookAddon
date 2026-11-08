@@ -5,7 +5,7 @@
 ## Notes-zhCN: 魔兽世界：无限的副本任务与掉落、按等级学习的技能等游戏助手。
 ## Author: AntaresBuild
 ## X-Organization: ArcaneStudio
-## Version: 0.5.0
+## Version: 0.6.0
 ## SavedVariables: WowHandbookDB
 ## SavedVariablesPerCharacter: WowHandbookCharDB
 ## X-Website: https://wowhandbook.com
@@ -21,6 +21,7 @@ Core\Waypoints.lua
 Core\Transport.lua
 UI\Theme.lua
 UI\Widgets.lua
+UI\NativeTemplates.xml
 Core\Links.lua
 Core\ItemFilter.lua
 UI\MainFrame.lua
@@ -31,6 +32,7 @@ Data\Quests.lua
 Data\Spells.lua
 Data\MapOverlays.lua
 Data\Graveyards.lua
+Data\GraveyardAreas.lua
 Data\Professions.lua
 Data\ClassTrainers.lua
 Data\Transmogrifiers.lua
@@ -38,18 +40,27 @@ Data\Transport.lua
 Data\ZonePaths.lua
 Data\GatheringNodes.lua
 Data\Talents.lua
+Data\TalentPlans.lua
+Data\BisGear.lua
+Data\HunterPets.lua
+Data\InstanceMaps.lua
 Modules\Dungeons.lua
 Modules\ItemSource.lua
 Modules\MinimapButton.lua
 Modules\Spellbook.lua
-Modules\SpellbookPanel.lua
 Modules\Talents.lua
 Modules\Professions.lua
+Modules\HunterPets.lua
+Modules\NativeSpellList.lua
+Modules\NativeTalentView.lua
+Modules\NativeTabs.lua
+Modules\BisGear.lua
 Modules\ActionBars.lua
 Modules\ActionBarRange.lua
 Modules\Vendor.lua
 Modules\AutoQuest.lua
 Modules\WorldMap.lua
+Modules\InstanceMap.lua
 Modules\GatherMinimap.lua
 Modules\GatherLog.lua
 Modules\InstanceTracker.lua

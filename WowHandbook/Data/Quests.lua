@@ -31,6 +31,7 @@ ns.Data.quests = {
             x = 11.56,
             y = 34.29,
         },
+        before = { 6562 },
         after = { 6565 },
         summary = {
             enUS = "Bring the Damp Note to Je'neu Sancrea in Ashenvale.",
@@ -141,7 +142,7 @@ ns.Data.quests = {
                 zhCN = "耶努萨克雷",
             },
         },
-        after = { 6563 },
+        after = { 6563, 6564 },
         summary = {
             enUS = "Speak to Je'neu Sancrea in Ashenvale.",
             zhCN = "与灰谷的耶努萨克雷谈一谈。",
@@ -206,7 +207,7 @@ ns.Data.quests = {
             zhCN = { "洛迦里斯手稿" },
         },
         rewards = {
-            xp = 10300,
+            xp = 6550,
             items = {
                 {
                     id = 6743,
@@ -258,7 +259,7 @@ ns.Data.quests = {
             zhCN = "到黑色深渊去找到银月守卫塞尔瑞德。",
         },
         rewards = {
-            xp = 9000,
+            xp = 5700,
             reputation = {
                 {
                     name = {
@@ -381,6 +382,10 @@ ns.Data.quests = {
             enUS = "Travel to Gershala Nightwhisper in Auberdine.",
             zhCN = "到奥伯丁的戈沙拉·夜语那儿去。",
         },
+        rewards = {
+            xp = 1450,
+            money = 1300,
+        },
     },
     [1199] = {
         name = {
@@ -422,7 +427,7 @@ ns.Data.quests = {
             zhCN = { "暮光坠饰 ×10" },
         },
         rewards = {
-            xp = 9550,
+            xp = 6050,
             items = {
                 {
                     id = 6998,
@@ -496,7 +501,7 @@ ns.Data.quests = {
             zhCN = { "洛古斯·杰特" },
         },
         rewards = {
-            xp = 9950,
+            xp = 6300,
             money = 4000,
             choices = {
                 {
@@ -608,7 +613,7 @@ ns.Data.quests = {
             zhCN = { "克尔里斯的头颅" },
         },
         rewards = {
-            xp = 12400,
+            xp = 7850,
             money = 6500,
             choices = {
                 {
@@ -687,7 +692,7 @@ ns.Data.quests = {
             zhCN = { "克尔里斯的头颅" },
         },
         rewards = {
-            xp = 12400,
+            xp = 7850,
             money = 6500,
             choices = {
                 {
@@ -1210,6 +1215,7 @@ ns.Data.quests = {
             y = 47.52,
         },
         before = { 4081 },
+        after = { 4122 },
         summary = {
             enUS = "Venture to Blackrock Depths and destroy the vile aggressors! Warlord Goretooth wants you to kill 10 Anvilrage...",
             zhCN = "到黑石深渊去消灭那些邪恶的侵略者！ 高图斯军阀要你杀死10个铁怒医师,、10个铁怒士兵和10个铁怒军官。完成任务之后回去向他复命。",
@@ -2246,6 +2252,7 @@ ns.Data.quests = {
             x = 33.4,
             y = 50.8,
         },
+        before = { 4082 },
         after = { 4121, 4132 },
         summary = {
             enUS = "Travel to the Burning Steppes and find Grark Lorkrub. You recall Lexlort mentioning that he was last seen in a massive Blackrock fortress. When...",
@@ -2424,7 +2431,7 @@ ns.Data.quests = {
             },
         },
         before = { 3702, 3701 },
-        after = { 4361, 4362, 4363 },
+        after = { 4361, 4362, 4363, 4342 },
         summary = {
             enUS = "Travel to Blackrock Depths and find Kharan Mighthammer. The King mentioned that Kharan was being held prisoner there - perhaps you should try...",
             zhCN = "去黑石深渊找到卡兰·巨锤。 国王提到卡兰在那里负责看守囚犯——也许你应该在监狱附近寻找他。",
@@ -2455,6 +2462,7 @@ ns.Data.quests = {
                 zhCN = "卡兰·巨锤",
             },
         },
+        before = { 4341 },
         after = { 4361, 4362, 4363 },
         summary = {
             enUS = "Listen as Kharan Mighthammer tells his story.",
@@ -2490,7 +2498,7 @@ ns.Data.quests = {
             x = 39.09,
             y = 56.2,
         },
-        before = { 3702, 4341 },
+        before = { 3702, 4341, 4342 },
         after = { 4362, 4363 },
         summary = {
             enUS = "Return to Ironforge and deliver the bad news to King Magni Bronzebeard.",
@@ -3180,7 +3188,7 @@ ns.Data.quests = {
             zhCN = "艾博希尔之眼",
         },
         level = 60,
-        min = 55,
+        min = 56,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
         start = {
@@ -3912,7 +3920,7 @@ ns.Data.quests = {
             id = 253092,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
             map = 1436,
             x = 52.5,
@@ -3922,14 +3930,14 @@ ns.Data.quests = {
             kind = "npc",
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
         },
         before = { 92742, 92744, 92745, 92747, 92748, 92749, 92750, 92751, 92752 },
         after = { 92819 },
         summary = {
             enUS = "Find the forge hidden in the Deadmines, and plant the Extra-Destructive Explosives nearby. Then, meet up with Alba Fairmoon at the Deadmines exit.",
-            zhCN = "找到死亡矿井深处的熔炉，在附近安放强效炸药，然后在死亡矿井出口与阿尔芭·皎月会合。",
+            zhCN = "找到死亡矿井深处的熔炉，在附近安放强效炸药，然后在死亡矿井出口与阿尔巴·晴月会合。",
         },
         objectives = {
             enUS = { "Explosives placed", "Extra-Destructive Explosives" },
@@ -4108,6 +4116,9 @@ ns.Data.quests = {
             enUS = "Track down the Defias Messenger in Westfall and bring his message to Stoutmantle.",
             zhCN = "追捕西部荒野的迪菲亚信使，并将他身上携带着的信件交给斯托曼。",
         },
+        rewards = {
+            xp = 1350,
+        },
     },
     [155] = {
         name = {
@@ -4145,6 +4156,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Escort the Defias Traitor to the secret hideout of the Defias Brotherhood. Once the Defias Traitor shows you where VanCleef and his...",
             zhCN = "护送迪菲亚叛徒前往迪菲亚兄弟会的秘密藏身处。迪菲亚叛徒把你带到范克里夫和他的手下的巢穴之后，尽快回去向格里安·斯托曼汇报相关信息。",
+        },
+        rewards = {
+            xp = 1700,
         },
     },
     [65] = {
@@ -4295,7 +4309,7 @@ ns.Data.quests = {
             zhCN = { "小型高能发动机" },
         },
         rewards = {
-            xp = 5800,
+            xp = 3700,
             choices = {
                 {
                     id = 7606,
@@ -4435,7 +4449,7 @@ ns.Data.quests = {
             zhCN = { "未寄出的信" },
         },
         rewards = {
-            xp = 3250,
+            xp = 2050,
             money = 700,
             reputation = {
                 {
@@ -5106,7 +5120,7 @@ ns.Data.quests = {
             zhCN = { "尖端机器人的存储器核心" },
         },
         rewards = {
-            xp = 6900,
+            xp = 4750,
             money = 2000,
             reputation = {
                 {
@@ -5203,7 +5217,7 @@ ns.Data.quests = {
             zhCN = { "装满的铅瓶" },
         },
         rewards = {
-            xp = 5700,
+            xp = 3950,
             money = 2200,
             reputation = {
                 {
@@ -5301,7 +5315,7 @@ ns.Data.quests = {
             zhCN = "将克努比护送到出口，然后向藏宝海湾的斯库提汇报。",
         },
         rewards = {
-            xp = 9200,
+            xp = 5800,
             choices = {
                 {
                     id = 9535,
@@ -5448,7 +5462,7 @@ ns.Data.quests = {
             zhCN = { "机械内胆 ×24" },
         },
         rewards = {
-            xp = 6350,
+            xp = 4400,
             choices = {
                 {
                     id = 9608,
@@ -5913,7 +5927,7 @@ ns.Data.quests = {
             zhCN = { "法德林·安威玛尔" },
         },
         rewards = {
-            xp = 3550,
+            xp = 2300,
             choices = {
                 {
                     id = 279899,
@@ -5962,7 +5976,7 @@ ns.Data.quests = {
             zhCN = { "矮人传家宝 ×8" },
         },
         rewards = {
-            xp = 4600,
+            xp = 2950,
             money = 700,
             choices = {
                 {
@@ -6022,7 +6036,7 @@ ns.Data.quests = {
             zhCN = { "狂怒的幽灵 ×15", "受折磨的灵魂 ×10" },
         },
         rewards = {
-            xp = 3550,
+            xp = 2300,
             money = 700,
             choices = {
                 {
@@ -6086,7 +6100,7 @@ ns.Data.quests = {
             zhCN = { "杜根·挽锤的头颅" },
         },
         rewards = {
-            xp = 4950,
+            xp = 3200,
             money = 800,
             choices = {
                 {
@@ -6154,7 +6168,7 @@ ns.Data.quests = {
             zhCN = "把谅解条约交给铁炉堡的国王麦格尼·铜须。",
         },
         rewards = {
-            xp = 3900,
+            xp = 2550,
             money = 1600,
             reputation = {
                 {
@@ -6180,7 +6194,7 @@ ns.Data.quests = {
             zhCN = "暗影残片",
         },
         level = 42,
-        min = 38,
+        min = 39,
         faction = "H",
         instances = { "maraudon" },
         start = {
@@ -6227,7 +6241,7 @@ ns.Data.quests = {
             zhCN = "暗影残片",
         },
         level = 42,
-        min = 38,
+        min = 39,
         faction = "A",
         instances = { "maraudon" },
         start = {
@@ -6790,7 +6804,7 @@ ns.Data.quests = {
             zhCN = { "怒焰穴居人 ×8", "怒焰萨满祭司 ×8" },
         },
         rewards = {
-            xp = 3200,
+            xp = 2150,
             money = 700,
             reputation = {
                 {
@@ -6845,7 +6859,7 @@ ns.Data.quests = {
             zhCN = { "巴扎兰", "祈求者耶戈什" },
         },
         rewards = {
-            xp = 3500,
+            xp = 2350,
             money = 800,
             reputation = {
                 {
@@ -6955,7 +6969,7 @@ ns.Data.quests = {
             zhCN = { "恐怖图腾背包" },
         },
         rewards = {
-            xp = 4400,
+            xp = 2950,
             choices = {
                 {
                     id = 15452,
@@ -7015,7 +7029,7 @@ ns.Data.quests = {
             zhCN = "在怒焰裂谷搜寻玛尔·恐怖图腾的尸体以及他留下的东西。",
         },
         rewards = {
-            xp = 2700,
+            xp = 1800,
         },
     },
     [5761] = {
@@ -7058,7 +7072,7 @@ ns.Data.quests = {
             zhCN = { "塔拉加曼的心脏" },
         },
         rewards = {
-            xp = 3500,
+            xp = 2350,
             money = 800,
         },
     },
@@ -7102,7 +7116,7 @@ ns.Data.quests = {
             zhCN = { "暗影法术研究", "扭曲虚空的魔法" },
         },
         rewards = {
-            xp = 4400,
+            xp = 2950,
             choices = {
                 {
                     id = 15449,
@@ -7379,7 +7393,7 @@ ns.Data.quests = {
             zhCN = { "蓝叶薯 ×6", "开孔的箱子", "地鼠训练手册", "地鼠指挥棒" },
         },
         rewards = {
-            xp = 7900,
+            xp = 5000,
             items = {
                 {
                     id = 6755,
@@ -7465,7 +7479,7 @@ ns.Data.quests = {
             x = 57.23,
             y = 30.34,
         },
-        before = { 1825 },
+        before = { 1824 },
         summary = {
             enUS = "Bring to Thun'grim Firegaze 15 Smoky Iron Ingots, 10 Powdered Azurite, 10 Iron Bars and a Vial of Phlogiston.",
             zhCN = "为索恩格瑞姆收集15根烟雾铁锭、10份蓝铜粉、10块铁锭和1瓶燃素。",
@@ -7552,7 +7566,7 @@ ns.Data.quests = {
             zhCN = "护送进口商威利克斯逃出剃刀沼泽。",
         },
         rewards = {
-            xp = 11450,
+            xp = 7250,
             choices = {
                 {
                     id = 6748,
@@ -7882,7 +7896,7 @@ ns.Data.quests = {
             zhCN = { "男爵的头颅" },
         },
         rewards = {
-            xp = 6200,
+            xp = 3900,
             choices = {
                 {
                     id = 279864,
@@ -7939,7 +7953,7 @@ ns.Data.quests = {
             zhCN = { "憎恶头颅" },
         },
         rewards = {
-            xp = 5300,
+            xp = 3450,
             money = 1300,
             extraItems = {
                 {
@@ -7994,7 +8008,7 @@ ns.Data.quests = {
             zhCN = { "调查爱德华·织心在洛丹伦废墟失踪一事。" },
         },
         rewards = {
-            xp = 7050,
+            xp = 4600,
             choices = {
                 {
                     id = 251485,
@@ -8054,7 +8068,7 @@ ns.Data.quests = {
             zhCN = { "血污徽章 ×10" },
         },
         rewards = {
-            xp = 9750,
+            xp = 6200,
             money = 4500,
             choices = {
                 {
@@ -8094,8 +8108,8 @@ ns.Data.quests = {
                 zhCN = "黛娜·肯尼迪女士",
             },
             map = 1453,
-            x = 69.0,
-            y = 29.9,
+            x = 74.4,
+            y = 47.0,
         },
         summary = {
             enUS = "Return the Crest of Lordaeron to Lady Dena Kennedy in Stormwind City.",
@@ -8106,7 +8120,7 @@ ns.Data.quests = {
             zhCN = { "洛丹伦纹章" },
         },
         rewards = {
-            xp = 9750,
+            xp = 6200,
             choices = {
                 {
                     id = 280567,
@@ -8161,7 +8175,7 @@ ns.Data.quests = {
             zhCN = { "洛丹伦纹章" },
         },
         rewards = {
-            xp = 8300,
+            xp = 5450,
             choices = {
                 {
                     id = 280567,
@@ -8210,7 +8224,7 @@ ns.Data.quests = {
             zhCN = { "完好的肢体 ×25" },
         },
         rewards = {
-            xp = 7050,
+            xp = 4600,
             money = 4500,
             choices = {
                 {
@@ -8279,7 +8293,7 @@ ns.Data.quests = {
             zhCN = { "染血的信" },
         },
         rewards = {
-            xp = 9750,
+            xp = 6200,
             reputation = {
                 {
                     name = {
@@ -8342,7 +8356,7 @@ ns.Data.quests = {
             zhCN = { "剧毒的毒株" },
         },
         rewards = {
-            xp = 8300,
+            xp = 5450,
             money = 125,
             choices = {
                 {
@@ -8404,6 +8418,7 @@ ns.Data.quests = {
             zhCN = { "拉斯玛尔" },
         },
         rewards = {
+            xp = 4600,
             choices = {
                 {
                     id = 251533,
@@ -9111,7 +9126,7 @@ ns.Data.quests = {
             zhCN = "达克雷尔的威胁",
         },
         level = 60,
-        min = 58,
+        min = 60,
         faction = "H",
         instances = { "scholomance" },
         start = {
@@ -9302,7 +9317,7 @@ ns.Data.quests = {
             zhCN = "找到亡灵哨兵阿达曼特和亡灵哨兵文森特。",
         },
         rewards = {
-            xp = 8700,
+            xp = 5350,
             money = 1800,
             items = {
                 {
@@ -9368,7 +9383,7 @@ ns.Data.quests = {
             zhCN = { "索兰鲁克宝珠的碎片 ×3", "索兰鲁克宝珠的大碎片" },
         },
         rewards = {
-            xp = 7650,
+            xp = 5100,
             choices = {
                 {
                     id = 6898,
@@ -9421,7 +9436,7 @@ ns.Data.quests = {
             zhCN = { "乌尔之书" },
         },
         rewards = {
-            xp = 9150,
+            xp = 5600,
             money = 1400,
             choices = {
                 {
@@ -9488,7 +9503,7 @@ ns.Data.quests = {
             zhCN = { "阿鲁高的头颅" },
         },
         rewards = {
-            xp = 14350,
+            xp = 8850,
             items = {
                 {
                     id = 6414,
@@ -9546,7 +9561,7 @@ ns.Data.quests = {
             zhCN = { "塔格尔的头颅" },
         },
         rewards = {
-            xp = 6400,
+            xp = 4200,
             choices = {
                 {
                     id = 3400,
@@ -9612,7 +9627,7 @@ ns.Data.quests = {
             zhCN = { "迪克斯特·瓦德的手掌" },
         },
         rewards = {
-            xp = 6700,
+            xp = 4400,
             choices = {
                 {
                     id = 2033,
@@ -9678,7 +9693,7 @@ ns.Data.quests = {
             zhCN = { "迪菲亚囚徒 ×10", "迪菲亚罪犯 ×8", "迪菲亚叛军 ×8" },
         },
         rewards = {
-            xp = 8500,
+            xp = 5550,
             money = 4000,
             reputation = {
                 {
@@ -9731,7 +9746,7 @@ ns.Data.quests = {
             zhCN = { "红色毛纺面罩 ×10" },
         },
         rewards = {
-            xp = 8500,
+            xp = 5550,
             money = 4000,
             reputation = {
                 {
@@ -9834,7 +9849,7 @@ ns.Data.quests = {
             zhCN = { "巴基尔·斯瑞德的头颅" },
         },
         rewards = {
-            xp = 7500,
+            xp = 4950,
             money = 2500,
             reputation = {
                 {
@@ -11690,7 +11705,7 @@ ns.Data.quests = {
             zhCN = "奥达曼的蘑菇",
         },
         level = 42,
-        min = 36,
+        min = 38,
         faction = "A",
         instances = { "uldaman" },
         start = {
@@ -11783,7 +11798,7 @@ ns.Data.quests = {
             zhCN = "寻找宝石",
         },
         level = 43,
-        min = 40,
+        min = 37,
         faction = "A",
         instances = { "uldaman" },
         start = {
@@ -12297,7 +12312,7 @@ ns.Data.quests = {
             zhCN = "哈缪尔·符文图腾",
         },
         level = 16,
-        min = 10,
+        min = 12,
         faction = "H",
         instances = { "wailing-caverns" },
         start = {
@@ -12343,7 +12358,7 @@ ns.Data.quests = {
             zhCN = "纳拉·蛮鬃",
         },
         level = 16,
-        min = 10,
+        min = 12,
         faction = "H",
         instances = { "wailing-caverns" },
         start = {
@@ -12464,7 +12479,7 @@ ns.Data.quests = {
             zhCN = { "变异皮革 ×20" },
         },
         rewards = {
-            xp = 4650,
+            xp = 3100,
             money = 1800,
             items = {
                 {
@@ -12554,7 +12569,7 @@ ns.Data.quests = {
             zhCN = { "毒蛇花 ×10" },
         },
         rewards = {
-            xp = 4950,
+            xp = 3300,
             money = 2000,
             choices = {
                 {
@@ -12621,7 +12636,7 @@ ns.Data.quests = {
             zhCN = { "哀嚎香精 ×6" },
         },
         rewards = {
-            xp = 3900,
+            xp = 2650,
             money = 1000,
             reputation = {
                 {
@@ -12673,7 +12688,7 @@ ns.Data.quests = {
             zhCN = { "99年波尔多陈酿" },
         },
         rewards = {
-            xp = 3900,
+            xp = 2650,
             money = 1000,
             reputation = {
                 {
@@ -12725,7 +12740,7 @@ ns.Data.quests = {
             zhCN = { "变异破坏者 ×7", "剧毒飞蛇 ×7", "变异蹒跚者 ×7", "变异尖牙风蛇 ×7" },
         },
         rewards = {
-            xp = 5950,
+            xp = 4000,
             money = 2500,
             choices = {
                 {
@@ -12784,7 +12799,7 @@ ns.Data.quests = {
             zhCN = { "考布莱恩宝石", "安娜科德拉宝石", "皮萨斯宝石", "瑟芬迪斯宝石" },
         },
         rewards = {
-            xp = 6400,
+            xp = 4300,
             choices = {
                 {
                     id = 6505,
@@ -12951,7 +12966,7 @@ ns.Data.quests = {
             zhCN = { "发光的碎片" },
         },
         rewards = {
-            xp = 7700,
+            xp = 5150,
             extraItems = {
                 {
                     id = 10657,
@@ -13398,7 +13413,7 @@ ns.Data.quests = {
             zhCN = "到米奈希尔港找凯特林·格拉斯曼谈谈。",
         },
         rewards = {
-            xp = 630,
+            xp = 1250,
         },
     },
     [95647] = {
@@ -13433,7 +13448,7 @@ ns.Data.quests = {
             zhCN = { "查明阿丁·格拉斯曼的遭遇" },
         },
         rewards = {
-            xp = 2500,
+            xp = 4900,
         },
     },
     [95809] = {
@@ -13523,7 +13538,7 @@ ns.Data.quests = {
             zhCN = "到维尔加挖掘场里寻找多林·桑布雷德的兄弟戴温 (Daewyn)。",
         },
         rewards = {
-            xp = 3150,
+            xp = 6150,
         },
     },
     [95795] = {
@@ -13615,6 +13630,7 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 1150,
+            money = 1200,
         },
     },
     [95663] = {
@@ -13752,7 +13768,7 @@ ns.Data.quests = {
             zhCN = { "灌木丛迅猛龙肉 ×4" },
         },
         rewards = {
-            xp = 3150,
+            xp = 6950,
             items = {
                 {
                     id = 250185,
@@ -13814,7 +13830,7 @@ ns.Data.quests = {
             zhCN = { "泰坦圣物" },
         },
         rewards = {
-            xp = 630,
+            xp = 1250,
         },
     },
     [98824] = {
@@ -13970,6 +13986,642 @@ ns.Data.quests = {
                 },
                 {
                     id = 271719,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [92456] = {
+        name = {
+            enUS = "A Green Sample",
+            zhCN = "绿色样本",
+        },
+        level = 33,
+        min = 24,
+        faction = "A",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 5502,
+            name = {
+                enUS = "Shylamiir",
+                zhCN = "莎拉米尔",
+            },
+            map = 1453,
+            x = 32.6,
+            y = 62.6,
+        },
+        finish = {
+            kind = "npc",
+            id = 5502,
+            name = {
+                enUS = "Shylamiir",
+                zhCN = "莎拉米尔",
+            },
+            map = 1453,
+            x = 32.6,
+            y = 62.6,
+        },
+        summary = {
+            enUS = "Collect a Fel Infused Blossom from the City of Dalaran for Shylamiir in Stormwind City.",
+            zhCN = "在达拉然城里采集一朵邪能灌注之花，带给暴风城的莎拉米尔。",
+        },
+        objectives = {
+            enUS = { "Fel Infused Blossom" },
+            zhCN = { "邪能灌注之花" },
+        },
+        rewards = {
+            xp = 9400,
+            choices = {
+                {
+                    id = 279835,
+                    count = 1,
+                },
+                {
+                    id = 279836,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [92489] = {
+        name = {
+            enUS = "Power Overwhelming",
+            zhCN = "无穷的力量",
+        },
+        level = 33,
+        min = 24,
+        faction = "A",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 5694,
+            name = {
+                enUS = "High Sorcerer Andromath",
+                zhCN = "高阶巫师安多玛斯",
+            },
+            map = 1453,
+            x = 49.6,
+            y = 87.4,
+        },
+        finish = {
+            kind = "npc",
+            id = 5694,
+            name = {
+                enUS = "High Sorcerer Andromath",
+                zhCN = "高阶巫师安多玛斯",
+            },
+            map = 1453,
+            x = 49.6,
+            y = 87.4,
+        },
+        summary = {
+            enUS = "Slay the Arcanic Enigma in the City of Dalaran for High Sorcerer Andromath in Stormwind City.",
+            zhCN = "为暴风城的高阶巫师安多玛斯击杀达拉然城里的奥术之谜。",
+        },
+        objectives = {
+            enUS = { "Arcanic Enigma slain" },
+            zhCN = { "击杀奥术之谜" },
+        },
+        rewards = {
+            xp = 9400,
+            money = 10000,
+            choices = {
+                {
+                    id = 251962,
+                    count = 1,
+                },
+                {
+                    id = 279849,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [92457] = {
+        name = {
+            enUS = "Starving Arcane",
+            zhCN = "饥饿的奥术",
+        },
+        level = 33,
+        min = 24,
+        faction = "A",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        finish = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        summary = {
+            enUS = "Defeat 8 Seeking Remnants, 8 Saturated Remnants and 8 Mana Echoes inside the City of Dalaran for the Image of Archmage Modera outside the dungeon.",
+            zhCN = "为副本外的大法师莫德拉的影像击败达拉然城里的 8 个追寻残迹、8 个饱和残迹和 8 个法力回响。",
+        },
+        objectives = {
+            enUS = { "Seeking Remnant slain ×8", "Saturated Remnant slain ×8", "Mana Echo slain ×8" },
+            zhCN = { "击杀追寻残迹 (Seeking Remnant) ×8", "击杀饱和残迹 (Saturated Remnant) ×8", "击杀法力回响 (Mana Echo) ×8" },
+        },
+        rewards = {
+            xp = 3950,
+            choices = {
+                {
+                    id = 279837,
+                    count = 1,
+                },
+                {
+                    id = 279838,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [92432] = {
+        name = {
+            enUS = "An Alarming Request",
+            zhCN = "紧急请求",
+        },
+        level = 33,
+        min = 30,
+        faction = "A",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Emissary Jacques",
+                zhCN = "特使雅克 (Emissary Jacques)",
+            },
+            map = 1424,
+        },
+        finish = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        summary = {
+            enUS = "Report to the Image of Archmage Modera near the City of Dalaran.",
+            zhCN = "前往达拉然城附近，向大法师莫德拉的影像报到。",
+        },
+        rewards = {
+            xp = 660,
+        },
+    },
+    [92458] = {
+        name = {
+            enUS = "Heart of Disruption",
+            zhCN = "动乱之源",
+        },
+        level = 33,
+        min = 24,
+        faction = "A",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        finish = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        summary = {
+            enUS = "Collect the Arcane Mote for the Image of Archmage Modera near the City of Dalaran. She hands you the Dalaran Sewer Key with the quest.",
+            zhCN = "为达拉然城附近的大法师莫德拉的影像取得奥术微粒。接任务时她会交给你达拉然下水道钥匙。",
+        },
+        objectives = {
+            enUS = { "Arcane Mote" },
+            zhCN = { "奥术微粒" },
+        },
+        rewards = {
+            xp = 3950,
+            choices = {
+                {
+                    id = 279839,
+                    count = 1,
+                },
+                {
+                    id = 279840,
+                    count = 1,
+                },
+                {
+                    id = 279841,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Kirin Tor",
+                        zhCN = "肯瑞托",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [96986] = {
+        name = {
+            enUS = "The Grave Knight",
+            zhCN = "墓穴骑士",
+        },
+        level = 33,
+        min = 24,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 2278,
+            name = {
+                enUS = "Melisara",
+                zhCN = "梅里萨拉",
+            },
+            map = 1424,
+            x = 62.63,
+            y = 20.65,
+        },
+        finish = {
+            kind = "npc",
+            id = 2278,
+            name = {
+                enUS = "Melisara",
+                zhCN = "梅里萨拉",
+            },
+            map = 1424,
+            x = 62.63,
+            y = 20.65,
+        },
+        summary = {
+            enUS = "Defeat Atrexis the Grave Knight in the City of Dalaran for Melisara in Tarren Mill.",
+            zhCN = "为塔伦米尔的梅里萨拉击败达拉然城里的墓穴骑士阿特雷克斯。",
+        },
+        objectives = {
+            enUS = { "Atrexis the Grave Knight slain" },
+            zhCN = { "击杀墓穴骑士阿特雷克斯" },
+        },
+        rewards = {
+            xp = 9400,
+            money = 10000,
+            choices = {
+                {
+                    id = 251963,
+                    count = 1,
+                },
+                {
+                    id = 251965,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [96988] = {
+        name = {
+            enUS = "Source of Power",
+            zhCN = "力量之源",
+        },
+        level = 33,
+        min = 24,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 11044,
+            name = {
+                enUS = "Doctor Martin Felben",
+                zhCN = "马丁·费尔本",
+            },
+            map = 1458,
+            x = 46.61,
+            y = 74.09,
+        },
+        finish = {
+            kind = "npc",
+            id = 11044,
+            name = {
+                enUS = "Doctor Martin Felben",
+                zhCN = "马丁·费尔本",
+            },
+            map = 1458,
+            x = 46.61,
+            y = 74.09,
+        },
+        summary = {
+            enUS = "Collect 6 Cracked Sentry Cores in the City of Dalaran for Doctor Martin Felben in the Undercity.",
+            zhCN = "在达拉然城里收集 6 个开裂的哨兵核心，带给幽暗城的马丁·费尔本。",
+        },
+        objectives = {
+            enUS = { "Cracked Sentry Core ×6" },
+            zhCN = { "开裂的哨兵核心 ×6" },
+        },
+        rewards = {
+            xp = 3950,
+            choices = {
+                {
+                    id = 279847,
+                    count = 1,
+                },
+                {
+                    id = 279848,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [96987] = {
+        name = {
+            enUS = "Opportunistic Education",
+            zhCN = "投机教育",
+        },
+        level = 33,
+        min = 24,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 268743,
+            name = {
+                enUS = "Rexxie Copperclutch",
+                zhCN = "雷克茜·铜爪 (Rexxie Copperclutch)",
+            },
+            map = 1416,
+        },
+        finish = {
+            kind = "npc",
+            id = 268743,
+            name = {
+                enUS = "Rexxie Copperclutch",
+                zhCN = "雷克茜·铜爪 (Rexxie Copperclutch)",
+            },
+            map = 1416,
+        },
+        summary = {
+            enUS = "Collect The Founding of Dalaran from the City of Dalaran for Rexxie Copperclutch near the sewer entrance.",
+            zhCN = "在达拉然城里找到《达拉然的建立》，带给下水道入口附近的雷克茜·铜爪 (Rexxie Copperclutch)。",
+        },
+        objectives = {
+            enUS = { "The Founding of Dalaran" },
+            zhCN = { "达拉然的建立" },
+        },
+        rewards = {
+            xp = 3950,
+            choices = {
+                {
+                    id = 279845,
+                    count = 1,
+                },
+                {
+                    id = 279846,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [544] = {
+        name = {
+            enUS = "Prison Break In",
+            zhCN = "入室偷窃",
+        },
+        level = 34,
+        min = 30,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        finish = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        after = { 545, 96984 },
+        summary = {
+            enUS = "Find the traitors and recover their artifacts, then return to Magus Wordeen Voidglare in Tarren Mill.",
+            zhCN = "找到被遗忘者的叛徒，取回他们偷走的神器，然后回到塔伦米尔去见大法师沃迪恩·伍德格莱尔。",
+        },
+        objectives = {
+            enUS = { "Bloodstone Wedge", "Bloodstone Marble", "Bloodstone Shard", "Bloodstone Oval" },
+            zhCN = { "血石之楔", "血石弹球", "血石碎片", "血色卵石" },
+        },
+        rewards = {
+            xp = 3300,
+        },
+    },
+    [93680] = {
+        name = {
+            enUS = "Key to the City",
+            zhCN = "城市的钥匙",
+        },
+        level = 33,
+        min = 30,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        finish = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        summary = {
+            enUS = "Acquire the Grimy Key for Magus Wordeen Voidglare in Tarren Mill.",
+            zhCN = "为塔伦米尔的大法师沃迪恩·伍德格莱尔取得污秽的钥匙。",
+        },
+        objectives = {
+            enUS = { "Grimy Key" },
+            zhCN = { "污秽的钥匙 (Grimy Key)" },
+        },
+    },
+    [545] = {
+        name = {
+            enUS = "Dalaran Patrols",
+            zhCN = "达拉然巡逻队",
+        },
+        level = 35,
+        min = 30,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        finish = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        before = { 544 },
+        after = { 92434, 96984 },
+        summary = {
+            enUS = "Kill 6 Dalaran Summoners and 12 Elemental Slaves, then return to Magus Wordeen Voidglare in Tarren Mill.",
+            zhCN = "杀掉 6 个达拉然召唤师和 12 个元素奴仆，然后回到塔伦米尔去见大法师沃迪恩·伍德格莱尔。",
+        },
+        objectives = {
+            enUS = { "Dalaran Summoner slain ×6", "Elemental Slave slain ×12" },
+            zhCN = { "击杀达拉然召唤师 ×6", "击杀元素奴仆 ×12" },
+        },
+        rewards = {
+            xp = 2050,
+        },
+    },
+    [92434] = {
+        name = {
+            enUS = "Blood in the Streets",
+            zhCN = "喋血街头",
+        },
+        level = 34,
+        min = 30,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        finish = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        before = { 545 },
+        after = { 96984 },
+        summary = {
+            enUS = "Find a way into Dalaran along Lordamere Lake and report to the Image of Archmage Modera outside the city.",
+            zhCN = "沿洛丹米尔湖找到进入达拉然的路，向城外的大法师莫德拉的影像报到。",
+        },
+        objectives = {
+            enUS = { "Grimy Key (provided)", "Find a way into Dalaran along the Lordamere Lake" },
+            zhCN = { "污秽的钥匙 (Grimy Key)（任务提供）", "沿洛丹米尔湖找到进入达拉然的路" },
+        },
+        rewards = {
+            xp = 270,
+        },
+    },
+    [96984] = {
+        name = {
+            enUS = "Heart of Disruption",
+            zhCN = "动乱之源",
+        },
+        level = 33,
+        min = 24,
+        faction = "H",
+        instances = { "city-of-dalaran" },
+        start = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+                zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
+            },
+            map = 1416,
+        },
+        finish = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+                zhCN = "大法师沃迪恩·伍德格莱尔",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.85,
+        },
+        before = { 544, 545, 92434 },
+        summary = {
+            enUS = "Collect the Arcane Mote in the City of Dalaran for Magus Wordeen Voidglare in Tarren Mill. The Image of Archmage Modera hands you the Dalaran Sewer Key with the quest.",
+            zhCN = "在达拉然城里取得奥术微粒，带给塔伦米尔的大法师沃迪恩·伍德格莱尔。接任务时大法师莫德拉的影像会交给你达拉然下水道钥匙。",
+        },
+        objectives = {
+            enUS = { "Arcane Mote" },
+            zhCN = { "奥术微粒" },
+        },
+        rewards = {
+            xp = 3950,
+            choices = {
+                {
+                    id = 279842,
+                    count = 1,
+                },
+                {
+                    id = 279843,
+                    count = 1,
+                },
+                {
+                    id = 279844,
                     count = 1,
                 },
             },
@@ -14536,8 +15188,8 @@ ns.Data.quests = {
                 zhCN = "詹妮亚·坎农",
             },
             map = 1453,
-            x = 38.62,
-            y = 79.3,
+            x = 49.56,
+            y = 85.8,
         },
         after = { 1951 },
         chainOnly = true,
@@ -14861,8 +15513,8 @@ ns.Data.quests = {
                 zhCN = "埃林·提亚斯",
             },
             map = 1453,
-            x = 59.91,
-            y = 64.18,
+            x = 66.03,
+            y = 74.1,
         },
         chainOnly = true,
     },
@@ -15875,8 +16527,8 @@ ns.Data.quests = {
                 zhCN = "玛克斯韦尔·泰罗索斯男爵",
             },
             map = 1423,
-            x = 81.74,
-            y = 57.96,
+            x = 71.9,
+            y = 48.41,
         },
         chainOnly = true,
     },
@@ -16178,8 +16830,8 @@ ns.Data.quests = {
                 zhCN = "公告员古德曼",
             },
             map = 1453,
-            x = 73.0,
-            y = 61.7,
+            x = 56.4,
+            y = 74.1,
         },
         after = { 7488 },
         chainOnly = true,
@@ -16506,13 +17158,13 @@ ns.Data.quests = {
             id = 253092,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
             map = 1436,
             x = 52.5,
             y = 53.1,
         },
-        after = { 92753, 92744 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92744] = {
@@ -16532,14 +17184,13 @@ ns.Data.quests = {
             id = 253092,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
             map = 1436,
             x = 52.5,
             y = 53.1,
         },
-        before = { 92742 },
-        after = { 92753, 92745 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92745] = {
@@ -16559,13 +17210,12 @@ ns.Data.quests = {
             id = 253092,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
             map = 1436,
             x = 52.5,
             y = 53.1,
         },
-        before = { 92744 },
         after = { 92753, 92747 },
         chainOnly = true,
     },
@@ -16586,14 +17236,14 @@ ns.Data.quests = {
             id = 253092,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
             map = 1436,
             x = 52.5,
             y = 53.1,
         },
         before = { 92745 },
-        after = { 92753, 92748 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92748] = {
@@ -16613,14 +17263,13 @@ ns.Data.quests = {
             id = 253092,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
             map = 1436,
             x = 52.5,
             y = 53.1,
         },
-        before = { 92747 },
-        after = { 92753, 92749 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92749] = {
@@ -16646,8 +17295,7 @@ ns.Data.quests = {
             x = 61.9,
             y = 30.8,
         },
-        before = { 92748 },
-        after = { 92753, 92750 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92750] = {
@@ -16673,8 +17321,7 @@ ns.Data.quests = {
             x = 61.9,
             y = 30.8,
         },
-        before = { 92749 },
-        after = { 92753, 92751 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92751] = {
@@ -16700,8 +17347,7 @@ ns.Data.quests = {
             x = 80.2,
             y = 70.1,
         },
-        before = { 92750 },
-        after = { 92753, 92752 },
+        after = { 92753 },
         chainOnly = true,
     },
     [92752] = {
@@ -16713,7 +17359,7 @@ ns.Data.quests = {
         min = 12,
         summary = {
             enUS = "Return to Alba Fairmoon.",
-            zhCN = "返回阿尔芭·皎月处。",
+            zhCN = "返回阿尔巴·晴月处。",
         },
         faction = "A",
         start = {
@@ -16727,7 +17373,6 @@ ns.Data.quests = {
             x = 61.9,
             y = 30.8,
         },
-        before = { 92751 },
         after = { 92753 },
         chainOnly = true,
     },
@@ -16748,7 +17393,7 @@ ns.Data.quests = {
             id = 253279,
             name = {
                 enUS = "Alba Fairmoon",
-                zhCN = "阿尔芭·皎月",
+                zhCN = "阿尔巴·晴月",
             },
         },
         before = { 92753 },
@@ -17070,7 +17715,7 @@ ns.Data.quests = {
             },
         },
         before = { 1823 },
-        after = { 1825 },
+        after = { 1838, 1825 },
         extra = true,
         chainOnly = true,
     },
@@ -17083,7 +17728,6 @@ ns.Data.quests = {
             },
         },
         before = { 1824 },
-        after = { 1838 },
         extra = true,
         chainOnly = true,
     },

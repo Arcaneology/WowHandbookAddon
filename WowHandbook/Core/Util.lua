@@ -25,6 +25,29 @@ function ns.IsSecret(value)
     return issecretvalue ~= nil and issecretvalue(value) or false
 end
 
+-- NPC 的客户端名字（当前客户端语言）：按 ID 取 NPC 鼠标提示的第一行。客户端还没缓存这个 NPC 时返回 nil，
+-- 调用方先用数据里的名字兜底、稍后再取。取到的名字在本次登录内缓存，同一个 NPC 只问一次客户端。
+local npcNames = {}
+function ns.NpcName(npcID)
+    if not npcID then
+        return nil
+    end
+    if npcNames[npcID] then
+        return npcNames[npcID]
+    end
+    if not (C_TooltipInfo and C_TooltipInfo.GetHyperlink) then
+        return nil
+    end
+    local data = C_TooltipInfo.GetHyperlink(("unit:Creature-0-0-0-0-%d-0"):format(npcID))
+    local line = data and data.lines and data.lines[1]
+    local name = line and line.leftText
+    if type(name) ~= "string" or ns.IsSecret(name) or name == "" then
+        return nil
+    end
+    npcNames[npcID] = name
+    return name
+end
+
 -- 掉落表里的行不是首领（副本卡片的首领数、副本进度小窗等只算真正的首领）：
 -- 导出时标了 lootOnly 的（稀有精英、物品、杂兵等），以及小怪、配方、书籍这些掉落分组
 function ns.IsLootGroup(boss)

@@ -913,6 +913,24 @@ ns.Data.spells = {
     paladin = {
         {
             name = {
+                enUS = "Sense Undead",
+                zhCN = "感知亡灵",
+            },
+            tab = {
+                enUS = "Holy",
+                zhCN = "神圣",
+            },
+            icon = "spell_holy_senseundead",
+            ranks = {
+                {
+                    rank = "",
+                    level = 1,
+                    id = 5502,
+                },
+            },
+        },
+        {
+            name = {
                 enUS = "Holy Light",
                 zhCN = "圣光术",
             },
@@ -1275,19 +1293,18 @@ ns.Data.spells = {
         },
         {
             name = {
-                enUS = "Sense Undead",
-                zhCN = "感知亡灵",
+                enUS = "Voice of Truth",
+                zhCN = "真理之音",
             },
             tab = {
                 enUS = "Holy",
                 zhCN = "神圣",
             },
-            icon = "spell_holy_senseundead",
+            icon = "inv_misc_horn_03",
             ranks = {
                 {
                     rank = "",
                     level = 20,
-                    id = 5502,
                 },
             },
         },
@@ -1382,34 +1399,6 @@ ns.Data.spells = {
         },
         {
             name = {
-                enUS = "Blessing of Light",
-                zhCN = "光明祝福",
-            },
-            tab = {
-                enUS = "Holy",
-                zhCN = "神圣",
-            },
-            icon = "spell_holy_prayerofhealing02",
-            ranks = {
-                {
-                    rank = "Rank 1",
-                    level = 40,
-                    id = 19977,
-                },
-                {
-                    rank = "Rank 2",
-                    level = 50,
-                    id = 19978,
-                },
-                {
-                    rank = "Rank 3",
-                    level = 60,
-                    id = 19979,
-                },
-            },
-        },
-        {
-            name = {
                 enUS = "Cleanse",
                 zhCN = "清洁术",
             },
@@ -1497,24 +1486,6 @@ ns.Data.spells = {
                     rank = "Rank 2",
                     level = 60,
                     id = 25918,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Greater Blessing of Light",
-                zhCN = "强效光明祝福",
-            },
-            tab = {
-                enUS = "Holy",
-                zhCN = "神圣",
-            },
-            icon = "spell_holy_greaterblessingoflight",
-            ranks = {
-                {
-                    rank = "",
-                    level = 60,
-                    id = 25890,
                 },
             },
         },
@@ -1652,6 +1623,24 @@ ns.Data.spells = {
         },
         {
             name = {
+                enUS = "Righteous Fury",
+                zhCN = "正义之怒",
+            },
+            tab = {
+                enUS = "Protection",
+                zhCN = "防护",
+            },
+            icon = "spell_holy_sealoffury",
+            ranks = {
+                {
+                    rank = "",
+                    level = 10,
+                    id = 25780,
+                },
+            },
+        },
+        {
+            name = {
                 enUS = "Seal of Fury",
                 zhCN = "愤怒圣印",
             },
@@ -1673,7 +1662,7 @@ ns.Data.spells = {
                 },
                 {
                     rank = "Rank 3",
-                    level = 25,
+                    level = 26,
                     id = 20163,
                 },
                 {
@@ -1695,24 +1684,6 @@ ns.Data.spells = {
                     rank = "Rank 7",
                     level = 58,
                     id = 20423,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Righteous Fury",
-                zhCN = "正义之怒",
-            },
-            tab = {
-                enUS = "Protection",
-                zhCN = "防护",
-            },
-            icon = "spell_holy_sealoffury",
-            ranks = {
-                {
-                    rank = "",
-                    level = 16,
-                    id = 25780,
                 },
             },
         },
@@ -1785,24 +1756,6 @@ ns.Data.spells = {
                     rank = "",
                     level = 22,
                     id = 20164,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Blessing of Salvation",
-                zhCN = "拯救祝福",
-            },
-            tab = {
-                enUS = "Protection",
-                zhCN = "防护",
-            },
-            icon = "spell_holy_sealofsalvation",
-            ranks = {
-                {
-                    rank = "",
-                    level = 26,
-                    id = 1038,
                 },
             },
         },
@@ -1987,24 +1940,6 @@ ns.Data.spells = {
                     rank = "",
                     level = 60,
                     id = 25898,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Greater Blessing of Salvation",
-                zhCN = "强效拯救祝福",
-            },
-            tab = {
-                enUS = "Protection",
-                zhCN = "防护",
-            },
-            icon = "spell_holy_greaterblessingofsalvation",
-            ranks = {
-                {
-                    rank = "",
-                    level = 60,
-                    id = 25895,
                 },
             },
         },
@@ -3171,22 +3106,22 @@ ns.Data.spells = {
                 {
                     rank = "Rank 2",
                     level = 26,
-                    id = 14302,
+                    id = 14298,
                 },
                 {
                     rank = "Rank 3",
                     level = 36,
-                    id = 14303,
+                    id = 14299,
                 },
                 {
                     rank = "Rank 4",
                     level = 46,
-                    id = 14304,
+                    id = 14300,
                 },
                 {
                     rank = "Rank 5",
                     level = 56,
-                    id = 14305,
+                    id = 14301,
                 },
             },
         },
@@ -3371,35 +3306,6 @@ ns.Data.spells = {
         },
         {
             name = {
-                enUS = "Lacerate",
-                zhCN = "割伤",
-            },
-            tab = {
-                enUS = "Survival",
-                zhCN = "生存",
-            },
-            icon = "ability_gouge",
-            ranks = {
-                {
-                    rank = "Rank 1",
-                    level = 30,
-                },
-                {
-                    rank = "Rank 2",
-                    level = 40,
-                },
-                {
-                    rank = "Rank 3",
-                    level = 50,
-                },
-                {
-                    rank = "Rank 4",
-                    level = 60,
-                },
-            },
-        },
-        {
-            name = {
                 enUS = "Track Demons",
                 zhCN = "追踪恶魔",
             },
@@ -3430,17 +3336,17 @@ ns.Data.spells = {
                 {
                     rank = "Rank 1",
                     level = 34,
-                    id = 13813,
+                    id = 13812,
                 },
                 {
                     rank = "Rank 2",
                     level = 44,
-                    id = 14316,
+                    id = 14314,
                 },
                 {
                     rank = "Rank 3",
                     level = 54,
-                    id = 14317,
+                    id = 14315,
                 },
             },
         },
@@ -4034,6 +3940,29 @@ ns.Data.spells = {
                     rank = "Rank 5",
                     level = 60,
                     id = 25302,
+                },
+            },
+        },
+        {
+            name = {
+                enUS = "Shank",
+                zhCN = "刺击",
+            },
+            tab = {
+                enUS = "Combat",
+                zhCN = "战斗",
+            },
+            icon = "ability_theblackarrow",
+            ranks = {
+                {
+                    rank = "Rank 1",
+                    level = 24,
+                    id = 1329283,
+                },
+                {
+                    rank = "Rank 2",
+                    level = 44,
+                    id = 1329549,
                 },
             },
         },
@@ -6688,8 +6617,8 @@ ns.Data.spells = {
         },
         {
             name = {
-                enUS = "Totemic Projection",
-                zhCN = "图腾投射",
+                enUS = "Totemic Call",
+                zhCN = "图腾呼唤",
             },
             tab = {
                 enUS = "Enhancement",
@@ -8775,11 +8704,6 @@ ns.Data.spells = {
                     rank = "Rank 4",
                     level = 50,
                     id = 10160,
-                },
-                {
-                    rank = "Rank 5",
-                    level = 58,
-                    id = 10161,
                 },
             },
         },
@@ -11613,7 +11537,7 @@ ns.Data.spells = {
             ranks = {
                 {
                     rank = "Rank 1",
-                    level = 22,
+                    level = 20,
                     id = 5221,
                 },
                 {
@@ -11635,6 +11559,49 @@ ns.Data.spells = {
                     rank = "Rank 5",
                     level = 54,
                     id = 9830,
+                },
+            },
+        },
+        {
+            name = {
+                enUS = "Ferocious Bite",
+                zhCN = "凶猛撕咬",
+            },
+            tab = {
+                enUS = "Feral Combat",
+                zhCN = "野性战斗",
+            },
+            icon = "ability_druid_ferociousbite",
+            ranks = {
+                {
+                    rank = "Rank 1",
+                    level = 24,
+                    id = 1328618,
+                },
+                {
+                    rank = "Rank 2",
+                    level = 32,
+                    id = 22568,
+                },
+                {
+                    rank = "Rank 3",
+                    level = 40,
+                    id = 22827,
+                },
+                {
+                    rank = "Rank 4",
+                    level = 48,
+                    id = 22828,
+                },
+                {
+                    rank = "Rank 5",
+                    level = 56,
+                    id = 22829,
+                },
+                {
+                    rank = "Rank 6",
+                    level = 60,
+                    id = 31018,
                 },
             },
         },
@@ -11759,44 +11726,6 @@ ns.Data.spells = {
         },
         {
             name = {
-                enUS = "Ferocious Bite",
-                zhCN = "凶猛撕咬",
-            },
-            tab = {
-                enUS = "Feral Combat",
-                zhCN = "野性战斗",
-            },
-            icon = "ability_druid_ferociousbite",
-            ranks = {
-                {
-                    rank = "Rank 1",
-                    level = 32,
-                    id = 22568,
-                },
-                {
-                    rank = "Rank 2",
-                    level = 40,
-                    id = 22827,
-                },
-                {
-                    rank = "Rank 3",
-                    level = 48,
-                    id = 22828,
-                },
-                {
-                    rank = "Rank 4",
-                    level = 56,
-                    id = 22829,
-                },
-                {
-                    rank = "Rank 5",
-                    level = 60,
-                    id = 31018,
-                },
-            },
-        },
-        {
-            name = {
                 enUS = "Ravage",
                 zhCN = "毁灭",
             },
@@ -11888,34 +11817,6 @@ ns.Data.spells = {
                 {
                     rank = "",
                     level = 40,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Lacerate",
-                zhCN = "割伤",
-            },
-            tab = {
-                enUS = "Feral Combat",
-                zhCN = "野性战斗",
-            },
-            icon = "ability_druid_lacerate",
-            ranks = {
-                {
-                    rank = "Rank 1",
-                    level = 42,
-                    id = 414644,
-                },
-                {
-                    rank = "Rank 2",
-                    level = 50,
-                    id = 1235826,
-                },
-                {
-                    rank = "Rank 3",
-                    level = 58,
-                    id = 1235827,
                 },
             },
         },

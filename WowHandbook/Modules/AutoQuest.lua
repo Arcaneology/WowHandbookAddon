@@ -1,4 +1,5 @@
 local ADDON_NAME, ns = ...
+local L = ns.L
 
 -- 自动任务：和 NPC 对话时自动接任务、自动交任务，两项可分别开关（默认都开）。
 -- · 对话菜单（GOSSIP_SHOW）与任务问候（QUEST_GREETING）里：先交已完成的，再接可接的（灰色任务不自动接）。
@@ -12,8 +13,16 @@ local ADDON_NAME, ns = ...
 --   任务窗口都关了）后清掉记录，再去点这个 NPC 会重新自动处理一次（用户 2026-10-01 明确：不重复指的是短时间内
 --   不反复交，不是整次登录只试一次）。游戏确认接下（QUEST_ACCEPTED）或交付（QUEST_TURNED_IN）后也清掉记录。
 -- · 自动操作都推迟到下一帧：先让其他插件（任务助手、数据采集等）读完这次窗口的内容，再接受或交付；
---   执行前确认窗口还开着（期间玩家自己点过就不重复操作）。
+--   执行前确认这期间没有新的对话事件（期间玩家自己点过、窗口关了就不重复操作）。
+-- · 对话是否开着只看事件（GOSSIP_SHOW / QUEST_* 打开，GOSSIP_CLOSED / QUEST_FINISHED 关闭），不看原生
+--   GossipFrame / QuestFrame：DialogueUI 等替换对话界面的插件会让原生窗口一直不显示。
+-- · 任务物品发光：客户端变量 outlineModeShowLootEffectWhenDisabled（同宏 /console outlineModeShowLootEffectWhenDisabled 1），
+--   为 1 时任务物品和掉落任务物品的怪物会发光。插件不存这个设置：开关直接显示客户端变量的实际值，
+--   只有玩家在设置或快捷菜单里拨动时才改它，登录时不动。这个变量要重新载入界面才生效，改完弹出确认框，
+--   点“立即重新载入”就 /reload。战斗中不改，等脱战再改并弹框。
 local Module = ns:NewModule("AutoQuest", { autoAccept = true, autoTurnIn = true, rewardMode = "manual" })
+
+local GLOW_CVAR = "outlineModeShowLootEffectWhenDisabled"
 
 local PRICE_WAIT, PRICE_TRIES = 0.5, 3
 
@@ -47,18 +56,27 @@ local function Forget(steps, questID)
     end
 end
 
+-- 当前打开的对话窗口："gossip"（对话菜单）、"quest"（任务窗口）或 nil。两者互斥：打开任务窗口时
+-- 对话菜单会关掉，反之亦然。serial 在每个打开 / 关闭事件时加一，推迟执行前用它判断期间有没有变化
+local openWindow
+local serial = 0
+
 -- 对话结束：对话菜单与任务窗口都关了。窗口在一次对话里会来回切换（点任务时对话菜单先关、任务窗口再开），
--- 所以关闭事件后等一会儿再看，两个窗口都不在才算结束，清掉全部记录
+-- 所以关闭事件后等一会儿再看，仍没有窗口开着才算结束，清掉全部记录
 local END_DELAY = 1
 local endPending = false
-local function OnWindowClosed()
+local function OnWindowClosed(kind)
+    serial = serial + 1
+    if openWindow == kind then
+        openWindow = nil
+    end
     if endPending then
         return
     end
     endPending = true
     C_Timer.After(END_DELAY, function()
         endPending = false
-        if (GossipFrame and GossipFrame:IsShown()) or (QuestFrame and QuestFrame:IsShown()) then
+        if openWindow then
             return
         end
         for _, steps in pairs(tried) do
@@ -178,7 +196,7 @@ local function PickReward()
 end
 Module.PickReward = PickReward -- 供测试使用
 
-local function OnComplete()
+local function OnComplete(windowSerial)
     local settings = Settings()
     if not settings.autoTurnIn or Paused() then
         return
@@ -200,7 +218,7 @@ local function OnComplete()
     -- 卖价要等物品信息到达：最多等 PRICE_TRIES 次，每次 PRICE_WAIT 秒；窗口关了就不再选
     local tries = 0
     local function Try()
-        if not (QuestFrame and QuestFrame:IsShown()) or GetNumQuestChoices() ~= choices then
+        if serial ~= windowSerial or GetNumQuestChoices() ~= choices then
             return
         end
         local index, complete = PickReward()
@@ -214,18 +232,58 @@ local function OnComplete()
     Try()
 end
 
--- 推迟到下一帧，且窗口仍开着才执行（对话菜单看 GossipFrame，任务窗口看 QuestFrame）
-local function NextFrame(handler, frameName)
+-- 记下打开的窗口，推迟到下一帧；这期间没有新的打开 / 关闭事件才执行
+local function NextFrame(handler, kind)
     return function()
+        openWindow = kind
+        serial = serial + 1
+        local windowSerial = serial
         C_Timer.After(0, function()
-            local frame = _G[frameName]
-            if frame and not frame:IsShown() then
-                return
+            if serial == windowSerial then
+                handler(windowSerial)
             end
-            handler()
         end)
     end
 end
+
+-- 任务物品发光现在是否开着（客户端变量的实际值）
+function Module.QuestItemGlow()
+    return C_CVar and C_CVar.GetCVar and C_CVar.GetCVar(GLOW_CVAR) == "1" or false
+end
+
+local pendingGlow
+local function AskReload(on)
+    ns.UI:Confirm(L[on and "Quest item glow is on. Reload the interface now to start it?"
+        or "Quest item glow is off. Reload the interface now to apply it?"],
+        L["Reload now"], L["Later"], ReloadUI)
+end
+
+local SetGlow
+local function OnRegenGlow()
+    ns:UnregisterEvent("PLAYER_REGEN_ENABLED", OnRegenGlow)
+    local wanted = pendingGlow
+    pendingGlow = nil
+    if wanted ~= nil then
+        SetGlow(wanted)
+    end
+end
+
+-- 玩家拨动开关时调用：改客户端变量并弹出重新载入确认；值没变就什么也不做
+SetGlow = function(on)
+    if InCombatLockdown and InCombatLockdown() then
+        if pendingGlow == nil then
+            ns:RegisterEvent("PLAYER_REGEN_ENABLED", OnRegenGlow)
+        end
+        pendingGlow = on
+        return
+    end
+    if not (C_CVar and C_CVar.SetCVar) or Module.QuestItemGlow() == on then
+        return
+    end
+    C_CVar.SetCVar(GLOW_CVAR, on and "1" or "0")
+    AskReload(on)
+end
+Module.SetQuestItemGlow = SetGlow
 
 function Module:OnEnable()
     -- 游戏确认成功后清掉记录，同一个任务以后（如可重复任务）还能再自动处理
@@ -235,11 +293,15 @@ function Module:OnEnable()
     ns:RegisterEvent("QUEST_TURNED_IN", function(_, questID)
         Forget(TURN_IN_STEPS, questID)
     end)
-    ns:RegisterEvent("GOSSIP_CLOSED", OnWindowClosed)
-    ns:RegisterEvent("QUEST_FINISHED", OnWindowClosed)
-    ns:RegisterEvent("GOSSIP_SHOW", NextFrame(OnGossip, "GossipFrame"))
-    ns:RegisterEvent("QUEST_GREETING", NextFrame(OnGreeting, "QuestFrame"))
-    ns:RegisterEvent("QUEST_DETAIL", NextFrame(OnDetail, "QuestFrame"))
-    ns:RegisterEvent("QUEST_PROGRESS", NextFrame(OnProgress, "QuestFrame"))
-    ns:RegisterEvent("QUEST_COMPLETE", NextFrame(OnComplete, "QuestFrame"))
+    ns:RegisterEvent("GOSSIP_CLOSED", function()
+        OnWindowClosed("gossip")
+    end)
+    ns:RegisterEvent("QUEST_FINISHED", function()
+        OnWindowClosed("quest")
+    end)
+    ns:RegisterEvent("GOSSIP_SHOW", NextFrame(OnGossip, "gossip"))
+    ns:RegisterEvent("QUEST_GREETING", NextFrame(OnGreeting, "quest"))
+    ns:RegisterEvent("QUEST_DETAIL", NextFrame(OnDetail, "quest"))
+    ns:RegisterEvent("QUEST_PROGRESS", NextFrame(OnProgress, "quest"))
+    ns:RegisterEvent("QUEST_COMPLETE", NextFrame(OnComplete, "quest"))
 end

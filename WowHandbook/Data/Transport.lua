@@ -153,6 +153,45 @@ ns.Data.transport = {
                 zhCN = "暴风城",
             },
         },
+        zephras = {
+            kind = "zeppelin",
+            map = 2521,
+            berths = {
+                dalaran = {
+                    x = 65.8,
+                    y = 83.5,
+                },
+                thunderbluff = {
+                    x = 57.9,
+                    y = 80.8,
+                },
+            },
+            name = {
+                enUS = "Zephras Isle",
+                zhCN = "泽风岛",
+            },
+        },
+        dalaran = {
+            kind = "zeppelin",
+            map = 1416,
+            x = 12.6,
+            y = 51.9,
+            name = {
+                enUS = "Dalaran",
+                zhCN = "达拉然",
+            },
+        },
+        thunderbluff = {
+            kind = "zeppelin",
+            area = 1638,
+            map = 1412,
+            x = 34.3,
+            y = 26.1,
+            name = {
+                enUS = "Thunder Bluff",
+                zhCN = "雷霆崖",
+            },
+        },
     },
     routes = {
         {
@@ -202,6 +241,18 @@ ns.Data.transport = {
             kind = "boat",
             stops = { "auberdine", "stormwind" },
             faction = "A",
+        },
+        {
+            id = "Z4",
+            kind = "zeppelin",
+            stops = { "zephras", "dalaran" },
+            faction = "A",
+        },
+        {
+            id = "Z5",
+            kind = "zeppelin",
+            stops = { "zephras", "thunderbluff" },
+            faction = "H",
         },
     },
 }

@@ -11,7 +11,8 @@ local L = ns.L
 -- · 完整地图：补画尚未探索的区域（贴图来自客户端表导出的 Data/MapOverlays.lua），颜色略暗以区分已探索区域；
 --   设置里可关闭。
 -- · 副本入口：区域地图与大陆地图上标出副本与团队副本入口，悬停看等级区间，点击在手册里打开。
--- · 灵魂医者：默认死亡时显示（可改为始终或不显示），点击设为导航。
+-- · 灵魂医者：默认死亡时显示（可改为始终或不显示），点击设为导航；对方阵营专用的不显示。同时画出复活区域的
+--   分界线（死在哪片区域就到哪个灵魂医者，Data/GraveyardAreas.lua），可单独关闭。
 -- · 草药与矿点：区域地图上标出采集点（Data/GatheringNodes.lua），默认学了草药学 / 采矿才显示对应的点；
 --   技能够采的正常显示，不够的变灰变淡；悬停列出这里可能刷出的几种与所需技能，点击设为导航。
 --   小地图上同样显示（Modules/GatherMinimap.lua，可在设置里关闭）；自己采过的点另外记下并合并显示
@@ -22,7 +23,7 @@ local L = ns.L
 -- · 专业训练师：默认显示你学了的专业的训练师（本阵营与中立），可改为全部专业或不显示；下一步该找的那一档
 --   不透明，其余半透明；悬停看名字、专业与能教到的等级，点击设为导航。
 local Module = ns:NewModule("WorldMap", { levelLabel = true, flightPins = true, revealMap = true, mapScale = 1,
-    dungeonPins = true, spiritHealers = "dead", herbPins = "auto", orePins = "auto", minimapGather = true,
+    dungeonPins = true, spiritHealers = "dead", graveyardAreas = true, herbPins = "auto", orePins = "auto", minimapGather = true,
     recordGather = true, minimapGatherStyle = "icon", trainerPins = "mine", classTrainerPins = true,
     transmogPins = true, transportPins = true, pathPins = true })
 
@@ -538,8 +539,13 @@ local function SpiritHealersWanted()
 end
 Module.SpiritHealersWanted = SpiritHealersWanted -- 小地图共用
 
--- { {x, y, name} }，坐标 0–100。游戏给出的墓地在前；插件数据里游戏没给的点（相距 SAME_SPOT 格以内算同一个）补在后面。
--- 原来游戏一给列表就整份丢掉插件数据，游戏列表不全时（如湿地中部）那里就没有图钉。
+-- 玩家阵营在墓地数据里的写法："A" / "H"；数据里第三项是这两者之一时，只有该阵营会被送到那里
+local function GraveyardFaction()
+    return UnitFactionGroup("player") == "Alliance" and "A" or "H"
+end
+
+-- { {x, y, name} }，坐标 0–100。游戏给出的墓地在前；插件数据里游戏没给的点（相距 SAME_SPOT 格以内算同一个）补在后面，
+-- 对方阵营专用的跳过。原来游戏一给列表就整份丢掉插件数据，游戏列表不全时（如湿地中部）那里就没有图钉。
 local SAME_SPOT = 3
 local function GraveyardsForMap(mapID)
     local spots = {}
@@ -550,8 +556,9 @@ local function GraveyardsForMap(mapID)
             tinsert(spots, { x * 100, y * 100, graveyard.name })
         end
     end
+    local faction = GraveyardFaction()
     for _, point in ipairs(ns.Data.graveyards and ns.Data.graveyards[mapID] or {}) do
-        local known = false
+        local known = point[3] ~= nil and point[3] ~= faction
         for _, spot in ipairs(spots) do
             if math.abs(spot[1] - point[1]) <= SAME_SPOT and math.abs(spot[2] - point[2]) <= SAME_SPOT then
                 known = true
@@ -566,12 +573,83 @@ local function GraveyardsForMap(mapID)
 end
 Module.GraveyardsForMap = GraveyardsForMap -- 供测试使用
 
+-- 复活区域：服务器把死者送到“这片区域关联的、本阵营能用的墓地里最近的一个”。分界线由导出脚本按码算好
+-- （每张地图联盟、部落各一份，两边相同时只有 both；每条 {x1, y1, x2, y2}，坐标 0–100），这里按玩家阵营
+-- 画成细线，随灵魂医者图钉一起显示。线放在画布上的一个框架里，随地图缩放移动；粗细按画布缩放反向调整，
+-- 放大地图时线不变粗。颜色是暴雪地图上的金色（固定含义色，不随插件配色变化）。
+local AREA_LINE_WIDTH = 1.5
+local AREA_LINE_COLOR = { 1, 0.82, 0, 0.8 }
+local areaLines = { lines = {}, used = 0 }
+
+local function AreaBordersForMap(mapID)
+    local entry = ns.Data.graveyardAreas and ns.Data.graveyardAreas[mapID]
+    return entry and (entry.both or entry[GraveyardFaction()]) or nil
+end
+Module.AreaBordersForMap = AreaBordersForMap -- 供测试使用
+
+local function AreaLineThickness(map)
+    local scale = map.GetCanvasScale and map:GetCanvasScale() or 1
+    return AREA_LINE_WIDTH / ((scale and scale > 0) and scale or 1)
+end
+
+local function HideGraveyardAreas()
+    for index = 1, areaLines.used do
+        areaLines.lines[index]:Hide()
+    end
+    areaLines.used = 0
+    if areaLines.frame then
+        areaLines.frame:Hide()
+    end
+end
+
+local function DrawGraveyardAreas(map, mapID)
+    HideGraveyardAreas()
+    local borders = Settings().graveyardAreas ~= false and AreaBordersForMap(mapID)
+    if not borders then
+        return
+    end
+    local canvas = map:GetCanvas()
+    if not areaLines.frame then
+        areaLines.frame = CreateFrame("Frame", nil, canvas)
+    end
+    local frame = areaLines.frame
+    frame:SetParent(canvas)
+    -- 高于完整地图补画的贴图（画布 + 1），低于各类图钉
+    frame:SetFrameLevel(canvas:GetFrameLevel() + 2)
+    frame:ClearAllPoints()
+    frame:SetPoint("TOPLEFT", canvas, "TOPLEFT")
+    local width, height = map:DenormalizeHorizontalSize(1), map:DenormalizeVerticalSize(1)
+    frame:SetSize(width, height)
+    local thickness = AreaLineThickness(map)
+    for _, border in ipairs(borders) do
+        areaLines.used = areaLines.used + 1
+        local line = areaLines.lines[areaLines.used]
+        if not line then
+            line = frame:CreateLine(nil, "OVERLAY")
+            line:SetColorTexture(unpack(AREA_LINE_COLOR))
+            areaLines.lines[areaLines.used] = line
+        end
+        line:SetThickness(thickness)
+        line:SetStartPoint("TOPLEFT", frame, border[1] / 100 * width, -border[2] / 100 * height)
+        line:SetEndPoint("TOPLEFT", frame, border[3] / 100 * width, -border[4] / 100 * height)
+        line:Show()
+    end
+    frame:Show()
+end
+
 local graveyardProvider
 
 local function CreateGraveyardProvider()
     graveyardProvider = CreateFromMixins(MapCanvasDataProviderMixin)
     function graveyardProvider:RemoveAllData()
         self:GetMap():RemoveAllPinsByTemplate(GRAVEYARD_PIN)
+        HideGraveyardAreas()
+    end
+    function graveyardProvider:OnCanvasScaleChanged()
+        local thickness = AreaLineThickness(self:GetMap())
+        for index = 1, areaLines.used do
+            areaLines.lines[index]:SetThickness(thickness)
+        end
     end
     function graveyardProvider:RefreshAllData()
         self:RemoveAllData()
@@ -580,6 +658,7 @@ local function CreateGraveyardProvider()
         if not (mapID and SpiritHealersWanted()) then
             return
         end
+        DrawGraveyardAreas(map, mapID)
         for _, spot in ipairs(GraveyardsForMap(mapID)) do
             local pin = map:AcquirePin(GRAVEYARD_PIN)
             SetupPin(pin, "graveyard")
@@ -975,25 +1054,21 @@ end
 
 local transportProvider
 
-local function TransportLines(entry)
-    local lines = { L[entry.kind == "zeppelin" and "Zeppelin tower" or "Boat landing"] }
+-- 图钉提示：每条航线一行“本站 → 下一站（船）”（环线“本站 → 下一站 → 再下一站（船）”），首行作标题；
+-- 自带交通图标不分船与飞艇，所以括号里注明。小地图共用。
+function Module.TransportPinLines(entry)
+    local here = ns.Transport.HubName(entry.id)
+    local lines = {}
     for _, line in ipairs(entry.lines) do
-        local names = {}
+        local names = { here }
         for _, hubID in ipairs(line.to) do
             tinsert(names, ns.Transport.HubName(hubID))
         end
-        tinsert(lines, ("%s → %s"):format(ns.Transport.KindName(line.kind), table.concat(names, " → ")))
+        tinsert(lines, (L[line.kind == "zeppelin" and "%s (zeppelin)" or "%s (boat)"]):format(table.concat(names, " → ")))
     end
     if entry.spot.approximate then
         tinsert(lines, L["Position is approximate."])
     end
-    return lines
-end
-
--- 图钉提示：第一行“地名 · 飞艇塔 / 码头”，其余是各航线的去向；小地图共用
-function Module.TransportPinLines(entry)
-    local lines = TransportLines(entry)
-    lines[1] = ns.Transport.HubName(entry.id) .. " · " .. lines[1]
     return lines
 end
 
@@ -1012,9 +1087,8 @@ local function CreateTransportProvider()
         for _, entry in ipairs(ns.Transport.HubsForMap(mapID, ns.PlayerFaction())) do
             local pin = map:AcquirePin(TRANSPORT_PIN)
             SetupPin(pin, "transport")
-            local texture = ns.Transport.IconTexture(entry)
-            pin.whTexture:SetTexture(texture)
-            pin.whHighlight:SetTexture(texture)
+            ns.Transport.ApplyIcon(pin.whTexture, entry)
+            ns.Transport.ApplyIcon(pin.whHighlight, entry)
             SetPinBehavior(pin, Module.TransportPinLines(entry))
             pin:SetPosition(entry.spot.x / 100, entry.spot.y / 100)
         end

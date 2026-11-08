@@ -1,5 +1,5 @@
 {
-  "_note": "公共交通数据源（手工整理）：飞艇管理员坐标来自 QuestieDB Forever（Questie 项目，GPL-3.0），码头与泊位坐标取自旧世地图数据并在游戏内核对，航线配对来自暴雪官方旅行博客与社区资料，飞行点编号来自游戏 TaxiNodes。枢纽的 area 是游戏区域表的区域编号（已对照 Forever 1.60.1.70205 核对），提示里的地名运行时按它向客户端取。berths 按去向记录同一枢纽里各泊位的坐标（键是去向的枢纽 id），每个泊位在地图上有自己的图钉；没有坐标的泊位用就近飞行点（taxiNodes）。米奈希尔港与奥伯丁之间没有直达船，只通过环线 L1（米奈希尔港、南海镇、奥伯丁）相连；奥伯丁与暴风城之间有双向的船。",
+  "_note": "公共交通数据源（手工整理）：飞艇管理员坐标来自 QuestieDB Forever（Questie 项目，GPL-3.0），码头与泊位坐标取自旧世地图数据并在游戏内核对，航线配对来自暴雪官方旅行博客与社区资料，飞行点编号来自游戏 TaxiNodes。枢纽的 area 是游戏区域表的区域编号（已对照 Forever 1.60.1.70205 核对），提示里的地名运行时按它向客户端取。berths 按去向记录同一枢纽里各泊位的坐标（键是去向的枢纽 id），每个泊位在地图上有自己的图钉；没有坐标的泊位用就近飞行点（taxiNodes）。米奈希尔港与奥伯丁之间没有直达船，只通过环线 L1（米奈希尔港、南海镇、奥伯丁）相连；奥伯丁与暴风城之间有双向的船。泽风岛的两条飞艇（去达拉然、去雷霆崖）：泽风岛两个泊位与达拉然一端在游戏内实测，雷霆崖一端取自社区地图数据；泽风岛与达拉然一端没有 area，地名用这里的名字。",
   "hubs": [
     {
       "id": "orgrimmar",
@@ -179,6 +179,48 @@
         "enUS": "Stormwind City",
         "zhCN": "暴风城"
       }
+    },
+    {
+      "id": "zephras",
+      "kind": "zeppelin",
+      "map": 2521,
+      "berths": {
+        "dalaran": {
+          "x": 65.8,
+          "y": 83.5
+        },
+        "thunderbluff": {
+          "x": 57.9,
+          "y": 80.8
+        }
+      },
+      "name": {
+        "enUS": "Zephras Isle",
+        "zhCN": "泽风岛"
+      }
+    },
+    {
+      "id": "dalaran",
+      "kind": "zeppelin",
+      "map": 1416,
+      "x": 12.6,
+      "y": 51.9,
+      "name": {
+        "enUS": "Dalaran",
+        "zhCN": "达拉然"
+      }
+    },
+    {
+      "id": "thunderbluff",
+      "kind": "zeppelin",
+      "area": 1638,
+      "map": 1412,
+      "x": 34.3,
+      "y": 26.1,
+      "name": {
+        "enUS": "Thunder Bluff",
+        "zhCN": "雷霆崖"
+      }
     }
   ],
   "routes": [
@@ -254,6 +296,24 @@
         "stormwind"
       ],
       "faction": "A"
+    },
+    {
+      "id": "Z4",
+      "kind": "zeppelin",
+      "stops": [
+        "zephras",
+        "dalaran"
+      ],
+      "faction": "A"
+    },
+    {
+      "id": "Z5",
+      "kind": "zeppelin",
+      "stops": [
+        "zephras",
+        "thunderbluff"
+      ],
+      "faction": "H"
     }
   ]
 }

@@ -15,6 +15,7 @@ local ROUTES = {
     quest = "/quests/%d/",           -- 任务 ID，网站重定向到所属副本页
     spellbook = "/spellbook/%s/",    -- 职业 slug，如 "mage"
     talents = "/talents/%s/",        -- 职业 slug；可带加点分享码（网站天赋模拟器从地址的 # 后读取）
+    bis = "/bis/%s/",                -- “职业/天赋”，如 "warrior/fury"；可带装备组（# 后为 lv-20、lv-60-pvp）
 }
 
 local function LocalePrefix()
@@ -28,11 +29,14 @@ local function ValidArgument(kind, argument)
     if kind == "quest" then
         return type(argument) == "number" and argument > 0
     end
+    if kind == "bis" then
+        return type(argument) == "string" and argument:match("^[%w%-]+/[%w%-]+$") ~= nil
+    end
     return type(argument) == "string" and argument:match("^[%w%-]+$") ~= nil
 end
 
 -- Links:Build("dungeon", "deadmines") -> https://wowhandbook.com/zh/zones/dungeons/deadmines/
--- fragment（可选）：地址 # 后的部分，只允许数字与连字符（天赋加点分享码）
+-- fragment（可选）：地址 # 后的部分，只允许数字与连字符（天赋加点分享码），或 BiS 页的装备组（lv-20、lv-60-pvp）
 function Links:Build(kind, argument, fragment)
     local route = ROUTES[kind]
     assert(route, "unknown link kind: " .. tostring(kind))
@@ -43,7 +47,8 @@ function Links:Build(kind, argument, fragment)
     end
     local url = BASE_URL .. LocalePrefix() .. path
     if fragment and fragment ~= "" then
-        assert(type(fragment) == "string" and fragment:match("^[%d%-]+$"), "invalid link fragment")
+        assert(type(fragment) == "string" and (fragment:match("^[%d%-]+$") or fragment:match("^lv%-%d+[%a%-]*$")),
+            "invalid link fragment")
         url = url .. "#" .. fragment
     end
     return url

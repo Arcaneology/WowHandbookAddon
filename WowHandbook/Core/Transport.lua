@@ -1,5 +1,4 @@
 local ADDON_NAME, ns = ...
-local L = ns.L
 
 -- 公共交通（飞艇、船）：枢纽与航线来自 Data/Transport.lua，在大地图与小地图上提示；一个泊位一个图钉。
 -- 航线 stops 是按顺序的停靠点：两站是双向往返，三站以上且 loop 为真是单向环线。
@@ -27,10 +26,6 @@ function Transport.HubName(id)
         return name
     end
     return ns.Name(hub.name)
-end
-
-function Transport.KindName(kind)
-    return kind == "zeppelin" and L["Zeppelin"] or L["Boat"]
 end
 
 local function Usable(route, faction)
@@ -94,19 +89,47 @@ local function BerthSpot(hub, line)
     return HubSpot(hub)
 end
 
--- 图钉图标：飞艇塔用飞艇、码头用船；这个图钉上的航线都只有一个阵营能坐就用该阵营的颜色（联盟蓝、部落红），否则中立金色
-local ICON_PATH = "Interface\\AddOns\\WowHandbook\\Media\\Transport"
-function Transport.IconTexture(entry)
+-- 这个图钉上的航线都只有一个阵营能坐就返回该阵营（"A" / "H"），否则 nil（中立）
+local function PinFaction(entry)
     local faction
     for index, line in ipairs(entry.lines) do
         if not line.faction or (index > 1 and line.faction ~= faction) then
-            faction = nil
-            break
+            return nil
         end
         faction = line.faction
     end
+    return faction
+end
+
+-- 图钉图标：优先用客户端自带的交通图标（正式服地图上码头、飞艇塔、传送门共用的 TaxiNode_Continent_*），
+-- 联盟蓝、部落红、两个阵营都能坐的中立金；客户端没有这个图集时退回插件自绘的飞艇与船（Media/Transport*）。
+local NATIVE_ATLAS = { A = "TaxiNode_Continent_Alliance", H = "TaxiNode_Continent_Horde" }
+local NEUTRAL_ATLAS = "TaxiNode_Continent_Neutral"
+
+function Transport.IconAtlas(entry)
+    local atlas = NATIVE_ATLAS[PinFaction(entry) or ""] or NEUTRAL_ATLAS
+    if C_Texture and C_Texture.GetAtlasInfo and C_Texture.GetAtlasInfo(atlas) then
+        return atlas
+    end
+    return nil
+end
+
+local ICON_PATH = "Interface\\AddOns\\WowHandbook\\Media\\Transport"
+function Transport.IconTexture(entry)
+    local faction = PinFaction(entry)
     return ICON_PATH .. (entry.kind == "zeppelin" and "Zeppelin" or "Ship")
         .. (faction == "A" and "Blue" or faction == "H" and "Red" or "Gold")
+end
+
+-- 把图钉图标画到一张贴图上：有自带图集用图集，否则用自绘贴图（整张，不裁边）
+function Transport.ApplyIcon(texture, entry)
+    local atlas = Transport.IconAtlas(entry)
+    if atlas then
+        texture:SetAtlas(atlas)
+    else
+        texture:SetTexture(Transport.IconTexture(entry))
+        texture:SetTexCoord(0, 1, 0, 1)
+    end
 end
 
 -- 这张地图上要画的图钉：一个泊位（或飞艇塔）一个，本阵营有航线可坐且能确定位置才有。

@@ -30,7 +30,7 @@ ns.Data.professions = {
                 name = {
                     enUS = "Linzy Blackbolt",
                 },
-                faction = "AH",
+                faction = "A",
                 map = 1416,
                 x = 18.5,
                 y = 62.4,
@@ -40,7 +40,7 @@ ns.Data.professions = {
                 name = {
                     enUS = "Patricia Egan",
                 },
-                faction = "AH",
+                faction = "A",
                 map = 1416,
                 x = 18.5,
                 y = 62.4,
@@ -334,15 +334,37 @@ ns.Data.professions = {
                 y = 74.1,
             },
             {
-                id = 257019,
+                id = 253004,
                 name = {
-                    enUS = "Nyassa Swiftdraught",
+                    enUS = "Iaadaria Bitterwind",
                 },
                 faction = "A",
                 rank = "journeyman",
                 map = 2521,
+                x = 66.3,
+                y = 79.5,
+            },
+            {
+                id = 257019,
+                name = {
+                    enUS = "Nyassa Swiftdraught",
+                },
+                faction = "AH",
+                rank = "journeyman",
+                map = 2521,
                 x = 43.7,
                 y = 43.4,
+            },
+            {
+                id = 257005,
+                name = {
+                    enUS = "Valiena Swiftgale",
+                },
+                faction = "AH",
+                rank = "journeyman",
+                map = 2521,
+                x = 59.2,
+                y = 76.3,
             },
         },
     },
@@ -379,6 +401,27 @@ ns.Data.professions = {
                 map = 1413,
                 x = 51.3,
                 y = 28.9,
+            },
+            {
+                id = 28694,
+                name = {
+                    enUS = "Alard Schmied",
+                    zhCN = "奥拉尔德·施米尔",
+                },
+                faction = "A",
+                map = 1416,
+                x = 19.8,
+                y = 63.4,
+            },
+            {
+                id = 276067,
+                name = {
+                    enUS = "Angus Hammerhand",
+                },
+                faction = "H",
+                map = 1420,
+                x = 21.1,
+                y = 45.8,
             },
             {
                 id = 3557,
@@ -685,11 +728,43 @@ ns.Data.professions = {
                 name = {
                     enUS = "Aedi Thriceforged",
                 },
-                faction = "A",
+                faction = "AH",
                 rank = "journeyman",
                 map = 2521,
                 x = 44.8,
                 y = 44.3,
+            },
+            {
+                id = 252479,
+                name = {
+                    enUS = "Daeann Steelwind",
+                },
+                faction = "AH",
+                rank = "journeyman",
+                map = 2521,
+                x = 65.5,
+                y = 80.3,
+            },
+            {
+                id = 259250,
+                name = {
+                    enUS = "Alphonse Dumas",
+                },
+                faction = "A",
+                rank = "journeyman",
+                map = 2548,
+                x = 64.4,
+                y = 82.0,
+            },
+            {
+                id = 256658,
+                name = {
+                    enUS = "Gur'dok",
+                },
+                rank = "journeyman",
+                map = 2548,
+                x = 60.0,
+                y = 46.2,
             },
         },
     },
@@ -704,11 +779,22 @@ ns.Data.professions = {
         skillLines = { 333, 2940 },
         trainers = {
             {
+                id = 266881,
+                name = {
+                    enUS = "Pa'zula",
+                },
+                faction = "H",
+                rank = "journeyman",
+                map = 1411,
+                x = 56.7,
+                y = 73.7,
+            },
+            {
                 id = 251978,
                 name = {
                     enUS = "Vanessa Sellers",
                 },
-                faction = "AH",
+                faction = "A",
                 map = 1416,
                 x = 16.8,
                 y = 62.3,
@@ -918,11 +1004,22 @@ ns.Data.professions = {
                 y = 60.4,
             },
             {
+                id = 257004,
+                name = {
+                    enUS = "Eaysaa Brightgust",
+                },
+                faction = "AH",
+                rank = "journeyman",
+                map = 2521,
+                x = 59.2,
+                y = 76.4,
+            },
+            {
                 id = 257020,
                 name = {
                     enUS = "Nasalanna Windsinger",
                 },
-                faction = "A",
+                faction = "AH",
                 rank = "journeyman",
                 map = 2521,
                 x = 43.2,
@@ -1204,6 +1301,17 @@ ns.Data.professions = {
                 x = 75.3,
                 y = 73.1,
             },
+            {
+                id = 260562,
+                name = {
+                    enUS = "Melbin Powderfuse",
+                },
+                faction = "AH",
+                rank = "specialization",
+                map = 2548,
+                x = 77.8,
+                y = 50.9,
+            },
         },
     },
     {
@@ -1228,11 +1336,31 @@ ns.Data.professions = {
                 y = 75.1,
             },
             {
+                id = 267329,
+                name = {
+                    enUS = "Zor'la",
+                },
+                faction = "H",
+                map = 1411,
+                x = 42.7,
+                y = 67.4,
+            },
+            {
+                id = 267332,
+                name = {
+                    enUS = "Garan Sunstrider",
+                },
+                faction = "H",
+                map = 1412,
+                x = 44.1,
+                y = 78.0,
+            },
+            {
                 id = 275321,
                 name = {
                     enUS = "Edward Egan",
                 },
-                faction = "AH",
+                faction = "A",
                 map = 1416,
                 x = 18.4,
                 y = 63.3,
@@ -1250,6 +1378,16 @@ ns.Data.professions = {
                 y = 52.1,
             },
             {
+                id = 267326,
+                name = {
+                    enUS = "Florence Nightshade",
+                },
+                faction = "H",
+                map = 1420,
+                x = 32.5,
+                y = 65.1,
+            },
+            {
                 id = 2390,
                 name = {
                     enUS = "Aranae Venomblood",
@@ -1261,6 +1399,16 @@ ns.Data.professions = {
                 y = 19.5,
             },
             {
+                id = 267338,
+                name = {
+                    enUS = "Emrys Flintbeard",
+                },
+                faction = "A",
+                map = 1426,
+                x = 28.9,
+                y = 66.6,
+            },
+            {
                 id = 1218,
                 name = {
                     enUS = "Herbalist Pomeroy",
@@ -1270,6 +1418,16 @@ ns.Data.professions = {
                 map = 1429,
                 x = 40.0,
                 y = 48.4,
+            },
+            {
+                id = 247223,
+                name = {
+                    enUS = "Nancy Songflower",
+                },
+                faction = "A",
+                map = 1429,
+                x = 52.4,
+                y = 43.9,
             },
             {
                 id = 1473,
@@ -1327,6 +1485,16 @@ ns.Data.professions = {
                 map = 1437,
                 x = 8.0,
                 y = 55.8,
+            },
+            {
+                id = 267335,
+                name = {
+                    enUS = "Eleyna Duskbreeze",
+                },
+                faction = "A",
+                map = 1438,
+                x = 59.9,
+                y = 41.3,
             },
             {
                 id = 3604,
@@ -1465,10 +1633,20 @@ ns.Data.professions = {
                 name = {
                     enUS = "Halassa Fernbreeze",
                 },
-                faction = "A",
+                faction = "AH",
                 map = 2521,
                 x = 43.0,
                 y = 43.5,
+            },
+            {
+                id = 254345,
+                name = {
+                    enUS = "Syriel Nightrain",
+                },
+                faction = "AH",
+                map = 2521,
+                x = 57.9,
+                y = 75.5,
             },
         },
     },
@@ -1855,11 +2033,22 @@ ns.Data.professions = {
                 y = 58.4,
             },
             {
+                id = 252376,
+                name = {
+                    enUS = "Emerii Tallgust",
+                },
+                faction = "AH",
+                rank = "journeyman",
+                map = 2521,
+                x = 63.7,
+                y = 80.7,
+            },
+            {
                 id = 251993,
                 name = {
                     enUS = "Indari Sunseam",
                 },
-                faction = "A",
+                faction = "AH",
                 rank = "journeyman",
                 map = 2521,
                 x = 44.7,
@@ -1889,6 +2078,36 @@ ns.Data.professions = {
                 y = 40.9,
             },
             {
+                id = 267328,
+                name = {
+                    enUS = "Norzsh",
+                },
+                faction = "H",
+                map = 1411,
+                x = 40.5,
+                y = 68.1,
+            },
+            {
+                id = 267331,
+                name = {
+                    enUS = "Vartha Rockmane",
+                },
+                faction = "H",
+                map = 1412,
+                x = 44.3,
+                y = 78.4,
+            },
+            {
+                id = 267325,
+                name = {
+                    enUS = "Walter Mason",
+                },
+                faction = "H",
+                map = 1420,
+                x = 32.2,
+                y = 65.8,
+            },
+            {
                 id = 3555,
                 name = {
                     enUS = "Johan Focht",
@@ -1911,6 +2130,16 @@ ns.Data.professions = {
                 y = 55.5,
             },
             {
+                id = 267337,
+                name = {
+                    enUS = "Sally Swiftwrench",
+                },
+                faction = "A",
+                map = 1426,
+                x = 28.9,
+                y = 67.7,
+            },
+            {
                 id = 5392,
                 name = {
                     enUS = "Yarr Hammerstone",
@@ -1920,6 +2149,16 @@ ns.Data.professions = {
                 map = 1426,
                 x = 50.0,
                 y = 50.3,
+            },
+            {
+                id = 247226,
+                name = {
+                    enUS = "Kelsey Fargo",
+                },
+                faction = "A",
+                map = 1429,
+                x = 47.2,
+                y = 32.2,
             },
             {
                 id = 3137,
@@ -1942,6 +2181,16 @@ ns.Data.professions = {
                 map = 1432,
                 x = 37.0,
                 y = 47.8,
+            },
+            {
+                id = 267334,
+                name = {
+                    enUS = "Fanorran Stilloak",
+                },
+                faction = "A",
+                map = 1438,
+                x = 58.2,
+                y = 41.4,
             },
             {
                 id = 6297,
@@ -1996,7 +2245,7 @@ ns.Data.professions = {
                 faction = "A",
                 map = 1455,
                 x = 50.0,
-                y = 26.3,
+                y = 26.1,
             },
             {
                 id = 3001,
@@ -2021,14 +2270,34 @@ ns.Data.professions = {
                 y = 37.5,
             },
             {
+                id = 252388,
+                name = {
+                    enUS = "Halavuul Cragwind",
+                },
+                faction = "AH",
+                map = 2521,
+                x = 65.4,
+                y = 80.5,
+            },
+            {
                 id = 257022,
                 name = {
                     enUS = "Messana Crestwind",
                 },
-                faction = "A",
+                faction = "AH",
                 map = 2521,
                 x = 44.7,
                 y = 44.5,
+            },
+            {
+                id = 255891,
+                name = {
+                    enUS = "Grungle",
+                },
+                faction = "A",
+                map = 2548,
+                x = 77.8,
+                y = 52.0,
             },
         },
     },
@@ -2042,6 +2311,26 @@ ns.Data.professions = {
         icon = "inv_misc_pelt_wolf_01",
         skillLines = { 393, 2947 },
         trainers = {
+            {
+                id = 267327,
+                name = {
+                    enUS = "Kagil",
+                },
+                faction = "H",
+                map = 1411,
+                x = 40.8,
+                y = 67.9,
+            },
+            {
+                id = 267330,
+                name = {
+                    enUS = "Nawka Wildsong",
+                },
+                faction = "H",
+                map = 1412,
+                x = 44.5,
+                y = 76.7,
+            },
             {
                 id = 6290,
                 name = {
@@ -2077,6 +2366,16 @@ ns.Data.professions = {
                 y = 33.8,
             },
             {
+                id = 267324,
+                name = {
+                    enUS = "Margaret Weaver",
+                },
+                faction = "H",
+                map = 1420,
+                x = 32.6,
+                y = 65.8,
+            },
+            {
                 id = 6289,
                 name = {
                     enUS = "Rand Rhobart",
@@ -2088,6 +2387,16 @@ ns.Data.professions = {
                 y = 60.0,
             },
             {
+                id = 267336,
+                name = {
+                    enUS = "Brighid Stormflayer",
+                },
+                faction = "A",
+                map = 1426,
+                x = 29.2,
+                y = 67.7,
+            },
+            {
                 id = 6306,
                 name = {
                     enUS = "Helene Peltskinner",
@@ -2097,6 +2406,16 @@ ns.Data.professions = {
                 map = 1429,
                 x = 46.2,
                 y = 62.2,
+            },
+            {
+                id = 247227,
+                name = {
+                    enUS = "Riley Peltskinner",
+                },
+                faction = "A",
+                map = 1429,
+                x = 47.0,
+                y = 39.9,
             },
             {
                 id = 6295,
@@ -2119,6 +2438,16 @@ ns.Data.professions = {
                 map = 1438,
                 x = 42.1,
                 y = 50.0,
+            },
+            {
+                id = 267333,
+                name = {
+                    enUS = "Terunne Bearshaper",
+                },
+                faction = "A",
+                map = 1438,
+                x = 59.4,
+                y = 38.6,
             },
             {
                 id = 6288,
@@ -2220,11 +2549,21 @@ ns.Data.professions = {
                 y = 59.2,
             },
             {
+                id = 257003,
+                name = {
+                    enUS = "Ishlee Breezewhisper",
+                },
+                faction = "AH",
+                map = 2521,
+                x = 59.6,
+                y = 76.1,
+            },
+            {
                 id = 257024,
                 name = {
                     enUS = "Mendalass Tattermend",
                 },
-                faction = "A",
+                faction = "AH",
                 map = 2521,
                 x = 43.2,
                 y = 43.4,
@@ -2270,7 +2609,7 @@ ns.Data.professions = {
                 name = {
                     enUS = "Charles Worth",
                 },
-                faction = "AH",
+                faction = "A",
                 rank = "expert",
                 map = 1416,
                 x = 17.7,
@@ -2541,11 +2880,22 @@ ns.Data.professions = {
                 y = 29.8,
             },
             {
+                id = 252380,
+                name = {
+                    enUS = "Othesia Evengale",
+                },
+                faction = "AH",
+                rank = "journeyman",
+                map = 2521,
+                x = 64.4,
+                y = 81.2,
+            },
+            {
                 id = 251991,
                 name = {
                     enUS = "Taleen Shimmerthread",
                 },
-                faction = "A",
+                faction = "AH",
                 rank = "journeyman",
                 map = 2521,
                 x = 44.8,
@@ -2590,10 +2940,20 @@ ns.Data.professions = {
                 name = {
                     enUS = "Katherine Lee",
                 },
-                faction = "AH",
+                faction = "A",
                 map = 1416,
                 x = 12.6,
                 y = 65.9,
+            },
+            {
+                id = 265944,
+                name = {
+                    enUS = "William Pickman",
+                },
+                faction = "H",
+                map = 1420,
+                x = 61.8,
+                y = 51.4,
             },
             {
                 id = 1355,
@@ -2728,6 +3088,36 @@ ns.Data.professions = {
                 x = 62.1,
                 y = 44.9,
             },
+            {
+                id = 257006,
+                name = {
+                    enUS = "Nyalah Brightfire",
+                },
+                faction = "AH",
+                map = 2521,
+                x = 60.6,
+                y = 72.7,
+            },
+            {
+                id = 251905,
+                name = {
+                    enUS = "Zerril Softbreeze",
+                },
+                faction = "AH",
+                map = 2521,
+                x = 43.9,
+                y = 43.9,
+            },
+            {
+                id = 256655,
+                name = {
+                    enUS = "Gorg",
+                },
+                faction = "H",
+                map = 2548,
+                x = 58.6,
+                y = 44.6,
+            },
         },
     },
     {
@@ -2767,7 +3157,7 @@ ns.Data.professions = {
                 name = {
                     enUS = "Angelique Butler",
                 },
-                faction = "AH",
+                faction = "A",
                 map = 1416,
                 x = 17.2,
                 y = 61.2,
@@ -2974,6 +3364,16 @@ ns.Data.professions = {
                 y = 61.0,
             },
             {
+                id = 255877,
+                name = {
+                    enUS = "Hunter Moore",
+                },
+                faction = "A",
+                map = 1424,
+                x = 53.7,
+                y = 78.9,
+            },
+            {
                 id = 1700,
                 name = {
                     enUS = "Paxton Ganter",
@@ -3149,6 +3549,27 @@ ns.Data.professions = {
                 map = 1458,
                 x = 80.7,
                 y = 31.3,
+            },
+            {
+                id = 251992,
+                name = {
+                    enUS = "Fenn Fairweather",
+                },
+                faction = "AH",
+                map = 2521,
+                x = 45.0,
+                y = 48.4,
+            },
+            {
+                id = 260558,
+                name = {
+                    enUS = "Krix",
+                },
+                faction = "A",
+                rank = "artisan",
+                map = 2548,
+                x = 79.3,
+                y = 54.8,
             },
         },
     },

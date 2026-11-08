@@ -1,0 +1,46 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <!--
+        插件自己的一份技能书分页列表：与暴雪技能书的 PagedSpellsFrame 结构、参数一致（两页并排、每页三列、
+        翻页控件在右下角），条目用暴雪的 SpellBookItemTemplate / SpellBookHeaderTemplate，看起来与原生技能书一样。
+        分页列表要求子框架（ViewFrames、PagingControls）在 OnLoad 时就存在，只能用 XML 声明。
+        父模板来自常驻加载的 Blizzard_PagedContent；条目模板来自按需加载的 Blizzard_PlayerSpells，
+        只在创建条目时按名字取，那时技能书已经加载。见 Modules/NativeSpellList.lua。
+    -->
+    <Frame name="WowHandbookSpellListTemplate" inherits="PagedCondensedVerticalGridContentFrameTemplate" virtual="true">
+        <KeyValues>
+            <KeyValue key="viewsPerPage" value="2" type="number"/>
+            <KeyValue key="autoExpandHeaders" value="true" type="boolean"/>
+            <KeyValue key="spacerSize" value="20" type="number"/>
+            <KeyValue key="xPadding" value="15" type="number"/>
+            <KeyValue key="yPadding" value="10" type="number"/>
+            <KeyValue key="columnsPerRow" value="3" type="number"/>
+            <KeyValue key="autoExpandElements" value="true" type="boolean"/>
+        </KeyValues>
+        <Frames>
+            <Frame parentKey="View1" inherits="StaticGridLayoutFrame" parentArray="ViewFrames">
+                <Size x="448" y="520"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="85" y="-45"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="View2" inherits="StaticGridLayoutFrame" parentArray="ViewFrames">
+                <Size x="448" y="520"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-50" y="-45"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="PagingControls" inherits="PagingControlsHorizontalTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-75" y="40"/>
+                </Anchors>
+                <KeyValues>
+                    <KeyValue key="fontName" value="SystemFont_Med3" type="string"/>
+                    <KeyValue key="fontColor" value="SPELLBOOK_FONT_COLOR" type="global"/>
+                    <KeyValue key="spacing" value="8" type="number"/>
+                    <KeyValue key="prevPageSound" value="SOUNDKIT.IG_ABILITY_PAGE_TURN" type="global"/>
+                    <KeyValue key="nextPageSound" value="SOUNDKIT.IG_ABILITY_PAGE_TURN" type="global"/>
+                </KeyValues>
+            </Frame>
+        </Frames>
+    </Frame>
+</Ui>

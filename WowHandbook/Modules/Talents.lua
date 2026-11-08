@@ -5,8 +5,11 @@ local L = ns.L
 -- （10 级起每级 1 点、共 51 点；一棵树里每投 5 点开放下一层；前置天赋要点满）。
 -- 只是模拟，不会改动角色的真实天赋。每个职业的加点记在账号存档里；
 -- 加点可生成网站天赋模拟器的链接（分享码格式与网站一致）。
+-- 推荐方案：网站的练级方案逐级导出（Data/TalentPlans.lua，每一级一个分享码），选中后拖动等级条
+-- 查看每一级的完整点法和这一级点的是哪个天赋，洗天赋的等级在等级条上标出；改动任意一点就变回“我的加点”。
 -- 数据 Data/Talents.lua 由网站的天赋数据生成（取自客户端天赋表）。
-local Module = ns:NewModule("Talents", { builds = {} })
+-- plans[职业] = 选中的方案 ID；"" 表示玩家选了“我的加点”，nil 表示没选过（有默认方案时用默认方案）。
+local Module = ns:NewModule("Talents", { builds = {}, plans = {} })
 local UI
 
 local TOTAL_POINTS = 51
@@ -158,7 +161,8 @@ end
 -- 当前职业与加点
 --------------------------------------------------------------------------------
 
-local state = { class = nil, build = nil }
+-- plan：选中的推荐方案（nil 为“我的加点”）；level：方案正在看的等级；picks[树][天赋] = 这一级加的点
+local state = { class = nil, build = nil, plan = nil, level = nil, picks = {}, respec = false }
 
 local function Classes()
     return ns.Data.talents or {}
@@ -167,6 +171,83 @@ end
 local function Trees()
     local data = Classes()[state.class]
     return data and data.trees or {}
+end
+
+local function ClassPlans(class)
+    local data = ns.Data.talentPlans and ns.Data.talentPlans[class or state.class]
+    return data and data.plans or {}, data and data.default
+end
+
+local function FindPlan(id)
+    for _, plan in ipairs(ClassPlans()) do
+        if plan.id == id then
+            return plan
+        end
+    end
+end
+
+local function PlanBuild(plan, level)
+    if level < plan.first then
+        return Rules.Empty(Trees())
+    end
+    return Rules.Decode(Trees(), plan.codes[math.min(level, plan.last) - plan.first + 1])
+end
+
+local function IsRespec(plan, level)
+    for _, respec in ipairs(plan.respecs or {}) do
+        if respec == level then
+            return true
+        end
+    end
+    return false
+end
+
+-- 方案默认看哪一级：看本职业时停在角色当前等级，其他职业看方案的最后一级
+local function DefaultLevel(plan)
+    if state.class == ns.PlayerClass() then
+        return math.max(plan.first, math.min(plan.last, ns.PlayerLevel()))
+    end
+    return plan.last
+end
+
+-- 跳到方案的某一级：加点换成这一级的点法，并记下这一级比上一级多出的点
+local function SetLevel(level)
+    local plan = state.plan
+    if not plan then
+        return
+    end
+    level = math.max(plan.first, math.min(plan.last, level))
+    state.level = level
+    state.build = PlanBuild(plan, level)
+    state.respec = IsRespec(plan, level)
+    state.picks = {}
+    local before = PlanBuild(plan, level - 1)
+    for t, ranks in ipairs(state.build) do
+        state.picks[t] = {}
+        for i, rank in ipairs(ranks) do
+            if rank > before[t][i] then
+                state.picks[t][i] = true
+            end
+        end
+    end
+end
+
+-- 选方案：plan 为 nil 时回到玩家自己存下的加点
+local function UsePlan(plan)
+    state.plan = plan
+    state.picks, state.respec = {}, false
+    ns:GetModuleSettings(Module).plans[state.class] = plan and plan.id or ""
+    -- 游戏天赋窗口上的方案等级跟着换（本职业的方案才会画）
+    local native = ns.modules.NativeTabs
+    if native and native.enabled and native.RefreshBadges then
+        native.RefreshBadges()
+    end
+    if plan then
+        SetLevel(DefaultLevel(plan))
+    else
+        state.level = nil
+        state.build = Rules.Decode(Trees(), ns:GetModuleSettings(Module).builds[state.class] or "")
+    end
 end
 
 -- 选中职业：存档里上次看的，否则当前角色的职业，再否则第一个有数据的职业
@@ -187,7 +268,16 @@ local function SelectClass(class)
     end
     state.class = class
     settings.class = class
-    state.build = Rules.Decode(Trees(), class and settings.builds[class] or "")
+    -- 没选过方案、也没有自己的加点时，用网站给这个职业的默认方案
+    local saved, plan = class and settings.plans[class]
+    if saved == nil and (settings.builds[class or ""] or "") == "" then
+        local _, default = ClassPlans(class)
+        saved = default
+    end
+    if saved and saved ~= "" then
+        plan = FindPlan(saved)
+    end
+    UsePlan(plan)
 end
 
 local function SaveBuild()
@@ -199,11 +289,20 @@ local function Code()
     return Rules.Encode(state.build)
 end
 
+-- 在方案上改动：从这一级的点法出发，变成玩家自己的加点
+local function Detach()
+    if state.plan then
+        state.plan, state.level, state.picks, state.respec = nil, nil, {}, false
+        ns:GetModuleSettings(Module).plans[state.class] = ""
+    end
+end
+
 -- 加点或减点；成功返回 true
 local function Spend(t, index, delta)
     local trees = Trees()
     if delta > 0 and Rules.CanAdd(trees, state.build, t, index)
         or delta < 0 and Rules.CanRemove(trees, state.build, t, index) then
+        Detach()
         state.build[t][index] = state.build[t][index] + delta
         SaveBuild()
         return true
@@ -212,6 +311,7 @@ local function Spend(t, index, delta)
 end
 
 local function Reset(t)
+    Detach()
     for index, ranks in ipairs(state.build) do
         if not t or t == index then
             for i in ipairs(ranks) do
@@ -228,6 +328,11 @@ Module.Spend = Spend
 Module.Reset = Reset
 Module.Code = Code
 Module.State = state
+Module.UsePlan = UsePlan
+Module.SetLevel = SetLevel
+Module.FindPlan = FindPlan
+Module.Trees = Trees
+Module.ClassPlans = ClassPlans
 
 --------------------------------------------------------------------------------
 -- 页面：顶部标题、点数、职业选择与按钮；下面并排三棵树
@@ -236,10 +341,13 @@ Module.State = state
 local PAD = 20
 local TREE_WIDTH, TREE_GAP = 234, 10
 local TREE_HEADER = 34
-local ICON, COL_PITCH, ROW_PITCH = 40, 54, 61
+local ICON, COL_PITCH, ROW_PITCH = 40, 54, 57
+local TREES_TOP = 100 -- 树面板顶部：上面是标题、按钮、摘要与方案等级条
 local LINE = 2
 
 local Refresh
+
+local ROLE_LABELS = { damage = "Damage", tank = "Tank", healer = "Healer" }
 
 -- 天赋图标左上角在树面板里的位置
 local function CellPosition(talent)
@@ -286,6 +394,8 @@ local function ShowTooltip(button)
     GameTooltip:AddLine(L["Left-click: add a point. Right-click: remove a point."], 0.54, 0.51, 0.45, true)
     GameTooltip:Show()
 end
+
+Module.ShowTooltip = ShowTooltip -- 游戏天赋窗口里的方案视图共用（按钮上带 treeIndex / talentIndex）
 
 local function OnTalentClick(button, mouseButton)
     if Spend(button.treeIndex, button.talentIndex, mouseButton == "RightButton" and -1 or 1) then
@@ -354,7 +464,7 @@ local function DrawLinks(panel, tree, ranks)
     end
 end
 
-local function RenderTree(panel, t, tree, ranks, pointsLeft)
+local function RenderTree(panel, t, tree, ranks, pointsLeft, picks)
     local spent = Rules.TreeTotal(ranks)
     panel.icon:SetTexture(tree.icon and ("Interface\\Icons\\" .. tree.icon) or nil)
     panel.title:SetText(ns.Name(tree.name) or "")
@@ -371,7 +481,11 @@ local function RenderTree(panel, t, tree, ranks, pointsLeft)
         button:SetIcon(talent.icon and ("Interface\\Icons\\" .. talent.icon) or 134400)
         local open = rank > 0 or (available and pointsLeft > 0)
         button:SetDimmed(not open)
-        if rank >= talent.max then
+        if picks[index] and not state.respec then
+            -- 方案在这一级点的天赋
+            button:SetBorder("green")
+            button:SetCount(("%d/%d"):format(rank, talent.max), "green")
+        elseif rank >= talent.max then
             button:SetBorder("gold")
             button:SetCount(("%d/%d"):format(rank, talent.max), "gold")
         elseif rank > 0 then
@@ -415,11 +529,44 @@ function Refresh()
     page.summary:SetText(table.concat(parts, "  ·  "))
     page.classDropdown:SetValue(state.class)
     page.resetAll:SetEnabled(total > 0)
+
+    -- 推荐方案：下拉框列出本职业的方案，选中时显示等级条与这一级点的天赋
+    local plans = ClassPlans()
+    local items = { { id = "", label = L["My build"] } }
+    for _, plan in ipairs(plans) do
+        tinsert(items, { id = plan.id, label = ns.Name(plan.name) or plan.id })
+    end
+    page.planDropdown:SetItems(items)
+    page.planDropdown:SetValue(state.plan and state.plan.id or "")
+    page.planDropdown:SetShown(#plans > 0)
+    local plan = state.plan
+    page.planBar:SetShown(plan ~= nil)
+    if plan then
+        page.slider:SetRange(plan.first, plan.last)
+        page.slider:SetMarks(plan.respecs)
+        page.slider:SetLevel(state.level)
+        page.levelText:SetText(Color((L["Level %d"]):format(state.level), "gold"))
+        local picked = {}
+        for t, tree in ipairs(trees) do
+            for i in pairs(state.picks[t] or {}) do
+                tinsert(picked, ("%s %d/%d"):format(ns.Name(tree.talents[i].name) or "?", state.build[t][i],
+                    tree.talents[i].max))
+            end
+        end
+        if state.respec then
+            page.pickText:SetText(Color((L["Respec at this level: reset every point and spend %d on the new plan."]):format(total), "red"))
+        elseif #picked > 0 then
+            page.pickText:SetText((L["This level: %s"]):format(Color(table.concat(picked, ", "), "green")))
+        else
+            page.pickText:SetText("")
+        end
+    end
+
     for t, panel in ipairs(page.trees) do
         local tree = trees[t]
         panel:SetShown(tree ~= nil)
         if tree then
-            RenderTree(panel, t, tree, state.build[t], TOTAL_POINTS - total)
+            RenderTree(panel, t, tree, state.build[t], TOTAL_POINTS - total, plan and state.picks[t] or {})
         end
     end
     page.empty:SetShown(#trees == 0)
@@ -465,7 +612,7 @@ local function CreatePage(parent)
     local title = UI:Text(p, "Title", L["Talent simulator"])
     title:SetPoint("TOPLEFT", PAD, -18)
     p.summary = UI:Text(p, "Muted")
-    p.summary:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
+    p.summary:SetPoint("TOPLEFT", PAD, -50)
 
     -- 职业选择：名字用客户端的职业名，按职业色显示
     local items = {}
@@ -480,8 +627,32 @@ local function CreatePage(parent)
     end, 130)
     p.classDropdown:SetPoint("TOPRIGHT", -PAD, -18)
 
+    -- 推荐方案下拉框：悬停时显示方案的定位与用途
+    p.planDropdown = UI:Dropdown(p, {}, function(id)
+        UsePlan(FindPlan(id))
+        Refresh()
+    end, 220)
+    p.planDropdown:SetPoint("RIGHT", p.classDropdown, "LEFT", -6, 0)
+    p.planDropdown:HookScript("OnEnter", function(self)
+        local plan = state.plan
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:SetText(L["Recommended plans"], 1, 0.82, 0)
+        if plan then
+            GameTooltip:AddLine(ns.Name(plan.name) or plan.id, 1, 1, 1)
+            GameTooltip:AddLine(L[ROLE_LABELS[plan.role] or "Damage"], 0.54, 0.51, 0.45)
+            if plan.use then
+                GameTooltip:AddLine(ns.Name(plan.use), 1, 1, 1, true)
+            end
+        else
+            GameTooltip:AddLine(L["Pick a leveling plan from wowhandbook.com, then drag the level bar to see what to spend at each level."],
+                1, 1, 1, true)
+        end
+        GameTooltip:Show()
+    end)
+    p.planDropdown:HookScript("OnLeave", GameTooltip_Hide)
+
     p.resetAll = UI:Button(p, L["Reset"], 70, 24)
-    p.resetAll:SetPoint("RIGHT", p.classDropdown, "LEFT", -6, 0)
+    p.resetAll:SetPoint("TOPRIGHT", -PAD, -46)
     p.resetAll:SetScript("OnClick", function()
         Reset()
         Refresh()
@@ -504,15 +675,35 @@ local function CreatePage(parent)
     end)
     p.link:HookScript("OnLeave", GameTooltip_Hide)
 
+    -- 方案等级条：拖动查看每一级的点法；洗天赋的等级在条上标出
+    local bar = CreateFrame("Frame", nil, p)
+    bar:SetPoint("TOPLEFT", PAD, -72)
+    bar:SetPoint("TOPRIGHT", -PAD, -72)
+    bar:SetHeight(20)
+    p.planBar = bar
+    p.levelText = UI:Text(bar, "Body")
+    p.levelText:SetPoint("LEFT")
+    p.levelText:SetWidth(64)
+    p.slider = UI:Slider(bar, 260, function(level)
+        SetLevel(level)
+        Refresh()
+    end)
+    p.slider:SetPoint("LEFT", 68, 0)
+    p.pickText = UI:Text(bar, "Small")
+    p.pickText:SetPoint("LEFT", p.slider, "RIGHT", 14, 0)
+    p.pickText:SetPoint("RIGHT")
+    p.pickText:SetWordWrap(false)
+    bar:Hide()
+
     p.trees = {}
     for t = 1, 3 do
         local panel = CreateTreePanel(p, t)
-        panel:SetPoint("TOPLEFT", PAD + (t - 1) * (TREE_WIDTH + TREE_GAP), -64)
-        panel:SetPoint("BOTTOMLEFT", PAD + (t - 1) * (TREE_WIDTH + TREE_GAP), 14)
+        panel:SetPoint("TOPLEFT", PAD + (t - 1) * (TREE_WIDTH + TREE_GAP), -TREES_TOP)
+        panel:SetPoint("BOTTOMLEFT", PAD + (t - 1) * (TREE_WIDTH + TREE_GAP), 10)
         p.trees[t] = panel
     end
     p.empty = UI:Text(p, "Muted", L["No talent data for this class yet."])
-    p.empty:SetPoint("TOPLEFT", PAD, -70)
+    p.empty:SetPoint("TOPLEFT", PAD, -TREES_TOP - 6)
     p.empty:Hide()
 
     p:SetScript("OnShow", Refresh)
@@ -523,5 +714,12 @@ function Module:OnEnable()
     ns.MainFrame:RegisterTab({ id = "talents", title = L["Talents"], order = 22, create = CreatePage, onShow = Refresh })
     ns:AddCommand("talents", L["open the talent simulator"], function()
         ns.MainFrame:Open("talents")
+    end)
+    -- 升级时，正在看本职业方案的等级条跟到新等级
+    ns:RegisterEvent("PLAYER_LEVEL_UP", function(_, level)
+        if state.plan and state.class == ns.PlayerClass() and level then
+            SetLevel(level)
+            Refresh()
+        end
     end)
 end

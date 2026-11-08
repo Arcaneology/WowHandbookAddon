@@ -133,11 +133,11 @@ local function Update(force)
             pin.poi = spot.poi
             if spot.poi then
                 pin:SetSize(POI_SIZE, POI_SIZE)
-                pin.icon:SetTexture(spot.icon)
-                -- 飞艇与船的贴图自带透明边，不裁；其余图标裁掉边角
-                if spot.poi == "transport" then
-                    pin.icon:SetTexCoord(0, 1, 0, 1)
+                -- 飞艇与船：自带交通图集或自绘贴图，都不裁边；其余图标裁掉边角
+                if spot.transport then
+                    ns.Transport.ApplyIcon(pin.icon, spot.transport)
                 else
+                    pin.icon:SetTexture(spot.icon)
                     pin.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
                 end
                 pin.icon:SetVertexColor(1, 1, 1)
@@ -214,7 +214,7 @@ local function AddPoiSpots(mapID)
     if Settings().transportPins ~= false and ns.Transport then
         for _, entry in ipairs(ns.Transport.HubsForMap(mapID, ns.PlayerFaction())) do
             tinsert(state.spots, { x = entry.spot.x / 100, y = entry.spot.y / 100, poi = "transport",
-                lines = Module.TransportPinLines(entry), icon = ns.Transport.IconTexture(entry), alpha = 1 })
+                lines = Module.TransportPinLines(entry), transport = entry, alpha = 1 })
         end
     end
     if Module.SpiritHealersWanted() then

@@ -13,6 +13,7 @@ local NO = "Interface\\RaidFrame\\ReadyCheck-NotReady"
 local SECTIONS = {
     { module = "Dungeons", category = "dungeons", title = "Dungeon guide", options = {} },
     { module = "ItemSource", category = "dungeons", title = "Item sources", options = {} },
+    { module = "BisGear", category = "dungeons", title = "BiS gear", options = {} },
     { module = "MinimapButton", category = "general", title = "Minimap button", options = {
         { key = "hidden", icon = "INV_Misc_Gear_01", label = "Minimap button", tip = "Show minimap button",
             inverted = true },
@@ -22,11 +23,12 @@ local SECTIONS = {
             tip = "Tell me which spells to train when I level up" },
     } },
     { module = "Professions", category = "professions", title = "Professions", options = {} },
-    { module = "SpellbookPanel", category = "spells", title = "Unlearned spells", options = {
-        { key = "collapsed", icon = "INV_Misc_Book_09", label = "Spell panel",
-            tip = "Show the panel next to the game spellbook", inverted = true },
-    } },
     { module = "Talents", category = "spells", title = "Talent simulator", options = {} },
+    { module = "HunterPets", category = "spells", title = "Rare pets", options = {
+        { key = "tooltip", icon = "Ability_Hunter_BeastTaming", label = "Rare pets in tooltips",
+            tip = "Show rare pets and whether you tamed them in their tooltips" },
+    } },
+    { module = "NativeTabs", category = "spells", title = "In the game windows", options = {} },
     { module = "ActionBars", category = "spells", title = "Action bars", options = {
         { key = "upgradeRanks", quick = true, icon = "Spell_ChargePositive", label = "Upgrade ranks",
             tip = "When I learn a new rank, replace that spell's lower ranks on my bars" },
@@ -35,7 +37,9 @@ local SECTIONS = {
         { key = "rangeTint", quick = true, icon = "Ability_Hunter_SniperShot", label = "Out of range in red",
             tip = "Tint the whole button red when the target is out of range" },
     } },
-    { module = "InstanceTracker", category = "dungeons", title = "Instance tracker", options = {
+    { module = "InstanceTracker", category = "dungeons", title = "Dungeon helper", options = {
+        { key = "shown", quick = true, icon = "INV_Misc_Note_01", label = "Quest window outside instances",
+            tip = "Outside instances, show the quests for a dungeon I pick and mark where to pick them up" },
         { key = "autoShow", quick = true, icon = "INV_Misc_Bone_HumanSkull_01", label = "Auto-show in instances",
             tip = "Show boss and quest progress when I enter an instance" },
     } },
@@ -48,11 +52,17 @@ local SECTIONS = {
             { id = "manual", label = "Manual", tip = "I choose the reward myself" },
             { id = "usable", label = "Auto", tip = "Usable first, then the most valuable" },
         } },
+        -- 不存设置：直接读写客户端变量（get / set），显示玩家实际的状态
+        { key = "questItemGlow", quick = true, icon = "Spell_Holy_MindVision", label = "Quest item glow",
+            tip = "Make quest items and the monsters that drop them glow (takes effect after /reload)",
+            get = function() return ns.modules.AutoQuest.QuestItemGlow() end,
+            set = function(on) ns.modules.AutoQuest.SetQuestItemGlow(on) end },
     } },
     { module = "Vendor", category = "general", title = "Vendor", options = {
         { key = "sellJunk", quick = true, icon = "INV_Misc_Coin_01", label = "Sell gray items",
             tip = "Sell gray items automatically when I open a vendor" },
     } },
+    { module = "InstanceMap", category = "map", title = "Dungeon maps", options = {} },
     { module = "WorldMap", category = "map", title = "World map", options = {
         { key = "levelLabel", icon = "Ability_Hunter_Pathfinding", label = "Zone levels",
             tip = "Show zone level ranges under the zone name" },
@@ -67,6 +77,8 @@ local SECTIONS = {
             { id = "always", icon = YES, tip = "Always" },
             { id = "off", icon = NO, tip = "Never" },
         } },
+        { key = "graveyardAreas", icon = "Spell_Holy_Resurrection", label = "Resurrection areas",
+            tip = "Along with spirit healers, show the borders between their areas: die inside one and you return to its healer" },
         { key = "classTrainerPins", quick = true, icon = "INV_Misc_Book_04", label = "Class trainers",
             tip = "Show my class trainers on the map, with how many spells I can train now" },
         { key = "transmogPins", quick = true, icon = "INV_Shirt_White_01", label = "Transmogrifiers",
@@ -137,8 +149,11 @@ local function AddTip(frame, option)
 end
 
 -- 选项的当前值：勾选框为是否勾选（考虑 inverted），多选一为选中的 id
+-- 带 get 的选项不存在设置里，取它自己报告的实际状态
 function ns.SettingValue(settings, option)
-    if option.choices then
+    if option.get then
+        return option.get()
+    elseif option.choices then
         return settings[option.key] or option.choices[1].id
     elseif option.inverted then
         return settings[option.key] ~= true
@@ -148,6 +163,10 @@ end
 
 -- 改一个选项并让模块立即生效（设置页与快捷菜单共用）
 function ns.SetSetting(module, option, value)
+    if option.set then
+        option.set(value)
+        return
+    end
     local settings = ns:GetModuleSettings(module)
     if option.choices then
         settings[option.key] = value
@@ -247,6 +266,10 @@ local function AddSection(list, y, width, section)
             tinsert(controls, { dropdown = dropdown, settings = settings, option = option })
         else
             local check = UI:Checkbox(row, "", function(checked)
+                if option.set then
+                    option.set(checked)
+                    return
+                end
                 if option.inverted then
                     settings[option.key] = not checked
                 else

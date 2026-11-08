@@ -88,6 +88,53 @@ function UI:Button(parent, text, width, height, variant)
     return button
 end
 
+--------------------------------------------------------------------------------
+-- 确认框：屏幕中央一个小面板，一句说明、确认与取消两个按钮；Esc 或取消关闭。
+-- 全插件共用一个（具名 WowHandbookConfirmDialog，放进 UISpecialFrames 让 Esc 关闭），再次调用时换掉内容。
+-- 文字由调用方经本地化表传入。
+--------------------------------------------------------------------------------
+
+local confirmDialog
+
+function UI:Confirm(text, acceptLabel, cancelLabel, onAccept)
+    if not confirmDialog then
+        local dialog = UI:Panel(UIParent, "panel", "goldDim")
+        _G.WowHandbookConfirmDialog = dialog
+        tinsert(UISpecialFrames, "WowHandbookConfirmDialog")
+        dialog:SetSize(340, 120)
+        dialog:SetPoint("CENTER", 0, 120)
+        dialog:SetFrameStrata("DIALOG")
+        dialog:SetClampedToScreen(true)
+        dialog:EnableMouse(true)
+        dialog.text = UI:Text(dialog, "Body")
+        dialog.text:SetPoint("TOPLEFT", 18, -20)
+        dialog.text:SetPoint("TOPRIGHT", -18, -20)
+        dialog.text:SetJustifyH("CENTER")
+        dialog.text:SetWordWrap(true)
+        dialog.accept = UI:Button(dialog, "", 140, 26, "primary")
+        dialog.accept:SetPoint("BOTTOMRIGHT", dialog, "BOTTOM", -6, 16)
+        dialog.cancel = UI:Button(dialog, "", 140, 26)
+        dialog.cancel:SetPoint("BOTTOMLEFT", dialog, "BOTTOM", 6, 16)
+        dialog.cancel:SetScript("OnClick", function() dialog:Hide() end)
+        dialog.accept:SetScript("OnClick", function()
+            dialog:Hide()
+            if dialog.onAccept then
+                dialog.onAccept()
+            end
+        end)
+        confirmDialog = dialog
+    end
+    local dialog = confirmDialog
+    dialog.text:SetText(text or "")
+    dialog.accept:SetLabel(acceptLabel or "")
+    dialog.cancel:SetLabel(cancelLabel or "")
+    dialog.onAccept = onAccept
+    dialog:SetHeight(math.max(110, (dialog.text:GetStringHeight() or 0) + 82))
+    dialog:Show()
+    dialog:Raise()
+    return dialog
+end
+
 -- 两条交叉细线组成的“×”图标（不依赖字体字形）
 function UI:CrossIcon(parent, size)
     local lines = {}
@@ -224,6 +271,94 @@ function UI:Dropdown(parent, items, onChange, width)
     end)
     dropdown:SetItems(items)
     return dropdown
+end
+
+--------------------------------------------------------------------------------
+-- 滑条：整数取值，细轨道加方形滑块；拖动、点轨道、滚轮都能改。
+-- onChange(value) 只在玩家操作时调用，SetValue 不触发。SetMarks 在轨道上标出几个值（如洗天赋的等级）。
+--------------------------------------------------------------------------------
+
+function UI:Slider(parent, width, onChange)
+    local slider = CreateFrame("Slider", nil, parent)
+    slider:SetSize(width or 200, 16)
+    slider:SetOrientation("HORIZONTAL")
+    slider:SetValueStep(1)
+    slider:SetObeyStepOnDrag(true)
+    slider:EnableMouseWheel(true)
+    slider.onChange = onChange -- 供测试使用
+
+    local track = Theme:Fill(slider, "lineSoft", "BACKGROUND")
+    track:SetPoint("LEFT")
+    track:SetPoint("RIGHT")
+    track:SetHeight(4)
+    local fill = Theme:Fill(slider, "goldDim", "ARTWORK")
+    fill:SetPoint("LEFT", track, "LEFT")
+    fill:SetHeight(4)
+    local thumb = slider:CreateTexture(nil, "OVERLAY")
+    thumb:SetSize(10, 16)
+    SetColor(thumb, "gold")
+    slider:SetThumbTexture(thumb)
+    local marks = {}
+
+    local quiet = false
+    local function Update(self)
+        local low, high = self:GetMinMaxValues()
+        local span = high > low and (high - low) or 1
+        local usable = self:GetWidth() - 10
+        fill:SetWidth(math.max(1, usable * (self:GetValue() - low) / span + 5))
+        for _, mark in ipairs(marks) do
+            if mark.value then
+                mark:ClearAllPoints()
+                mark:SetPoint("CENTER", self, "LEFT", 5 + usable * (mark.value - low) / span, 0)
+            end
+        end
+    end
+    slider:SetScript("OnValueChanged", function(self, value)
+        value = math.floor(value + 0.5)
+        Update(self)
+        if not quiet and self.value ~= value then
+            self.value = value
+            onChange(value)
+        end
+        self.value = value
+    end)
+    slider:SetScript("OnMouseWheel", function(self, delta)
+        local low, high = self:GetMinMaxValues()
+        local value = math.max(low, math.min(high, (self.value or low) + (delta > 0 and 1 or -1)))
+        if value ~= self.value then
+            self:SetValue(value)
+        end
+    end)
+    slider:SetScript("OnSizeChanged", Update)
+
+    function slider:SetRange(low, high)
+        quiet = true
+        self:SetMinMaxValues(low, math.max(low, high))
+        quiet = false
+        Update(self)
+    end
+    function slider:SetLevel(value)
+        quiet = true
+        self.value = value
+        self:SetValue(value)
+        quiet = false
+        Update(self)
+    end
+    function slider:SetMarks(values, color)
+        for index, value in ipairs(values or {}) do
+            local mark = marks[index] or Theme:Fill(self, color or "text", "ARTWORK", 2)
+            marks[index] = mark
+            mark:SetSize(2, 10)
+            mark.value = value
+            mark:Show()
+        end
+        for index = #(values or {}) + 1, #marks do
+            marks[index].value = nil
+            marks[index]:Hide()
+        end
+        Update(self)
+    end
+    return slider
 end
 
 --------------------------------------------------------------------------------
@@ -779,7 +914,7 @@ function UI:MinimapButton(parent, onClick)
 end
 
 --------------------------------------------------------------------------------
--- 停靠面板：贴在某个游戏窗口右侧的面板（未学技能面板、配方面板），可拖动，记住相对那个窗口右上角的偏移。
+-- 停靠面板：贴在某个游戏窗口右侧的面板（配方面板），可拖动，记住相对那个窗口右上角的偏移。
 -- UI:Dockable(panel, settings, defaultX)：settings 为模块设置（偏移存在 dockX / dockY），defaultX 为默认的横向间距。
 -- panel:Dock(outer) 按偏移贴到 outer 右侧（高度与 outer 一致），panel:DockOffset() 返回当前偏移；
 -- 左键拖动面板空白处移动，松手后记下偏移；右键面板复位到默认位置。

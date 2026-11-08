@@ -324,8 +324,13 @@ class TransportTest(unittest.TestCase):
         source = exporter.load(exporter.REPO_ROOT / "tools" / "data" / "transport.json")
         result = exporter.build_transport(source)
         self.assertEqual(len(result["hubs"]), len(source["hubs"]))
-        for hub in result["hubs"].values():
-            self.assertTrue(("x" in hub and "y" in hub) or hub.get("taxiNodes"), "hub without a position source")
+        for hub_id, hub in result["hubs"].items():
+            if ("x" in hub and "y" in hub) or hub.get("taxiNodes"):
+                continue
+            # 只有泊位坐标的枢纽（泽风岛）：每条两站航线的另一端都要有泊位
+            partners = {stop for route in result["routes"] if hub_id in route["stops"] and not route.get("loop")
+                        for stop in route["stops"] if stop != hub_id}
+            self.assertTrue(partners and partners <= set(hub.get("berths") or {}), f"hub {hub_id} without a position source")
         loops = [route for route in result["routes"] if route.get("loop")]
         self.assertEqual([route["stops"] for route in loops], [["menethil", "southshore", "auberdine"]])
 
@@ -486,6 +491,206 @@ class GraveyardsTest(unittest.TestCase):
         self.assertEqual(graveyards[1429], [[83.6, 69.8], [39.5, 60.5]])
         self.assertEqual(exporter.build_graveyards({}), {})
 
+    def test_graveyard_faction_kept_and_collected_points_are_shared(self) -> None:
+        site_data = {"maps": {"1411": [[47.0, 17.5, "H"], [53.5, 44.5, ""]]}}
+        result = exporter.build_graveyards(site_data, {1411: [[47.2, 17.6]], 2521: [[41.1, 22.3]]})
+        self.assertEqual(result[1411], [[47.2, 17.6, "H"], [53.5, 44.5]])  # 实测替换坐标，阵营不变；两边都用的不写
+        self.assertEqual(result[2521], [[41.1, 22.3]])
+
+    def test_graveyard_borders_split_by_distance_in_yards(self) -> None:
+        # 两个墓地左右对称：分界线是中间那条竖线；地图边框上的边不导出
+        borders = exporter.graveyard_borders([(25.0, 50.0), (75.0, 50.0)], 100.0, 100.0)
+        self.assertEqual(len(borders), 1)
+        x1, y1, x2, y2 = borders[0]
+        self.assertAlmostEqual(x1, 50.0)
+        self.assertAlmostEqual(x2, 50.0)
+        self.assertEqual(sorted((round(y1), round(y2))), [0, 100])
+        # 只有一个墓地（或两个几乎重合）时没有分界线
+        self.assertEqual(exporter.graveyard_borders([(10.0, 10.0)], 100.0, 100.0), [])
+        self.assertEqual(exporter.graveyard_borders([(10.0, 10.0), (10.5, 10.0)], 100.0, 100.0), [])
+        # 三个墓地：三条分界线交于一点，相邻两块共用的边只留一条
+        three = exporter.graveyard_borders([(20.0, 20.0), (80.0, 20.0), (50.0, 90.0)], 100.0, 100.0)
+        self.assertEqual(len(three), 3)
+
+    def test_graveyard_areas_per_faction_in_map_percent(self) -> None:
+        # 地图 200 × 100 码：百分比坐标横竖比例不同，必须按码算
+        site = {"size": {"1": [200.0, 100.0], "2": [100.0, 100.0]},
+                "extra": {"1": [[150.0, 50.0, "A"]], "2": [[50.0, 120.0, ""]]}}
+        spots = {1: [[25.0, 50.0], [75.0, 50.0, "H"]], 2: [[50.0, 20.0]]}
+        areas = exporter.build_graveyard_areas(site, spots)
+        # 联盟：(25, 50) 与地图外的 (150, 50)：中线 x = 87.5%
+        self.assertEqual([round(v, 1) for v in areas[1]["A"][0][::2]], [87.5, 87.5])
+        # 部落：(25, 50) 与 (75, 50)：中线 x = 50%
+        self.assertEqual([round(v, 1) for v in areas[1]["H"][0][::2]], [50.0, 50.0])
+        # 两个阵营一样时只存一份；地图外的墓地也参与划分
+        self.assertEqual(list(areas[2]), ["both"])
+        self.assertEqual([round(v, 1) for v in areas[2]["both"][0][1::2]], [70.0, 70.0])
+        # 没有尺寸的地图不导出
+        self.assertNotIn(3, exporter.build_graveyard_areas(site, {3: [[1.0, 1.0], [90.0, 90.0]]}))
+
+
+class TalentPlansTest(unittest.TestCase):
+    TALENTS = {"mage": {"trees": [{"talents": [{}] * 3}, {"talents": [{}] * 2}]}}
+
+    def plan(self, **overrides):
+        plan = {"id": "mage-test", "role": "damage", "levels": [10, 12], "respecs": [12],
+                "codes": ["1", "2", "-1"], "orders": [{"respecAt": 12, "steps": [101, 101]}, {"respecAt": None, "steps": [201, 101]}],
+                "name": {"en": "Test", "zh": "测试"}, "use": {"en": "Use", "zh": None}}
+        plan.update(overrides)
+        return plan
+
+    def test_plan_keeps_codes_and_respecs(self) -> None:
+        plans = exporter.build_talent_plans({"classes": {"mage": {"default": "mage-test", "plans": [self.plan()]}}},
+                                            self.TALENTS)
+        plan = plans["mage"]["plans"][0]
+        self.assertEqual(plans["mage"]["default"], "mage-test")
+        self.assertEqual((plan["first"], plan["last"], plan["codes"], plan["respecs"]), (10, 12, ["1", "2", "-1"], [12]))
+        self.assertEqual(plan["name"], {"enUS": "Test", "zhCN": "测试"})
+        self.assertEqual(plan["orders"][1], {"respecAt": None, "steps": [201, 101]})
+
+    def test_unknown_default_and_class_without_trees_are_dropped(self) -> None:
+        plans = exporter.build_talent_plans({"classes": {
+            "mage": {"default": "other", "plans": [self.plan()]},
+            "rogue": {"default": None, "plans": [self.plan(id="rogue-test")]},
+        }}, self.TALENTS)
+        self.assertIsNone(plans["mage"]["default"])
+        self.assertNotIn("rogue", plans)
+
+    def test_codes_must_cover_every_level_and_fit_the_trees(self) -> None:
+        for bad in (self.plan(codes=["1", "2"]), self.plan(codes=["1", "2", "1111"]), self.plan(role="dps"),
+                    self.plan(orders=[{"respecAt": None, "steps": [104]}]), self.plan(orders=[{"respecAt": 12, "steps": [101]}])):
+            with self.assertRaises(ValueError):
+                exporter.build_talent_plans({"classes": {"mage": {"plans": [bad]}}}, self.TALENTS)
+
+
+class BisGearTest(unittest.TestCase):
+    TALENTS = {"mage": {"trees": [{"name": {"enUS": "Arcane"}}, {"name": {"enUS": "Fire"}}, {"name": {"enUS": "Frost"}}]}}
+    DUNGEONS = [{"siteSlug": "deadmines", "bosses": [{"name": {"enUS": "Mr. Smite"}}]}]
+    PROFESSIONS = [{"slug": "tailoring"}]
+
+    @staticmethod
+    def pick(item, slot, *source):
+        return {"id": item, "slot": slot, "source": list(source)}
+
+    def faction(self, levels, alts=None, pvp=None):
+        return {"levels": levels, "bands": [{"range": [1, 10], "alts": alts or []}],
+                "pvp": {"range": [50, 60], "gear": pvp or [], "alts": []}}
+
+    def raw(self, alliance, horde, tree="Frost"):
+        return {"siteSets": ["20"], "classes": {"mage": {"default": "Frost", "specs": [
+            {"tree": tree, "slug": "frost", "alliance": alliance, "horde": horde}]}}}
+
+    def build(self, raw):
+        return exporter.build_bis_gear(raw, self.TALENTS, self.DUNGEONS, self.PROFESSIONS, {"Vendor Bob": "商人鲍勃"})
+
+    def test_timeline_records_changes_and_shares_common_ones(self) -> None:
+        hat = self.pick(1, "Head", "drop", "deadmines", "Mr. Smite")
+        better = self.pick(5, "Head", "crafted", "tailoring", 555)
+        staff = self.pick(2, "Weapon", "quest", 100)
+        sword = self.pick(3, "Weapon", "vendor", 7, "Vendor Bob")
+        ring_a, ring_b = self.pick(8, "Finger", "quest", 9), self.pick(9, "Finger", "quest", 10)
+        alliance = self.faction([[hat, staff, ring_a, ring_b], [better, staff, ring_a, ring_b]],
+                                alts=[self.pick(4, "Head", "quest", 11)], pvp=[hat])
+        horde = self.faction([[hat, sword, ring_a], [better, sword, ring_a]],
+                             alts=[self.pick(4, "Head", "quest", 11)], pvp=[hat])
+        data = self.build(self.raw(alliance, horde))
+        spec = data["classes"]["mage"]["specs"][0]
+        self.assertEqual((data["classes"]["mage"]["default"], spec["tree"], spec["slug"]), (3, 3, "frost"))
+        self.assertEqual(spec["timeline"], [
+            [1, "Finger1", "", 8, "quest", 9],
+            [1, "Finger2", "A", 9, "quest", 10],
+            [1, "Head", "", 1, "drop", "deadmines", "Mr. Smite"],
+            [2, "Head", "", 5, "crafted", "tailoring", 555],
+            [1, "Weapon", "A", 2, "quest", 100],
+            [1, "Weapon", "H", 3, "vendor", 7],
+        ])
+        self.assertEqual(spec["bands"], [{"range": [1, 10], "alts": [[4, "Head", "", "quest", 11]]}])
+        self.assertEqual(spec["pvp"]["gear"], [[1, "Head", "", "drop", "deadmines", "Mr. Smite"]])
+        self.assertEqual(data["npcs"], {7: {"enUS": "Vendor Bob", "zhCN": "商人鲍勃"}})
+        self.assertEqual(data["siteSets"], ["20"])
+
+    def test_emptied_slot_is_recorded(self) -> None:
+        two_hand, main, off = self.pick(1, "Weapon", "quest", 1), self.pick(2, "Weapon", "quest", 2), \
+            self.pick(3, "Off Hand", "quest", 3)
+        changes = exporter.bis_timeline([[main, off], [two_hand]])
+        self.assertIn((2, "Off Hand", None), changes)
+        self.assertIn((2, "Weapon", two_hand), changes)
+
+    def test_merge_keeps_each_faction_order(self) -> None:
+        alliance, horde = ["a", "b", "c", "x"], ["c", "b", "y", "x"]
+        merged = exporter.merge_faction_picks(alliance, horde)
+        for side, original in (("A", alliance), ("H", horde)):
+            self.assertEqual([pick for pick, mark in merged if mark in ("", side)], original)
+
+    def test_bad_sources_are_rejected(self) -> None:
+        for bad in (self.pick(1, "Shirt", "quest", 1), self.pick(1, "Head", "drop", "nowhere", "X"),
+                    self.pick(1, "Head", "crafted", "cooking", 2), self.pick(1, "Head", "teleport", 3),
+                    self.pick(1, "Head", "quest")):
+            with self.assertRaises(ValueError):
+                self.build(self.raw(self.faction([[bad]]), self.faction([[bad]])))
+        with self.assertRaises(ValueError):
+            self.build(self.raw(self.faction([]), self.faction([]), tree="Shadow"))
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HunterPetsTest(unittest.TestCase):
+    PETS = {
+        "families": [{"id": 2, "slug": "cat", "name": "Cat", "zh": "豹", "icon": "ability_hunter_pet_cat",
+                      "diet": ["meat", "fish"], "abilities": ["prowl", "bite"], "signature": "prowl",
+                      "confirmed": True, "modifiers": {"damage": 10, "armor": 0, "health": -2}}],
+        "abilities": [{"slug": "prowl", "name": "Prowl", "zh": "潜伏", "kind": "signature", "icon": "x",
+                       "ranks": [{"rank": 1, "spellId": 24450, "level": 30}, {"rank": 2, "spellId": 24452, "level": 0}],
+                       "families": ["cat"], "cooldown": 10}],
+        "beasts": [
+            {"id": 5828, "name": "Humar the Pridelord", "zh": "狮王休玛", "family": "cat", "minLevel": 23,
+             "maxLevel": 23, "rank": "rare-elite", "new": False, "evidence": "forever-db", "attack": 1.3,
+             "teaches": [["prowl", 2], ["prowl", 9]],
+             "zones": ["the-barrens", "nowhere"], "instances": [],
+             "spawns": {"the-barrens": [[62.0, 33.3]] * 8, "nowhere": [[1, 1]]}},
+            {"id": 3653, "name": "Kresh", "zh": None, "family": "turtle", "minLevel": 20, "maxLevel": None, "attack": 2.0,
+             "rank": "elite", "new": True, "zones": [], "instances": ["wailing-caverns"], "spawns": {}},
+        ],
+        "featured": [5828, 99999],
+        "zones": {"the-barrens": {"uiMapId": 1413}},
+    }
+
+    COPY = {"featured": {"5828": {"why": {"enUS": "Black lion", "zhCN": "黑狮"}, "tip": {"enUS": "Trap it", "zhCN": "放陷阱"},
+                                  "tags": ["look", "pvp"]}},
+            "families": {"cat": {"role": {"enUS": "Damage", "zhCN": "输出"}}}}
+
+    def test_shape_and_limits(self):
+        pets = dict(self.PETS)
+        pets["beasts"] = self.PETS["beasts"] + [{"id": 1, "name": "Plain Wolf", "family": "wolf", "minLevel": 5,
+                                                  "rank": None, "zones": [], "spawns": {}}]
+        out = exporter.build_hunter_pets(pets, self.COPY)
+        # 家族只带名称、图标、专属技能（第 1 级的技能 ID）与网站的定位；修正、食谱放网站
+        self.assertEqual(out["families"], [{"slug": "cat", "name": {"enUS": "Cat", "zhCN": "豹"},
+                                            "icon": "ability_hunter_pet_cat", "signature": 24450,
+                                            "role": {"enUS": "Damage", "zhCN": "输出"}}])
+        self.assertNotIn("abilities", out)
+        humar = out["beasts"][5828]
+        self.assertEqual((humar["rank"], humar["featured"]), ("rareelite", True))
+        # 特点：攻击间隔、自带技能（技能 ID 与等级；超出技能等级数的丢掉）、网站文案
+        self.assertEqual(humar["attack"], 1.3)
+        self.assertEqual(humar["teaches"], [[24452, 2]])
+        self.assertEqual((humar["why"]["zhCN"], humar["tip"]["enUS"], humar["tags"]), ("黑狮", "Trap it", ["look", "pvp"]))
+        self.assertEqual(len(humar["spots"]), exporter.BEAST_SPOTS_PER_MAP)  # 每张图限量；没有 uiMapID 的地区跳过
+        self.assertEqual(humar["spots"][0], [1413, 62.0, 33.3])
+        # 不是稀有、也不是重点的普通野兽不进插件
+        self.assertNotIn(1, out["beasts"])
+        self.assertNotIn(3653, out["beasts"])
+        self.assertNotIn("evidence", humar)  # 网站内部字段不进插件
+
+    def test_featured_non_rare_kept(self):
+        pets = dict(self.PETS, featured=[5828, 3653])
+        kresh = exporter.build_hunter_pets(pets)["beasts"][3653]
+        self.assertEqual((kresh["levels"], kresh["new"], kresh["featured"], kresh["spots"], kresh["instances"]),
+                         ([20, 20], True, True, None, ["wailing-caverns"]))
+        # 普通攻速（2 秒）不带；没有文案时不带看点
+        self.assertEqual((kresh["attack"], kresh["teaches"], kresh["why"], kresh["tags"]), (None, None, None, None))
+
+    def test_missing_source(self):
+        self.assertEqual(exporter.build_hunter_pets({}), {"families": [], "beasts": {}})
