@@ -1,5 +1,4 @@
 -- 自动生成的数据文件，请勿手工编辑。
--- 玩家自制地图（无限版新地下城）由 Santiago Reyes 绘制，界面上署名。
 local ADDON_NAME, ns = ...
 ns.Data = ns.Data or {}
 ns.Data.instanceMaps = {
@@ -587,63 +586,6 @@ ns.Data.instanceMaps = {
                 tile = 256,
                 columns = 4,
                 textures = { 255178, 255182, 255183, 255184, 255185, 255186, 255187, 255188, 255189, 255179, 255180, 255181 },
-            },
-        },
-    },
-    [2959] = {
-        artist = "Santiago Reyes",
-        floors = {
-            {
-                width = 1200,
-                height = 800,
-                tile = 512,
-                columns = 3,
-                textures = { "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-1-1", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-1-2", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-1-3", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-1-4", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-1-5", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-1-6" },
-                label = "City",
-            },
-            {
-                width = 1024,
-                height = 690,
-                tile = 512,
-                columns = 2,
-                textures = { "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-2-1", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-2-2", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-2-3", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\city-of-dalaran-2-4" },
-                label = "Underbelly",
-            },
-        },
-    },
-    [2998] = {
-        artist = "Santiago Reyes",
-        floors = {
-            {
-                width = 1536,
-                height = 1024,
-                tile = 512,
-                columns = 3,
-                textures = { "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\excavation-site-wetlands-1", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\excavation-site-wetlands-2", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\excavation-site-wetlands-3", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\excavation-site-wetlands-4", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\excavation-site-wetlands-5", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\excavation-site-wetlands-6" },
-            },
-        },
-    },
-    [2999] = {
-        artist = "Santiago Reyes",
-        floors = {
-            {
-                width = 1536,
-                height = 1024,
-                tile = 512,
-                columns = 3,
-                textures = { "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\ruins-of-lordaeron-1", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\ruins-of-lordaeron-2", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\ruins-of-lordaeron-3", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\ruins-of-lordaeron-4", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\ruins-of-lordaeron-5", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\ruins-of-lordaeron-6" },
-            },
-        },
-    },
-    [3065] = {
-        artist = "Santiago Reyes",
-        floors = {
-            {
-                width = 1536,
-                height = 1024,
-                tile = 512,
-                columns = 3,
-                textures = { "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\hall-of-thanes-1", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\hall-of-thanes-2", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\hall-of-thanes-3", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\hall-of-thanes-4", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\hall-of-thanes-5", "Interface\\AddOns\\WowHandbook\\Media\\InstanceMaps\\hall-of-thanes-6" },
             },
         },
     },

@@ -2763,7 +2763,14 @@ check("world map: dungeon map inside an instance (client art, fan map floors, to
     assert(not clickHandler(map, "LeftButton", 0.5, 0.5), "canvas click consumed over the world map")
     controls.toggle:Click()
     assert(art.shown, "toggle did not bring the dungeon map back")
-    -- 新副本达拉然：玩家自制地图两层，可选层，署名作者
+    -- 玩家自制地图（两层，可选层，署名作者）：随插件分发前要作者授权，数据里暂时没有，这里放一份示例
+    assert(not main.Data.instanceMaps[2959], "fan-made maps must not ship until the author confirms permission")
+    local function fanFloor(name, label)
+        return { width = 1024, height = 690, tile = 512, columns = 2, label = label,
+            textures = { name .. "-1", name .. "-2", name .. "-3", name .. "-4" } }
+    end
+    main.Data.instanceMaps[2959] = { artist = "Santiago Reyes",
+        floors = { fanFloor("city-1", "City"), fanFloor("city-2", "Underbelly") } }
     GetInstanceInfo = function() return "City of Dalaran", "party", 1, "", 5, 0, false, 2959 end
     provider:RefreshAllData()
     assert(controls.dropdown.shown and controls.dropdown.generator, "no floor selector for Dalaran")
@@ -2787,6 +2794,7 @@ check("world map: dungeon map inside an instance (client art, fan map floors, to
     provider:RefreshAllData()
     assert(not art.shown, "dungeon map shown outside an instance")
     GetInstanceInfo, C_Map.GetBestMapForUnit, MapUtil, provider.GetMap = saved[1], saved[2], saved[3], saved[4]
+    main.Data.instanceMaps[2959] = nil
 end)
 check("world map: level range under the native zone name", function()
     main.Data.zones[1411] = main.Data.zones[1411] or { levels = { 1, 10 } }

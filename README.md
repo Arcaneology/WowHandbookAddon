@@ -14,7 +14,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 - **Dungeon guide**: dungeons matched to your level (including the new Excavation Site: Wetlands), the quests to pick up before you go in, full quest chains, and boss loot you can filter by class and armor type.
 - **Dungeon helper**: a slim window that knows where you are. Outside, pick a dungeon (the ones suited to your level come first) and see the quests to pick up before you go in, with full chains; click a quest to mark its quest giver on the map. Inside, it shows boss progress in its title bar, folds killed bosses into one line, and marks your dungeon quests with the familiar quest icons (? ready to turn in, ! pick up here) and counts such as 3/8.
-- **Dungeon maps**: inside a dungeon the world map shows the dungeon's own map, with a floor picker for multi-level dungeons. The new Forever dungeons use fan-made maps by Santiago Reyes.
+- **Dungeon maps**: inside a classic dungeon or raid, the world map shows the dungeon's own map, with a floor picker for multi-level dungeons.
 - **Map pins** for quest givers and dungeon entrances.
 - **Auto quest**: accept quests and turn in finished ones as soon as you talk to an NPC. When a quest offers several rewards, pick one yourself (default) or let the addon choose: a usable reward first, the most valuable one otherwise. Hold Shift while talking to an NPC to skip it once. A quest that cannot be accepted or turned in is not retried in the same conversation; talk to the NPC again and the addon tries once more. Works with DialogueUI too.
 - **Quest item glow**: one switch makes quest items, and the monsters that drop them, glow. It shows the game's real setting and offers to reload the interface when you change it.
@@ -83,7 +83,7 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 - **副本手册**：按等级推荐副本（含新副本“挖掘场：湿地”），列出进本前要接的任务与完整任务链，首领掉落可按职业与护甲类型筛选。
 - **副本助手小窗**：副本外选一个副本（适合你等级的排最前），列出进本前要接的任务与完整任务链，点任务在地图上标出接任务的人；进副本后显示首领进度与本副本任务。首领进度放在标题栏，已击杀的合并成一行；任务用熟悉的任务标记（? 可交、! 可接）和 3/8 这样的数量显示。
-- **副本地图**：在副本里打开大地图就是这个副本的地图，多层副本可以选层；无限版新副本用 Santiago Reyes 绘制的玩家地图。
+- **副本地图**：在经典地下城与团队副本里打开大地图就是这个副本的地图，多层副本可以选层。
 - **地图图钉**：接交任务 NPC 与副本入口。
 - **自动任务**：和 NPC 对话时自动接任务、自动交已完成的任务。有多个奖励时可以自己选（默认），也可以交给插件：优先选能用的，其次选最值钱的。按住 Shift 对话可跳过一次；接不下或交不了的任务在同一次对话里不会反复尝试，关掉对话再点 NPC 会重新处理一次。兼容 DialogueUI。
 - **任务物品发光**：一个开关让任务物品和掉落任务物品的怪物发光；开关显示游戏里的实际设置，改动后可一键重新载入界面生效。
@@ -149,7 +149,7 @@ WoW Handbook is an addon: it runs inside the World of Warcraft: Forever client, 
 
 ## Credits
 
-Zeppelin tower locations also come from QuestieDB. Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). Hunter pet locations come from QuestieDB as well. The maps of the new Forever dungeons are fan-made maps by Santiago Reyes, shown unaltered with credit. The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
+Zeppelin tower locations also come from QuestieDB. Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). Hunter pet locations come from QuestieDB as well. The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
 
 ## Author
 

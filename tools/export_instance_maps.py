@@ -75,6 +75,9 @@ INSTANCE_FLOOR_ART = {
 # 玩家自制地图：副本地图 ID → 原图（网站 assets/research/maps/fan-originals/）与各层的名字。
 # 层名是本地化表的键；只有一层时不显示层名。
 FAN_ARTIST = "Santiago Reyes"
+# 2026-11-08 用户决定：向作者确认授权之前，玩家自制地图不随插件分发（0.6.0 起关闭，不生成数据与贴图）。
+# 确认后改为 True 并重新运行本脚本即可恢复；插件代码仍支持带 artist 的副本地图。
+FAN_MAPS_ENABLED = False
 FAN_TILE = 512
 FAN_MAX_WIDTH = 1536
 FAN_MAPS = {
@@ -265,7 +268,7 @@ def export(site: Path, write_images: bool) -> dict:
     if write_images and MEDIA_DIR.exists():
         for old in MEDIA_DIR.glob("*.blp"):
             old.unlink()
-    for map_id, floors in FAN_MAPS.items():
+    for map_id, floors in (FAN_MAPS.items() if FAN_MAPS_ENABLED else ()):
         built = []
         for floor in floors:
             entry = build_fan_floor(site / FAN_ORIGINALS / floor["source"], floor["name"], write_images)
@@ -285,7 +288,7 @@ def main() -> int:
     if missing:
         print(f"warning: no floor art found for {missing}")
     site_export.write_lua("InstanceMaps.lua", "instanceMaps", data,
-                          "玩家自制地图（无限版新地下城）由 Santiago Reyes 绘制，界面上署名。")
+                          "玩家自制地图（无限版新地下城）由 Santiago Reyes 绘制，界面上署名。" if FAN_MAPS_ENABLED else None)
     print(f"InstanceMaps.lua: {len(data)} instances")
     return 0
 
