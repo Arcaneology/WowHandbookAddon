@@ -64,6 +64,13 @@ Theme.hex = {
     skillGray = "ff808080",
 }
 
+-- 同一组颜色带上 |c 前缀，直接拼在文字前面（后面接 |r）：Theme.code.muted .. 文字 .. "|r"。
+-- 强调色（gold）会随配色方案变化，要在用的时候取，不要在文件加载时存进常量
+Theme.code = {}
+for name, hex in pairs(Theme.hex) do
+    Theme.code[name] = "|c" .. hex
+end
+
 function Theme:Color(text, name)
     return "|c" .. (self.hex[name] or name) .. tostring(text) .. "|r"
 end
@@ -199,6 +206,7 @@ function Theme:Apply(scheme, opacity)
     end
     self.hex.gold = ("ff%02x%02x%02x"):format(math.floor(accent[1] * 255 + 0.5), math.floor(accent[2] * 255 + 0.5),
         math.floor(accent[3] * 255 + 0.5))
+    self.code.gold = "|c" .. self.hex.gold
     for name, alpha in pairs(BACKGROUND_ALPHA) do
         self.colors[name][4] = alpha * self.opacity / 100
     end

@@ -47,6 +47,30 @@ class DeadminesSiteSyncTest(unittest.TestCase):
         self.assertEqual(result["name"]["zhCN"], "正义试炼")
 
 
+class PrerequisiteFixesTest(unittest.TestCase):
+    def test_fixes_replace_reference_prerequisites_and_link_back(self) -> None:
+        refs = [{"id": 8945, "prerequisites": [8929]}, {"id": 8929}, {"id": 8930},
+                {"id": 6566, "prerequisites": []}, {"id": 4974}]
+        quests = exporter.build_quests([], {}, {"chains": {}, "steps": {}}, {}, {}, refs)
+        self.assertEqual(quests[8945]["before"], [])
+        self.assertEqual(quests[8945]["beforeAny"], [[8929, 8930]])
+        self.assertIn(8945, quests[8930]["after"])
+        self.assertEqual(quests[6566]["before"], [4974])
+        self.assertIsNone(quests[6566]["beforeAny"])
+        self.assertIn(6566, quests[4974]["after"])
+
+    def test_highland_hides_requires_daily_delivery_and_breadcrumb_is_extra(self) -> None:
+        site = [{"id": 98815, "name": "Highland Hides", "prerequisites": []},
+                {"id": 95737, "name": "Seeking Caitlin", "prerequisites": []},
+                {"id": 95647, "name": "Lost in the Thicket", "prerequisites": []}]
+        quests = exporter.build_quests(site, {}, {"chains": {}, "steps": {}}, {}, {}, [{"id": 469}])
+        self.assertEqual(quests[98815]["before"], [469])
+        self.assertIn(98815, quests[469]["after"])
+        self.assertTrue(quests[95737]["extra"])
+        self.assertEqual(quests[95647]["before"], [])
+        self.assertNotIn("extra", quests[95647])
+
+
 class ResolveMapTest(unittest.TestCase):
     ZONES = {"Ashenvale": 1440, "Swamp of Sorrows": 1435, "Orgrimmar": 1454}
 
@@ -161,6 +185,9 @@ class StartsInsideTest(unittest.TestCase):
         self.assertFalse(inside({"kind": "npc", "location": "Blackrock Mountain — central tomb"}, ["Blackrock Depths"]))
         self.assertFalse(inside({"kind": "npc", "location": "Sentinel Tower (56.4, 47.5)"}, ["Deadmines"]))
         self.assertFalse(inside({"kind": "npc", "location": "Westfall"}, ["The Deadmines"]))
+        # 高地兽皮在米奈希尔港接：区域名“Wetlands”不是副本“Excavation Site: Wetlands”
+        self.assertFalse(inside({"kind": "npc", "location": "Wetlands"}, ["Excavation Site: Wetlands"]))
+        self.assertTrue(inside({"kind": "npc", "location": "Excavation Site: Wetlands"}, ["Excavation Site: Wetlands"]))
         self.assertFalse(inside(None, ["Deadmines"]))
 
 
@@ -317,6 +344,50 @@ class TransmogrifiersTest(unittest.TestCase):
     def test_shipped_list_has_the_three_known_npcs(self) -> None:
         names = {row["name"] for row in exporter.TRANSMOGRIFIERS}
         self.assertEqual(names, {"Fyrenz Vishonar", "Mon'ye", "Spellweaver Thaldris"})
+
+
+class LibraryBooksTest(unittest.TestCase):
+    def test_books_get_quest_map_and_unmapped_zone(self) -> None:
+        result = exporter.build_library_books({
+            "books": [
+                {"id": 203754, "spots": [{"slug": "elwynn-forest", "zone": "Elwynn Forest", "zoneZh": "艾尔文森林",
+                                          "coords": [65.4, 70.1]}], "directions": None},
+                {"id": 220349, "spots": [{"slug": None, "zone": "Blackrock Mountain", "zoneZh": "黑石山",
+                                          "coords": [48.6, 64.2]}], "directions": {"en": "Tomb", "zh": "墓顶"}}],
+            "turnIn": [{"npc": 211033, "name": "Garion Wendell", "side": "alliance", "slug": "stormwind-city",
+                        "coords": [37.4, 80.8]}],
+            "charm": 211779,
+            "milestones": [{"id": "friend", "quest": 78150, "books": 10, "level": 20, "minLevel": 1, "choice": [1, 2]}],
+        }, {"elwynn-forest": 1429, "stormwind-city": 1453})
+        self.assertEqual(result["books"][0], {"id": 203754, "quest": 79091,
+                                              "spots": [{"map": 1429, "x": 65.4, "y": 70.1}], "directions": None})
+        self.assertEqual(result["books"][1]["spots"], [{"zone": {"enUS": "Blackrock Mountain", "zhCN": "黑石山"}}])
+        self.assertEqual(result["books"][1]["directions"], {"enUS": "Tomb", "zhCN": "墓顶"})
+        self.assertEqual(result["librarians"]["A"]["map"], 1453)
+        self.assertEqual(result["librarians"]["A"]["name"]["zhCN"], "加里昂·温德尔")
+        self.assertEqual(result["milestones"][0]["choice"], [1, 2])
+
+    def test_every_book_has_its_own_quest(self) -> None:
+        self.assertEqual(len(exporter.LIBRARY_BOOK_QUESTS), 40)
+        self.assertEqual(len(set(exporter.LIBRARY_BOOK_QUESTS.values())), 40)
+
+    def test_unknown_book_fails_loudly(self) -> None:
+        with self.assertRaises(ValueError):
+            exporter.build_library_books({"books": [{"id": 1, "spots": []}]}, {})
+
+
+class MerchantCratesTest(unittest.TestCase):
+    def test_crates_keep_bundle_order_and_skip_generic(self) -> None:
+        result = exporter.build_merchant_crates({
+            "genericCrate": {"id": 248549},
+            "crates": [{"id": 248683, "tier": "Apprentice", "bundles": [{"id": 2770, "count": 20},
+                                                                        {"id": 2771, "count": 20}]}],
+        })
+        self.assertEqual(result, {"crates": {248683: [[2770, 20], [2771, 20]]}})
+
+    def test_crate_without_bundles_fails_loudly(self) -> None:
+        with self.assertRaises(ValueError):
+            exporter.build_merchant_crates({"crates": [{"id": 1, "bundles": []}]})
 
 
 class TransportTest(unittest.TestCase):

@@ -1,4 +1,5 @@
 local ADDON_NAME, ns = ...
+local K = ns.Theme.code -- 文字里内嵌的颜色（|c 前缀）；强调色随配色方案变化，用的时候再取
 local L = ns.L
 
 -- 副本手册（F1–F3），卡片式：
@@ -284,28 +285,28 @@ local function FillCard(card, index)
     local total, done, _, active = QuestSummary(dungeon)
     local stats = {}
     if total > 0 then
-        tinsert(stats, Module.QuestBadge(total, done, active) .. ("|cffd9ccb0%d/%d|r"):format(done, total))
+        tinsert(stats, Module.QuestBadge(total, done, active) .. (K.textDim .. "%d/%d|r"):format(done, total))
     end
     if dungeon.dataPending then
-        tinsert(stats, "|cff8a8374" .. L["Data coming soon"] .. "|r")
+        tinsert(stats, K.muted .. L["Data coming soon"] .. "|r")
     elseif not dungeon.aggregateOnly then
-        tinsert(stats, CARD_ICON.boss .. "|cffd9ccb0" .. ns.BossCount(dungeon) .. "|r")
+        tinsert(stats, CARD_ICON.boss .. K.textDim .. ns.BossCount(dungeon) .. "|r")
     end
     local loot = LootCount(dungeon)
     if loot > 0 then
-        tinsert(stats, CARD_ICON.loot .. "|cffd9ccb0" .. loot .. "|r")
+        tinsert(stats, CARD_ICON.loot .. K.textDim .. loot .. "|r")
     end
     if #stats == 0 then
-        tinsert(stats, "|cff8a8374" .. L["Data coming soon"] .. "|r")
+        tinsert(stats, K.muted .. L["Data coming soon"] .. "|r")
     end
     card.quests:SetText(table.concat(stats, "    "))
 
     local mapID = ns.DungeonEntrance(index) or (dungeon.entrance and dungeon.entrance.map)
-    card.where:SetText(mapID and (CARD_ICON.entrance .. " |cff8a8374" .. ns.MapName(mapID) .. "|r") or "")
+    card.where:SetText(mapID and (CARD_ICON.entrance .. " " .. K.muted .. ns.MapName(mapID) .. "|r") or "")
     if suitable then
         card.badge:SetText(L["Right for you"])
     elseif dungeon.kind == "raid" then
-        card.badge:SetText("|cff8a8374" .. L["Raid"] .. "|r")
+        card.badge:SetText(K.muted .. L["Raid"] .. "|r")
     end
     card.badge:SetShown(suitable or dungeon.kind == "raid")
     card:Show()
@@ -448,6 +449,21 @@ end
 -- 任务表：每个副本任务归入一种情况，并给出去哪接 / 去哪交 / 任务链从哪继续
 --------------------------------------------------------------------------------
 
+-- “完成其中一个即可”的一组前置：已完成的那个优先，否则取第一个本阵营能接的
+local function PickAny(group)
+    local fallback
+    for _, id in ipairs(group) do
+        local status = ns.QuestStatus(id)
+        if status == "done" or status == "active" then
+            return id
+        end
+        if not fallback and status ~= "faction" then
+            fallback = id
+        end
+    end
+    return fallback or group[1]
+end
+
 -- 任务链：沿“前置”一路往上找，返回从最早一步到该任务的有序列表（不含重复，防止环）
 local function ChainOf(questID)
     local order, seen = {}, {}
@@ -459,6 +475,9 @@ local function ChainOf(questID)
         local quest = ns.Data.quests[id]
         for _, before in ipairs(quest and quest.before or {}) do
             Visit(before)
+        end
+        for _, group in ipairs(quest and quest.beforeAny or {}) do
+            Visit(PickAny(group))
         end
         tinsert(order, id)
     end
@@ -520,7 +539,7 @@ local function PlaceRow(stack, labelKey, source, primary)
     if source.kind == "item" then
         who = (L["Item: %s"]):format(who)
     end
-    stack:Row(("|cff8a8374%s|r %s  |cff8a8374%s|r"):format(L[labelKey], who, PlaceText(source)),
+    stack:Row((K.muted .. "%s|r %s  " .. K.muted .. "%s|r"):format(L[labelKey], who, PlaceText(source)),
         { MarkButton(source, who, primary) }, "Small", 16)
 end
 
@@ -550,10 +569,10 @@ local STATUS_ICON = {
 Module.STATUS_ICON = STATUS_ICON -- 供测试使用
 
 local STEP_STYLE = {
-    done = { "ff46bf72", "Completed", STATUS_ICON.done },
-    active = { "ffe0b458", "Accepted", STATUS_ICON.active },
-    next = { "ff6f95d6", "Next step", STATUS_ICON.ready },
-    pending = { "ff8a8374", "Not yet", "|cff8a8374-|r" },
+    done = { "green", "Completed", STATUS_ICON.done },
+    active = { "gold", "Accepted", STATUS_ICON.active },
+    next = { "blue", "Next step", STATUS_ICON.ready },
+    pending = { "muted", "Not yet", K.muted .. "-|r" },
 }
 
 local function StepState(id, nextStep)
@@ -635,7 +654,7 @@ local function QuestEntries(dungeon)
         local group = GROUP_BY_KEY[item.kind]
         local hasChain = #item.chain > 1
         local expanded = hasChain and questState.expanded[questID]
-        local toggle = hasChain and (expanded and "|cffe0b458-|r " or "|cffe0b458+|r ") or "   "
+        local toggle = hasChain and (expanded and K.gold .. "-|r " or K.gold .. "+|r ") or "   "
         -- 右侧：任务链进度（4/10）与状态符号；需要先做前置时只显示进度（蓝色）
         local tag = STATUS_ICON[item.kind] or ""
         if hasChain then
@@ -649,7 +668,7 @@ local function QuestEntries(dungeon)
         local levelText = (quest.min or quest.level) and ("[" .. (quest.min or quest.level) .. "]") or ""
         local ownerEntry = {
             id = questID,
-            text = ("%s|cff8a8374%s|r %s"):format(toggle, levelText, ns.QuestTitle(questID)),
+            text = ("%s" .. K.muted .. "%s|r %s"):format(toggle, levelText, ns.QuestTitle(questID)),
             tags = tag,
             status = group.key,
             chainOwner = hasChain and questID or nil,
@@ -664,7 +683,7 @@ local function QuestEntries(dungeon)
             tinsert(entries, {
                 id = "step:" .. questID .. ":" .. stepID,
                 step = stepID,
-                text = ("      |cff8a8374%d.|r |c%s%s|r"):format(index, style[1], ns.QuestTitle(stepID)),
+                text = ("      " .. K.muted .. "%d.|r %s%s|r"):format(index, K[style[1]], ns.QuestTitle(stepID)),
                 tags = style[3],
             })
         end
@@ -687,7 +706,7 @@ local function QuestEntries(dungeon)
         end
         if #members > 0 then
             tinsert(entries, { id = "section:" .. section.key, divider = true,
-                text = ("|cffe0b458%s|r"):format(section.title), tags = ("|cff8a8374%d|r"):format(#members) })
+                text = (K.gold .. "%s|r"):format(section.title), tags = (K.muted .. "%d|r"):format(#members) })
             for _, questID in ipairs(members) do
                 AddQuest(questID)
             end
@@ -742,7 +761,7 @@ local function RewardsSection(stack, rewards)
         stack:Items(followUp, 0, 34)
     end
     for _, reputation in ipairs(rewards.reputation or {}) do
-        stack:Text(("|cff8a8374%s|r %s +%d"):format(L["Reputation:"], ns.Name(reputation.name) or "?", reputation.value or 0),
+        stack:Text((K.muted .. "%s|r %s +%d"):format(L["Reputation:"], ns.Name(reputation.name) or "?", reputation.value or 0),
             "Small", 0, 3)
     end
 end
@@ -770,7 +789,7 @@ local function RenderQuestDetail(view, questID, item)
         tinsert(meta, (L["Accept at level %d"]):format(quest.min))
     end
     if quest.level then
-        tinsert(meta, "|cff8a8374" .. (L["Quest level %d"]):format(quest.level) .. "|r")
+        tinsert(meta, K.muted .. (L["Quest level %d"]):format(quest.level) .. "|r")
     end
     stack:Text(table.concat(meta, "  ·  "), "Small", 0, 8)
 
@@ -788,7 +807,7 @@ local function RenderQuestDetail(view, questID, item)
         else
             headline = (L["Chain not started: begin with step 1, %s."]):format(ns.QuestTitle(nextStep))
         end
-        stack:Text("|cff6f95d6" .. headline .. "|r", "Body", 0, 6)
+        stack:Text(K.blue .. headline .. "|r", "Body", 0, 6)
         local step = ns.Data.quests[nextStep]
         if step and ns.QuestStatus(nextStep) == "active" then
             PlaceRow(stack, "Turn in:", step.finish or step.start, true)
@@ -797,10 +816,10 @@ local function RenderQuestDetail(view, questID, item)
         end
         stack:Spacer(4)
     elseif kind == "low" and quest.min then
-        stack:Text(("|cffd8664a%s|r"):format((L["Available from level %d (you are %d)."]):format(quest.min, ns.PlayerLevel())),
+        stack:Text((K.red .. "%s|r"):format((L["Available from level %d (you are %d)."]):format(quest.min, ns.PlayerLevel())),
             "Body", 0, 6)
     elseif kind == "done" then
-        stack:Text("|cff46bf72" .. L["Done on this character."] .. "|r", "Body", 0, 6)
+        stack:Text(K.green .. L["Done on this character."] .. "|r", "Body", 0, 6)
     end
 
     -- 目标
@@ -826,9 +845,9 @@ local function RenderQuestDetail(view, questID, item)
         stack:Heading((L["Quest chain (%d/%d)"]):format(doneSteps, #chain))
         for index, stepID in ipairs(chain) do
             local style = STEP_STYLE[StepState(stepID, nextStep)]
-            local marker = stepID == questID and "  |cffe0b458<|r" or ""
-            stack:Text(("|cff8a8374%d.|r |c%s%s|r  |c%s%s|r%s"):format(index, style[1], ns.QuestTitle(stepID),
-                style[1], L[style[2]], marker), "Body", 0, 4)
+            local marker = stepID == questID and "  " .. K.gold .. "<|r" or ""
+            stack:Text((K.muted .. "%d.|r %s%s|r  %s%s|r%s"):format(index, K[style[1]], ns.QuestTitle(stepID),
+                K[style[1]], L[style[2]], marker), "Body", 0, 4)
         end
     end
     if #(quest.after or {}) > 0 then
@@ -836,7 +855,7 @@ local function RenderQuestDetail(view, questID, item)
         for _, id in ipairs(quest.after) do
             tinsert(names, ns.QuestTitle(id))
         end
-        stack:Text(("|cff8a8374%s|r %s"):format(L["Leads to:"], table.concat(names, ", ")), "Small", 0, 4)
+        stack:Text((K.muted .. "%s|r %s"):format(L["Leads to:"], table.concat(names, ", ")), "Small", 0, 4)
         if quest.newInForeverChain then
             for _, id in ipairs(quest.after) do
                 local followup = ns.Data.quests[id]
@@ -942,7 +961,7 @@ local function CreateQuestView(parent)
     view.count = UI:Text(view, "Muted")
     view.count:SetPoint("TOPLEFT", listPanel, "BOTTOMLEFT", 2, -8)
     -- 图例：列表右侧的状态符号
-    view.legend = UI:Text(view, "Muted", ("%s %s   %s %s   %s %s   %s %s   |cff6f95d63/10|r %s"):format(
+    view.legend = UI:Text(view, "Muted", ("%s %s   %s %s   %s %s   %s %s   " .. K.blue .. "3/10|r %s"):format(
         STATUS_ICON.ready, L["Can pick up"], STATUS_ICON.active, L["Accepted"], STATUS_ICON.low, L["Too low"],
         STATUS_ICON.done, L["Done"], L["Chain"]))
     view.legend:SetPoint("TOPLEFT", view.count, "BOTTOMLEFT", 0, -4)
@@ -992,8 +1011,8 @@ local function RenderLoot(detail, dungeon)
         end
         if #items > 0 then
             shown = shown + #items
-            local level = boss.level and ("  |cff8a8374" .. (L["Level %s"]):format(tostring(boss.level)) .. "|r") or ""
-            stack:Text(("|cff8a8374%d.|r  %s%s  |cff8a8374(%d)|r"):format(order, ns.BossName(boss) or "?", level, #items),
+            local level = boss.level and ("  " .. K.muted .. (L["Level %s"]):format(tostring(boss.level)) .. "|r") or ""
+            stack:Text((K.muted .. "%d.|r  %s%s  " .. K.muted .. "(%d)|r"):format(order, ns.BossName(boss) or "?", level, #items),
                 "Heading", 0, 6)
             stack:Items(items, 18, 34)
             stack:Spacer(4)

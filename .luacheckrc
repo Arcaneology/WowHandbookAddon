@@ -21,6 +21,8 @@ files["WowHandbook_Collector/Targets.lua"] = { max_line_length = false }
 -- 翻译表每行一条，不限行长
 files["WowHandbook_Collector/Locale.lua"] = { max_line_length = false }
 files["WowHandbook/Locales/"] = { max_line_length = false }
+-- 解谜步骤定义里的提示文字就是本地化键，每条一行，不限行长
+files["WowHandbook/Modules/SecretChains.lua"] = { max_line_length = false }
 -- 生成的数据文件不限行长
 files["WowHandbook/Data/"] = { max_line_length = false }
 
@@ -43,6 +45,7 @@ globals = {
 
 -- 只读引用的暴雪 API 与界面对象（用到新的就补进来）
 read_globals = {
+    "Auctionator", -- 可选：读 Auctionator 公开接口（Auctionator.API.v1）的价格
     "C_ActionBar",
     "GetPetActionInfo",
     "GetPetHappiness",
@@ -58,6 +61,16 @@ read_globals = {
     "C_EncounterJournal",
     "ClearCursor",
     "issecretvalue",
+    "C_AuctionHouse",
+    "AuctionHouseFrame",
+    "ProfessionsFrame",
+    "GetRealmName",
+    "GetNormalizedRealmName",
+    "StaticPopup_Hide",
+    "PanelTemplates_SelectTab",
+    "PanelTemplates_DeselectTab",
+    "SOUNDKIT",
+    "UnitCastingInfo",
     "GetNumSavedInstances",
     "GetSavedInstanceEncounterInfo",
     "GetSavedInstanceInfo",
@@ -188,7 +201,10 @@ read_globals = {
     "DressUpTexturePath",
     "SetPortraitTexture",
     "CharacterFrame",
+    "CharacterModelScene",
     "GetMerchantItemID",
+    "GetMerchantItemCostInfo",
+    "GetMerchantItemCostItem",
     "GetMerchantNumItems",
     "GetNumTrainerServices",
     "GetTaxiMapID",

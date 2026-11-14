@@ -594,10 +594,15 @@ local function CreateModel(view, left, top)
     overlay:SetAllPoints(model)
 end
 
+-- 只试穿客户端已经有数据的物品，并用完整的物品链接：只给物品 ID（"item:ID"）或数据还没到时，
+-- 模型上那件会画成一团黑影（2026-11-09 截图）。没缓存的先请求，数据到了页面刷新时再穿上
 local function DressActor(actor, view)
     actor:Undress()
     for _, entry in pairs(view.filled or {}) do
-        actor:TryOn("item:" .. entry[1])
+        local link = ItemLinkOrNil(entry[1])
+        if link then
+            actor:TryOn(link)
+        end
     end
 end
 
@@ -953,6 +958,26 @@ local function PlaceStandIn()
     standIn:Show()
 end
 
+-- 原生角色信息的模型（CharacterModelScene）是三维模型，会透过页面画在中间（用户截图里的人影）：
+-- 页面显示期间暂时隐藏它，收起页面时按原样还原（它不是受保护框架）
+local function CoverNativeModel(cover)
+    local scene = CharacterModelScene
+    if type(scene) ~= "table" or not scene.Hide then
+        return
+    end
+    if cover then
+        if host.nativeModelHidden == nil then
+            host.nativeModelHidden = scene:IsShown() and true or false
+            scene:Hide()
+        end
+    elseif host.nativeModelHidden ~= nil then
+        if host.nativeModelHidden then
+            scene:Show()
+        end
+        host.nativeModelHidden = nil
+    end
+end
+
 local function Select(open)
     if open and not host.view then
         if InCombatLockdown() then
@@ -963,6 +988,7 @@ local function Select(open)
         end
     end
     host.selected = open and true or nil
+    CoverNativeModel(host.selected == true)
     host.tab:SetChecked(host.selected == true)
     if host.view then
         host.view:SetShown(host.selected == true)

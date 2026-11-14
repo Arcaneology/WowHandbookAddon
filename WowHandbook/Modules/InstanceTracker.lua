@@ -34,8 +34,9 @@ local test -- 测试模式的虚构数据（/wh test），非 nil 时小窗只�
 local expanded = {} -- 副本外：展开了任务链的任务
 local instanceEventsRegistered = false
 
-local GREEN, GOLD, MUTED, TEXT, DIM, RED, BLUE =
-    "|cff46bf72", "|cffe0b458", "|cff8a8374", "|cfff4e8cc", "|cffd9ccb0", "|cffd8664a", "|cff6f95d6"
+-- 文字里内嵌的颜色取自主题；强调色随配色方案变化，用的时候再取（K.gold）
+local K = ns.Theme.code
+local GREEN, MUTED, TEXT, DIM, RED, BLUE = K.green, K.muted, K.text, K.textDim, K.red, K.blue
 
 local function Settings()
     return ns:GetModuleSettings(Module)
@@ -575,6 +576,19 @@ local function RestorePosition()
     end
 end
 
+-- 小窗大小按设置缩放（右键菜单里选）
+local function ApplyScale()
+    if frame then
+        frame:SetScale(Settings().scale or 1)
+    end
+end
+
+local function StartMoving()
+    if frame and not Settings().locked then
+        frame:StartMoving()
+    end
+end
+
 local function SetColor(texture, name)
     texture:SetColorTexture(unpack(ns.Theme.colors[name]))
 end
@@ -711,7 +725,7 @@ local function QuestTooltip(row)
         GameTooltip:AddLine((L["Quest chain (%d/%d)"]):format(item.doneSteps, #item.chain), 0.88, 0.71, 0.35)
         for index, id in ipairs(item.chain) do
             local state = StepState(id, item.nextStep)
-            local color = state == "done" and GREEN or (state == "active" and GOLD or (state == "next" and BLUE or MUTED))
+            local color = state == "done" and GREEN or (state == "active" and K.gold or (state == "next" and BLUE or MUTED))
             GameTooltip:AddLine(("%s%d. %s|r"):format(color, index, ns.QuestTitle(id)), 1, 1, 1)
         end
     end
@@ -737,7 +751,7 @@ local function QuestTooltip(row)
         local hint = role == "finish" and L["Click: mark the turn-in NPC"]
             or (role == "entrance" and L["Click: mark the dungeon entrance"] or L["Click: mark the quest giver"])
         GameTooltip:AddLine(hint, 0.54, 0.51, 0.45)
-        GameTooltip:AddLine(L["Right-click: open in WoW Handbook"], 0.54, 0.51, 0.45)
+        GameTooltip:AddLine(L["Right-click: menu"], 0.54, 0.51, 0.45)
     end
     GameTooltip:Show()
 end
@@ -779,8 +793,23 @@ local HEADER = 34 -- 副本内：标题行 + 进度条
 local OUTSIDE_TOP = 28 -- 副本外：只有标题行
 local READY_ICON = "Interface\\RaidFrame\\ReadyCheck-Ready"
 
+-- 行的右键菜单：任务可以在地图上标记该找的人、在手册里打开；首领在手册里打开掉落页
+local function RowMenu(row)
+    local entries = {}
+    if row.questID then
+        tinsert(entries, { kind = "title", text = ns.QuestTitle(row.questID) })
+        tinsert(entries, { kind = "action", text = L["Mark on the map"], onClick = function()
+            Track(row.trackID or row.questID)
+        end })
+    end
+    tinsert(entries, { kind = "action", text = L["Open in WoW Handbook"], onClick = function()
+        OpenInHandbook(row)
+    end })
+    UI:ContextMenu(entries)
+end
+
 -- 列表行：左侧状态标记（副本外是任务链的 +/-），中间名字，右侧状态；悬停显示提示。
--- 点击：首领打开手册掉落页；任务左键在地图上标记该找的人，右键在手册里打开
+-- 点击：首领打开手册掉落页；任务左键在地图上标记该找的人；右键弹出菜单
 local function CreateRow(parent)
     local row = CreateFrame("Button", nil, parent)
     row:SetHeight(ROW_HEIGHT)
@@ -824,7 +853,9 @@ local function CreateRow(parent)
         GameTooltip_Hide()
     end)
     row:SetScript("OnClick", function(self, button)
-        if self.questID and button ~= "RightButton" then
+        if button == "RightButton" then
+            RowMenu(self)
+        elseif self.questID then
             Track(self.trackID or self.questID)
         else
             OpenInHandbook(self)
@@ -908,6 +939,13 @@ local function CreateMenu()
     m.rows = {}
     m.headings = {}
     m:Hide()
+    -- 点别处或按 Esc 关闭（具名框架才能放进 UISpecialFrames）
+    local name = "WowHandbookInstanceMenu"
+    _G[name] = m
+    tinsert(UISpecialFrames, name)
+    UI:AutoClose(m, function()
+        return frame and frame.titleHover
+    end)
     return m
 end
 
@@ -964,7 +1002,7 @@ local function FillMenu()
             button:ClearAllPoints()
             button:SetPoint("TOPLEFT", 0, -y)
             button:SetWidth(width)
-            button.name:SetText((index == selected and GOLD or TEXT) .. (ns.Name(dungeon.name) or "?") .. "|r")
+            button.name:SetText((index == selected and K.gold or TEXT) .. (ns.Name(dungeon.name) or "?") .. "|r")
             local levels = dungeon.levels
             local levelText = levels and ("|c%s%s|r"):format(ns.LevelColor(levels[1], levels[2]), ns.LevelRange(levels)) or ""
             local _, _, ready, active = Dungeons().QuestSummary(dungeon)
@@ -1007,6 +1045,27 @@ local function ToggleMenu()
     menu.scroll:ScrollToTop()
 end
 Module.ToggleMenu = ToggleMenu -- 供测试使用
+
+-- 小窗的右键菜单：锁定位置、大小；打开手册里的这个副本；打开设置
+local function WindowMenu()
+    if menu then
+        menu:Hide()
+    end
+    UI:ContextMenu(function()
+        local entries = UI:WindowMenuEntries(Settings(), ApplyScale)
+        tinsert(entries, { kind = "separator" })
+        if not test then
+            tinsert(entries, { kind = "action", text = L["Open in WoW Handbook"], onClick = function()
+                OpenInHandbook({})
+            end })
+        end
+        tinsert(entries, { kind = "action", text = L["Settings"], onClick = function()
+            ns.MainFrame:Open("settings")
+        end })
+        return entries
+    end)
+end
+Module.WindowMenu = WindowMenu -- 供测试使用
 Module.MenuRow = function(index) return menu and menu.rows[index] end -- 供测试使用
 
 --------------------------------------------------------------------------------
@@ -1025,10 +1084,16 @@ local function Create()
     f:EnableMouse(true)
     f:SetMovable(true)
     f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStart", StartMoving)
     f:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         SavePosition()
+    end)
+    -- 右键小窗空白处或标题：锁定位置、大小、打开手册与设置
+    f:SetScript("OnMouseUp", function(_, button)
+        if button == "RightButton" then
+            WindowMenu()
+        end
     end)
     -- 任务事件只在小窗显示时订阅
     f:SetScript("OnShow", function()
@@ -1085,7 +1150,14 @@ local function Create()
     f.titleHover.hover:SetAllPoints()
     SetColor(f.titleHover.hover, "glassHover")
     f.titleHover.hover:Hide()
-    f.titleHover:SetScript("OnClick", ToggleMenu)
+    f.titleHover:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    f.titleHover:SetScript("OnClick", function(_, button)
+        if button == "RightButton" then
+            WindowMenu()
+        else
+            ToggleMenu()
+        end
+    end)
     f.titleHover:SetScript("OnEnter", function(self)
         if not (current or test) then
             self.hover:Show()
@@ -1097,6 +1169,7 @@ local function Create()
         end
         GameTooltip:AddLine((current or test) and L["Drag: move"] or L["Click: choose a dungeon · Drag: move"],
             0.54, 0.51, 0.45)
+        GameTooltip:AddLine(L["Right-click: lock, size and more"], 0.54, 0.51, 0.45)
         GameTooltip:Show()
     end)
     f.titleHover:SetScript("OnLeave", function(self)
@@ -1105,7 +1178,7 @@ local function Create()
     end)
     -- 标题拖不动的话整个小窗就拖不动：把拖动转给小窗
     f.titleHover:RegisterForDrag("LeftButton")
-    f.titleHover:SetScript("OnDragStart", function() f:StartMoving() end)
+    f.titleHover:SetScript("OnDragStart", StartMoving)
     f.titleHover:SetScript("OnDragStop", function()
         f:StopMovingOrSizing()
         SavePosition()
@@ -1143,6 +1216,7 @@ local function Create()
     f.empty = UI:Text(f.scroll.child, "Muted")
     f.empty:SetWidth(WIDTH - PAD * 2 - 8)
     f.empty:SetWordWrap(true)
+    f:SetScale(Settings().scale or 1)
     f:Hide()
     return f
 end
@@ -1209,7 +1283,7 @@ local function QuestTag(row)
         if objective.finished or have >= need then
             tinsert(parts, QUEST_ICON.done)
         else
-            tinsert(parts, ("|cff6f95d6%d/%d|r"):format(have, need))
+            tinsert(parts, (BLUE .. "%d/%d|r"):format(have, need))
         end
     end
     return #parts > 0 and table.concat(parts, " ") or QUEST_ICON.active
@@ -1246,7 +1320,7 @@ local function Heading(index, text, count)
         heading.text:SetPoint("LEFT", 2, 0)
         frame.headings[index] = heading
     end
-    heading.text:SetText(GOLD .. text .. "|r" .. MUTED .. "  " .. count .. "|r")
+    heading.text:SetText(K.gold .. text .. "|r" .. MUTED .. "  " .. count .. "|r")
     return heading
 end
 
@@ -1380,7 +1454,7 @@ local function RefreshInside()
             row:SetPoint("RIGHT", -PAD, 0)
             SetMarker(row, "next")
             row.name:SetText(TEXT .. (ns.BossName(boss) or "?") .. "|r")
-            row.tag:SetText(GOLD .. L["Next"] .. "|r")
+            row.tag:SetText(K.gold .. L["Next"] .. "|r")
             row:Show()
             top = top + ROW_HEIGHT
         end
@@ -1413,10 +1487,10 @@ local function RefreshInside()
         if order == 1 then
             SetMarker(row, "next")
             row.name:SetText(TEXT .. name .. "|r")
-            row.tag:SetText(GOLD .. L["Next"] .. "|r")
+            row.tag:SetText(K.gold .. L["Next"] .. "|r")
         else
             SetMarker(row, "open")
-            row.name:SetText("|cffd9ccb0" .. name .. "|r")
+            row.name:SetText(DIM .. name .. "|r")
             row.tag:SetText("")
         end
     end
@@ -1428,7 +1502,7 @@ local function RefreshInside()
     frame.divider:SetWidth(pool.width)
     frame.divider:Show()
     y = y + 4
-    local header = GOLD .. L["Quests"] .. "|r" .. (#questRows > 0 and (MUTED .. " " .. #questRows .. "|r") or "")
+    local header = K.gold .. L["Quests"] .. "|r" .. (#questRows > 0 and (MUTED .. " " .. #questRows .. "|r") or "")
     if done > 0 then
         header = header .. "   " .. QUEST_ICON.done .. MUTED .. done .. "|r"
     end
@@ -1473,7 +1547,7 @@ local function EntryTag(item)
 end
 
 local STEP_ICON = { done = QUEST_ICON.done, active = QUEST_ICON.active, next = QUEST_ICON.inside, pending = MUTED .. "-|r" }
-local STEP_COLOR = { done = MUTED, active = GOLD, next = TEXT, pending = MUTED }
+local STEP_COLOR = { done = "muted", active = "gold", next = "text", pending = "muted" }
 
 -- 副本外：所选副本的任务（进本前先接 / 副本内接取），任务链可展开
 local function RefreshOutside()
@@ -1535,7 +1609,7 @@ local function RefreshOutside()
                         local state = StepState(stepID, item.nextStep)
                         local step = pool.Row(26)
                         step.questID, step.item, step.isStep = stepID, item, true
-                        step.name:SetText(("%s%d. %s|r"):format(STEP_COLOR[state], stepIndex, ns.QuestTitle(stepID)))
+                        step.name:SetText(("%s%d. %s|r"):format(K[STEP_COLOR[state]], stepIndex, ns.QuestTitle(stepID)))
                         step.tag:SetText(STEP_ICON[state])
                     end
                 end
@@ -1731,7 +1805,7 @@ function Module:OnEnable()
     ns:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateInstance)
     ns:RegisterEvent("ZONE_CHANGED_NEW_AREA", UpdateInstance)
     ns:AddCommand("quests", L["show or hide the dungeon helper"], Toggle)
-    ns:AddCommand("instance", L["show or hide the dungeon helper"], Toggle)
+    ns:AddCommand("instance", nil, Toggle) -- 旧命令名，保留为别名
     ns:AddCommand("test", L["preview the instance tracker with a sample dungeon"], ToggleTest)
     UpdateInstance()
 end

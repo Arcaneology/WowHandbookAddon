@@ -432,7 +432,23 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 92401, 92415, 92421, 92422, 95189, 95195, 95204, 95216, 95250, 97288 },
+        quests = {
+            356,
+            447,
+            450,
+            451,
+            92401,
+            92415,
+            92421,
+            92422,
+            95189,
+            95195,
+            95204,
+            95216,
+            95250,
+            97288,
+            99156,
+        },
     },
     {
         slug = "deadmines",
@@ -2330,7 +2346,21 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 1100, 1101, 1102, 1109, 1142, 1144, 1221, 1701, 1838, 6521, 6522 },
+        quests = {
+            1100,
+            1101,
+            1102,
+            1109,
+            1142,
+            1144,
+            1221,
+            1701,
+            1838,
+            6521,
+            6522,
+            79360,
+            96264,
+        },
     },
     {
         slug = "gnomeregan",
@@ -3025,12 +3055,14 @@ ns.Data.dungeons = {
             92456,
             92457,
             92458,
+            92459,
             92489,
             93680,
             96984,
             96986,
             96987,
             96988,
+            97287,
         },
     },
     {
@@ -3385,7 +3417,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 1049, 1050, 1051, 1113, 1160 },
+        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160, 1951 },
     },
     {
         slug = "scarlet-monastery",
@@ -3638,7 +3670,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160, 1951 },
+        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160, 1951, 96800 },
     },
     {
         slug = "razorfen-downs",
@@ -3907,7 +3939,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 3341, 3523, 3525, 3636, 6626 },
+        quests = { 3341, 3523, 3525, 3636, 6626, 96773, 97196 },
     },
     {
         slug = "drowned-city",
@@ -3916,7 +3948,6 @@ ns.Data.dungeons = {
         levels = { 35, 40 },
         levelMin = 35,
         levelMax = 40,
-        dataPending = true,
         name = {
             enUS = "Drowned City",
             zhCN = "淹没之城",
@@ -3924,6 +3955,39 @@ ns.Data.dungeons = {
         entrance = {
             map = 1434,
         },
+        bosses = {
+            {
+                name = {
+                    enUS = "Zul'Alai",
+                },
+            },
+            {
+                name = {
+                    enUS = "Var'Taka",
+                },
+            },
+            {
+                name = {
+                    enUS = "Captain Dreadrise",
+                },
+            },
+            {
+                name = {
+                    enUS = "Deathless Marrow",
+                },
+            },
+            {
+                name = {
+                    enUS = "Primeval Elemental",
+                },
+            },
+            {
+                name = {
+                    enUS = "Min'loth the Serpent",
+                },
+            },
+        },
+        quests = { 95775, 95776, 95787, 95788, 95789, 95791, 95798, 95799, 96774, 97130 },
     },
     {
         slug = "uldaman",
@@ -4697,7 +4761,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160 },
+        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160, 1951 },
     },
     {
         slug = "scarlet-monastery-cathedral",
@@ -4947,7 +5011,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160 },
+        quests = { 1048, 1049, 1050, 1051, 1053, 1113, 1160, 1951 },
     },
     {
         slug = "kroldok-stronghold",
@@ -4956,13 +5020,54 @@ ns.Data.dungeons = {
         levels = { 40, 45 },
         levelMin = 40,
         levelMax = 45,
-        dataPending = true,
         name = {
             enUS = "Krol'dok Stronghold",
             zhCN = "克罗多克要塞",
         },
         entrance = {
             map = 2548,
+        },
+        bosses = {
+            {
+                name = {
+                    enUS = "Slavecrusher Grox",
+                },
+            },
+            {
+                name = {
+                    enUS = "Twilight Commander Zarmok",
+                },
+            },
+            {
+                name = {
+                    enUS = "Handler Ashka",
+                },
+            },
+            {
+                name = {
+                    enUS = "Nar'gurk",
+                },
+            },
+            {
+                name = {
+                    enUS = "Overseer Mugg",
+                },
+            },
+        },
+        quests = {
+            94744,
+            94968,
+            94972,
+            94973,
+            94974,
+            94975,
+            94980,
+            94981,
+            94982,
+            94983,
+            94984,
+            94998,
+            96771,
         },
     },
     {
@@ -5320,7 +5425,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 2768, 2770, 2846, 2865, 2936, 2991, 3042, 3527 },
+        quests = { 2768, 2770, 2846, 2865, 2936, 2991, 3042, 3527, 96770 },
     },
     {
         slug = "maraudon",
@@ -5700,7 +5805,7 @@ ns.Data.dungeons = {
                 },
             },
         },
-        quests = { 7028, 7029, 7041, 7044, 7064, 7065, 7066, 7067, 7068, 7070 },
+        quests = { 7028, 7029, 7041, 7044, 7064, 7065, 7066, 7067, 7068, 7070, 93404, 93594 },
     },
     {
         slug = "temple-of-atalhakkar",
@@ -6449,7 +6554,6 @@ ns.Data.dungeons = {
         levels = { 48, 53 },
         levelMin = 48,
         levelMax = 53,
-        dataPending = true,
         name = {
             enUS = "Alcaz Prison",
             zhCN = "阿尔卡兹监狱",
@@ -6457,6 +6561,34 @@ ns.Data.dungeons = {
         entrance = {
             map = 1445,
         },
+        bosses = {
+            {
+                name = {
+                    enUS = "Overseer Wrex",
+                },
+            },
+            {
+                name = {
+                    enUS = "Tidemistress Ca'zass",
+                },
+            },
+            {
+                name = {
+                    enUS = "Katerina the Cleaner",
+                },
+            },
+            {
+                name = {
+                    enUS = "The Questioner",
+                },
+            },
+            {
+                name = {
+                    enUS = "Blazeroar",
+                },
+            },
+        },
+        quests = { 95194, 95483, 96332, 96334, 96335, 96337, 96377, 96381, 96772 },
     },
     {
         slug = "blackrock-depths",
@@ -8508,7 +8640,6 @@ ns.Data.dungeons = {
         levels = { 55, 60 },
         levelMin = 55,
         levelMax = 60,
-        dataPending = true,
         name = {
             enUS = "Blackmaw Hold",
             zhCN = "黑喉要塞",
@@ -8516,6 +8647,44 @@ ns.Data.dungeons = {
         entrance = {
             map = 1447,
         },
+        bosses = {
+            {
+                name = {
+                    enUS = "Withermaw",
+                },
+            },
+            {
+                name = {
+                    enUS = "Impaan the Imprisoner",
+                },
+            },
+            {
+                name = {
+                    enUS = "Elder Shaman Bloodmane",
+                },
+            },
+            {
+                name = {
+                    enUS = "Bonesnout the Unbroken",
+                },
+            },
+            {
+                name = {
+                    enUS = "Varrox Bleakhoof",
+                },
+            },
+            {
+                name = {
+                    enUS = "Blackmaw Behemoth",
+                },
+            },
+            {
+                name = {
+                    enUS = "Unbound Spirit",
+                },
+            },
+        },
+        quests = { 92066, 92069, 92343, 92344, 97173, 97198, 97327 },
     },
     {
         slug = "blackrock-spire-lower",
@@ -12403,7 +12572,6 @@ ns.Data.dungeons = {
         levels = { 58, 60 },
         levelMin = 58,
         levelMax = 60,
-        dataPending = true,
         name = {
             enUS = "Shaper's Terrace",
             zhCN = "塑形者平台",
@@ -12411,6 +12579,64 @@ ns.Data.dungeons = {
         entrance = {
             map = 1449,
         },
+        bosses = {
+            {
+                name = {
+                    enUS = "Titanosaur",
+                },
+            },
+            {
+                name = {
+                    enUS = "Ravasaur Hunters",
+                },
+            },
+            {
+                name = {
+                    enUS = "Thunderhoof",
+                },
+            },
+            {
+                name = {
+                    enUS = "Venomridge",
+                },
+            },
+            {
+                name = {
+                    enUS = "Direhorn Matriarch",
+                },
+            },
+            {
+                name = {
+                    enUS = "Cinder",
+                },
+            },
+            {
+                name = {
+                    enUS = "King Op",
+                },
+            },
+            {
+                name = {
+                    enUS = "Snowtalon",
+                },
+            },
+            {
+                name = {
+                    enUS = "Bolt",
+                },
+            },
+            {
+                name = {
+                    enUS = "Vitrix",
+                },
+            },
+            {
+                name = {
+                    enUS = "Nanaya",
+                },
+            },
+        },
+        quests = { 95924, 95925, 95926, 95928, 97049 },
     },
     {
         slug = "stratholme-main-gate",

@@ -1,4 +1,5 @@
 local ADDON_NAME, ns = ...
+local K = ns.Theme.code -- 文字里内嵌的颜色（|c 前缀）；强调色随配色方案变化，用的时候再取
 local L = ns.L
 
 -- 按等级的技能书（F4）：本职业全部可训练技能按学习等级展开，标出已学、现在可学、还没到等级；
@@ -233,15 +234,9 @@ end
 
 Module.Rows = Rows -- 供其他模块共用
 
-local STATUS = {
-    known = "|cff46bf72%s|r",
-    innate = "|cff46bf72%s|r",
-    ready = "|cffe0b458%s|r",
-    book = "|cffe0b458%s|r",
-    unchecked = "|cff8a8374%s|r",
-    later = "|cff8a8374%s|r",
-    other = "|cff8a8374%s|r",
-}
+-- 状态文字的颜色名（用的时候再取色：强调色随配色方案变化）
+local STATUS = { known = "green", innate = "green", ready = "gold", book = "gold",
+    unchecked = "muted", later = "muted", other = "muted" }
 local STATUS_LABEL = { known = "Learned", innate = "Innate", ready = "Train now", book = "Buy the grimoire",
     unchecked = "Summon this demon once to check", later = "Not yet", other = "Other race" }
 
@@ -412,7 +407,7 @@ local function Table(p)
         row:SetAlpha(1)
         row.group = nil
         for _, column in ipairs(columns) do
-            row.cells[column.key]:SetText(("|cffe0b458%s|r"):format(L[column.label]))
+            row.cells[column.key]:SetText((K.gold .. "%s|r"):format(L[column.label]))
         end
         LayoutRow(row, columns)
     end
@@ -517,7 +512,7 @@ local function Refresh()
             level = LevelCell(row, previous, level),
             spell = SpellCell(row),
             rank = RankCell(row),
-            status = STATUS[row.status]:format(L[STATUS_LABEL[row.status]]),
+            status = ns.Theme:Color(L[STATUS_LABEL[row.status]], STATUS[row.status]),
         }, stripe)
         previous = row
     end
@@ -543,7 +538,7 @@ local function Refresh()
                 spell = SpellCell(row),
                 rank = RankCell(row),
                 pet = (previous and previous.pet == row.pet) and "" or (row.pet or "?"),
-                status = STATUS[row.status]:format(L[STATUS_LABEL[row.status]]),
+                status = ns.Theme:Color(L[STATUS_LABEL[row.status]], STATUS[row.status]),
                 book = book,
             }, stripe)
             previous = row

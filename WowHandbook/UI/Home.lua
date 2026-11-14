@@ -5,15 +5,18 @@ local Theme, UI = ns.Theme, ns.UI
 -- 首页：面向升级玩家的“今日面板”，打开就知道现在该去哪、回城该做什么。
 -- · 顶部一行：职业、等级与经验进度
 -- · 第一行“现在去哪”：适合练级的区域、适合你等级的副本（带进本前可先接的任务数）
--- · 第二行“回城要做”：可以训练的技能；副本任务（日志里有副本任务时列出，可交的在前；没有时列出进本前先接）
+-- · 第二行“回城要做”：可以训练的技能（可一键标出最近的本职业训练师）；副本任务（日志里有副本任务时列出，
+--   可交的在前；没有时列出进本前先接）
+-- · 卡片下面一行入口：解谜（带进行中那条链的进度）、稀有宠物（已驯服数）、天赋、专业，只列已启用的
 -- · 底部网站区：推荐副本在网站上的完整攻略（条目级复制链接）
 -- 数据来自各功能模块的 Summary() 与区域数据；模块被关闭时对应卡片提示去设置里打开。
 local MainFrame = ns.MainFrame
 
 local PAD = 28
-local CARD_WIDTH, CARD_HEIGHT, GAP = 347, 204, 12
+local CARD_WIDTH, CARD_HEIGHT, GAP = 347, 190, 12
 local CARDS_TOP = -50
-local LINE_HEIGHT, MAX_LINES = 22, 6
+local LINE_HEIGHT, MAX_LINES = 20, 6
+local SHORTCUT_HEIGHT, SHORTCUT_GAP = 24, 8
 local LEVELS_AHEAD = 4
 
 local page
@@ -75,7 +78,7 @@ local function CreateLine(card, index)
     line:SetPoint("TOPRIGHT", -10, -38 - (index - 1) * LINE_HEIGHT)
     line.highlight = line:CreateTexture(nil, "BACKGROUND")
     line.highlight:SetAllPoints()
-    line.highlight:SetColorTexture(unpack(Theme.colors.raised))
+    Theme:Paint(line.highlight, "raised")
     line.highlight:Hide()
     line.action = UI:Button(line, "", 64, 18, "ghost")
     line.action:SetPoint("RIGHT", -2, 0)
@@ -126,6 +129,10 @@ local function CreateCard(parent, titleKey)
     card.empty:SetJustifyV("TOP")
     card.open = UI:Button(card, "", 120, 22, "primary")
     card.open:SetPoint("BOTTOMRIGHT", -12, 10)
+    -- 第二个按钮（可选）：排在主按钮左边
+    card.extra = UI:Button(card, "", 110, 22)
+    card.extra:SetPoint("RIGHT", card.open, "LEFT", -6, 0)
+    card.extra:Hide()
     card.footer = UI:Text(card, "Muted")
     card.footer:SetPoint("BOTTOMLEFT", 16, 15)
     card.footer:SetPoint("RIGHT", card.open, "LEFT", -8, 0)
@@ -174,7 +181,18 @@ local function SetOpen(card, label, onClick)
     card.open:Show()
 end
 
+-- 第二个按钮：label 为 nil 时隐藏；脚注让到它左边
+local function SetExtra(card, label, onClick)
+    card.extra:SetShown(label ~= nil)
+    if label then
+        card.extra:SetLabel(label)
+        card.extra:SetScript("OnClick", onClick)
+    end
+    card.footer:SetPoint("RIGHT", label and card.extra or card.open, "LEFT", -8, 0)
+end
+
 local function ShowDisabled(card, featureKey)
+    SetExtra(card)
     FillCard(card, {}, (L["%s is turned off in Settings."]):format(L[featureKey]))
     if MainFrame:HasTab("settings") then
         SetOpen(card, L["Settings"], function()
@@ -203,11 +221,48 @@ local function NextTrainingLevel(upcoming)
     return first
 end
 
+-- 最近的本职业训练师：先在玩家所在地图里按直线距离找最近的；这张图没有就取同一块大陆上的，再没有取任意一个。
+-- 只看本阵营能用的普通职业训练师（宠物训练师等特殊训练师不算）
+local function NearestClassTrainer()
+    local faction = ns.PlayerFaction()
+    local here = C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
+    local position = here and C_Map.GetPlayerMapPosition and C_Map.GetPlayerMapPosition(here, "player")
+    local px, py
+    if position then
+        px, py = position:GetXY()
+    end
+    local continent = here and ns.ContinentName(here)
+    local best, bestScore
+    for _, trainer in ipairs(ns.Data.classTrainers and ns.Data.classTrainers[ns.PlayerClass() or ""] or {}) do
+        if trainer.x and trainer.map and not trainer.kind
+            and (not trainer.faction or trainer.faction == "AH" or not faction or trainer.faction == faction) then
+            local score
+            if trainer.map == here and px then
+                local dx, dy = trainer.x / 100 - px, trainer.y / 100 - py
+                score = dx * dx + dy * dy -- 同一张图：0–2
+            elseif continent and ns.ContinentName(trainer.map) == continent then
+                score = 10
+            else
+                score = 20
+            end
+            if not bestScore or score < bestScore then
+                best, bestScore = trainer, score
+            end
+        end
+    end
+    return best
+end
+Home.NearestClassTrainer = NearestClassTrainer -- 供测试使用
+
 local function FillSpells(card, spells)
     if not spells then
         ShowDisabled(card, "Spellbook")
         return
     end
+    local trainer = NearestClassTrainer()
+    SetExtra(card, trainer and L["Find a trainer"] or nil, function()
+        ns.Waypoints:ShowOnMap(trainer.map, trainer.x, trainer.y, ns.Name(trainer.name))
+    end)
     local lines = {}
     local function OpenSpellbook()
         MainFrame:SelectTab("spellbook")
@@ -300,8 +355,9 @@ local function FillZones(card)
         local territory = TERRITORY[zone.faction or ""]
         local continent = ns.ContinentName(item.id)
         tinsert(lines, {
+            mapID = item.id,
             text = ns.Name(zone.name) or "?",
-            note = continent and ("|cff8a8374%s|r  %s"):format(continent, range) or range,
+            note = continent and (Theme:Color(continent, "muted") .. "  " .. range) or range,
             tooltip = { ns.Name(zone.name) or "?", continent, (L["Level %s"]):format(ns.LevelRange(levels)),
                 territory and L[territory] or nil, L["Click to open it on the world map."] },
             onClick = function()
@@ -310,7 +366,10 @@ local function FillZones(card)
         })
     end
     FillCard(card, lines, L["No zone fits your level right now."])
-    card.open:Hide()
+    SetOpen(card, L["Open the map"], function()
+        local here = C_Map.GetBestMapForUnit and C_Map.GetBestMapForUnit("player")
+        ns.Waypoints:OpenMap(here or (lines[1] and lines[1].mapID))
+    end)
 end
 
 local function FillDungeons(card, summary)
@@ -322,7 +381,7 @@ local function FillDungeons(card, summary)
     for _, item in ipairs(summary.recommended) do
         local note = DungeonLevels(item.levels)
         if item.prep > 0 then
-            note = ("|cff46bf72%s|r  %s"):format((L["%d to pick up"]):format(item.prep), note)
+            note = Theme:Color((L["%d to pick up"]):format(item.prep), "green") .. "  " .. note
         end
         local tooltip = { item.name, (L["Level %s"]):format(ns.LevelRange(item.levels) or "?") }
         if item.total > 0 then
@@ -359,7 +418,7 @@ local function SourceTooltip(labelKey, source)
     if source.kind == "item" then
         who = (L["Item: %s"]):format(who)
     end
-    return ("%s %s  |cff8a8374%s|r"):format(L[labelKey], who, ns.modules.Dungeons.PlaceText(source))
+    return ("%s %s  %s"):format(L[labelKey], who, Theme:Color(ns.modules.Dungeons.PlaceText(source), "muted"))
 end
 
 -- 副本任务卡：日志里有副本任务时列出这些（可交的在前）；没有时列出推荐副本进本前可先接的任务
@@ -375,7 +434,7 @@ local function FillQuests(card, summary)
         for _, item in ipairs(summary.active) do
             local quest = ns.Data.quests[item.quest]
             local dungeon = item.dungeon and ns.Data.dungeons[item.dungeon]
-            local note = item.complete and ("|cff46bf72%s|r"):format(L["Ready to turn in"])
+            local note = item.complete and Theme:Color(L["Ready to turn in"], "green")
                 or (dungeon and ns.Name(dungeon.name) or nil)
             local who = quest.finish and ns.Name(quest.finish.name)
             tinsert(lines, {
@@ -399,7 +458,7 @@ local function FillQuests(card, summary)
         local dungeon = ns.Data.dungeons[item.dungeon]
         local text = ns.QuestTitle(item.quest)
         if item.step then
-            text = text .. (" |cff8a8374(%s %d/%d)|r"):format(L["Chain"], item.step, item.steps)
+            text = text .. " " .. Theme:Color(("(%s %d/%d)"):format(L["Chain"], item.step, item.steps), "muted")
         end
         local who = quest.start and ns.Name(quest.start.name)
         tinsert(lines, {
@@ -460,6 +519,55 @@ local function RefreshStatus()
     page.xpText:SetText(text)
 end
 
+-- 卡片下面的一行入口：只列已启用（页面已注册）的功能，带一点进度
+local SHORTCUTS = {
+    { tab = "secrets", label = function()
+        -- 有进度但没做完的第一条解谜链：名字与步数
+        local module = ns.modules.Secrets
+        for _, chain in ipairs(module and module.Evaluate and ns.SecretChains or {}) do
+            local result = module.Evaluate(chain)
+            if result.done > 0 and not result.complete then
+                return ("%s  %s"):format(L[chain.title], Theme:Color(("%d/%d"):format(result.done, result.total), "gold"))
+            end
+        end
+        return L["Secrets"]
+    end },
+    { tab = "hunterPets", label = function()
+        local module = ns.modules.HunterPets
+        local tamed, total = 0, 0
+        for id in pairs(ns.Data.hunterPets and ns.Data.hunterPets.beasts or {}) do
+            total = total + 1
+            tamed = tamed + (module.IsTamed(id) and 1 or 0)
+        end
+        return ("%s  %s"):format(L["Rare pets"], Theme:Color(("%d/%d"):format(tamed, total), "gold"))
+    end },
+    { tab = "talents", label = function() return L["Talents"] end },
+    { tab = "professions", label = function() return L["Professions"] end },
+}
+
+local function RefreshShortcuts()
+    local shown = {}
+    for _, shortcut in ipairs(SHORTCUTS) do
+        if MainFrame:HasTab(shortcut.tab) then
+            tinsert(shown, shortcut)
+        end
+    end
+    local total = CARD_WIDTH * 2 + GAP
+    local width = #shown > 0 and (total - (#shown - 1) * SHORTCUT_GAP) / #shown or 0
+    for index, button in ipairs(page.shortcuts) do
+        local shortcut = shown[index]
+        button:SetShown(shortcut ~= nil)
+        if shortcut then
+            button:SetWidth(width)
+            button:ClearAllPoints()
+            button:SetPoint("TOPLEFT", PAD + (index - 1) * (width + SHORTCUT_GAP),
+                CARDS_TOP - 2 * CARD_HEIGHT - GAP - SHORTCUT_GAP)
+            button:SetLabel(shortcut.label())
+            button.tab = shortcut.tab
+        end
+    end
+end
+
 local function RefreshSite(dungeons)
     local first = dungeons and dungeons.recommended[1]
     local dungeon = first and ns.Data.dungeons[first.index]
@@ -490,6 +598,7 @@ function Refresh()
     FillDungeons(page.cards.dungeons, dungeons)
     FillSpells(page.cards.spells, spells)
     FillQuests(page.cards.quests, dungeons)
+    RefreshShortcuts()
     RefreshSite(dungeons)
 end
 
@@ -533,6 +642,16 @@ local function CreateHomePage(parent)
     for index, key in ipairs(order) do
         local column, row = (index - 1) % 2, floor((index - 1) / 2)
         p.cards[key]:SetPoint("TOPLEFT", PAD + column * (CARD_WIDTH + GAP), CARDS_TOP - row * (CARD_HEIGHT + GAP))
+    end
+
+    -- 入口行：每个入口一个按钮，点了切到那一页
+    p.shortcuts = {}
+    for index = 1, #SHORTCUTS do
+        local button = UI:Button(p, "", 100, SHORTCUT_HEIGHT)
+        button:SetScript("OnClick", function(self)
+            MainFrame:SelectTab(self.tab)
+        end)
+        p.shortcuts[index] = button
     end
 
     -- 网站区

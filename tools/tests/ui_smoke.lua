@@ -67,8 +67,12 @@ C_Item = {
 }
 local loadedItemRequests = {}
 C_Item.RequestLoadItemDataByID = function(id) loadedItemRequests[id] = (loadedItemRequests[id] or 0) + 1 end
-local tooltipItemCallback
-TooltipDataProcessor = { AddTooltipPostCall = function(_, callback) tooltipItemCallback = callback end }
+-- 物品鼠标提示回调可以有多个（物品来源、拍卖价格），测试按注册顺序全部调用
+local tooltipItemCallbacks = {}
+local function tooltipItemCallback(...)
+    for _, callback in ipairs(tooltipItemCallbacks) do callback(...) end
+end
+TooltipDataProcessor = { AddTooltipPostCall = function(_, callback) tinsert(tooltipItemCallbacks, callback) end }
 C_TooltipInfo = { GetItemByID = function() return nil end }
 C_Map = {
     GetBestMapForUnit = function() return 1411 end,
@@ -514,6 +518,19 @@ local function collectorCheck(name, fn)
 end
 
 local main, collector
+
+-- 点右键菜单（全插件共用的 WowHandbookContextMenu）里文字为 text 的一项；菜单没开或没有这一项时报错
+local function contextClick(text)
+    local menu = WowHandbookContextMenu
+    assert(menu and menu.shown, "context menu is not open")
+    for _, row in ipairs(menu.rows) do
+        if row.shown and row.entry and row.entry.text == text then
+            row.scripts.OnClick(row)
+            return row
+        end
+    end
+    error("context menu has no entry: " .. tostring(text))
+end
 check("load main addon", function() main = loadAddon("WowHandbook") end)
 collectorCheck("load collector addon", function() collector = loadAddon("WowHandbook_Collector") end)
 check("addon loaded events", function()
@@ -536,7 +553,7 @@ check("item source index and tooltip callback", function()
         if target then break end
     end
     assert(target and sourceModule.Lookup(target):find(expected, 1, true), "source index missing")
-    assert(tooltipItemCallback, "tooltip callback not registered")
+    assert(#tooltipItemCallbacks > 0, "tooltip callback not registered")
     tooltipItemCallback(GameTooltip, { id = target, dataInstanceID = 1 })
     assert(GameTooltip.lines and GameTooltip.lines[#GameTooltip.lines]:find(expected, 1, true), "source tooltip missing")
     local before = #GameTooltip.lines
@@ -841,6 +858,28 @@ check("quest table classifies chain states", function()
     completedQuests[target] = true
     assert(Classify(target) == "done", "done")
     completedQuests = { [5722] = true }
+end)
+check("either-or prerequisites follow faction and progress", function()
+    local Classify = main.modules.Dungeons.Classify
+    local quests = main.Data.quests
+    local saved = { quests[999990], quests[999991], quests[999992], main.PlayerFaction }
+    quests[999990] = { faction = "A", min = 1 }
+    quests[999991] = { faction = "H", min = 1 }
+    quests[999992] = { min = 1, beforeAny = { { 999990, 999991 } } }
+    local ok, err = pcall(function()
+        completedQuests, activeQuests = {}, {}
+        main.PlayerFaction = function() return "H" end
+        local kind, chain, nextStep = Classify(999992)
+        assert(kind == "chain" and #chain == 2 and nextStep == 999991, "horde should need the horde version")
+        main.PlayerFaction = function() return "A" end
+        kind, chain, nextStep = Classify(999992)
+        assert(kind == "chain" and nextStep == 999990, "alliance should need the alliance version")
+        completedQuests[999991] = true
+        assert(Classify(999992) == "ready", "a done version counts whatever the faction")
+    end)
+    quests[999990], quests[999991], quests[999992], main.PlayerFaction = unpack(saved, 1, 4)
+    completedQuests, activeQuests = { [5722] = true }, {}
+    assert(ok, err)
 end)
 check("waypoint for a quest giver", function()
     main.Waypoints:Set(1411, 45.5, 12.3, "Kargal")
@@ -1724,7 +1763,9 @@ check("quest list leads with the level a quest can be accepted at", function()
             for _, entry in ipairs(main.modules.Dungeons.QuestEntries(dungeon)) do
                 if entry.id == 97288 then
                     found = true
-                    assert(entry.text:find("[16]", 1, true), "row should show accept level 16: " .. entry.text)
+                    local min = main.Data.quests[97288].min
+                    assert(min and entry.text:find("[" .. min .. "]", 1, true),
+                        "row should show accept level " .. tostring(min) .. ": " .. entry.text)
                 end
             end
             assert(found, "Unending Torment not listed")
@@ -3257,18 +3298,19 @@ check("appearance: accent follows the class by default, schemes and background o
     list.schemeDropdown.onChange("druid")
     assert(Theme.hex.gold == "ffff7c0a" and near(selectedNav.accent.color, 1, 0x7c / 255, 0x0a / 255), "class scheme not applied")
     assert(Theme.colors.goldDim[1] < Theme.colors.gold[1] and Theme.colors.selected[4] < 0.2, "derived accent colors wrong")
-    -- 背景不透明度：每次 10%，不低于 30%；只影响大面积底色，菜单与文字不变
+    -- 背景不透明度：滑条每格 10%，不低于 30%；只影响大面积底色，菜单与文字不变
     assert(math.abs(frame.backdropColor[4] - 0.97) < 0.001, "window should start solid")
-    list.opacityMinus:Click()
+    assert(list.opacitySlider and list.opacitySlider.value == 10, "opacity slider missing or not at 100%")
+    list.opacitySlider.onChange(9)
     assert(main.db.appearance.opacity == 90 and list.opacityValue:GetText() == "90%", "opacity step not saved or shown")
     assert(math.abs(frame.backdropColor[4] - 0.97 * 0.9) < 0.001, "window background did not become translucent")
     assert(math.abs(Theme.colors.sidebar[4] - 0.9) < 0.001 and math.abs(Theme.colors.panel[4] - 0.9) < 0.001,
         "sidebar and cards did not follow the opacity")
     assert(Theme.colors.menu[4] == 0.97 and Theme.colors.text[4] == 1 and Theme.colors.line[4] == 1,
         "menus, text and borders must stay solid")
-    for _ = 1, 12 do list.opacityMinus:Click() end
+    list.opacitySlider.onChange(1)
     assert(main.db.appearance.opacity == 30, "opacity went below the minimum")
-    for _ = 1, 12 do list.opacityPlus:Click() end
+    list.opacitySlider.onChange(10)
     assert(main.db.appearance.opacity == 100 and math.abs(frame.backdropColor[4] - 0.97) < 0.001, "opacity did not return to solid")
     -- 幽灵按钮未悬停时是透明的，不会在半透明窗口上叠出深色块
     assert(Theme.colors.none[4] == 0, "no transparent color for ghost buttons")
@@ -3951,12 +3993,18 @@ check("instance tracker: shows in an instance, tracks kills per instance copy, q
     local found = false
     for _, line in ipairs(GameTooltip.lines) do if line == "Ragefire Trogg slain: 3/8" then found = true end end
     assert(found, "quest tooltip has no objectives")
-    -- 左键在地图上标记该找的人（副本里不标副本入口），右键打开任务页并选中
+    -- 左键在地图上标记该找的人（副本里不标副本入口）；右键弹出菜单，选“在手册中查看”打开任务页并选中
     waypoint = nil
     questRow.scripts.OnClick(questRow, "LeftButton")
     assert(not (WowHandbookMainFrame and WowHandbookMainFrame.shown), "left click opened the handbook")
+    main.modules.Dungeons.questState.selected = nil
     questRow.scripts.OnClick(questRow, "RightButton")
-    assert(main.modules.Dungeons.questState.selected == questID, "quest right-click did not select the quest")
+    assert(WowHandbookContextMenu.shown and not (WowHandbookMainFrame and WowHandbookMainFrame.shown),
+        "quest right-click should open a menu, not the handbook")
+    assert(WowHandbookContextMenu.rows[1].entry.kind == "title", "row menu has no title")
+    contextClick(main.L["Open in WoW Handbook"])
+    assert(not WowHandbookContextMenu.shown, "menu stayed open after choosing an action")
+    assert(main.modules.Dungeons.questState.selected == questID, "menu did not open the quest in the handbook")
     main.MainFrame:Hide()
     activeQuests[questID], questObjectives[questID] = nil, nil
     GameTooltip.AddDoubleLine = nil
@@ -4259,6 +4307,7 @@ check("BiS page: a side tab on the character window opens native-looking BiS gea
     CharacterFrame.ModeTabs.CharacterTab = CharacterFrame.ModeTabs.Tabs[1]
     CharacterFrame.ModeTabs.Tabs[6].shown = false -- 例如没有统计页时，最后一个标签隐藏
     CharacterFrame.selectedTab = 1
+    CharacterModelScene = CreateFrame("Frame", "CharacterModelScene", CharacterFrame)
     local subframe
     CharacterFrame.ShowSubFrame = function(_, name) subframe = name end
     CharacterFrame.OnModeTabClicked = function() end
@@ -4294,6 +4343,7 @@ check("BiS page: a side tab on the character window opens native-looking BiS gea
     host.tab.customMouseUpHandler(host.tab, "LeftButton", true)
     local view = host.view
     assert(view and view.shown and host.tab.checked, "BiS page not shown")
+    assert(not CharacterModelScene.shown, "the game's character model should hide under the BiS page")
     local count = 0
     for _ in pairs(view.slots) do count = count + 1 end
     assert(count == 19, "expected 19 gear slots, got " .. count)
@@ -4307,6 +4357,15 @@ check("BiS page: a side tab on the character window opens native-looking BiS gea
     local filledCount = 0
     for _ in pairs(view.filled) do filledCount = filledCount + 1 end
     assert(actor.unit == "player" and actor.autoDress == false and #actor.tried == filledCount, "model not dressed in the BiS gear")
+    assert(actor.tried[1]:find("^item:%d+$"), "model should try on the full item link")
+    -- 客户端还没有数据的物品不试穿（否则模型上画成黑影），数据到了刷新时补上
+    local cachedInfo = C_Item.GetItemInfo
+    C_Item.GetItemInfo = function() return nil end
+    view:Refresh()
+    assert(#actor.tried == 0, "uncached items should not be tried on")
+    C_Item.GetItemInfo = cachedInfo
+    view:Refresh()
+    assert(#actor.tried == filledCount, "model not re-dressed once item data arrived")
     local head = view.slots.HeadSlot
     assert(head.entry and head.icon.texture, "head slot empty")
     assert(not view.slots.ShirtSlot.entry and view.slots.ShirtSlot.icon.texture:find("ShirtSlot"), "shirt slot should look empty")
@@ -4437,6 +4496,7 @@ check("BiS page: a side tab on the character window opens native-looking BiS gea
     -- 玩家切到暴雪的其他分页：收起我们的页面；点替身标签也回到暴雪内容
     CharacterFrame:ShowSubFrame("ReputationFrame")
     assert(subframe == "ReputationFrame" and not view.shown and not host.standIn.shown, "page not closed on a game tab switch")
+    assert(CharacterModelScene.shown, "the game's character model not restored")
     host.tab.customMouseUpHandler(host.tab, "LeftButton", true)
     host.standIn.customMouseUpHandler(host.standIn, "LeftButton", true)
     assert(not view.shown and not host.tab.checked, "stand-in did not return to the game's page")
@@ -4467,6 +4527,733 @@ check("BiS page: a side tab on the character window opens native-looking BiS gea
     main:EnableModule(Module)
     C_Item.GetItemInfo, C_Item.GetItemNameByID = savedInfo, savedName
     CharacterFrame:Hide()
+end)
+
+check("auction house: searches and a full scan record prices, the corner scan button, tooltip price", function()
+    local Module = main.modules.AuctionHouse
+    GetRealmName = function() return "Test Realm" end
+    -- 模拟按需加载的拍卖行：浏览结果、商品与物品报价、全量扫描（下标从 0 开始，共 2500 条）
+    local replicateRequests = 0
+    local replicate = {}
+    for i = 0, 2499 do
+        replicate[i] = { itemID = 2589 + (i % 3), count = 5, buyout = 1000 + i }
+    end
+    replicate[7] = { itemID = 2592, count = 1, buyout = 0 } -- 只能竞拍的不算
+    C_AuctionHouse = {
+        GetBrowseResults = function()
+            return { { itemKey = { itemID = 2770, battlePetSpeciesID = 0 }, minPrice = 150 },
+                { itemKey = { itemID = 2770, battlePetSpeciesID = 0 }, minPrice = 120 },
+                { itemKey = { itemID = 9999, battlePetSpeciesID = 42 }, minPrice = 5 } }
+        end,
+        GetCommoditySearchResultInfo = function(itemID, index)
+            if itemID == 2771 and index == 1 then return { itemID = 2771, unitPrice = 75 } end
+        end,
+        GetNumItemSearchResults = function() return 2 end,
+        GetItemSearchResultInfo = function(_, index)
+            return ({ { quantity = 1, buyoutAmount = 30000 }, { quantity = 2, buyoutAmount = 50000 } })[index]
+        end,
+        ReplicateItems = function() replicateRequests = replicateRequests + 1 end,
+        GetNumReplicateItems = function() return 2500 end,
+        GetReplicateItemInfo = function(index)
+            local r = replicate[index]
+            return nil, nil, r.count, 1, true, 1, nil, 0, 0, r.buyout, 0, nil, nil, nil, nil, 0, r.itemID, true
+        end,
+    }
+    main:DisableModule(Module)
+    main:EnableModule(Module)
+    -- 暴雪拍卖行：按钮挂在框体下沿右端，不动暴雪的标签与子页面
+    AuctionHouseFrame = CreateFrame("Frame", "AuctionHouseFrame", UIParent)
+    local host = AuctionHouseFrame
+    fireAll("AUCTION_HOUSE_SHOW")
+    local button, status = Module.Button()
+    assert(button and button.template == "UIPanelButtonTemplate" and button.shown, "scan button missing")
+    assert(button:GetParent() == host, "scan button not on the auction house frame")
+    assert(status.text and status.text ~= "", "scan status text empty")
+
+    -- 搜索：浏览列表取同一物品的最低价、跳过战斗宠物；商品取第一条单价；物品逐条按单价比
+    fireAll("AUCTION_HOUSE_BROWSE_RESULTS_UPDATED")
+    runTimers(1)
+    assert(main.Prices.Auction(2770) == 120, "browse minimum not recorded")
+    assert(main.Prices.Auction(9999) == nil, "battle pet recorded")
+    fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2771)
+    assert(main.Prices.Auction(2771) == 75, "commodity price not recorded")
+    fireAll("ITEM_SEARCH_RESULTS_UPDATED", { itemID = 2772, battlePetSpeciesID = 0 })
+    assert(main.Prices.Auction(2772) == 25000, "item unit price not recorded")
+    -- 关掉“记录搜索价格”后不再记
+    main.db.modules.AuctionHouse.recordSearches = false
+    fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2773)
+    assert(main.Prices.Auction(2773) == nil, "recorded with the option off")
+    main.db.modules.AuctionHouse.recordSearches = true
+
+    -- 全量扫描：分批读，读完一次写入；冷却期间再点不发请求
+    button:Click()
+    assert(replicateRequests == 1 and Module.ScanState() == "waiting", "scan not requested")
+    fireAll("REPLICATE_ITEM_LIST_UPDATE")
+    assert(Module.ScanState() == "processing", "scan not processing")
+    assert(main.Prices.Auction(2589) == nil, "wrote before the scan finished")
+    runTimers(1)
+    assert(Module.ScanState() == "idle", "scan did not finish")
+    -- 2589 最便宜的一条是第 0 条：5 个一组 1000 铜，单价 200
+    assert(main.Prices.Auction(2589) == 200, "scan unit price wrong: " .. tostring(main.Prices.Auction(2589)))
+    assert(main.Prices.Auction(2592) == nil, "bid-only auction recorded")
+    -- 存档与 Auctionator 价格库同构：“服务器 阵营”下按字符串物品 ID 存 m / h / l / a，天数从 2020-01-01 算
+    local store = main.db.auctionPrices
+    assert(store.__dbversion == 6 and type(store["Test Realm Horde"]) == "table", "price database key or version wrong")
+    local entry = store["Test Realm Horde"]["2589"]
+    local today = tostring(math.floor((time() - time({ year = 2020, month = 1, day = 1, hour = 0 })) / 86400))
+    assert(entry and entry.m == 200 and entry.h[today] == 200 and entry.a[today] == 834 * 5,
+        "Auctionator-format entry wrong")
+    assert(main.Prices.Auction(2589) == 200 and select(2, main.Prices.Auction(2589)) == 0, "age in days wrong")
+    assert(status.text == main.L["Next full scan in %s"]:format(main.Prices.FormatAge(15 * 60)), "status does not show the cooldown: " .. tostring(status.text))
+    button:Click()
+    assert(replicateRequests == 1, "scan allowed during the cooldown")
+
+    -- 扫描中关闭拍卖行：中止，不写入
+    main.Prices.SetLastScan(nil)
+    replicate[0] = { itemID = 2600, count = 1, buyout = 10 }
+    button:Click()
+    fireAll("REPLICATE_ITEM_LIST_UPDATE")
+    fireAll("AUCTION_HOUSE_CLOSED")
+    runTimers(1)
+    assert(Module.ScanState() == "idle" and main.Prices.Auction(2600) == nil, "closed scan still wrote prices")
+
+    -- 鼠标提示：有价格的物品加一行拍卖价，同一次提示不重复
+    GameTooltip.doubleLines = {}
+    GameTooltip.AddDoubleLine = function(self, left, right) tinsert(self.doubleLines, { left, right }) end
+    tooltipItemCallback(GameTooltip, { id = 2770, dataInstanceID = 77 })
+    tooltipItemCallback(GameTooltip, { id = 2770, dataInstanceID = 77 })
+    assert(#GameTooltip.doubleLines == 1 and GameTooltip.doubleLines[1][2] == "120", "tooltip price line missing or repeated")
+    main.db.modules.AuctionHouse.tooltip = false
+    tooltipItemCallback(GameTooltip, { id = 2770, dataInstanceID = 78 })
+    assert(#GameTooltip.doubleLines == 1, "tooltip line with the option off")
+    main.db.modules.AuctionHouse.tooltip = true
+
+    -- 使用 Auctionator 价格：默认不勾；勾上后读它的公开接口，取更新的一份，并隐藏自己的扫描按钮
+    assert(main.db.modules.AuctionHouse.useAuctionator == false, "Auctionator option on by default")
+    local calls = {}
+    Auctionator = { API = { v1 = {
+        GetAuctionPriceByItemID = function(caller, itemID)
+            tinsert(calls, caller)
+            return ({ [2589] = 180, [4444] = 900 })[itemID]
+        end,
+        GetAuctionAgeByItemID = function(_, itemID) return ({ [2589] = 3, [4444] = 0 })[itemID] end,
+    } } }
+    assert(main.Prices.Auction(4444) == nil and #calls == 0, "Auctionator read with the option off")
+    local wasShown = AuctionHouseFrame.shown
+    AuctionHouseFrame.shown = true
+    Module.SetUseAuctionator(true)
+    assert(not button.shown, "scan button still shown while Auctionator scans")
+    local price, days, source = main.Prices.Auction(4444)
+    assert(price == 900 and days == 0 and source == "auctionator" and calls[1] == "WowHandbook", "Auctionator price not read")
+    assert(main.Prices.Auction(2589) == 200 and select(3, main.Prices.Auction(2589)) == "own", "older Auctionator price won")
+    -- 没装 Auctionator 时照常显示按钮
+    Auctionator = nil
+    fireAll("AUCTION_HOUSE_SHOW")
+    assert(button.shown, "scan button hidden without Auctionator")
+    Module.SetUseAuctionator(false)
+    AuctionHouseFrame.shown = wasShown
+
+    -- 关闭模块：按钮隐藏，搜索不再记录
+    main:DisableModule(Module)
+    assert(not button.shown, "scan button still shown after disabling")
+    fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2773)
+    assert(main.Prices.Auction(2773) == nil, "disabled module still records")
+    main:EnableModule(Module)
+    GameTooltip.AddDoubleLine = nil
+end)
+
+check("crafting cost: the professions window shows material cost, auction price and profit", function()
+    local Module = main.modules.CraftingCost
+    local savedTradeSkill, savedMerchant = C_TradeSkillUI, C_MerchantFrame
+    -- 配方：2 个 2589（拍卖 200）+ 1 个 2320（商人 10，拍卖 50）+ 一个可选材料槽；成品 2580 每次 1–3 个
+    C_TradeSkillUI = { GetRecipeSchematic = function(recipeID)
+        if recipeID ~= 3275 then return { reagentSlotSchematics = {} } end
+        return { recipeID = 3275, outputItemID = 2580, quantityMin = 1, quantityMax = 3, reagentSlotSchematics = {
+            { required = true, quantityRequired = 2, reagents = { { itemID = 2589 } } },
+            { required = true, quantityRequired = 1, reagents = { { itemID = 2320 } } },
+            { required = false, quantityRequired = 1, reagents = { { itemID = 7777 } } },
+        } }
+    end }
+    main.Prices.RecordAuction({ [2589] = 200, [2320] = 50, [2580] = 1000 })
+    -- 商人：不限量、金币购买的记下（5 个一组 50 铜 = 每个 10 铜），限量的不记
+    local merchant = { [1] = { id = 2320, price = 50, stackCount = 5, numAvailable = -1 },
+        [2] = { id = 2321, price = 100, stackCount = 1, numAvailable = 3 } }
+    GetMerchantNumItems = function() return 2 end
+    GetMerchantItemID = function(index) return merchant[index].id end
+    C_MerchantFrame = { GetItemInfo = function(index) return merchant[index] end,
+        SellAllJunkItems = savedMerchant.SellAllJunkItems, IsSellAllJunkEnabled = savedMerchant.IsSellAllJunkEnabled }
+    main:DisableModule(Module)
+    main:EnableModule(Module)
+    fireAll("MERCHANT_SHOW")
+    runTimers(1)
+    assert(main.Prices.Vendor(2320) == 10 and main.Prices.Vendor(2321) == nil, "vendor prices wrong")
+    assert(select(2, main.Prices.BuyCost(2320)) == "vendor", "cheaper vendor price not preferred")
+
+    -- 按需加载的专业窗口：配方表单的 Init 被暴雪按方法名调用
+    ProfessionsFrame = CreateFrame("Frame", "ProfessionsFrame", UIParent)
+    ProfessionsFrame.CraftingPage = CreateFrame("Frame", nil, ProfessionsFrame)
+    local form = CreateFrame("Frame", nil, ProfessionsFrame.CraftingPage)
+    ProfessionsFrame.CraftingPage.SchematicForm = form
+    function form:Init(recipeInfo) self.recipeInfo = recipeInfo end
+    function form:GetRecipeInfo() return self.recipeInfo end
+    fireAll("ADDON_LOADED", "Blizzard_Professions")
+    local panel = form.children[#form.children]
+    assert(panel, "cost panel not created")
+    form:Init({ recipeID = 3275 })
+    assert(panel.shown, "cost panel hidden for a recipe with reagents")
+    local result = Module.Evaluate(3275)
+    assert(result.cost == 410 and result.missing == 0 and result.value == 2000, "cost or value wrong")
+    assert(panel.cost.text == "410" and panel.value.text == "2000", "panel text wrong")
+    assert(panel.profit.text:find("+1490", 1, true), "profit after the 5% cut wrong: " .. panel.profit.text)
+    -- 利润率 = 利润 ÷ 材料成本：1490 / 410 ≈ 363%
+    assert(panel.margin.text:find("+363%", 1, true), "margin wrong: " .. panel.margin.text)
+
+    -- 缺价格的材料：成本标出几种没价格，利润不算
+    main.Prices.RecordVendor(2320, nil)
+    main.db.vendorPrices[2320] = nil
+    main.db.auctionPrices["Test Realm Horde"]["2320"] = nil
+    form:Init({ recipeID = 3275 })
+    assert(panel.cost.text:find("1", 1, true) and panel.profit.text == "-" and panel.margin.text == "-",
+        "missing reagent price not shown")
+    -- 没有材料的配方不显示面板
+    form:Init({ recipeID = 1 })
+    assert(not panel.shown, "panel shown for a recipe without reagents")
+
+    main:DisableModule(Module)
+    form:Init({ recipeID = 3275 })
+    assert(not panel.shown, "disabled module still shows the panel")
+    main:EnableModule(Module)
+    C_TradeSkillUI, C_MerchantFrame = savedTradeSkill, savedMerchant
+end)
+
+check("waylaid crates: the crate tooltip lists each bundle with its cost and marks the cheapest", function()
+    local Module = main.modules.MerchantCrates
+    assert(Module and Module.enabled, "crate module not enabled by default")
+    -- 学徒矿石箱 248683：20 个铜矿石（2770）或 20 个锡矿石（2771）
+    assert(main.Data.merchantCrates.crates[248683], "crate data not loaded")
+    main.Prices.RecordAuction({ [2770] = 120, [2771] = 90 })
+    local options, cheapest = Module.Evaluate(248683)
+    assert(#options == 2 and options[1].total == 2400 and options[2].total == 1800 and cheapest == 2,
+        "crate costs or cheapest wrong")
+    assert(Module.Evaluate(2770) == nil, "non-crate item evaluated")
+
+    GameTooltip.lines, GameTooltip.doubleLines = {}, {}
+    GameTooltip.AddDoubleLine = function(self, left, right) tinsert(self.doubleLines, { left, right }) end
+    main.db.modules.AuctionHouse.tooltip = false
+    tooltipItemCallback(GameTooltip, { id = 248683, dataInstanceID = 501 })
+    tooltipItemCallback(GameTooltip, { id = 248683, dataInstanceID = 501 })
+    assert(#GameTooltip.doubleLines == 2, "crate lines missing or repeated: " .. #GameTooltip.doubleLines)
+    assert(GameTooltip.doubleLines[1][2]:find("2400", 1, true) and GameTooltip.doubleLines[1][2]:find("120", 1, true),
+        "bundle total or unit price missing: " .. GameTooltip.doubleLines[1][2])
+
+    -- 关闭模块：不再加内容
+    main:DisableModule(Module)
+    tooltipItemCallback(GameTooltip, { id = 248683, dataInstanceID = 502 })
+    assert(#GameTooltip.doubleLines == 2, "disabled module still adds crate lines")
+    main:EnableModule(Module)
+    main.db.modules.AuctionHouse.tooltip = true
+    GameTooltip.AddDoubleLine = nil
+end)
+
+check("enchant all: native button and count on the crafting page, one enchant per click, confirms replacing", function()
+    local Module = main.modules.Enchanting
+    local savedTradeSkill, savedReplace = C_TradeSkillUI, C_Item.ReplaceEnchant
+    local casts, craftable = {}, 3
+    C_TradeSkillUI = {
+        CraftEnchant = function(recipeID, count, _, location) tinsert(casts, { recipeID, count, location }) end,
+        GetCraftableCount = function() return craftable end,
+        GetRemainingRecasts = function() return 0 end,
+    }
+    local replaced = 0
+    C_Item.ReplaceEnchant = function() replaced = replaced + 1 end
+    ProfessionsFrame = CreateFrame("Frame", "ProfessionsFrame", UIParent)
+    local page = CreateFrame("Frame", nil, ProfessionsFrame)
+    ProfessionsFrame.CraftingPage = page
+    page.CreateAllButton = CreateFrame("Button", nil, page)
+    page.CreateAllButton:Hide() -- 附魔到装备时暴雪不显示全部制造
+    function page:ValidateControls() end
+    local form = CreateFrame("Frame", nil, page)
+    page.SchematicForm = form
+    local target = { GetItemLocation = function() return "chest" end }
+    local transaction = { GetEnchantAllocation = function() return target end, GetCraftingReagentInfos = function() return {} end }
+    function form:Init(recipeInfo) self.recipeInfo = recipeInfo end
+    function form:GetRecipeInfo() return self.recipeInfo end
+    function form:GetTransaction() return transaction end
+    form.recipeInfo = { recipeID = 7857, learned = true, isEnchantingRecipe = true }
+    main:DisableModule(Module)
+    main:EnableModule(Module)
+    local button, count
+    for _, child in ipairs(page.children) do
+        if child.template == "SharedButtonSmallTemplate" then button = child end
+        if child.template == "NumericInputSpinnerTemplate" then count = child end
+    end
+    assert(button and count, "enchant all controls missing")
+    -- 数量框的暴雪方法（NumericInputSpinnerMixin）
+    function count:SetMinMaxValues(_, max) self.max = max end
+    function count:SetValue(value) self.value = value end
+    function count:GetValue() return rawget(self, "value") or 0 end
+    page:ValidateControls()
+    assert(button.shown and count.shown and count.value == 3, "enchant all not shown with the craftable count")
+
+    -- 每点一下附魔一次（每次只交给客户端 1 次），插件不自己接着发
+    count:SetValue(2)
+    button:Click()
+    assert(#casts == 1 and casts[1][2] == 1 and casts[1][3] == "chest", "first cast wrong")
+    button:Click() -- 施法中多点的不算
+    assert(#casts == 1, "cast again while casting")
+    form:Init(form.recipeInfo) -- 暴雪附魔后刷新同一配方，不应停
+    assert(Module.IsRunning() == 2, "same-recipe refresh stopped the run")
+    fireAll("REPLACE_ENCHANT", "old", "new")
+    assert(replaced == 1, "replace enchant not confirmed")
+    fireAll("UNIT_SPELLCAST_SUCCEEDED", "player", "cast-1", 7857)
+    runTimers(1)
+    assert(#casts == 1 and Module.IsRunning() == 1, "addon cast on its own after a success")
+    -- 打断不结束：接着点还能附魔
+    button:Click()
+    fireAll("UNIT_SPELLCAST_INTERRUPTED", "player", "cast-2", 7857)
+    assert(Module.IsRunning() == 1, "interrupt ended the run")
+    button.scripts.OnMouseWheel(button, -1) -- 滚轮也附魔一次
+    assert(#casts == 3, "mouse wheel did not cast")
+    fireAll("UNIT_SPELLCAST_SUCCEEDED", "player", "cast-3", 7857)
+    assert(not Module.IsRunning(), "did not finish after the last enchant")
+    -- 右键停止
+    count:SetValue(3)
+    button:Click()
+    fireAll("UNIT_SPELLCAST_SUCCEEDED", "player", "cast-4", 7857)
+    button.scripts.OnClick(button, "RightButton")
+    assert(not Module.IsRunning(), "right-click did not stop")
+
+    -- 关掉自动确认：不点“是”
+    main.db.modules.Enchanting.autoReplace = false
+    fireAll("REPLACE_ENCHANT", "old", "new")
+    assert(replaced == 1, "confirmed with the option off")
+    main.db.modules.Enchanting.autoReplace = true
+
+    -- 非附魔配方、暴雪自己显示全部制造时隐藏
+    form:Init({ recipeID = 2329, learned = true })
+    page:ValidateControls()
+    assert(not button.shown, "shown for a non-enchant recipe")
+    form:Init({ recipeID = 7857, learned = true, isEnchantingRecipe = true })
+    page.CreateAllButton:Show()
+    page:ValidateControls()
+    assert(not button.shown, "shown next to Blizzard's own Create All")
+    fireAll("REPLACE_ENCHANT", "old", "new")
+    assert(replaced == 2, "replace not confirmed for an enchant recipe")
+
+    main:DisableModule(Module)
+    assert(not button.shown, "controls shown after disabling")
+    main:EnableModule(Module)
+    C_TradeSkillUI, C_Item.ReplaceEnchant = savedTradeSkill, savedReplace
+end)
+
+check("secrets helper: window follows quests, items and manual steps", function()
+    local M, L = main.modules.Secrets, main.L
+    local settings = main.db.modules.Secrets
+    assert(settings.shown == false, "secrets window should be off by default")
+    assert(not WowHandbookSecretsFrame, "secrets window created while off")
+    local counts, equipped = {}, {}
+    local savedCount, savedEquipped = C_Item.GetItemCount, C_Item.IsEquippedItem
+    C_Item.GetItemCount = function(id) return counts[id] or 0 end
+    C_Item.IsEquippedItem = function(id) return equipped[id] == true end
+    local messages = {}
+    local savedChat = DEFAULT_CHAT_FRAME.AddMessage
+    DEFAULT_CHAT_FRAME.AddMessage = function(_, text) tinsert(messages, text) end
+
+    SlashCmdList.WOWHANDBOOK("secrets")
+    local f = WowHandbookSecretsFrame
+    assert(f and f.shown and settings.shown, "/wh secrets did not open the window")
+    M.SelectChain("sleepingBag")
+    -- 部落：第一步在贫瘠之地接，提示与两处地点
+    assert(f.focusTitle:GetText() == L["...and that note you found"], "first step title: " .. tostring(f.focusTitle:GetText()))
+    assert(f.hint:GetText() == L["Click the Burned-Out Remains at the burned tower south of Camp Taurajo, the Barrens."],
+        "horde start hint missing")
+    assert(f.spotButtons[1].shown and f.spotButtons[2].shown, "spots not listed")
+    f.spotButtons[1].scripts.OnClick(f.spotButtons[1])
+    assert(waypoint and waypoint.map == 1436, "spot click did not set a waypoint")
+    assert(f.progressText:GetText() == L["%d of %d steps"]:format(0, 6), "progress: " .. tostring(f.progressText:GetText()))
+
+    -- 接到任务：进行中提示与目标进度
+    activeQuests[79007] = true
+    questObjectives[79007] = { { text = "Remains found: 1/2", finished = false } }
+    fireAll("QUEST_LOG_UPDATE")
+    runTimers(1)
+    assert(f.hint:GetText() == L["Fly to Westfall and click the second Burned-Out Remains at Alexston Farm."], "active hint missing")
+    assert(f.objectives.shown and f.objectives:GetText():find("1/2", 1, true), "objectives not shown")
+
+    -- 交了任务：进度推进、聊天提示下一步
+    activeQuests[79007], completedQuests[79007] = nil, true
+    fireAll("QUEST_TURNED_IN", 79007)
+    runTimers(1)
+    assert(f.focusTitle:GetText() == L["Stepping Stones"], "did not move on to the next step")
+    assert(f.progressText:GetText() == L["%d of %d steps"]:format(1, 6), "progress did not advance")
+    local announced = false
+    for _, text in ipairs(messages) do
+        if text:find(L["Stepping Stones"], 1, true) then announced = true end
+    end
+    assert(announced, "no chat message about the next step")
+
+    -- 黎明唤醒者：戒指在包里没戴提示戴上；戴上后完成，同阶段的火炬是下一步
+    f.chain.onChange("dawnWaker")
+    counts[264908] = 1
+    fireAll("BAG_UPDATE_DELAYED")
+    runTimers(1)
+    local result = M.Evaluate(main.SecretChains[2])
+    assert(result.byID.ring.done and result.next.torch, "ring not detected or torch not next")
+    assert(not result.next.hilt, "hilt should wait for the parallel stage")
+    -- 点一行看那一步：戒指没戴的提醒
+    local ringRow
+    for _, row in ipairs(f.listRows) do
+        if row.shown and rawget(row, "row") and row.row.step.id == "ring" then ringRow = row end
+    end
+    ringRow.scripts.OnClick(ringRow, "LeftButton")
+    assert(f.hint:GetText() == L["Equip the ring and keep it on: the hidden spirit, vault and switches only show while you wear it."],
+        "unequipped ring hint missing")
+    assert(f.back.shown, "no way back to the next step")
+    f.back.scripts.OnClick(f.back)
+
+    -- 火炬拿到、剑柄在包里：下一步是手动的“换回剑”，缺剑柄会标红
+    counts[280612] = 1
+    fireAll("BAG_UPDATE_DELAYED")
+    runTimers(1)
+    assert(f.focusTitle:GetText() == L["Reveal the Ancient Hilt"], "hilt should be next: " .. tostring(f.focusTitle:GetText()))
+    counts[272313] = 1
+    fireAll("BAG_UPDATE_DELAYED")
+    runTimers(1)
+    assert(f.focusTitle:GetText() == L["Claim Eluvi'ana"] and f.manual.shown, "manual step has no done button")
+    -- 剑柄合成用掉了：手动勾上“换回剑”后剑柄步骤也算完成
+    counts[272313] = nil
+    f.manual.scripts.OnClick(f.manual)
+    result = M.Evaluate(main.SecretChains[2])
+    assert(result.byID.blade.done and result.byID.hilt.done, "after-implication failed")
+    -- 部落只列部落的地点
+    assert(f.focusTitle:GetText() == L["Get the Befouled Water Globe"], "globe should be next")
+    for _, button in ipairs(f.spotButtons) do
+        if button.shown then assert(button.spot[5] ~= "A", "alliance spot shown to horde") end
+    end
+    -- 右键列表里的手动步骤：弹出菜单，选“标记为未完成”取消勾选
+    for _, row in ipairs(f.listRows) do
+        if row.shown and rawget(row, "row") and row.row.step.id == "blade" then row.scripts.OnClick(row, "RightButton") end
+    end
+    assert(M.Evaluate(main.SecretChains[2]).byID.blade.done, "right-click alone must not change the step")
+    contextClick(L["Mark as not done"])
+    assert(not M.Evaluate(main.SecretChains[2]).byID.blade.done, "menu did not unmark the step")
+
+    -- 复制攻略链接
+    local savedCopy, copied = main.Links.ShowCopyDialog, nil
+    main.Links.ShowCopyDialog = function(_, url) copied = url end
+    f.link.scripts.OnClick(f.link)
+    main.Links.ShowCopyDialog = savedCopy
+    assert(copied == "https://wowhandbook.com/zh/news/dawn-waker-secret/", "walkthrough link: " .. tostring(copied))
+
+    -- 收起只留下一步；关闭记入设置、取消事件
+    f.collapse.scripts.OnClick(f.collapse)
+    assert(not f.listScroll.shown and not f.link.shown, "collapsed window still shows the list")
+    f.collapse.scripts.OnClick(f.collapse)
+    f.close.scripts.OnClick(f.close)
+    assert(not f.shown and settings.shown == false, "close did not hide the window")
+    counts[16408] = 1
+    fireAll("BAG_UPDATE_DELAYED")
+    runTimers(1)
+    SlashCmdList.WOWHANDBOOK("secrets")
+    assert(f.shown and M.Evaluate(main.SecretChains[2]).byID.globe.done, "reopened window is stale")
+    SlashCmdList.WOWHANDBOOK("secrets")
+    assert(not f.shown, "/wh secrets did not hide the window")
+
+    C_Item.GetItemCount, C_Item.IsEquippedItem = savedCount, savedEquipped
+    DEFAULT_CHAT_FRAME.AddMessage = savedChat
+    completedQuests[79007] = nil
+end)
+
+check("secrets helper: main window page lists every step and shares progress with the small window", function()
+    local M, L = main.modules.Secrets, main.L
+    local counts = {}
+    local savedCount, savedEquipped = C_Item.GetItemCount, C_Item.IsEquippedItem
+    C_Item.GetItemCount = function(id) return counts[id] or 0 end
+    C_Item.IsEquippedItem = function() return false end
+    assert(main.MainFrame:HasTab("secrets"), "secrets tab not registered")
+    main.MainFrame:Open("secrets")
+    local p = M.page
+    assert(p and p:IsVisible(), "secrets page not shown")
+    M.SelectChain("dawnWaker")
+    assert(p.title:GetText() == L["Dawn Waker"], "page title: " .. tostring(p.title:GetText()))
+    local function texts()
+        local all = {}
+        for _, fs in ipairs(p.stack.pools.text) do
+            if fs.shown then tinsert(all, fs:GetText() or "") end
+        end
+        return table.concat(all, "\n")
+    end
+    local function button(label)
+        for _, b in ipairs(p.stack.pools.button) do
+            if b.shown and b.label:GetText() == label then return b end
+        end
+    end
+    -- 每一步都列出；没完成的带提示与地点
+    local body = texts()
+    assert(body:find(L["Get the Night Watchman's Torch"], 1, true) and body:find(L["Speak to Prince Tortheldrin"], 1, true),
+        "page does not list every step")
+    assert(body:find(L["Raven Hill"], 1, true), "spots missing on the page")
+    assert(button(L["Map"]), "no map button for spots")
+    -- 物品到手后页面跟着变（页面显示时订阅了事件）
+    counts[280612] = 1
+    fireAll("BAG_UPDATE_DELAYED")
+    runTimers(1)
+    assert(M.Evaluate(main.SecretChains[2]).byID.torch.done and not texts():find(L["Raven Hill"], 1, true),
+        "page did not follow the torch")
+    -- 页面上勾手动步骤，小窗看到同一份进度
+    local mark = button(L["Mark as done"])
+    assert(mark, "no mark-done button for manual steps")
+    mark.scripts.OnClick(mark)
+    local result = M.Evaluate(main.SecretChains[2])
+    local marked = 0
+    for _, row in ipairs(result.rows) do
+        if row.step.manual and row.done then marked = marked + 1 end
+    end
+    assert(marked >= 1, "mark-done on the page did nothing")
+    -- 打开 / 关闭小窗
+    assert(p.windowButton.label:GetText() == L["Show the small window"], "window button label")
+    p.windowButton.scripts.OnClick(p.windowButton)
+    assert(WowHandbookSecretsFrame.shown and main.db.modules.Secrets.shown, "page did not open the small window")
+    assert(p.windowButton.label:GetText() == L["Hide the small window"], "window button label after opening")
+    p.windowButton.scripts.OnClick(p.windowButton)
+    assert(not WowHandbookSecretsFrame.shown, "page did not hide the small window")
+
+    -- 图书馆藏书：左侧列表多一项；已捐（任务完成）、在包里、没拿到分开列；没拿到的书带“追踪”按钮
+    local data = main.Data.libraryBooks
+    assert(data and #data.books == 40, "library data missing")
+    local first, second = data.books[1], data.books[2]
+    local savedDone = C_QuestLog.IsQuestFlaggedCompleted
+    C_QuestLog.IsQuestFlaggedCompleted = function(id) return id == first.quest end
+    counts[second.id] = 1
+    M.SelectLibrary()
+    assert(p.title:GetText() == L["Library books"], "library title: " .. tostring(p.title:GetText()))
+    local library = M.EvaluateLibrary()
+    assert(library.donated == 1 and library.bags == 1 and library.total == 40, "library states wrong")
+    assert(library.books[1].state == "donated" and library.books[2].state == "bags", "book states wrong")
+    body = texts()
+    assert(body:find(L["Still to find"], 1, true) and body:find(L["In your bags"], 1, true), "library sections missing")
+    assert(p.summary:GetText():find(L["%d of %d donated"]:format(1, 40), 1, true), "library summary")
+    local track = button(L["Track"])
+    assert(track, "no track button for book spots")
+    local waypoint
+    local savedSet = main.Waypoints.Set
+    main.Waypoints.Set = function(_, map, x, y) waypoint = { map, x, y } return true end
+    track.scripts.OnClick(track)
+    assert(waypoint and waypoint[1] and waypoint[2], "track did not set a waypoint")
+    main.Waypoints.Set = savedSet
+    -- 选回一条链：页面换回链的步骤
+    M.SelectChain("dawnWaker")
+    assert(p.title:GetText() == L["Dawn Waker"], "selecting a chain did not leave the library view")
+    C_QuestLog.IsQuestFlaggedCompleted = savedDone
+    counts[second.id] = nil
+    main.MainFrame:Hide()
+    C_Item.GetItemCount, C_Item.IsEquippedItem = savedCount, savedEquipped
+end)
+
+check("quick menu: frequent options on top, the rest folded by category, one group open at a time", function()
+    local module = main.modules.MinimapButton
+    local L = main.L
+    local function groups(entries)
+        local list, open = {}, {}
+        for _, entry in ipairs(entries) do
+            if entry.kind == "group" then
+                list[entry.text] = entry
+                if entry.expanded then tinsert(open, entry.text) end
+            end
+        end
+        return list, open
+    end
+    local entries = module.MenuEntries()
+    local list, open = groups(entries)
+    assert(list[L["Map"]] and list[L["Quests"]] and #open == 0, "categories should start folded")
+    assert(#entries <= 22, ("folded menu is too long: %d rows"):format(#entries))
+    for _, entry in ipairs(entries) do
+        assert(not entry.indent, "grouped options listed while folded")
+    end
+    list[L["Map"]].onClick()
+    entries = module.MenuEntries()
+    list, open = groups(entries)
+    local flight = false
+    for _, entry in ipairs(entries) do
+        flight = flight or (entry.indent and entry.text:find(L["Flight paths"], 1, true) ~= nil)
+    end
+    assert(#open == 1 and open[1] == L["Map"] and flight, "map group did not unfold")
+    list[L["Quests"]].onClick()
+    list, open = groups(module.MenuEntries())
+    assert(#open == 1 and open[1] == L["Quests"], "only one group should be open")
+    list[L["Quests"]].onClick()
+    list, open = groups(module.MenuEntries())
+    assert(#open == 0, "clicking an open group should fold it")
+end)
+check("context menu: shared, closes on an outside click and Esc; dropdowns close the same way", function()
+    local clicked
+    local entries = { { kind = "title", text = "Title" }, { kind = "action", text = "Do", onClick = function() clicked = true end } }
+    local menu = main.UI:ContextMenu(entries)
+    assert(menu == WowHandbookContextMenu and menu.shown, "context menu did not open")
+    menu.rows[1].scripts.OnClick(menu.rows[1])
+    assert(menu.shown and not clicked, "a plain title should not be clickable")
+    fireAll("GLOBAL_MOUSE_DOWN", "LeftButton")
+    assert(not menu.shown, "outside click did not close the context menu")
+    main.UI:ContextMenu(entries)
+    contextClick("Do")
+    assert(clicked and not menu.shown, "action did not run or the menu stayed open")
+    local escape = false
+    for _, name in ipairs(UISpecialFrames) do escape = escape or name == "WowHandbookContextMenu" end
+    assert(escape, "context menu does not close with Esc")
+    local dropdown = main.UI:Dropdown(UIParent, { { id = 1, label = "x" } }, function() end)
+    dropdown.scripts.OnClick(dropdown)
+    assert(dropdown.menu.shown, "dropdown did not open")
+    fireAll("GLOBAL_MOUSE_DOWN", "LeftButton")
+    assert(not dropdown.menu.shown, "outside click did not close the dropdown")
+end)
+check("small windows: right-click menu locks the position and changes the size", function()
+    local L = main.L
+    for _, name in ipairs({ "InstanceTracker", "Secrets" }) do
+        local module, settings = main.modules[name], main.db.modules[name]
+        module.WindowMenu()
+        contextClick(L["Lock position"])
+        assert(settings.locked == true and WowHandbookContextMenu.shown, name .. ": lock not saved or menu closed")
+        local size
+        for _, row in ipairs(WowHandbookContextMenu.rows) do
+            if row.shown and row.entry.kind == "choice" then size = row end
+        end
+        assert(size, name .. ": no size choice")
+        for _, option in ipairs(size.options) do
+            if option.shown and option.id == 1.15 then option.scripts.OnClick(option) end
+        end
+        assert(settings.scale == 1.15, name .. ": size not saved")
+        for _, option in ipairs(size.options) do
+            if option.shown and option.id == 1 then option.scripts.OnClick(option) end
+        end
+        assert(settings.scale == nil, name .. ": default size should not be stored")
+        contextClick(L["Lock position"])
+        assert(settings.locked == nil, name .. ": unlock not saved")
+        WowHandbookContextMenu:Hide()
+    end
+    -- 锁定后拖不动
+    local f, moved = WowHandbookInstanceFrame, false
+    f.StartMoving = function() moved = true end
+    main.db.modules.InstanceTracker.locked = true
+    f.scripts.OnDragStart(f)
+    assert(not moved, "locked window still moves")
+    main.db.modules.InstanceTracker.locked = nil
+    f.scripts.OnDragStart(f)
+    assert(moved, "unlocked window does not move")
+    f.StartMoving = nil
+end)
+check("main window: remembers position and size, settings pinned to the bottom, page commands", function()
+    main.MainFrame:Open("home")
+    local f = WowHandbookMainFrame
+    local header
+    for _, child in ipairs(f.children) do
+        if child.scripts.OnDragStop then header = child end
+    end
+    f.GetPoint = function() return "TOPLEFT", UIParent, "TOPLEFT", 120, -80 end
+    header.scripts.OnDragStop(header)
+    local position = main.db.appearance.position
+    assert(position and position[1] == "TOPLEFT" and position[3] == 120 and position[4] == -80, "position not remembered")
+    f.GetPoint = nil
+    SlashCmdList.WOWHANDBOOK("reset")
+    assert(main.db.appearance.position == nil and f.point == "CENTER", "/wh reset did not center the window")
+    -- 导航：设置固定在底部，其余自上而下并有分组线
+    for _, button in ipairs(f.navButtons) do
+        if button.shown then
+            assert(button.point == (button.tabID == "settings" and "BOTTOMLEFT" or "TOPLEFT"), "nav anchor wrong: " .. button.tabID)
+        end
+    end
+    assert(f.navLines[1] and f.navLines[1].shown, "no divider between nav groups")
+    -- 命令直接打开页面
+    main.MainFrame:Hide()
+    SlashCmdList.WOWHANDBOOK("settings")
+    assert(f.shown and f.pages.settings:IsVisible(), "/wh settings did not open the settings page")
+    SlashCmdList.WOWHANDBOOK("dungeons")
+    assert(f.pages.dungeons:IsVisible(), "/wh dungeons did not open the dungeon guide")
+    -- 窗口大小
+    main.MainFrame:Open("settings")
+    local page
+    for _, frame in ipairs(allFrames) do
+        if rawget(frame, "ShowCategory") then page = frame end
+    end
+    page.ShowCategory("general")
+    assert(main.db.appearance.scale == 100 and page.list.sizeDropdown, "window size setting missing")
+    page.list.sizeDropdown.onChange(120)
+    assert(main.db.appearance.scale == 120, "window size not saved")
+    page.list.sizeDropdown.onChange(100)
+    main.MainFrame:Hide()
+end)
+check("settings: feature list with a reload mark, dimmed options, grouped world map options", function()
+    main.MainFrame:Open("settings")
+    local page
+    for _, frame in ipairs(allFrames) do
+        if rawget(frame, "ShowCategory") then page = frame end
+    end
+    page.ShowCategory("general")
+    local row, settings = page.featureRows.Vendor, main.db.modules.Vendor
+    assert(row and row.check.checked and not row.pending.shown, "vendor feature row wrong")
+    row.check.scripts.OnClick(row.check)
+    assert(settings.enabled == false and row.pending.shown, "turning a feature off should ask for a reload")
+    assert(page.blocks.Vendor.alpha == 0.45, "options of a disabled feature are not dimmed")
+    row.check.scripts.OnClick(row.check)
+    assert(settings.enabled == true and not row.pending.shown and page.blocks.Vendor.alpha == 1, "turning it back on")
+    -- 没有选项的功能只在功能列表里
+    page.ShowCategory("professions")
+    assert(page.featureRows.CraftingCost and not page.blocks.CraftingCost, "option-less feature should have no block")
+    -- 大地图：三个小标题，缩放用滑条
+    local groups = 0
+    for _, section in ipairs(main.SettingsSections) do
+        if section.module == "WorldMap" then
+            for _, option in ipairs(section.options) do
+                if option.group then groups = groups + 1 end
+            end
+        end
+        assert(section.note and main.L[section.note], "feature has no description: " .. section.module)
+    end
+    assert(groups == 3, "world map options should be in three groups")
+    page.ShowCategory("map")
+    local slider = page.blocks.WorldMap.mapScaleSlider
+    assert(slider and slider.value == 10, "map scale slider missing")
+    slider.onChange(12)
+    assert(main.db.modules.WorldMap.mapScale == 1.2, "map scale not saved")
+    slider.onChange(10)
+    main.db.modules.WorldMap.mapScale = nil
+    main.MainFrame:Hide()
+end)
+check("home: trainer button, map button and shortcuts to the other pages", function()
+    main.MainFrame:Open("home")
+    local Home, f = main.Home, WowHandbookMainFrame
+    local p = Home.page
+    local trainer = Home.NearestClassTrainer()
+    assert(trainer and trainer.map and not trainer.kind, "no class trainer found")
+    local extra = p.cards.spells.extra
+    assert(extra.shown and extra.label:GetText() == main.L["Find a trainer"], "no trainer button on the training card")
+    local shownOn
+    local saved = main.Waypoints.ShowOnMap
+    main.Waypoints.ShowOnMap = function(_, map) shownOn = map return true end
+    extra.scripts.OnClick(extra)
+    main.Waypoints.ShowOnMap = saved
+    assert(shownOn == trainer.map, "trainer button did not mark the trainer")
+    assert(p.cards.zones.open.shown, "zone card has no map button")
+    local count, first = 0, nil
+    for _, button in ipairs(p.shortcuts) do
+        if button.shown then
+            count = count + 1
+            first = first or button
+            assert(main.MainFrame:HasTab(button.tab), "shortcut to a missing page: " .. tostring(button.tab))
+        end
+    end
+    assert(count >= 2, "home shortcuts missing")
+    first.scripts.OnClick(first)
+    assert(f.pages[first.tab] and f.pages[first.tab]:IsVisible(), "shortcut did not open its page")
+    main.MainFrame:Hide()
+end)
+check("no hardcoded inline colors in pages: they come from the theme", function()
+    local Theme = main.Theme
+    assert(Theme.code.muted == "|cff8a8374" and Theme.code.gold == "|c" .. Theme.hex.gold, "theme color codes wrong")
+    for _, file in ipairs({ "UI/Home.lua", "Modules/Dungeons.lua", "Modules/Secrets.lua", "Modules/Spellbook.lua",
+        "Modules/InstanceTracker.lua", "Modules/Settings.lua", "Modules/HunterPets.lua" }) do
+        local text = assert(io.open("WowHandbook/" .. file)):read("a")
+        assert(not text:find("|cff%x%x%x%x%x%x"), "hardcoded color in " .. file)
+    end
 end)
 
 local unknown = {}

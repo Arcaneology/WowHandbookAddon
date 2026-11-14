@@ -25,6 +25,11 @@
   无限版新增、攻击间隔、自带技能等级、重点宠物的看点 / 驯服提示 / 标签、地图位置，每张图最多 BEAST_SPOTS_PER_MAP 处；
   副本里的只记副本 slug）。
   家族修正、食谱、技能等级与普通野兽只放网站（用户 2026-11-08）；不带网站内部的证据字段
+- LibraryBooks.lua：图书馆藏书（网站 library-books.json）：40 本书的物品 ID、捐书任务 ID（本脚本 LIBRARY_BOOK_QUESTS）、
+  可能出现的位置（地图与坐标；网站没有地图页的地点只记中英文区域名）、网站补充的找书说明；两位图书管理员的位置；
+  每本书奖励的魔符；三个阶段奖励任务（书数、等级、可选奖励）
+- MerchantCrates.lua：遭劫的板条箱（网站 zh/merchants-favor.json）：每种已辨认的板条箱可装的捆绑包
+  （物品 ID 与件数，任选一种装满），插件在箱子的鼠标提示里按拍卖行价格算每种的总价
 - GatheringNodes.lua：草药与矿点（网站 gathering-nodes.json，来自 QuestieDB Forever 版刷新点）：每种采集点
   采到的物品与所需技能；各区域地图上的位置，同一处可能刷出的几种合并为一个点
 
@@ -251,7 +256,17 @@ def starts_inside(source: dict | None, instances: list) -> bool:
     if re.fullmatch(r"map \d+", location):
         return True
     head = _plain_place(re.split(r" — |,", location)[0])
-    return any(head and _plain_place(name).endswith(head) for name in instances if name)
+    return bool(head) and any(_names_instance(_plain_place(name), head) for name in instances if name)
+
+
+def _names_instance(instance: str, head: str) -> bool:
+    """地点开头是否就是这个副本：全名相同，或是副本名的末尾几个词（“Blackrock Spire”对“Lower Blackrock Spire”）。
+    “挖掘场：湿地”这类“前缀: 区域名”的副本，单写区域名（“Wetlands”）指的是副本外的野外区域，不算。"""
+    if instance == head:
+        return True
+    if not instance.endswith(" " + head):
+        return False
+    return not instance[: -len(head)].rstrip().endswith(":")
 
 
 def flatten(groups: list) -> list:
@@ -265,6 +280,28 @@ def merge_ids(*groups) -> list:
             if value not in result:
                 result.append(value)
     return result
+
+
+# 前置改正：任务 ID -> (必须全部完成的前置, 完成其中任意一个即可的几组前置)。只收网站不作为前置发布的任务
+# （任务链步骤、参照任务），依据是 QuestieDB Classic 的 preQuestSingle / preQuestGroup，与无限图鉴的服务器任务缓存、
+# 无限副本手册逐条对比（2026-11-13）。任务链上的“前一个任务”可能只是指路任务，不能单凭它补前置。
+PREREQUISITE_FIXES: dict[int, tuple[list[int], list[list[int]]]] = {
+    6566: ([4974], []),  # 风吹来的消息 ← 为部落而战！
+    6567: ([6566], []),  # 部落的勇士 ← 风吹来的消息（服务器任务缓存同）
+    8181: ([4788], []),  # 面对叶基亚 ← 最后的石板
+    8945: ([], [[8929, 8930]]),  # 死人的请求 ← 寻找安泰恩（联盟 / 部落各一个）
+    8994: ([], [[8989, 8990, 8991, 8992]]),  # 最后的准备 ← 瓦塔拉克饰品的右瓣（四个副本各一个版本）
+    # 高地兽皮 ← 日常供货：网站按服务器缓存“两者都通往小鳄鱼皮”把这条前置当成平行任务删掉了，
+    # 用户与无限副本手册确认有这个前置（2026-11-13）
+    98815: ([469], []),
+}
+
+
+# 指路任务：网站列为副本任务，但只是把玩家引到另一个任务的接任务人那里，后者不需要先做它（游戏内确认）。
+# 导出为 extra：不计入推荐与可接数量，只在已接时追踪；否则去掉前置以后它会单独显示成“现在可接”。
+BREADCRUMB_QUESTS = {
+    95737,  # 寻访凯特林：灰谷的蓝纳指路到米奈希尔港，迷失在灌木丛中（95647）直接找凯特林接（2026-11-13）
+}
 
 
 def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: dict, zone_by_name: dict,
@@ -360,9 +397,17 @@ def build_quests(dungeon_quests: list, zh_quests: dict, chains: dict, zh_steps: 
                 if qid in quests:
                     quests[qid]["before"] = merge_ids(quests[qid].get("before"), [int(owner)])
                     quests[qid]["newInForeverChain"] = True
+    # 网站不作为前置发布的任务链步骤与参照任务：按 QuestieDB 的前置字段改正（见 PREREQUISITE_FIXES）
+    for qid, (required, any_of) in PREREQUISITE_FIXES.items():
+        if qid in quests:
+            quests[qid]["before"] = list(required)
+            quests[qid]["beforeAny"] = [list(group) for group in any_of] or None
+    for qid in BREADCRUMB_QUESTS:
+        if qid in quests:
+            quests[qid]["extra"] = True
     # 参照前置补进来后，给前置任务补上 after
     for qid, quest in quests.items():
-        for before in quest.get("before") or []:
+        for before in (quest.get("before") or []) + [i for group in quest.get("beforeAny") or [] for i in group]:
             target = quests.get(before)
             if target is not None and qid not in (target.get("after") or []):
                 target["after"] = (target.get("after") or []) + [qid]
@@ -980,6 +1025,70 @@ def build_transmogrifiers(rows: list) -> list:
     } for row in sorted(rows, key=lambda r: (r["map"], r["x"], r["y"]))]
 
 
+# 每本图书馆藏书的捐书任务 ID：任务名与书名相同（服务器任务缓存的中文任务名逐本核对，无限图鉴 wuxianwow.com）；
+# 79953、81951 服务器没有答复任务名，是网站 class-quests.json 里“研究权限”（97286）前置的 40 个任务排除其余 38 个后
+# 剩下的两个，按任务 ID 段对应到同一批加入的书。
+LIBRARY_BOOK_QUESTS = {
+    203754: 79091, 203755: 79092, 207972: 79094, 208185: 79095, 208800: 79097, 208860: 79093,
+    209843: 78124, 209844: 78127, 209845: 78142, 209846: 78143, 209847: 78145, 209848: 78146,
+    209849: 78147, 209850: 78148, 209851: 78149, 210177: 79096, 213165: 79535, 215683: 79947,
+    215815: 79948, 215816: 79949, 215817: 79950, 215820: 79951, 215822: 79952, 215824: 79953,
+    220345: 81947, 220346: 81949, 220347: 81951, 220348: 81952, 220349: 81953, 220350: 81954,
+    220352: 81955, 220353: 81956, 228132: 84395, 228133: 84396, 228134: 84397, 228135: 84398,
+    228136: 84399, 228138: 84400, 228140: 84401, 228141: 84402,
+}
+# 图书管理员的中文名（网站数据只有英文名；中文取网站中文攻略与 class-quests.json）
+LIBRARIAN_NAMES_ZH = {211033: "加里昂·温德尔", 211022: "欧文·萨德"}
+
+
+def _library_spot(spot: dict, zone_slug_to_map: dict) -> dict:
+    """{map, x, y}；网站没有地图页的地点（黑石山）只记区域名 {zone = {enUS, zhCN}}。"""
+    ui_map = zone_slug_to_map.get(spot.get("slug")) if spot.get("slug") else None
+    coords = spot.get("coords")
+    if ui_map and coords:
+        return {"map": ui_map, "x": coords[0], "y": coords[1]}
+    return {"zone": {"enUS": spot.get("zone"), "zhCN": spot.get("zoneZh")}}
+
+
+def build_library_books(data: dict, zone_slug_to_map: dict) -> dict:
+    """{books = {{id, quest, spots, directions}}, librarians = {A = {npc, name, map, x, y}, H = …}, charm,
+    milestones = {{quest, books, level, minLevel, choice}}}。书按网站顺序（物品 ID）。"""
+    books = []
+    for book in data.get("books", []):
+        quest = LIBRARY_BOOK_QUESTS.get(book["id"])
+        if quest is None:
+            raise ValueError(f"library book {book['id']} has no donation quest in LIBRARY_BOOK_QUESTS")
+        directions = book.get("directions")
+        books.append({
+            "id": book["id"],
+            "quest": quest,
+            "spots": [_library_spot(spot, zone_slug_to_map) for spot in book.get("spots", [])],
+            "directions": {"enUS": directions["en"], "zhCN": directions["zh"]} if directions else None,
+        })
+    librarians = {}
+    for row in data.get("turnIn", []):
+        side = FACTION_CODES.get(row.get("side"))
+        if not side:
+            continue
+        librarians[side] = {"npc": row["npc"], "name": {"enUS": row["name"], "zhCN": LIBRARIAN_NAMES_ZH.get(row["npc"])},
+                            **_library_spot(row, zone_slug_to_map)}
+    milestones = [{"quest": m["quest"], "books": m["books"], "level": m["level"], "minLevel": m.get("minLevel"),
+                   "choice": list(m.get("choice", []))} for m in data.get("milestones", [])]
+    return {"books": books, "librarians": librarians, "charm": data.get("charm"), "milestones": milestones}
+
+
+def build_merchant_crates(data: dict) -> dict:
+    """{crates = {[板条箱物品 ID] = {{物品 ID, 件数}, …}}}：已辨认的板条箱，每个任选一种捆绑包装满（网站顺序）。
+    未辨认的通用板条箱（genericCrate）要先阅读标签才知道是哪种，不导出。"""
+    crates = {}
+    for crate in data.get("crates", []):
+        bundles = [[b["id"], b["count"]] for b in crate.get("bundles", []) if b.get("id") and b.get("count")]
+        if not bundles:
+            raise ValueError(f"merchant crate {crate['id']} has no bundles")
+        crates[int(crate["id"])] = bundles
+    return {"crates": crates}
+
+
 BEAST_SPOTS_PER_MAP = 6
 BEAST_RANKS = {"rare": "rare", "rare-elite": "rareelite", "elite": "elite", "boss": "boss"}
 
@@ -1391,6 +1500,10 @@ def export(site: Path) -> dict:
             "talents": build_talents(load(generated / "talents.json"), load(generated / "zh" / "talents.json"))
             if (generated / "talents.json").exists() else {},
             "talentPlans": {},
+            "libraryBooks": build_library_books(load(generated / "library-books.json"), zone_slug_to_map)
+            if (generated / "library-books.json").exists() else build_library_books({}, {}),
+            "merchantCrates": build_merchant_crates(load(generated / "zh" / "merchants-favor.json"))
+            if (generated / "zh" / "merchants-favor.json").exists() else build_merchant_crates({}),
             "hunterPets": build_hunter_pets(load(generated / "hunter-pets.json"), load_hunter_pet_copy(site))
             if (generated / "hunter-pets.json").exists() else build_hunter_pets({}),
             "build": load(generated / "zones.json").get("build")}
@@ -1436,12 +1549,16 @@ def main() -> int:
     write_lua("GatheringNodes.lua", "gathering", data["gathering"],
               "Herb and mining node locations from QuestieDB (https://github.com/Questie/QuestieDB), "
               "the Questie project, GPL-3.0.")
+    write_lua("LibraryBooks.lua", "libraryBooks", data["libraryBooks"])
+    write_lua("MerchantCrates.lua", "merchantCrates", data["merchantCrates"])
     write_lua("Talents.lua", "talents", data["talents"])
     write_lua("TalentPlans.lua", "talentPlans", data["talentPlans"])
     write_lua("BisGear.lua", "bisGear", data["bisGear"])
     # 野兽刷新位置来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
     write_lua("HunterPets.lua", "hunterPets", data["hunterPets"],
               "Beast spawn locations from QuestieDB (https://github.com/Questie/QuestieDB), the Questie project, GPL-3.0.")
+    print(f"图书馆藏书 {len(data['libraryBooks']['books'])} 本，阶段奖励 {len(data['libraryBooks']['milestones'])} 个")
+    print(f"遭劫的板条箱 {len(data['merchantCrates']['crates'])} 种")
     print(f"稀有宠物 {len(data['hunterPets']['beasts'])} 只，家族 {len(data['hunterPets']['families'])} 个")
     print(f"推荐天赋方案 {sum(len(c['plans']) for c in data['talentPlans'].values())} 个")
     print(f"BiS 天赋 {sum(len(c['specs']) for c in data['bisGear']['classes'].values())} 个，"

@@ -22,7 +22,10 @@ local selectedID
 --------------------------------------------------------------------------------
 
 -- definition = { id = "唯一 ID", title = "导航文字"（或 titleKey = 本地化键，显示时按当前界面语言翻译），order = 数字（小的在前），
---                create = function(parent) return 页面框架 end, onShow = function(page) end（可选） }
+--                create = function(parent) return 页面框架 end, onShow = function(page) end（可选），
+--                bottom = true（可选，固定在导航底部，如“设置”） }
+-- 导航按 order 的十位分组，组与组之间画一条细线：0 首页，10–19 副本与解谜，20–29 角色（技能、天赋、宠物），
+-- 30–39 专业，100 以上（其他插件加的页面）归为一组
 function MainFrame:RegisterTab(definition)
     assert(type(definition.id) == "string" and type(definition.create) == "function", "invalid tab definition")
     if tabsByID[definition.id] then
@@ -52,10 +55,26 @@ end
 -- 窗口、导航
 --------------------------------------------------------------------------------
 
+-- 窗口位置与大小存在外观设置里：position = { 锚点, 相对锚点, x, y }，scale 为百分数
+local function Appearance()
+    return ns.db and ns.db.appearance or {}
+end
+
+local function RestorePosition(f)
+    local position = Appearance().position
+    f:ClearAllPoints()
+    if type(position) == "table" and position[1] then
+        f:SetPoint(position[1], UIParent, position[2], position[3], position[4])
+    else
+        f:SetPoint("CENTER")
+    end
+end
+
 local function Create()
     local f = CreateFrame("Frame", "WowHandbookMainFrame", UIParent, "BackdropTemplate")
     f:SetSize(FRAME_WIDTH, FRAME_HEIGHT)
-    f:SetPoint("CENTER")
+    RestorePosition(f)
+    f:SetScale((Appearance().scale or 100) / 100)
     f:SetFrameStrata("HIGH")
     f:SetToplevel(true)
     f:EnableMouse(true)
@@ -84,6 +103,11 @@ local function Create()
     end)
     header:SetScript("OnDragStop", function()
         f:StopMovingOrSizing()
+        -- 记住位置，下次打开、重载界面后还在原处
+        local point, _, relativePoint, x, y = f:GetPoint()
+        if point and ns.db then
+            ns.db.appearance.position = { point, relativePoint, x, y }
+        end
     end)
 
     local mark = header:CreateTexture(nil, "ARTWORK")
@@ -130,6 +154,7 @@ local function Create()
     sidebarLine:SetColorTexture(unpack(Theme.colors.lineSoft))
     f.sidebar = sidebar
     f.navButtons = {}
+    f.navLines = {}
 
     local siteLabel = UI:Text(sidebar, "Muted", "wowhandbook.com")
     siteLabel:SetPoint("BOTTOMLEFT", 18, 16)
@@ -159,12 +184,21 @@ local function PaintNav(button)
     button.accent:SetShown(selected)
 end
 
+local NAV_HEIGHT, NAV_STEP, NAV_GROUP_GAP = 34, 36, 9
+local NAV_BOTTOM = 44 -- 底部固定页面的起始高度（让开左下角的网站名）
+
+local function NavGroup(definition)
+    return definition.order >= 100 and 100 or floor(definition.order / 10)
+end
+
 function MainFrame:LayoutNav()
+    local y, bottom, lines = 12, NAV_BOTTOM, 0
+    local lastGroup
     for index, definition in ipairs(tabs) do
         local button = frame.navButtons[index]
         if not button then
             button = CreateFrame("Button", nil, frame.sidebar)
-            button:SetHeight(34)
+            button:SetHeight(NAV_HEIGHT)
             button.background = button:CreateTexture(nil, "BACKGROUND")
             button.background:SetAllPoints()
             button.accent = button:CreateTexture(nil, "ARTWORK")
@@ -182,12 +216,35 @@ function MainFrame:LayoutNav()
             frame.navButtons[index] = button
         end
         button:ClearAllPoints()
-        button:SetPoint("TOPLEFT", 0, -12 - (index - 1) * 36)
         button:SetPoint("RIGHT", -1, 0)
+        if definition.bottom then
+            -- 固定在底部，从下往上排
+            button:SetPoint("BOTTOMLEFT", 0, bottom)
+            bottom = bottom + NAV_STEP
+        else
+            local group = NavGroup(definition)
+            if lastGroup and group ~= lastGroup then
+                lines = lines + 1
+                local line = frame.navLines[lines] or Theme:Fill(frame.sidebar, "lineSoft", "ARTWORK")
+                frame.navLines[lines] = line
+                line:ClearAllPoints()
+                line:SetPoint("TOPLEFT", 18, -y - floor(NAV_GROUP_GAP / 2) + 1)
+                line:SetPoint("RIGHT", -18, 0)
+                line:SetHeight(1)
+                line:Show()
+                y = y + NAV_GROUP_GAP
+            end
+            lastGroup = group
+            button:SetPoint("TOPLEFT", 0, -y)
+            y = y + NAV_STEP
+        end
         button.tabID = definition.id
         button.label:SetText(definition.titleKey and ns.L[definition.titleKey] or definition.title)
         button:Show()
         PaintNav(button)
+    end
+    for index = lines + 1, #frame.navLines do
+        frame.navLines[index]:Hide()
     end
 end
 
@@ -252,6 +309,23 @@ function MainFrame:Open(id)
     Ensure()
     frame:Show()
     self:SelectTab(id)
+end
+
+-- 外观设置变化：按存档的百分数缩放窗口
+function MainFrame:ApplyScale()
+    if frame then
+        frame:SetScale((Appearance().scale or 100) / 100)
+    end
+end
+
+-- 窗口回到屏幕中央（设置页“外观”里的按钮；窗口被拖到找不到的地方时也能用 /wh reset）
+function MainFrame:ResetPosition()
+    if ns.db then
+        ns.db.appearance.position = nil
+    end
+    if frame then
+        RestorePosition(frame)
+    end
 end
 
 --------------------------------------------------------------------------------

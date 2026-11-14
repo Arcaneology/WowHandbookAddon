@@ -350,7 +350,7 @@ local function CreatePage(parent)
 end
 
 function Module:OnEnable()
-    ns.MainFrame:RegisterTab({ id = "professions", title = L["Professions"], order = 25, create = CreatePage,
+    ns.MainFrame:RegisterTab({ id = "professions", title = L["Professions"], order = 30, create = CreatePage,
         onShow = Refresh })
     -- 页面打开期间，技能等级变化时刷新（节流 0.5 秒，期间重复事件合并）
     local pending = false

@@ -16,6 +16,8 @@ local ROUTES = {
     spellbook = "/spellbook/%s/",    -- 职业 slug，如 "mage"
     talents = "/talents/%s/",        -- 职业 slug；可带加点分享码（网站天赋模拟器从地址的 # 后读取）
     bis = "/bis/%s/",                -- “职业/天赋”，如 "warrior/fury"；可带装备组（# 后为 lv-20、lv-60-pvp）
+    secret = "/news/%s/",            -- 解谜攻略 slug
+    library = "/library-books/",     -- 图书馆藏书：全部书的位置、交书地点与奖励
 }
 
 local function LocalePrefix()

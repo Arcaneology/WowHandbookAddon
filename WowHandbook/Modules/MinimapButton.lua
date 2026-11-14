@@ -54,39 +54,60 @@ local function OnDragStop(self)
     self:SetScript("OnUpdate", nil)
 end
 
--- 快捷菜单条目：标题（点击打开主窗口）；常用选项按模块用分隔线分组（只列已启用的模块），
--- 每行是图标加简短名称，悬停看完整说明；最后是“设置”（打开设置页）
+-- 快捷菜单条目：标题（点击打开主窗口）；最常切换的几项直接列出（设置定义里 quick = "top"）；
+-- 其余常用选项按设置页的分类收成折叠分组，一次只展开一组，菜单不会长到盖住小地图；
+-- 每行是图标加简短名称，悬停看完整说明；最后是“设置”（打开设置页）。只列已启用的模块。
+local expandedCategory -- 当前展开的分类（本次登录内记住）
+
+local function OptionEntry(module, option, indent)
+    local settings = ns:GetModuleSettings(module)
+    local value = ns.SettingValue(settings, option)
+    local text = ns.SettingIcon(option, 14) .. L[option.label]
+    local tip = option.tip and L[option.tip]
+    if option.choices then
+        local choices = {}
+        for _, choice in ipairs(option.choices) do
+            tinsert(choices, { id = choice.id, text = ns.ChoiceText(choice), tip = L[choice.tip or choice.label] })
+        end
+        return { kind = "choice", text = text, tip = tip, choices = choices, value = value, indent = indent,
+            onClick = function(id) ns.SetSetting(module, option, id) end }
+    end
+    return { kind = "check", text = text, tip = tip, checked = value, indent = indent,
+        onClick = function(checked) ns.SetSetting(module, option, checked) end }
+end
+
 local function MenuEntries()
     local entries = {
         { kind = "title", text = L["WoW Handbook"], tip = L["Open WoW Handbook"],
             onClick = function() ns.MainFrame:Open("home") end },
+        { kind = "separator" },
     }
+    -- 已启用模块的快捷选项：置顶的直接列出，其余按分类归组
+    local grouped = {}
     for _, section in ipairs(ns.SettingsSections or {}) do
         local module = ns.modules[section.module]
         if module and module.enabled then
-            local settings = ns:GetModuleSettings(module)
-            local first = true
             for _, option in ipairs(section.options) do
-                if option.quick then
-                    if first then
-                        tinsert(entries, { kind = "separator" })
-                        first = false
-                    end
-                    local value = ns.SettingValue(settings, option)
-                    local text = ns.SettingIcon(option, 14) .. L[option.label]
-                    local tip = option.tip and L[option.tip]
-                    if option.choices then
-                        local choices = {}
-                        for _, choice in ipairs(option.choices) do
-                            tinsert(choices, { id = choice.id, text = ns.ChoiceText(choice),
-                                tip = L[choice.tip or choice.label] })
-                        end
-                        tinsert(entries, { kind = "choice", text = text, tip = tip, choices = choices, value = value,
-                            onClick = function(id) ns.SetSetting(module, option, id) end })
-                    else
-                        tinsert(entries, { kind = "check", text = text, tip = tip, checked = value,
-                            onClick = function(checked) ns.SetSetting(module, option, checked) end })
-                    end
+                if option.quick == "top" then
+                    tinsert(entries, OptionEntry(module, option))
+                elseif option.quick then
+                    grouped[section.category] = grouped[section.category] or {}
+                    tinsert(grouped[section.category], { module = module, option = option })
+                end
+            end
+        end
+    end
+    tinsert(entries, { kind = "separator" })
+    for _, category in ipairs(ns.SettingsCategories or {}) do
+        local list = grouped[category.id]
+        if list then
+            local expanded = expandedCategory == category.id
+            tinsert(entries, { kind = "group", text = L[category.title], expanded = expanded, onClick = function()
+                expandedCategory = not expanded and category.id or nil
+            end })
+            if expanded then
+                for _, item in ipairs(list) do
+                    tinsert(entries, OptionEntry(item.module, item.option, true))
                 end
             end
         end

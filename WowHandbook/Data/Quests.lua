@@ -127,6 +127,7 @@ ns.Data.quests = {
         instances = { "blackfathom-deeps" },
         start = {
             kind = "npc",
+            id = 11862,
             name = {
                 enUS = "Tsunaman",
                 zhCN = "苏纳曼",
@@ -137,6 +138,7 @@ ns.Data.quests = {
         },
         finish = {
             kind = "npc",
+            id = 12736,
             name = {
                 enUS = "Je'neu Sancrea",
                 zhCN = "耶努萨克雷",
@@ -173,7 +175,7 @@ ns.Data.quests = {
             zhCN = "深渊中的知识",
         },
         level = 23,
-        min = 10,
+        min = 18,
         faction = "A",
         instances = { "blackfathom-deeps" },
         start = {
@@ -798,6 +800,9 @@ ns.Data.quests = {
             enUS = "Find Commander Gor'shak in Blackrock Depths. You recall that the crudely drawn picture of the orc included bars drawn over the portrait....",
             zhCN = "在黑石深渊里找到指挥官哥沙克。 在那幅草图上画着的是一个铁栏后面的兽人，也许你应该到某个类似监狱的地方去找找看。",
         },
+        rewards = {
+            xp = 9450,
+        },
     },
     [3801] = {
         name = {
@@ -907,6 +912,9 @@ ns.Data.quests = {
             enUS = "Travel to the quarry in Blackrock Mountain and slay Overmaster Pyron. Return to Thunderheart when you have completed this assignment.",
             zhCN = "到黑石山脉的采石场去干掉征服者派隆，然后向桑德哈特回报。",
         },
+        rewards = {
+            xp = 5100,
+        },
     },
     [4081] = {
         name = {
@@ -984,6 +992,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Slay Overmaster Pyron and return to Jalinda Sprig. You recall Jalinda talking about Pyron guarding the quarry. Perhaps you should search there?",
             zhCN = "杀掉征服者派隆，然后向加琳达复命。 加琳达告诉过你，派隆守在采矿场中，也许你应该去那里找找。",
+        },
+        rewards = {
+            xp = 5100,
         },
     },
     [4136] = {
@@ -2249,8 +2260,8 @@ ns.Data.quests = {
                 zhCN = "格拉克·洛克鲁布",
             },
             map = 1428,
-            x = 33.4,
-            y = 50.8,
+            x = 40.2,
+            y = 34.24,
         },
         before = { 4082 },
         after = { 4121, 4132 },
@@ -2322,8 +2333,8 @@ ns.Data.quests = {
                 zhCN = "格拉克·洛克鲁布",
             },
             map = 1428,
-            x = 33.4,
-            y = 50.8,
+            x = 40.2,
+            y = 34.24,
         },
         finish = {
             kind = "npc",
@@ -2435,6 +2446,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Travel to Blackrock Depths and find Kharan Mighthammer. The King mentioned that Kharan was being held prisoner there - perhaps you should try...",
             zhCN = "去黑石深渊找到卡兰·巨锤。 国王提到卡兰在那里负责看守囚犯——也许你应该在监狱附近寻找他。",
+        },
+        rewards = {
+            xp = 11500,
         },
     },
     [4342] = {
@@ -2596,9 +2610,9 @@ ns.Data.quests = {
                 enUS = "Lothos Riftwaker",
                 zhCN = "洛索斯·天痕",
             },
-            map = 1415,
-            x = 48.4,
-            y = 63.8,
+            map = 1427,
+            x = 32.1,
+            y = 94.7,
         },
         finish = {
             kind = "npc",
@@ -2611,6 +2625,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Venture to the Molten Core entry portal in Blackrock Depths and recover a Core Fragment. Return to Lothos Riftwaker in Blackrock Mountain...",
             zhCN = "进入黑石深渊，在通往熔火之心的传送门附近找到一块熔火碎片，然后回到黑石山脉的洛索斯·天痕那里。",
+        },
+        rewards = {
+            xp = 6600,
         },
     },
     [6804] = {
@@ -3004,6 +3021,9 @@ ns.Data.quests = {
             enUS = "Travel to Blackrock Spire and find out what happened to Bijou.",
             zhCN = "到黑石塔去查明比修的下落。",
         },
+        rewards = {
+            xp = 11850,
+        },
     },
     [4701] = {
         name = {
@@ -3139,6 +3159,9 @@ ns.Data.quests = {
             enUS = "That is one stupid orc. It would appear as if you need to find this brand and gain the Mark of Drakkisath in order to access the Orb of...",
             zhCN = "真是个愚蠢的兽人。看来你需要找到那枚烙印并获得达基萨斯徽记才可以使用命令宝珠。 你从信中获知，达基萨斯将军守卫着烙印。也许你应该就此进行更深入的调查。",
         },
+        rewards = {
+            xp = 6600,
+        },
     },
     [4764] = {
         name = {
@@ -3188,7 +3211,7 @@ ns.Data.quests = {
             zhCN = "艾博希尔之眼",
         },
         level = 60,
-        min = 56,
+        min = 55,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
         start = {
@@ -3217,6 +3240,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Bring the Eye of the Emberseer to Duke Hydraxis in Azshara.",
             zhCN = "将艾博希尔之眼交给艾萨拉的海达克西斯公爵。",
+        },
+        rewards = {
+            xp = 8300,
         },
     },
     [4974] = {
@@ -3252,6 +3278,7 @@ ns.Data.quests = {
             y = 37.82,
         },
         before = { 4941 },
+        after = { 6566 },
         summary = {
             enUS = "Travel to Blackrock Spire and slay Warchief Rend Blackhand. Take his head and return to Orgrimmar.",
             zhCN = "去黑石塔杀死大酋长雷德·黑手，带着他的头颅返回奥格瑞玛。",
@@ -3908,7 +3935,7 @@ ns.Data.quests = {
     [92753] = {
         name = {
             enUS = "Destruction in Deadmines",
-            zhCN = "死亡矿井中的爆破",
+            zhCN = "爆破死亡矿井",
         },
         level = 18,
         min = 12,
@@ -3928,6 +3955,7 @@ ns.Data.quests = {
         },
         finish = {
             kind = "npc",
+            id = 253279,
             name = {
                 enUS = "Alba Fairmoon",
                 zhCN = "阿尔巴·晴月",
@@ -4299,7 +4327,6 @@ ns.Data.quests = {
             x = 62.7,
             y = 34.2,
         },
-        before = { 2041 },
         summary = {
             enUS = "Retrieve the Gnoam Sprecklesprocket from the Deadmines and return it to Shoni the Shilent in Stormwind.",
             zhCN = "从死亡矿井中带回小型高能发动机，将其带给暴风城矮人区中的沉默的舒尼。",
@@ -4674,6 +4701,14 @@ ns.Data.quests = {
             enUS = "Read Mor'zul's Instructions. Summon a Xorothian Dreadsteed, defeat it, then bind its spirit to you.",
             zhCN = "阅读莫苏尔的指南，并召唤出一匹克索诺斯恐惧战马，击败它，然后控制它的灵魂。",
         },
+        rewards = {
+            xp = 6600,
+            extraItems = {
+                {
+                    id = 23161,
+                },
+            },
+        },
     },
     [7481] = {
         name = {
@@ -4710,6 +4745,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Search Dire Maul for Kariel Winthalus. Report back to Sage Korolusk at Camp Mojache with whatever information that you may find.",
             zhCN = "到厄运之槌去寻找泰尔米乌斯·探梦者。向莫沙彻营地的先知科鲁拉克报告你所找到的信息。",
+        },
+        rewards = {
+            xp = 19700,
         },
     },
     [7482] = {
@@ -4748,6 +4786,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Search Dire Maul for Kariel Winthalus. Report back to Scholar Runethorn at Feathermoon with whatever information that you may find.",
             zhCN = "到厄运之槌去寻找泰尔米乌斯·探梦者。向羽月要塞的学者卢索恩·纹角报告你所找到的信息。",
+        },
+        rewards = {
+            xp = 19700,
         },
     },
     [5525] = {
@@ -4822,6 +4863,17 @@ ns.Data.quests = {
         summary = {
             enUS = "Find the Felvine in Dire Maul and acquire a shard from it. Chances are you'll only be able to procure one with the demise of Alzzin the...",
             zhCN = "在厄运之槌中找到魔藤，然后从它上面采集一块碎片。只有干掉了奥兹恩之后，你才能进行采集工作。使用净化之匣安全地封印碎片，然后将其交给月光林地永夜港的拉比恩·萨图纳。",
+        },
+        rewards = {
+            xp = 8300,
+            extraItems = {
+                {
+                    id = 18535,
+                },
+                {
+                    id = 18536,
+                },
+            },
         },
     },
     [5518] = {
@@ -5039,6 +5091,23 @@ ns.Data.quests = {
             enUS = "Find the Gauntlet of Gordok Might and return it to Captain Kromcrush in Dire Maul. According to Kromcrush, the \"old timey...",
             zhCN = "找到戈多克力量护手，并将它交给厄运之槌的克罗卡斯。 根据克罗卡斯所说的，“传说”自称是王子的精灵托塞德林从一名戈多克食人魔手中偷走了那件神器。",
         },
+        rewards = {
+            xp = 22200,
+            extraItems = {
+                {
+                    id = 18366,
+                },
+                {
+                    id = 18367,
+                },
+                {
+                    id = 18368,
+                },
+                {
+                    id = 18369,
+                },
+            },
+        },
     },
     [7503] = {
         name = {
@@ -5144,6 +5213,7 @@ ns.Data.quests = {
         instances = { "gnomeregan" },
         start = {
             kind = "npc",
+            id = 7917,
             name = {
                 enUS = "Brother Sarno",
                 zhCN = "萨尔努修士",
@@ -5152,6 +5222,7 @@ ns.Data.quests = {
         },
         finish = {
             kind = "npc",
+            id = 7944,
             name = {
                 enUS = "Tinkmaster Overspark",
                 zhCN = "工匠大师欧沃斯巴克",
@@ -5246,7 +5317,7 @@ ns.Data.quests = {
                 enUS = "Gnoarn",
                 zhCN = "诺恩",
             },
-            map = 1426,
+            map = 1455,
             x = 69.18,
             y = 50.55,
         },
@@ -5660,6 +5731,7 @@ ns.Data.quests = {
         instances = { "gnomeregan" },
         start = {
             kind = "npc",
+            id = 3413,
             name = {
                 enUS = "Sovik",
                 zhCN = "索维克",
@@ -5668,6 +5740,7 @@ ns.Data.quests = {
         },
         finish = {
             kind = "npc",
+            id = 7853,
             name = {
                 enUS = "Scooty",
                 zhCN = "斯库提",
@@ -5905,13 +5978,14 @@ ns.Data.quests = {
     [96395] = {
         name = {
             enUS = "An Ancient Grudge",
-            zhCN = "远古宿怨",
+            zhCN = "远古的宿怨",
         },
         level = 15,
         min = 10,
         instances = { "hall-of-thanes" },
         start = {
             kind = "npc",
+            id = 265002,
             name = {
                 enUS = "Ghostly Attendant",
                 zhCN = "幽灵侍从",
@@ -6002,7 +6076,7 @@ ns.Data.quests = {
     [96394] = {
         name = {
             enUS = "The Restless Dead",
-            zhCN = "不安的亡者",
+            zhCN = "永不安息的亡者",
         },
         level = 15,
         min = 10,
@@ -6062,7 +6136,7 @@ ns.Data.quests = {
     [96393] = {
         name = {
             enUS = "Old Ironforge Incursion",
-            zhCN = "突袭旧铁炉堡",
+            zhCN = "旧铁炉堡入侵",
         },
         level = 16,
         min = 9,
@@ -6252,8 +6326,8 @@ ns.Data.quests = {
                 zhCN = "大法师特沃什",
             },
             map = 1445,
-            x = 45.2,
-            y = 24.4,
+            x = 66.42,
+            y = 49.26,
         },
         finish = {
             kind = "npc",
@@ -6263,8 +6337,8 @@ ns.Data.quests = {
                 zhCN = "大法师特沃什",
             },
             map = 1445,
-            x = 45.2,
-            y = 24.4,
+            x = 66.42,
+            y = 49.26,
         },
         summary = {
             enUS = "Collect 10 Shadowshard Fragments from Maraudon and return them to Archmage Tervosh in Theramore on the coast of Dustwallow Marsh.",
@@ -7447,6 +7521,9 @@ ns.Data.quests = {
             enUS = "Gather the materials Furen Longbeard requires, and bring them to him in Stormwind.",
             zhCN = "收集必需的材料，将它们交给暴风城的弗伦·长须。",
         },
+        rewards = {
+            xp = 2300,
+        },
     },
     [1838] = {
         name = {
@@ -7479,10 +7556,13 @@ ns.Data.quests = {
             x = 57.23,
             y = 30.34,
         },
-        before = { 1824 },
+        before = { 1825 },
         summary = {
             enUS = "Bring to Thun'grim Firegaze 15 Smoky Iron Ingots, 10 Powdered Azurite, 10 Iron Bars and a Vial of Phlogiston.",
             zhCN = "为索恩格瑞姆收集15根烟雾铁锭、10份蓝铜粉、10块铁锭和1瓶燃素。",
+        },
+        rewards = {
+            xp = 3650,
         },
     },
     [1142] = {
@@ -7529,6 +7609,9 @@ ns.Data.quests = {
                 },
                 {
                     id = 6752,
+                },
+                {
+                    id = 270047,
                 },
             },
         },
@@ -7672,7 +7755,7 @@ ns.Data.quests = {
             zhCN = "把卡尔加·刺肋的心脏交给雷霆崖的奥尔德·石塔。",
         },
         rewards = {
-            xp = 4050,
+            xp = 8500,
             extraItems = {
                 {
                     id = 4197,
@@ -7682,6 +7765,9 @@ ns.Data.quests = {
                 },
                 {
                     id = 6725,
+                },
+                {
+                    id = 274084,
                 },
             },
         },
@@ -7768,6 +7854,9 @@ ns.Data.quests = {
                 },
                 {
                     id = 6725,
+                },
+                {
+                    id = 274084,
                 },
             },
         },
@@ -7866,7 +7955,7 @@ ns.Data.quests = {
     [95250] = {
         name = {
             enUS = "Abominable Creatures",
-            zhCN = "可憎的生物",
+            zhCN = "憎恶生物",
         },
         level = 21,
         min = 16,
@@ -7874,22 +7963,24 @@ ns.Data.quests = {
         instances = { "ruins-of-lordaeron" },
         start = {
             kind = "npc",
+            id = 265701,
             name = {
                 enUS = "Captain Truman",
-                zhCN = "杜鲁门队长",
+                zhCN = "图曼上尉",
             },
         },
         inside = true,
         finish = {
             kind = "npc",
+            id = 265701,
             name = {
                 enUS = "Captain Truman",
-                zhCN = "杜鲁门队长",
+                zhCN = "图曼上尉",
             },
         },
         summary = {
             enUS = "Collect the Head of the Baron in the Ruins of Lordaeron and bring it back to Captain Truman.",
-            zhCN = "在洛丹伦废墟取得男爵的头颅，并将其交给杜鲁门队长。",
+            zhCN = "在洛丹伦废墟取得男爵的头颅，并将其交给图曼上尉。",
         },
         objectives = {
             enUS = { "Head of the Baron" },
@@ -7916,10 +8007,10 @@ ns.Data.quests = {
     [97288] = {
         name = {
             enUS = "Unending Torment",
-            zhCN = "无尽折磨",
+            zhCN = "无尽的折磨",
         },
         level = 21,
-        min = 16,
+        min = 15,
         faction = "H",
         instances = { "ruins-of-lordaeron" },
         start = {
@@ -7971,7 +8062,7 @@ ns.Data.quests = {
     [92401] = {
         name = {
             enUS = "A Frightened Request",
-            zhCN = "惊恐的请求",
+            zhCN = "惊恐的求援",
         },
         level = 22,
         min = 15,
@@ -8041,7 +8132,7 @@ ns.Data.quests = {
         instances = { "ruins-of-lordaeron" },
         start = {
             kind = "item",
-            id = 268540,
+            id = 268535,
             name = {
                 enUS = "Bloodied Insignia",
                 zhCN = "血污徽章",
@@ -8108,8 +8199,8 @@ ns.Data.quests = {
                 zhCN = "黛娜·肯尼迪女士",
             },
             map = 1453,
-            x = 74.4,
-            y = 47.0,
+            x = 69.0,
+            y = 29.9,
         },
         summary = {
             enUS = "Return the Crest of Lordaeron to Lady Dena Kennedy in Stormwind City.",
@@ -8266,10 +8357,10 @@ ns.Data.quests = {
         instances = { "ruins-of-lordaeron" },
         start = {
             kind = "item",
-            id = 251522,
+            id = 251270,
             name = {
-                enUS = "Blood-Stained Letter",
-                zhCN = "染血的信",
+                enUS = "Blood-Stained Parchment",
+                zhCN = "染血的羊皮纸",
             },
         },
         inside = true,
@@ -8330,7 +8421,7 @@ ns.Data.quests = {
             id = 11835,
             name = {
                 enUS = "Theodore Griffs",
-                zhCN = "西奥多·格里夫斯",
+                zhCN = "萨多雷·格雷夫",
             },
             map = 1458,
             x = 46.31,
@@ -8341,15 +8432,16 @@ ns.Data.quests = {
             id = 11835,
             name = {
                 enUS = "Theodore Griffs",
-                zhCN = "西奥多·格里夫斯",
+                zhCN = "萨多雷·格雷夫",
             },
             map = 1458,
             x = 46.31,
             y = 71.91,
         },
+        before = { 451 },
         summary = {
             enUS = "Collect the Highly Toxic Strain from Witherfang in Ruins of Lordaeron for Theodore Griffs in Undercity.",
-            zhCN = "从洛丹伦废墟的枯牙身上取得剧毒的毒株，交给幽暗城的西奥多·格里夫斯。",
+            zhCN = "从洛丹伦废墟的枯牙身上取得剧毒的毒株，交给幽暗城的萨多雷·格雷夫。",
         },
         objectives = {
             enUS = { "Highly Toxic Strain" },
@@ -8409,6 +8501,7 @@ ns.Data.quests = {
             x = 65.2,
             y = 60.2,
         },
+        before = { 99156 },
         summary = {
             enUS = "Kill Rath'mael in the Ruins of Lordaeron for Deathguard Kristof in Brill.",
             zhCN = "为布瑞尔的死亡卫士克里斯托夫消灭洛丹伦废墟中的拉斯玛尔。",
@@ -8765,7 +8858,7 @@ ns.Data.quests = {
         min = 34,
         faction = "A",
         instances = { "scarlet-monastery" },
-        sectionSlugs = { "armory", "library", "cathedral" },
+        sectionSlugs = { "armory", "library", "cathedral", "graveyard" },
         start = {
             kind = "npc",
             id = 3980,
@@ -8819,7 +8912,7 @@ ns.Data.quests = {
         level = 40,
         min = 30,
         instances = { "scarlet-monastery" },
-        sectionSlugs = { "library" },
+        sectionSlugs = { "library", "armory", "cathedral", "graveyard" },
         start = {
             kind = "npc",
             id = 6548,
@@ -8848,6 +8941,9 @@ ns.Data.quests = {
             enUS = "Bring the book Rituals of Power to Tabetha in Dustwallow Marsh.",
             zhCN = "将《能量仪祭》交给尘泥沼泽的塔贝萨。",
         },
+        rewards = {
+            xp = 6300,
+        },
     },
     [1048] = {
         name = {
@@ -8858,7 +8954,7 @@ ns.Data.quests = {
         min = 33,
         faction = "H",
         instances = { "scarlet-monastery" },
-        sectionSlugs = { "armory", "library", "cathedral" },
+        sectionSlugs = { "armory", "library", "cathedral", "graveyard" },
         start = {
             kind = "npc",
             id = 2425,
@@ -8998,8 +9094,8 @@ ns.Data.quests = {
                 zhCN = "贝蒂娜·比格辛克",
             },
             map = 1423,
-            x = 81.47,
-            y = 59.66,
+            x = 71.66,
+            y = 49.94,
         },
         finish = {
             kind = "npc",
@@ -9009,8 +9105,8 @@ ns.Data.quests = {
                 zhCN = "贝蒂娜·比格辛克",
             },
             map = 1423,
-            x = 81.47,
-            y = 59.66,
+            x = 71.66,
+            y = 49.94,
         },
         before = { 4726, 4808, 4809, 4810, 4734, 4735, 5522, 5531 },
         summary = {
@@ -9126,7 +9222,7 @@ ns.Data.quests = {
             zhCN = "达克雷尔的威胁",
         },
         level = 60,
-        min = 60,
+        min = 58,
         faction = "H",
         instances = { "scholomance" },
         start = {
@@ -9155,6 +9251,14 @@ ns.Data.quests = {
         summary = {
             enUS = "Use the Divination Scryer in the heart of the Great Ossuary's basement in the Scholomance. Doing so will bring forth spirits you must...",
             zhCN = "在斯坦索姆地下室的尸骨储藏所的中心使用预言水晶球。然后你必须与被召唤出来的幽灵作战。击败这些幽灵之后，死亡骑士达克雷尔才会出现，你的任务就是击败他。 把死亡骑士达克雷尔的头颅交给奥格瑞玛智慧谷的萨格尼。",
+        },
+        rewards = {
+            xp = 9950,
+            extraItems = {
+                {
+                    id = 20134,
+                },
+            },
         },
     },
     [5505] = {
@@ -9538,7 +9642,7 @@ ns.Data.quests = {
                 zhCN = "卫兵伯尔顿",
             },
             map = 1433,
-            x = 26.26,
+            x = 21.17,
             y = 46.58,
         },
         finish = {
@@ -9549,7 +9653,7 @@ ns.Data.quests = {
                 zhCN = "卫兵伯尔顿",
             },
             map = 1433,
-            x = 26.26,
+            x = 21.17,
             y = 46.58,
         },
         summary = {
@@ -9879,8 +9983,8 @@ ns.Data.quests = {
                 zhCN = "提里奥·弗丁",
             },
             map = 1423,
-            x = 7.57,
-            y = 43.7,
+            x = 5.16,
+            y = 35.57,
         },
         finish = {
             kind = "npc",
@@ -9890,8 +9994,8 @@ ns.Data.quests = {
                 zhCN = "提里奥·弗丁",
             },
             map = 1423,
-            x = 7.57,
-            y = 43.7,
+            x = 5.16,
+            y = 35.57,
         },
         after = { 5742 },
         summary = {
@@ -9916,8 +10020,8 @@ ns.Data.quests = {
                 zhCN = "提里奥·弗丁",
             },
             map = 1423,
-            x = 7.57,
-            y = 43.7,
+            x = 5.16,
+            y = 35.57,
         },
         finish = {
             kind = "npc",
@@ -9927,8 +10031,8 @@ ns.Data.quests = {
                 zhCN = "提里奥·弗丁",
             },
             map = 1423,
-            x = 7.57,
-            y = 43.7,
+            x = 5.16,
+            y = 35.57,
         },
         before = { 5781 },
         after = { 5846 },
@@ -9954,8 +10058,8 @@ ns.Data.quests = {
                 zhCN = "尼古拉斯·瑟伦霍夫公爵",
             },
             map = 1423,
-            x = 81.44,
-            y = 59.82,
+            x = 71.63,
+            y = 50.09,
         },
         finish = {
             kind = "npc",
@@ -9965,8 +10069,8 @@ ns.Data.quests = {
                 zhCN = "尼古拉斯·瑟伦霍夫公爵",
             },
             map = 1423,
-            x = 81.44,
-            y = 59.82,
+            x = 71.63,
+            y = 50.09,
         },
         before = { 5251, 5262 },
         after = { 5264, 5265 },
@@ -10080,8 +10184,8 @@ ns.Data.quests = {
                 zhCN = "莱尼德·巴萨罗梅",
             },
             map = 1423,
-            x = 81.73,
-            y = 57.83,
+            x = 71.89,
+            y = 48.29,
         },
         finish = {
             kind = "npc",
@@ -10091,8 +10195,8 @@ ns.Data.quests = {
                 zhCN = "莱尼德·巴萨罗梅",
             },
             map = 1423,
-            x = 81.73,
-            y = 57.83,
+            x = 71.89,
+            y = 48.29,
         },
         summary = {
             enUS = "Travel to Stratholme, in the north. Search the supply crates that litter the city and recover 5 Stratholme Holy Water. Return to Leonid...",
@@ -10134,8 +10238,8 @@ ns.Data.quests = {
                 zhCN = "贝蒂娜·比格辛克",
             },
             map = 1423,
-            x = 81.47,
-            y = 59.66,
+            x = 71.66,
+            y = 49.94,
         },
         finish = {
             kind = "npc",
@@ -10145,8 +10249,8 @@ ns.Data.quests = {
                 zhCN = "贝蒂娜·比格辛克",
             },
             map = 1423,
-            x = 81.47,
-            y = 59.66,
+            x = 71.66,
+            y = 49.94,
         },
         before = { 5212 },
         summary = {
@@ -10182,8 +10286,8 @@ ns.Data.quests = {
                 zhCN = "尼古拉斯·瑟伦霍夫公爵",
             },
             map = 1423,
-            x = 81.44,
-            y = 59.82,
+            x = 71.63,
+            y = 50.09,
         },
         finish = {
             kind = "npc",
@@ -10193,8 +10297,8 @@ ns.Data.quests = {
                 zhCN = "尼古拉斯·瑟伦霍夫公爵",
             },
             map = 1423,
-            x = 81.44,
-            y = 59.82,
+            x = 71.63,
+            y = 50.09,
         },
         after = { 5262, 5263, 5264, 5265 },
         summary = {
@@ -10223,8 +10327,8 @@ ns.Data.quests = {
                 zhCN = "贝蒂娜·比格辛克",
             },
             map = 1423,
-            x = 81.47,
-            y = 59.66,
+            x = 71.66,
+            y = 49.94,
         },
         finish = {
             kind = "npc",
@@ -10234,8 +10338,8 @@ ns.Data.quests = {
                 zhCN = "贝蒂娜·比格辛克",
             },
             map = 1423,
-            x = 81.47,
-            y = 59.66,
+            x = 71.66,
+            y = 49.94,
         },
         after = { 5213 },
         summary = {
@@ -10249,7 +10353,7 @@ ns.Data.quests = {
     },
     [5214] = {
         name = {
-            enUS = "The Great Fras Siabi",
+            enUS = "The Great Ezra Grimm",
             zhCN = "了不起的艾兹拉·格里姆",
         },
         level = 60,
@@ -10264,8 +10368,8 @@ ns.Data.quests = {
                 zhCN = "烟鬼拉鲁恩",
             },
             map = 1423,
-            x = 80.61,
-            y = 57.98,
+            x = 70.88,
+            y = 48.43,
         },
         finish = {
             kind = "npc",
@@ -10275,8 +10379,8 @@ ns.Data.quests = {
                 zhCN = "烟鬼拉鲁恩",
             },
             map = 1423,
-            x = 80.61,
-            y = 57.98,
+            x = 70.88,
+            y = 48.43,
         },
         summary = {
             enUS = "Find Fras Siabi's smoke shop in Stratholme and recover a box of Siabi's Premium Tobacco. Return to Smokey LaRue when the job is done.",
@@ -10308,8 +10412,8 @@ ns.Data.quests = {
                 zhCN = "护理者奥林",
             },
             map = 1423,
-            x = 79.55,
-            y = 63.86,
+            x = 69.93,
+            y = 53.72,
         },
         finish = {
             kind = "npc",
@@ -10319,8 +10423,8 @@ ns.Data.quests = {
                 zhCN = "埃根",
             },
             map = 1423,
-            x = 14.45,
-            y = 33.74,
+            x = 11.36,
+            y = 26.6,
         },
         after = { 5282 },
         summary = {
@@ -10345,8 +10449,8 @@ ns.Data.quests = {
                 zhCN = "埃根",
             },
             map = 1423,
-            x = 14.45,
-            y = 33.74,
+            x = 11.36,
+            y = 26.6,
         },
         finish = {
             kind = "npc",
@@ -10356,8 +10460,8 @@ ns.Data.quests = {
                 zhCN = "埃根",
             },
             map = 1423,
-            x = 14.45,
-            y = 33.74,
+            x = 11.36,
+            y = 26.6,
         },
         before = { 5281 },
         summary = {
@@ -10400,8 +10504,8 @@ ns.Data.quests = {
                 zhCN = "尼古拉斯·瑟伦霍夫公爵",
             },
             map = 1423,
-            x = 81.44,
-            y = 59.82,
+            x = 71.63,
+            y = 50.09,
         },
         before = { 5251 },
         after = { 5263, 5264, 5265 },
@@ -10654,6 +10758,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Collect 5 samples of Atal'ai Haze, then return to Muigin in Un'Goro Crater.",
             zhCN = "收集5份阿塔莱之雾的样本，然后向安戈洛环形山的穆尔金复命。",
+        },
+        rewards = {
+            xp = 9950,
         },
     },
     [4146] = {
@@ -10931,15 +11038,18 @@ ns.Data.quests = {
                 enUS = "Hammertoe Grez",
                 zhCN = "铁趾格雷兹",
             },
-            map = 1432,
-            x = 37.28,
-            y = 85.78,
+            map = 1418,
+            x = 37.9,
+            y = 10.59,
         },
         before = { 720 },
         after = { 722, 723, 724, 725, 1139 },
         summary = {
             enUS = "Find Hammertoe Grez in Uldaman.",
             zhCN = "在奥达曼找到铁趾格雷兹。",
+        },
+        rewards = {
+            xp = 4800,
         },
     },
     [2418] = {
@@ -11127,9 +11237,9 @@ ns.Data.quests = {
                 enUS = "Hammertoe Grez",
                 zhCN = "铁趾格雷兹",
             },
-            map = 1432,
-            x = 37.28,
-            y = 85.78,
+            map = 1418,
+            x = 37.9,
+            y = 10.59,
         },
         finish = {
             kind = "npc",
@@ -11138,9 +11248,9 @@ ns.Data.quests = {
                 enUS = "Hammertoe Grez",
                 zhCN = "铁趾格雷兹",
             },
-            map = 1432,
-            x = 37.28,
-            y = 85.78,
+            map = 1418,
+            x = 37.9,
+            y = 10.59,
         },
         before = { 720, 721 },
         after = { 723, 724, 725, 726, 1139 },
@@ -11188,6 +11298,9 @@ ns.Data.quests = {
             enUS = "Retrieve an Obsidian Power Source and bring it to Tabetha in Dustwallow Marsh.",
             zhCN = "找到一个黑曜石能量源，将其交给尘泥沼泽的塔贝萨。",
         },
+        rewards = {
+            xp = 7800,
+        },
     },
     [723] = {
         name = {
@@ -11205,9 +11318,9 @@ ns.Data.quests = {
                 enUS = "Hammertoe Grez",
                 zhCN = "铁趾格雷兹",
             },
-            map = 1432,
-            x = 37.28,
-            y = 85.78,
+            map = 1418,
+            x = 37.9,
+            y = 10.59,
         },
         finish = {
             kind = "npc",
@@ -11391,6 +11504,9 @@ ns.Data.quests = {
             enUS = "Find Baelog in Uldaman.",
             zhCN = "在奥达曼找到巴尔洛戈。",
         },
+        rewards = {
+            xp = 550,
+        },
     },
     [2199] = {
         name = {
@@ -11507,6 +11623,9 @@ ns.Data.quests = {
             enUS = "Find a clue as to the gems' whereabouts in the depths of Uldaman.",
             zhCN = "在奥达曼里找寻宝石的线索。",
         },
+        rewards = {
+            xp = 4800,
+        },
     },
     [2198] = {
         name = {
@@ -11579,6 +11698,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Search for clues as to the current disposition of Talvash's necklace within Uldaman. The slain paladin he mentioned was the person who had it last.",
             zhCN = "去奥达曼寻找塔瓦斯的魔法项链，被杀的圣骑士是最后一个拿着它的人。",
+        },
+        rewards = {
+            xp = 4450,
         },
     },
     [739] = {
@@ -11656,6 +11778,9 @@ ns.Data.quests = {
         summary = {
             enUS = "Find someone who can translate the paladin's journal. The closest location that might have someone is Kargath, in the Badlands.",
             zhCN = "在荒芜之地的卡加斯哨所里寻找一个可以帮你翻译圣骑士日记的人。",
+        },
+        rewards = {
+            xp = 6750,
         },
     },
     [2338] = {
@@ -12328,10 +12453,14 @@ ns.Data.quests = {
         },
         finish = {
             kind = "npc",
+            id = 5769,
             name = {
-                enUS = "Hamuul Runetotem",
+                enUS = "Arch Druid Hamuul Runetotem",
                 zhCN = "大德鲁伊哈缪尔·符文图腾",
             },
+            map = 1456,
+            x = 78.62,
+            y = 28.56,
         },
         before = { 880 },
         after = { 1490, 914 },
@@ -13056,6 +13185,9 @@ ns.Data.quests = {
             enUS = "Read from the Tablet of Theka to learn the name of the Witherbark spider god, then return to Master Gadrin.",
             zhCN = "阅读塞卡石板，了解枯木巨魔的蜘蛛之神的名字，然后回到加德林大师那里。",
         },
+        rewards = {
+            xp = 9700,
+        },
     },
     [3042] = {
         name = {
@@ -13337,7 +13469,6 @@ ns.Data.quests = {
             x = 56.37,
             y = 40.4,
         },
-        inside = true,
         finish = {
             kind = "npc",
             id = 1244,
@@ -13379,7 +13510,7 @@ ns.Data.quests = {
     [95737] = {
         name = {
             enUS = "Seeking Caitlin",
-            zhCN = "寻找凯特林",
+            zhCN = "寻访凯特林",
         },
         level = 31,
         min = 24,
@@ -13407,7 +13538,6 @@ ns.Data.quests = {
             x = 11.88,
             y = 58.82,
         },
-        after = { 95647, 95809 },
         summary = {
             enUS = "Speak with Caitlin Grassman in Menethil Harbor.",
             zhCN = "到米奈希尔港找凯特林·格拉斯曼谈谈。",
@@ -13415,10 +13545,11 @@ ns.Data.quests = {
         rewards = {
             xp = 1250,
         },
+        extra = true,
     },
     [95647] = {
         name = {
-            enUS = "Lost in the Thicket Things",
+            enUS = "Lost in the Thicket",
             zhCN = "迷失在灌木丛中",
         },
         level = 31,
@@ -13436,8 +13567,6 @@ ns.Data.quests = {
             x = 11.88,
             y = 58.82,
         },
-        inside = true,
-        before = { 95737 },
         after = { 95809 },
         summary = {
             enUS = "Find Ardin Grassman in the Excavation Site.",
@@ -13453,8 +13582,8 @@ ns.Data.quests = {
     },
     [95809] = {
         name = {
-            enUS = "Heartwoven",
-            zhCN = "编织之心",
+            enUS = "Heartweave",
+            zhCN = "心之编织",
         },
         level = 31,
         min = 24,
@@ -13462,6 +13591,7 @@ ns.Data.quests = {
         instances = { "excavation-site-wetlands" },
         start = {
             kind = "npc",
+            id = 262681,
             name = {
                 enUS = "Ardin Grassman",
                 zhCN = "阿丁·格拉斯曼 (Ardin Grassman)",
@@ -13479,7 +13609,7 @@ ns.Data.quests = {
             x = 11.88,
             y = 58.82,
         },
-        before = { 95737, 95647 },
+        before = { 95647 },
         summary = {
             enUS = "Return to Caitlin Grassman in Menethil Harbor.",
             zhCN = "回到米奈希尔港，找凯特林·格拉斯曼复命。",
@@ -13544,7 +13674,7 @@ ns.Data.quests = {
     [95795] = {
         name = {
             enUS = "Fallen in the Fen",
-            zhCN = "沼泽中的陨落者",
+            zhCN = "命丧沼泽",
         },
         level = 31,
         min = 24,
@@ -13552,6 +13682,7 @@ ns.Data.quests = {
         instances = { "excavation-site-wetlands" },
         start = {
             kind = "npc",
+            id = 262465,
             name = {
                 enUS = "Daewyn Songblade",
                 zhCN = "戴温·桑布雷德 (Daewyn Songblade)",
@@ -13608,7 +13739,6 @@ ns.Data.quests = {
             x = 8.55,
             y = 55.74,
         },
-        inside = true,
         finish = {
             kind = "npc",
             id = 2094,
@@ -13620,6 +13750,7 @@ ns.Data.quests = {
             x = 8.55,
             y = 55.74,
         },
+        before = { 469 },
         summary = {
             enUS = "Return 4 Thicket Raptor Hides to James Halloran, the tanner, in Menethil Harbor.",
             zhCN = "把 4 张灌木迅猛龙皮带给米奈希尔港的制皮匠詹姆斯·哈洛兰。",
@@ -13674,7 +13805,7 @@ ns.Data.quests = {
     [95682] = {
         name = {
             enUS = "Open the Maw",
-            zhCN = "打开巨口",
+            zhCN = "撬开龙喉",
         },
         level = 31,
         min = 24,
@@ -13688,8 +13819,9 @@ ns.Data.quests = {
                 zhCN = "亡灵哨兵特工 (Deathstalker Agent)",
             },
             map = 1437,
+            x = 51.4,
+            y = 59.2,
         },
-        inside = true,
         finish = {
             kind = "npc",
             id = 13155,
@@ -13731,7 +13863,7 @@ ns.Data.quests = {
     [95697] = {
         name = {
             enUS = "Changing Tastes",
-            zhCN = "换换口味",
+            zhCN = "口味的变迁",
         },
         level = 31,
         min = 24,
@@ -13853,7 +13985,6 @@ ns.Data.quests = {
             x = 38.81,
             y = 52.39,
         },
-        inside = true,
         finish = {
             kind = "npc",
             id = 5387,
@@ -13957,6 +14088,7 @@ ns.Data.quests = {
         },
         finish = {
             kind = "npc",
+            id = 259118,
             name = {
                 enUS = "Muln Earthfury",
                 zhCN = "穆恩·大地之怒 (Muln Earthfury)",
@@ -14047,7 +14179,7 @@ ns.Data.quests = {
     [92489] = {
         name = {
             enUS = "Power Overwhelming",
-            zhCN = "无穷的力量",
+            zhCN = "势不可挡",
         },
         level = 33,
         min = 24,
@@ -14114,7 +14246,9 @@ ns.Data.quests = {
                 enUS = "Image of Archmage Modera",
                 zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
             },
-            map = 1416,
+            map = 1421,
+            x = 68.6,
+            y = 45.2,
         },
         finish = {
             kind = "npc",
@@ -14150,7 +14284,7 @@ ns.Data.quests = {
     [92432] = {
         name = {
             enUS = "An Alarming Request",
-            zhCN = "紧急请求",
+            zhCN = "紧急求援",
         },
         level = 33,
         min = 30,
@@ -14158,11 +14292,14 @@ ns.Data.quests = {
         instances = { "city-of-dalaran" },
         start = {
             kind = "npc",
+            id = 247264,
             name = {
                 enUS = "Emissary Jacques",
                 zhCN = "特使雅克 (Emissary Jacques)",
             },
             map = 1424,
+            x = 48.3,
+            y = 60.1,
         },
         finish = {
             kind = "npc",
@@ -14173,6 +14310,7 @@ ns.Data.quests = {
             },
             map = 1416,
         },
+        after = { 92458 },
         summary = {
             enUS = "Report to the Image of Archmage Modera near the City of Dalaran.",
             zhCN = "前往达拉然城附近，向大法师莫德拉的影像报到。",
@@ -14197,7 +14335,9 @@ ns.Data.quests = {
                 enUS = "Image of Archmage Modera",
                 zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
             },
-            map = 1416,
+            map = 1421,
+            x = 68.6,
+            y = 45.2,
         },
         finish = {
             kind = "npc",
@@ -14208,6 +14348,8 @@ ns.Data.quests = {
             },
             map = 1416,
         },
+        before = { 92432 },
+        after = { 92459 },
         summary = {
             enUS = "Collect the Arcane Mote for the Image of Archmage Modera near the City of Dalaran. She hands you the Dalaran Sewer Key with the quest.",
             zhCN = "为达拉然城附近的大法师莫德拉的影像取得奥术微粒。接任务时她会交给你达拉然下水道钥匙。",
@@ -14446,7 +14588,7 @@ ns.Data.quests = {
     [93680] = {
         name = {
             enUS = "Key to the City",
-            zhCN = "城市的钥匙",
+            zhCN = "城市大门钥匙",
         },
         level = 33,
         min = 30,
@@ -14474,6 +14616,7 @@ ns.Data.quests = {
             x = 61.6,
             y = 20.85,
         },
+        after = { 92434 },
         summary = {
             enUS = "Acquire the Grimy Key for Magus Wordeen Voidglare in Tarren Mill.",
             zhCN = "为塔伦米尔的大法师沃迪恩·伍德格莱尔取得污秽的钥匙。",
@@ -14557,7 +14700,7 @@ ns.Data.quests = {
             },
             map = 1416,
         },
-        before = { 545 },
+        before = { 545, 93680 },
         after = { 96984 },
         summary = {
             enUS = "Find a way into Dalaran along Lordamere Lake and report to the Image of Archmage Modera outside the city.",
@@ -14587,7 +14730,9 @@ ns.Data.quests = {
                 enUS = "Image of Archmage Modera",
                 zhCN = "大法师莫德拉的影像 (Image of Archmage Modera)",
             },
-            map = 1416,
+            map = 1421,
+            x = 68.6,
+            y = 45.2,
         },
         finish = {
             kind = "npc",
@@ -14601,6 +14746,7 @@ ns.Data.quests = {
             y = 20.85,
         },
         before = { 544, 545, 92434 },
+        after = { 97287 },
         summary = {
             enUS = "Collect the Arcane Mote in the City of Dalaran for Magus Wordeen Voidglare in Tarren Mill. The Image of Archmage Modera hands you the Dalaran Sewer Key with the quest.",
             zhCN = "在达拉然城里取得奥术微粒，带给塔伦米尔的大法师沃迪恩·伍德格莱尔。接任务时大法师莫德拉的影像会交给你达拉然下水道钥匙。",
@@ -15369,7 +15515,6 @@ ns.Data.quests = {
             x = 69.18,
             y = 50.55,
         },
-        after = { 2040 },
         chainOnly = true,
     },
     [2203] = {
@@ -16508,8 +16653,8 @@ ns.Data.quests = {
                 zhCN = "尼古拉斯·瑟伦霍夫公爵",
             },
             map = 1423,
-            x = 81.44,
-            y = 59.82,
+            x = 71.63,
+            y = 50.09,
         },
         chainOnly = true,
     },
@@ -16627,8 +16772,8 @@ ns.Data.quests = {
                 zhCN = "莱尼德·巴萨罗梅",
             },
             map = 1423,
-            x = 81.73,
-            y = 57.83,
+            x = 71.89,
+            y = 48.29,
         },
         before = { 5462 },
         after = { 5466 },
@@ -16665,8 +16810,8 @@ ns.Data.quests = {
                 zhCN = "莱尼德·巴萨罗梅",
             },
             map = 1423,
-            x = 81.73,
-            y = 57.83,
+            x = 71.89,
+            y = 48.29,
         },
         after = { 5466 },
         chainOnly = true,
@@ -16728,8 +16873,8 @@ ns.Data.quests = {
                 zhCN = "莱尼德·巴萨罗梅",
             },
             map = 1423,
-            x = 81.73,
-            y = 57.83,
+            x = 71.89,
+            y = 48.29,
         },
         before = { 5522 },
         after = { 4771 },
@@ -16753,6 +16898,8 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
+        before = { 4974 },
+        after = { 6567 },
         chainOnly = true,
     },
     [6567] = {
@@ -16773,6 +16920,7 @@ ns.Data.quests = {
             x = 31.73,
             y = 37.82,
         },
+        before = { 6566 },
         after = { 6568 },
         chainOnly = true,
     },
@@ -16830,8 +16978,8 @@ ns.Data.quests = {
                 zhCN = "公告员古德曼",
             },
             map = 1453,
-            x = 56.4,
-            y = 74.1,
+            x = 73.0,
+            y = 61.7,
         },
         after = { 7488 },
         chainOnly = true,
@@ -17085,6 +17233,7 @@ ns.Data.quests = {
             zhCN = "面对叶基亚",
         },
         level = 58,
+        min = 40,
         start = {
             kind = "npc",
             id = 10460,
@@ -17096,6 +17245,7 @@ ns.Data.quests = {
             x = 66.89,
             y = 24.03,
         },
+        before = { 4788 },
         chainOnly = true,
     },
     [8182] = {
@@ -17475,6 +17625,156 @@ ns.Data.quests = {
         extra = true,
         chainOnly = true,
     },
+    [205] = {
+        level = 30,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Brother Nimetz",
+            },
+        },
+        before = { 207 },
+        after = { 95787, 95788 },
+        extra = true,
+        chainOnly = true,
+    },
+    [207] = {
+        level = 30,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Brother Nimetz",
+            },
+        },
+        after = { 205 },
+        extra = true,
+        chainOnly = true,
+    },
+    [356] = {
+        level = 11,
+        min = 6,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 1495,
+            name = {
+                enUS = "Deathguard Linnea",
+            },
+        },
+        after = { 99156 },
+        rewards = {
+            xp = 660,
+        },
+        extra = true,
+        instances = { "ruins-of-lordaeron" },
+    },
+    [447] = {
+        level = 12,
+        min = 9,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 1937,
+            name = {
+                enUS = "Apothecary Renferrel",
+            },
+        },
+        after = { 450 },
+        rewards = {
+            xp = 910,
+            extraItems = {
+                {
+                    id = 3253,
+                },
+                {
+                    id = 3254,
+                },
+            },
+        },
+        extra = true,
+        instances = { "ruins-of-lordaeron" },
+    },
+    [450] = {
+        level = 15,
+        min = 9,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        before = { 447 },
+        after = { 451 },
+        rewards = {
+            xp = 1350,
+            extraItems = {
+                {
+                    id = 3255,
+                },
+            },
+        },
+        extra = true,
+        instances = { "ruins-of-lordaeron" },
+    },
+    [451] = {
+        level = 18,
+        min = 9,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 1937,
+            name = {
+                enUS = "Apothecary Renferrel",
+            },
+        },
+        before = { 450 },
+        after = { 95216 },
+        rewards = {
+            xp = 2050,
+            extraItems = {
+                {
+                    id = 3256,
+                },
+                {
+                    id = 3257,
+                },
+                {
+                    id = 3258,
+                },
+            },
+        },
+        extra = true,
+        instances = { "ruins-of-lordaeron" },
+    },
+    [469] = {
+        level = 18,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "埃纳尔·石钳",
+            },
+        },
+        after = { 98815 },
+        extra = true,
+        chainOnly = true,
+    },
+    [629] = {
+        level = 30,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Kin'weelay",
+            },
+        },
+        after = { 95748 },
+        extra = true,
+        chainOnly = true,
+    },
     [1106] = {
         level = 26,
         start = {
@@ -17541,6 +17841,7 @@ ns.Data.quests = {
     },
     [1192] = {
         min = 29,
+        faction = "H",
         start = {
             kind = "npc",
             id = 4630,
@@ -17715,7 +18016,7 @@ ns.Data.quests = {
             },
         },
         before = { 1823 },
-        after = { 1838, 1825 },
+        after = { 1825 },
         extra = true,
         chainOnly = true,
     },
@@ -17728,6 +18029,7 @@ ns.Data.quests = {
             },
         },
         before = { 1824 },
+        after = { 1838 },
         extra = true,
         chainOnly = true,
     },
@@ -17740,6 +18042,9 @@ ns.Data.quests = {
             },
         },
         after = { 2279, 2280 },
+        rewards = {
+            xp = 8200,
+        },
         extra = true,
         instances = { "uldaman" },
     },
@@ -17833,6 +18138,7 @@ ns.Data.quests = {
     },
     [3445] = {
         min = 46,
+        faction = "A",
         start = {
             kind = "npc",
             id = 7900,
@@ -17842,6 +18148,9 @@ ns.Data.quests = {
             map = 1444,
             x = 31.8,
             y = 45.4,
+        },
+        rewards = {
+            xp = 3650,
         },
         extra = true,
         instances = { "temple-of-atalhakkar" },
@@ -18030,6 +18339,9 @@ ns.Data.quests = {
                 enUS = "Human Remains",
             },
         },
+        rewards = {
+            xp = 6600,
+        },
         extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "lower" },
@@ -18045,6 +18357,14 @@ ns.Data.quests = {
             map = 1452,
             x = 61.2,
             y = 37.2,
+        },
+        rewards = {
+            xp = 8300,
+            extraItems = {
+                {
+                    id = 12824,
+                },
+            },
         },
         extra = true,
         instances = { "stratholme" },
@@ -18062,6 +18382,14 @@ ns.Data.quests = {
             x = 61.2,
             y = 37,
         },
+        rewards = {
+            xp = 8300,
+            extraItems = {
+                {
+                    id = 12821,
+                },
+            },
+        },
         extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "lower" },
@@ -18077,6 +18405,14 @@ ns.Data.quests = {
             map = 1452,
             x = 61.2,
             y = 37.2,
+        },
+        rewards = {
+            xp = 8300,
+            extraItems = {
+                {
+                    id = 12825,
+                },
+            },
         },
         extra = true,
         instances = { "stratholme" },
@@ -18323,6 +18659,7 @@ ns.Data.quests = {
             x = 54.4,
             y = 51.2,
         },
+        inside = true,
         before = { 6501 },
         rewards = {
             xp = 8300,
@@ -18460,8 +18797,8 @@ ns.Data.quests = {
                 enUS = "Rokaro",
             },
             map = 1444,
-            x = 44.8,
-            y = 7.4,
+            x = 54,
+            y = 2,
         },
         before = { 6601 },
         rewards = {
@@ -18505,6 +18842,11 @@ ns.Data.quests = {
         inside = true,
         rewards = {
             xp = 6600,
+            extraItems = {
+                {
+                    id = 10140,
+                },
+            },
         },
         extra = true,
         instances = { "dire-maul" },
@@ -18519,6 +18861,14 @@ ns.Data.quests = {
             },
         },
         before = { 7482 },
+        rewards = {
+            xp = 1650,
+            extraItems = {
+                {
+                    id = 18329,
+                },
+            },
+        },
         extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
@@ -18536,6 +18886,14 @@ ns.Data.quests = {
             y = 64.7,
         },
         before = { 7482 },
+        rewards = {
+            xp = 3300,
+            extraItems = {
+                {
+                    id = 18330,
+                },
+            },
+        },
         extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
@@ -18553,6 +18911,14 @@ ns.Data.quests = {
             y = 64.7,
         },
         before = { 7482 },
+        rewards = {
+            xp = 1650,
+            extraItems = {
+                {
+                    id = 18331,
+                },
+            },
+        },
         extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "west" },
@@ -18623,6 +18989,7 @@ ns.Data.quests = {
     [7501] = {
         level = 60,
         min = 54,
+        faction = "A",
         start = {
             kind = "npc",
             name = {
@@ -18686,6 +19053,7 @@ ns.Data.quests = {
     [7505] = {
         level = 60,
         min = 54,
+        faction = "H",
         start = {
             kind = "npc",
             name = {
@@ -18752,6 +19120,7 @@ ns.Data.quests = {
                 enUS = "Starts from the item [Dull and Flat Elven Blade]",
             },
         },
+        inside = true,
         before = { 7507 },
         rewards = {
             xp = 9950,
@@ -18771,6 +19140,9 @@ ns.Data.quests = {
             map = 1419,
             x = 34,
             y = 50.2,
+        },
+        rewards = {
+            xp = 6600,
         },
         extra = true,
         instances = { "dire-maul" },
@@ -18821,6 +19193,14 @@ ns.Data.quests = {
             y = 18.4,
         },
         before = { 7621 },
+        rewards = {
+            xp = 9950,
+            extraItems = {
+                {
+                    id = 18659,
+                },
+            },
+        },
         extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
@@ -18929,6 +19309,7 @@ ns.Data.quests = {
         chainOnly = true,
     },
     [7647] = {
+        faction = "A",
         start = {
             kind = "npc",
             id = 928,
@@ -18937,6 +19318,9 @@ ns.Data.quests = {
             y = 50.2,
         },
         before = { 7646 },
+        rewards = {
+            xp = 9950,
+        },
         extra = true,
         instances = { "scholomance" },
     },
@@ -18991,6 +19375,20 @@ ns.Data.quests = {
             y = 42.6,
         },
         before = { 8231 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 19991,
+                },
+                {
+                    id = 19992,
+                },
+                {
+                    id = 20083,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19045,6 +19443,20 @@ ns.Data.quests = {
             y = 40.2,
         },
         before = { 8235 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 19982,
+                },
+                {
+                    id = 19984,
+                },
+                {
+                    id = 20255,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19099,6 +19511,20 @@ ns.Data.quests = {
             y = 40.2,
         },
         before = { 8252 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 20035,
+                },
+                {
+                    id = 20036,
+                },
+                {
+                    id = 20037,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19153,6 +19579,20 @@ ns.Data.quests = {
             y = 42.6,
         },
         before = { 8256 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 19990,
+                },
+                {
+                    id = 20006,
+                },
+                {
+                    id = 20082,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19195,6 +19635,20 @@ ns.Data.quests = {
             y = 62.4,
         },
         before = { 8412 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 20369,
+                },
+                {
+                    id = 20503,
+                },
+                {
+                    id = 20556,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19250,6 +19704,7 @@ ns.Data.quests = {
     },
     [8418] = {
         min = 50,
+        faction = "A",
         start = {
             kind = "npc",
             id = 10838,
@@ -19261,6 +19716,23 @@ ns.Data.quests = {
             y = 84,
         },
         before = { 8416 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 20504,
+                },
+                {
+                    id = 20505,
+                },
+                {
+                    id = 20512,
+                },
+                {
+                    id = 20620,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19302,6 +19774,20 @@ ns.Data.quests = {
             y = 44.8,
         },
         before = { 8421 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 20530,
+                },
+                {
+                    id = 20534,
+                },
+                {
+                    id = 20536,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19344,6 +19830,20 @@ ns.Data.quests = {
             y = 65.4,
         },
         before = { 8424 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 20130,
+                },
+                {
+                    id = 20517,
+                },
+                {
+                    id = 20521,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -19450,7 +19950,6 @@ ns.Data.quests = {
             x = 55,
             y = 17.4,
         },
-        before = { 8929 },
         after = { 8946 },
         rewards = {
             xp = 8300,
@@ -19463,6 +19962,9 @@ ns.Data.quests = {
         extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
+        beforeAny = {
+            { 8929, 8930 },
+        },
     },
     [8946] = {
         level = 58,
@@ -19855,6 +20357,7 @@ ns.Data.quests = {
             y = 96.5,
         },
         before = { 8985 },
+        after = { 8994 },
         rewards = {
             xp = 8300,
         },
@@ -19876,6 +20379,7 @@ ns.Data.quests = {
             y = 96.5,
         },
         before = { 8987 },
+        after = { 8994 },
         rewards = {
             xp = 8300,
         },
@@ -19897,6 +20401,7 @@ ns.Data.quests = {
             y = 96.5,
         },
         before = { 8988 },
+        after = { 8994 },
         rewards = {
             xp = 8300,
         },
@@ -19915,11 +20420,16 @@ ns.Data.quests = {
             x = 39.9,
             y = 96.5,
         },
-        before = { 8989 },
         after = { 8995 },
+        rewards = {
+            xp = 6600,
+        },
         extra = true,
         instances = { "blackrock-spire" },
         sectionSlugs = { "upper" },
+        beforeAny = {
+            { 8989, 8990, 8991, 8992 },
+        },
     },
     [8995] = {
         level = 60,
@@ -20002,6 +20512,20 @@ ns.Data.quests = {
             y = 76,
         },
         before = { 9051 },
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 22272,
+                },
+                {
+                    id = 22274,
+                },
+                {
+                    id = 22458,
+                },
+            },
+        },
         extra = true,
         instances = { "temple-of-atalhakkar" },
     },
@@ -20039,9 +20563,35 @@ ns.Data.quests = {
             },
         },
         before = { 9251 },
+        rewards = {
+            xp = 9950,
+            extraItems = {
+                {
+                    id = 22631,
+                },
+            },
+        },
         extra = true,
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
+    },
+    [79360] = {
+        level = 33,
+        min = 30,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 4722,
+            name = {
+                enUS = "Rau Cliffrunner",
+            },
+        },
+        inside = true,
+        rewards = {
+            xp = 6950,
+        },
+        extra = true,
+        instances = { "razorfen-kraul" },
     },
     [79987] = {
         level = 40,
@@ -20061,6 +20611,391 @@ ns.Data.quests = {
         extra = true,
         chainOnly = true,
     },
+    [92066] = {
+        level = 55,
+        min = 47,
+        rewards = {
+            xp = 11300,
+            extraItems = {
+                {
+                    id = 279891,
+                },
+                {
+                    id = 279892,
+                },
+            },
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [92069] = {
+        level = 58,
+        min = 45,
+        rewards = {
+            xp = 12400,
+            extraItems = {
+                {
+                    id = 260213,
+                },
+                {
+                    id = 260214,
+                },
+                {
+                    id = 260215,
+                },
+            },
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [92343] = {
+        level = 55,
+        min = 45,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Nara Wildmane",
+            },
+        },
+        rewards = {
+            xp = 11300,
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [92344] = {
+        level = 55,
+        min = 45,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Mathrengyl Bearwalker",
+            },
+        },
+        rewards = {
+            xp = 11300,
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [92459] = {
+        level = 33,
+        min = 24,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 269127,
+            name = {
+                enUS = "Image of Archmage Modera",
+            },
+            map = 1421,
+            x = 68.6,
+            y = 45.2,
+        },
+        before = { 92458 },
+        rewards = {
+            xp = 265,
+        },
+        extra = true,
+        instances = { "city-of-dalaran" },
+    },
+    [93404] = {
+        level = 49,
+        min = 35,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Woodwyrd",
+            },
+        },
+        before = { 93594 },
+        rewards = {
+            xp = 11100,
+            extraItems = {
+                {
+                    id = 272186,
+                },
+                {
+                    id = 272187,
+                },
+            },
+        },
+        extra = true,
+        instances = { "maraudon" },
+    },
+    [93594] = {
+        level = 43,
+        min = 35,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Woodwyrd",
+            },
+        },
+        after = { 93404 },
+        rewards = {
+            xp = 360,
+        },
+        extra = true,
+        instances = { "maraudon" },
+    },
+    [94744] = {
+        level = 38,
+        min = 43,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Krom'rosh",
+            },
+        },
+        after = { 94975 },
+        rewards = {
+            xp = 360,
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94968] = {
+        level = 45,
+        min = 40,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Krom'rosh",
+            },
+        },
+        rewards = {
+            xp = 11500,
+            money = 13000,
+            extraItems = {
+                {
+                    id = 279852,
+                },
+                {
+                    id = 279480,
+                },
+                {
+                    id = 279853,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94972] = {
+        level = 44,
+        min = 39,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Trangul",
+            },
+        },
+        rewards = {
+            xp = 11050,
+            extraItems = {
+                {
+                    id = 279859,
+                },
+                {
+                    id = 279860,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94973] = {
+        level = 41,
+        min = 38,
+        faction = "H",
+        inside = true,
+        after = { 94974 },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94974] = {
+        level = 41,
+        min = 38,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Kreza Darkthorn",
+            },
+        },
+        before = { 94973 },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+            extraItems = {
+                {
+                    id = 267089,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94975] = {
+        level = 42,
+        min = 38,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Da'grosh",
+            },
+        },
+        before = { 94744 },
+        rewards = {
+            xp = 8200,
+            extraItems = {
+                {
+                    id = 267090,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94980] = {
+        level = 41,
+        min = 38,
+        faction = "A",
+        inside = true,
+        after = { 94981 },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94981] = {
+        level = 41,
+        min = 38,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Alphonse Dumas",
+            },
+        },
+        before = { 94980 },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+            extraItems = {
+                {
+                    id = 267089,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94982] = {
+        level = 45,
+        min = 40,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Demar Brant",
+            },
+        },
+        rewards = {
+            xp = 11500,
+            money = 13000,
+            extraItems = {
+                {
+                    id = 279852,
+                },
+                {
+                    id = 279853,
+                },
+                {
+                    id = 279480,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94983] = {
+        level = 42,
+        min = 38,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Sergeant Riftan",
+            },
+        },
+        after = { 94998 },
+        rewards = {
+            xp = 10200,
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94984] = {
+        level = 44,
+        min = 39,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Ashe Amberhall",
+            },
+        },
+        rewards = {
+            xp = 11050,
+            extraItems = {
+                {
+                    id = 279854,
+                },
+                {
+                    id = 279855,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [94998] = {
+        level = 42,
+        min = 38,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Ashe Amberhall",
+            },
+        },
+        before = { 94983 },
+        rewards = {
+            xp = 3450,
+            money = 5500,
+            extraItems = {
+                {
+                    id = 279850,
+                },
+            },
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
     [95161] = {
         level = 15,
         start = {
@@ -20071,6 +21006,676 @@ ns.Data.quests = {
         },
         extra = true,
         chainOnly = true,
+    },
+    [95194] = {
+        level = 53,
+        min = 48,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 260146,
+            name = {
+                enUS = "Sully McCleary",
+            },
+        },
+        rewards = {
+            xp = 1300,
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [95483] = {
+        level = 53,
+        min = 48,
+        faction = "H",
+        rewards = {
+            xp = 2400,
+            extraItems = {
+                {
+                    id = 279831,
+                },
+                {
+                    id = 279833,
+                },
+                {
+                    id = 279474,
+                },
+            },
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [95748] = {
+        level = 30,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Kin'weelay",
+            },
+        },
+        before = { 629 },
+        after = { 95770, 95773 },
+        extra = true,
+        chainOnly = true,
+    },
+    [95770] = {
+        level = 30,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Kin'weelay",
+            },
+        },
+        before = { 95748 },
+        extra = true,
+        chainOnly = true,
+    },
+    [95773] = {
+        level = 30,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Commander Aggro'gosh",
+            },
+        },
+        before = { 95748 },
+        extra = true,
+        chainOnly = true,
+    },
+    [95775] = {
+        level = 40,
+        min = 30,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Kin'weelay",
+            },
+        },
+        rewards = {
+            xp = 8450,
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95776] = {
+        level = 38,
+        min = 30,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Commander Aggro'gosh",
+            },
+        },
+        rewards = {
+            xp = 9500,
+            extraItems = {
+                {
+                    id = 279888,
+                },
+                {
+                    id = 279889,
+                },
+            },
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95787] = {
+        level = 40,
+        min = 30,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Loremaster Dibbs",
+            },
+        },
+        before = { 205 },
+        after = { 95799 },
+        rewards = {
+            xp = 8450,
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95788] = {
+        level = 40,
+        min = 30,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Loremaster Dibbs",
+            },
+        },
+        before = { 205 },
+        after = { 95798 },
+        rewards = {
+            xp = 8450,
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95789] = {
+        level = 40,
+        min = 34,
+        start = {
+            kind = "npc",
+            id = 773,
+            name = {
+                enUS = "Crank Fizzlebub",
+            },
+            map = 1434,
+            x = 27,
+            y = 77.2,
+        },
+        rewards = {
+            xp = 10450,
+            extraItems = {
+                {
+                    id = 279882,
+                },
+                {
+                    id = 279930,
+                },
+            },
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95791] = {
+        level = 40,
+        min = 34,
+        start = {
+            kind = "npc",
+            id = 773,
+            name = {
+                enUS = "Crank Fizzlebub",
+            },
+            map = 1434,
+            x = 27,
+            y = 77.2,
+        },
+        rewards = {
+            xp = 10450,
+            extraItems = {
+                {
+                    id = 279883,
+                },
+                {
+                    id = 279884,
+                },
+            },
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95798] = {
+        level = 40,
+        min = 30,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Loremaster Dibbs",
+            },
+        },
+        before = { 95788 },
+        rewards = {
+            xp = 2350,
+            extraItems = {
+                {
+                    id = 279879,
+                },
+                {
+                    id = 279878,
+                },
+            },
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95799] = {
+        level = 40,
+        min = 30,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 2277,
+            name = {
+                enUS = "Loremaster Dibbs",
+            },
+        },
+        before = { 95787 },
+        rewards = {
+            xp = 2350,
+            extraItems = {
+                {
+                    id = 279880,
+                },
+                {
+                    id = 279881,
+                },
+            },
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [95924] = {
+        level = 60,
+        min = 55,
+        faction = "A",
+        rewards = {
+            xp = 17650,
+            money = 9000,
+            extraItems = {
+                {
+                    id = 279903,
+                },
+                {
+                    id = 279905,
+                },
+            },
+        },
+        extra = true,
+        instances = { "shapers-terrace" },
+    },
+    [95925] = {
+        level = 60,
+        min = 55,
+        faction = "A",
+        rewards = {
+            xp = 17650,
+            extraItems = {
+                {
+                    id = 279908,
+                },
+                {
+                    id = 279910,
+                },
+                {
+                    id = 279912,
+                },
+            },
+        },
+        extra = true,
+        instances = { "shapers-terrace" },
+    },
+    [95926] = {
+        level = 60,
+        min = 55,
+        faction = "H",
+        rewards = {
+            xp = 6600,
+            extraItems = {
+                {
+                    id = 279908,
+                },
+                {
+                    id = 279910,
+                },
+                {
+                    id = 279912,
+                },
+            },
+        },
+        extra = true,
+        instances = { "shapers-terrace" },
+    },
+    [95928] = {
+        level = 60,
+        min = 55,
+        faction = "H",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Mayena Earthseeker",
+            },
+        },
+        rewards = {
+            xp = 17650,
+            extraItems = {
+                {
+                    id = 279904,
+                },
+                {
+                    id = 279906,
+                },
+            },
+        },
+        extra = true,
+        instances = { "shapers-terrace" },
+    },
+    [96264] = {
+        level = 33,
+        min = 30,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 259023,
+            name = {
+                enUS = "Veyric Thunderhame",
+            },
+        },
+        inside = true,
+        rewards = {
+            xp = 6950,
+        },
+        extra = true,
+        instances = { "razorfen-kraul" },
+    },
+    [96332] = {
+        level = 53,
+        min = 48,
+        faction = "H",
+        rewards = {
+            xp = 9700,
+            money = 8000,
+            extraItems = {
+                {
+                    id = 279824,
+                },
+                {
+                    id = 279826,
+                },
+                {
+                    id = 279829,
+                },
+            },
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96334] = {
+        level = 53,
+        min = 48,
+        faction = "H",
+        rewards = {
+            xp = 9700,
+            extraItems = {
+                {
+                    id = 279448,
+                },
+                {
+                    id = 279473,
+                },
+            },
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96335] = {
+        level = 53,
+        min = 48,
+        inside = true,
+        after = { 96337 },
+        rewards = {
+            xp = 2850,
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96337] = {
+        level = 53,
+        min = 48,
+        inside = true,
+        before = { 96335 },
+        rewards = {
+            xp = 11550,
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96377] = {
+        level = 53,
+        min = 48,
+        faction = "A",
+        inside = true,
+        rewards = {
+            xp = 6550,
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96381] = {
+        level = 53,
+        min = 48,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 260146,
+            name = {
+                enUS = "Sully McCleary",
+            },
+        },
+        rewards = {
+            xp = 11550,
+            money = 8000,
+            extraItems = {
+                {
+                    id = 279825,
+                },
+                {
+                    id = 279826,
+                },
+                {
+                    id = 279829,
+                },
+            },
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96770] = {
+        level = 46,
+        min = 39,
+        faction = "A",
+        inside = true,
+        rewards = {
+            xp = 10100,
+        },
+        extra = true,
+        instances = { "zulfarrak" },
+    },
+    [96771] = {
+        level = 45,
+        min = 37,
+        faction = "A",
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Ranath Nightstride",
+            },
+        },
+        rewards = {
+            xp = 11500,
+            money = 6500,
+        },
+        extra = true,
+        instances = { "kroldok-stronghold" },
+    },
+    [96772] = {
+        level = 53,
+        min = 46,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 20735,
+            name = {
+                enUS = "Archmage Lan'dalock",
+            },
+        },
+        rewards = {
+            xp = 14400,
+            money = 8000,
+        },
+        extra = true,
+        instances = { "alcaz-prison" },
+    },
+    [96773] = {
+        level = 41,
+        min = 34,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 20735,
+            name = {
+                enUS = "Archmage Lan'dalock",
+            },
+        },
+        inside = true,
+        rewards = {
+            xp = 8600,
+        },
+        extra = true,
+        instances = { "razorfen-downs" },
+    },
+    [96774] = {
+        level = 40,
+        min = 30,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 264074,
+            name = {
+                enUS = "Mazu'kon",
+            },
+        },
+        rewards = {
+            xp = 8800,
+            money = 10000,
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [96800] = {
+        level = 38,
+        min = 30,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 264265,
+            name = {
+                enUS = "Magus Olvek",
+            },
+            map = 1416,
+            x = 10.7,
+            y = 64.1,
+        },
+        rewards = {
+            xp = 2850,
+            money = 4500,
+            extraItems = {
+                {
+                    id = 276898,
+                },
+                {
+                    id = 276899,
+                },
+            },
+        },
+        extra = true,
+        instances = { "scarlet-monastery" },
+        sectionSlugs = { "library" },
+    },
+    [97049] = {
+        level = 60,
+        min = 55,
+        faction = "H",
+        rewards = {
+            xp = 17650,
+            money = 9000,
+            extraItems = {
+                {
+                    id = 279932,
+                },
+                {
+                    id = 279902,
+                },
+            },
+        },
+        extra = true,
+        instances = { "shapers-terrace" },
+    },
+    [97130] = {
+        level = 40,
+        min = 34,
+        faction = "A",
+        start = {
+            kind = "npc",
+            id = 31439,
+            name = {
+                enUS = "Archmage Timear",
+            },
+        },
+        rewards = {
+            xp = 10450,
+        },
+        extra = true,
+        instances = { "drowned-city" },
+    },
+    [97173] = {
+        level = 59,
+        min = 52,
+        faction = "A",
+        rewards = {
+            xp = 12800,
+            money = 9000,
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [97196] = {
+        level = 41,
+        min = 34,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 264078,
+            name = {
+                enUS = "Sutara Plainstrider",
+            },
+        },
+        inside = true,
+        rewards = {
+            xp = 8600,
+        },
+        extra = true,
+        instances = { "razorfen-downs" },
+    },
+    [97198] = {
+        level = 59,
+        min = 52,
+        faction = "H",
+        rewards = {
+            xp = 16100,
+            money = 9000,
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [97287] = {
+        level = 33,
+        min = 24,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 2410,
+            name = {
+                enUS = "Magus Wordeen Voidglare",
+            },
+            map = 1424,
+            x = 61.6,
+            y = 20.8,
+        },
+        before = { 96984 },
+        rewards = {
+            xp = 270,
+        },
+        extra = true,
+        instances = { "city-of-dalaran" },
     },
     [97289] = {
         level = 16,
@@ -20123,5 +21728,45 @@ ns.Data.quests = {
         after = { 97288 },
         extra = true,
         chainOnly = true,
+    },
+    [97327] = {
+        level = 60,
+        min = 55,
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Ekkal",
+            },
+        },
+        rewards = {
+            xp = 13200,
+            money = 9000,
+        },
+        extra = true,
+        instances = { "blackmaw-hold" },
+    },
+    [99156] = {
+        level = 13,
+        min = 10,
+        faction = "H",
+        start = {
+            kind = "npc",
+            id = 1495,
+            name = {
+                enUS = "Deathguard Linnea",
+            },
+        },
+        before = { 356 },
+        after = { 92422 },
+        rewards = {
+            xp = 910,
+            extraItems = {
+                {
+                    id = 286326,
+                },
+            },
+        },
+        extra = true,
+        instances = { "ruins-of-lordaeron" },
     },
 }

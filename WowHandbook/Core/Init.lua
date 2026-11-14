@@ -109,8 +109,9 @@ local CHAR_DB_SCHEMA = 1
 
 local DB_DEFAULTS = {
     modules = {},
-    -- 外观：配色方案（class 跟随当前角色的职业）与主窗口背景不透明度（百分数）
-    appearance = { scheme = "class", opacity = 100 },
+    -- 外观：配色方案（class 跟随当前角色的职业）、主窗口背景不透明度与窗口大小（都是百分数）；
+    -- 主窗口拖动后的位置存在 appearance.position
+    appearance = { scheme = "class", opacity = 100, scale = 100 },
 }
 
 local CHAR_DB_DEFAULTS = {}
@@ -153,6 +154,9 @@ function ns:ApplyAppearance()
     if self.Theme and self.Theme.Apply then
         local appearance = self.db.appearance
         self.Theme:Apply(appearance.scheme, appearance.opacity)
+    end
+    if self.MainFrame and self.MainFrame.ApplyScale then
+        self.MainFrame:ApplyScale()
     end
 end
 
@@ -257,13 +261,22 @@ ns:RegisterEvent("PLAYER_LOGIN", OnPlayerLogin)
 
 local moduleCommands = {} -- 模块注册的子命令：{ name, help }，按注册顺序列在帮助里
 
+-- 直接打开主窗口某一页的命令：命令名 → 页面 ID（页面没注册时，例如模块关了，提示未知命令）
+local PAGE_COMMANDS = { home = "home", dungeons = "dungeons", spellbook = "spellbook", spells = "spellbook",
+    professions = "professions", pets = "hunterPets", settings = "settings" }
+local PAGE_COMMAND_LIST = "home | dungeons | spellbook | professions | pets | settings"
+
 local function PrintHelp()
     ns:Print(L["Commands:"])
     ns:Print("/wh - %s", L["open or close the main window"])
+    ns:Print("/wh %s - %s", PAGE_COMMAND_LIST, L["open that page"])
     ns:Print("/wh link - %s", L["copy the website link"])
     for _, command in ipairs(moduleCommands) do
-        ns:Print("/wh %s - %s", command.name, command.help)
+        if command.help then
+            ns:Print("/wh %s - %s", command.name, command.help)
+        end
     end
+    ns:Print("/wh reset - %s", L["move the main window back to the center"])
     ns:Print("/wh help - %s", L["show this help"])
 end
 
@@ -274,10 +287,13 @@ local COMMANDS = {
     link = function()
         ns.Links:ShowCopyDialog(ns.Links:Build("home"))
     end,
+    reset = function()
+        ns.MainFrame:ResetPosition()
+    end,
     help = PrintHelp,
 }
 
--- 功能模块注册 /wh 子命令（help 为已本地化的说明）
+-- 功能模块注册 /wh 子命令（help 为已本地化的说明；不传 help 的是别名，不列在帮助里）
 function ns:AddCommand(name, help, run)
     if COMMANDS[name] then
         return
@@ -291,8 +307,11 @@ SLASH_WOWHANDBOOK2 = "/wh"
 SlashCmdList.WOWHANDBOOK = function(input)
     local command = strtrim(input or ""):lower()
     local run = COMMANDS[command]
+    local pageID = PAGE_COMMANDS[command]
     if run then
         run()
+    elseif pageID and ns.MainFrame:HasTab(pageID) then
+        ns.MainFrame:Open(pageID)
     else
         ns:Print(L["Unknown command: %s"], command)
         PrintHelp()

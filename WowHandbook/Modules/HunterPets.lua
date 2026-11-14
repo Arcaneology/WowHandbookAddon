@@ -234,7 +234,7 @@ local function ShowBeastTooltip(row, data)
     if beast.spots then
         GameTooltip:AddLine(L["Click to mark it on the map."], unpack(hint))
     end
-    GameTooltip:AddLine(IsTamed(data.id) and L["Right-click: mark as not tamed"] or L["Right-click: mark as tamed"],
+    GameTooltip:AddLine(L["Right-click: menu"],
         unpack(hint))
     GameTooltip:Show()
 end
@@ -295,15 +295,26 @@ local function CreateRow(parent)
         if not data then
             return
         end
+        local spot = data.beast.spots and data.beast.spots[1]
+        local function ShowOnMap()
+            ns.Waypoints:ShowOnMap(spot[1], spot[2], spot[3], BeastName(data.id, data.beast))
+        end
         if button == "RightButton" then
-            Tamed()[data.id] = not IsTamed(data.id) and time() or nil
-            GameTooltip_Hide()
-            Refresh()
+            -- 右键菜单：在地图上标出、手动标记已驯服或取消
+            local entries = { { kind = "title", text = BeastName(data.id, data.beast) } }
+            if spot then
+                tinsert(entries, { kind = "action", text = L["Mark on the map"], onClick = ShowOnMap })
+            end
+            tinsert(entries, { kind = "action", text = IsTamed(data.id) and L["Mark as not tamed"] or L["Mark as tamed"],
+                onClick = function()
+                    Tamed()[data.id] = not IsTamed(data.id) and time() or nil
+                    Refresh()
+                end })
+            UI:ContextMenu(entries)
             return
         end
-        local spot = data.beast.spots and data.beast.spots[1]
         if spot then
-            ns.Waypoints:ShowOnMap(spot[1], spot[2], spot[3], BeastName(data.id, data.beast))
+            ShowOnMap()
         end
     end)
     return row
@@ -462,7 +473,7 @@ function Refresh()
         nameRetries = nameRetries + 1
         C_Timer.After(1, Refresh)
     end
-    page.hint:SetText(Color(L["Click: mark on the map  ·  Right-click: mark as tamed or not. Summoned pets are checked off automatically."],
+    page.hint:SetText(Color(L["Click: mark on the map  ·  Right-click: menu. Summoned pets are checked off automatically."],
         "muted"))
 end
 Module.Refresh = function() Refresh() end -- 供测试使用

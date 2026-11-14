@@ -1,10 +1,10 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.6.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.7.0.
 
 ## Summary
 
-WoW Forever companion: dungeon guides with quest chains, loot and maps, BiS gear by level, a talent simulator with recommended builds, spells by level, rare hunter pets, trainers, herb and ore nodes, zeppelins, boats and zone paths on your maps, auto quests, red out-of-range buttons. Type /wh to open.
+WoW Forever companion: dungeon guides with quest chains, loot and maps, BiS gear by level, a talent simulator with recommended builds, spells by level, rare hunter pets, auction prices and crafting profit, a secrets helper, trainers, herb and ore nodes, zeppelins, boats and zone paths on your maps, auto quests, red out-of-range buttons. Type /wh to open.
 
 ## Description
 
@@ -18,6 +18,18 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 - **Map pins** for quest givers and dungeon entrances.
 - **Auto quest**: accept quests and turn in finished ones as soon as you talk to an NPC. When a quest offers several rewards, pick one yourself (default) or let the addon choose: a usable reward first, the most valuable one otherwise. Hold Shift while talking to an NPC to skip it once. A quest that cannot be accepted or turned in is not retried in the same conversation; talk to the NPC again and the addon tries once more. Works with DialogueUI too.
 - **Quest item glow**: one switch makes quest items, and the monsters that drop them, glow. It shows the game's real setting and offers to reload the interface when you change it.
+
+### Secrets
+
+- **Secrets helper**: a small window for the long hidden quest chains, the Cozy Sleeping Bag and Dawn's Awakener. It follows your quests, bags, bank and gear, ticks off the steps you have done and tells you what to do next. Missing items show in red; click a location to mark it on the map. The Secrets page in the handbook lays out every step in full.
+- **Library books**: all 40 books for the library, with where each one can be found (track it on the map with one click), which ones you already carry or have donated, where to hand them in, and the rewards at each stage.
+
+### Auction house and professions
+
+- **Auction prices**: prices are recorded as you search the auction house, and a "Scan auction house" button in its bottom right corner scans everything at once. Item tooltips show the auction price and how old it is. Already using Auctionator? Tick "Use Auctionator prices" and the handbook reads its prices instead.
+- **Crafting cost**: the crafting page of the profession window shows material cost, sale price, profit and margin for every recipe.
+- **Enchant all**: when enchanting gear, one button enchants once per click and shows how many casts are left; the "replace enchant" prompt is confirmed for you.
+- **Waylaid crates**: the tooltip of an identified crate lists every kind of goods it takes and what filling it costs at auction prices, with the cheapest one in green.
 
 ### Inside the game's own windows
 
@@ -54,26 +66,31 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ### Convenience
 
-- **Quick settings**: right-click the minimap button for a compact menu of the most-used options.
+- **Quick settings**: right-click the minimap button for a compact menu: the most-used switches up front, everything else in groups.
+- **Right-click menus** across the handbook: mark on the map, open in the handbook, mark as done. Small windows can be locked and resized from their right-click menu.
+- **Main window**: remembers where you put it, and its size can be changed in Settings > Appearance. Each settings category starts with a list of its features and their switches, and changes that need a reload are marked.
 - Automatic sale of grey items at vendors.
 - One-click copy links to the full guides on wowhandbook.com.
 
 ### Commands
 
 - `/wh` or `/wowhandbook`: open or close the handbook.
+- `/wh home`, `/wh dungeons`, `/wh spellbook`, `/wh professions`, `/wh pets`, `/wh settings`: open that page.
 - `/wh talents`: open the talent simulator.
-- `/wh instance` or `/wh quests`: show or hide the dungeon helper.
+- `/wh secrets`: show or hide the secrets helper.
+- `/wh reset`: move the handbook back to the center of the screen.
+- `/wh quests`: show or hide the dungeon helper.
 - `/wh test`: preview the dungeon helper with a sample dungeon.
 
 ---
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.6.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.7.0。
 
 ### 简介
 
-《魔兽世界：无限》一站式助手：按等级推荐副本与任务链、首领掉落与副本地图，逐级 BiS 装备，带推荐方案的天赋模拟器，按等级技能书，猎人稀有宠物，地图上的训练师、草药、矿点、飞艇与船、区域路口，自动接交任务，超出距离的技能整块染红，动作条自动升级与自动卖灰。游戏内输入 `/wh` 打开。
+《魔兽世界：无限》一站式助手：按等级推荐副本与任务链、首领掉落与副本地图，逐级 BiS 装备，带推荐方案的天赋模拟器，按等级技能书，猎人稀有宠物，拍卖价格与制作利润，解谜助手，地图上的训练师、草药、矿点、飞艇与船、区域路口，自动接交任务，超出距离的技能整块染红，动作条自动升级与自动卖灰。游戏内输入 `/wh` 打开。
 
 ### 详细介绍
 
@@ -87,6 +104,18 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 - **地图图钉**：接交任务 NPC 与副本入口。
 - **自动任务**：和 NPC 对话时自动接任务、自动交已完成的任务。有多个奖励时可以自己选（默认），也可以交给插件：优先选能用的，其次选最值钱的。按住 Shift 对话可跳过一次；接不下或交不了的任务在同一次对话里不会反复尝试，关掉对话再点 NPC 会重新处理一次。兼容 DialogueUI。
 - **任务物品发光**：一个开关让任务物品和掉落任务物品的怪物发光；开关显示游戏里的实际设置，改动后可一键重新载入界面生效。
+
+#### 解谜
+
+- **解谜助手**：为“舒适的睡袋”“黎明唤醒者”这两条隐藏长任务链准备的小窗。它跟着你的任务、背包、银行与装备自动勾掉已完成的步骤，并告诉你下一步做什么；缺的物品标红，点地点就在地图上标出。手册里的“解谜”页完整展开每一步。
+- **图书馆藏书**：列出图书馆要收的全部 40 本书，每本书在哪里能找到（一键在地图上追踪）、哪些已经在包里或已经捐过、交给谁，以及各阶段的奖励。
+
+#### 拍卖行与专业
+
+- **拍卖价格**：搜索拍卖行时自动记下价格，拍卖行右下角的“扫描拍卖行”按钮一次扫描全部。物品鼠标提示显示拍卖价格与记录时间。已经在用 Auctionator？勾选“使用 Auctionator 价格”，手册直接读取它的价格。
+- **制作成本**：专业窗口的制作页显示每个配方的材料成本、售价、利润与利润率。
+- **全部附魔**：附魔到装备时，每点一次附魔一次，按钮显示剩余次数；“替换附魔”的确认框自动确认。
+- **遭劫的板条箱**：已辨认的板条箱鼠标提示列出可装的每种货物与装满所需的拍卖行价格，最便宜的一种标绿。
 
 #### 嵌入游戏自带窗口
 
@@ -123,15 +152,20 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 #### 便利功能
 
-- **快捷设置**：右键小地图按钮，弹出常用选项的精简菜单。
+- **快捷设置**：右键小地图按钮弹出精简菜单，最常用的开关直接列出，其余按分类折叠。
+- **右键菜单**：手册各处右键可在地图上标记、在手册中查看、标记完成；小窗右键可锁定位置、调整大小。
+- **主窗口**：记住拖动后的位置，可在“设置 → 外观”里调整大小；设置页每一类顶部集中列出功能与开关，需要重新载入的改动会标出来。
 - 与商人对话时自动出售灰色物品。
 - 一键复制 wowhandbook.com 上对应的完整攻略链接。
 
 #### 游戏内命令
 
 - `/wh` 或 `/wowhandbook`：打开或关闭手册。
+- `/wh home`、`/wh dungeons`、`/wh spellbook`、`/wh professions`、`/wh pets`、`/wh settings`：直接打开对应页面。
 - `/wh talents`：打开天赋模拟器。
-- `/wh instance` 或 `/wh quests`：显示或隐藏副本助手小窗。
+- `/wh secrets`：显示或隐藏解谜助手小窗。
+- `/wh reset`：把手册窗口放回屏幕中央。
+- `/wh quests`：显示或隐藏副本助手小窗。
 - `/wh test`：用示例副本预览副本助手小窗。
 
 ---

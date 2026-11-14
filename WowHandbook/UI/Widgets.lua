@@ -206,7 +206,35 @@ function UI:Segmented(parent, items, onChange, buttonWidth)
 end
 
 --------------------------------------------------------------------------------
--- 下拉选择：按钮显示当前项，点开后在按钮下方列出全部选项
+-- 弹出层的自动关闭：点弹出层和它的锚点以外的地方就关掉（下拉列表、快捷菜单、右键菜单、副本选择器共用）。
+-- UI:AutoClose(popup, anchor)：anchor 可省略，也可以是返回当前锚点的函数（锚点会变的菜单）。
+-- 点锚点本身交给锚点自己的点击处理，避免关了又开。全插件只订阅一次鼠标事件。
+--------------------------------------------------------------------------------
+
+local popups = {}
+
+local function ClosePopups()
+    for popup, anchor in pairs(popups) do
+        if popup:IsShown() and not popup:IsMouseOver() then
+            if type(anchor) == "function" then
+                anchor = anchor()
+            end
+            if not (anchor and anchor:IsMouseOver()) then
+                popup:Hide()
+            end
+        end
+    end
+end
+
+function UI:AutoClose(popup, anchor)
+    if not next(popups) then
+        ns:RegisterEvent("GLOBAL_MOUSE_DOWN", ClosePopups)
+    end
+    popups[popup] = anchor or false
+end
+
+--------------------------------------------------------------------------------
+-- 下拉选择：按钮显示当前项，点开后在按钮下方列出全部选项；点别处关闭
 --------------------------------------------------------------------------------
 
 function UI:Dropdown(parent, items, onChange, width)
@@ -228,7 +256,9 @@ function UI:Dropdown(parent, items, onChange, width)
     menu:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -2)
     menu:SetWidth(width or 150)
     menu:EnableMouse(true)
+    menu:SetClampedToScreen(true)
     menu:Hide()
+    UI:AutoClose(menu, dropdown)
     dropdown.menu = menu
     local buttons = {}
 
@@ -917,7 +947,7 @@ end
 -- 停靠面板：贴在某个游戏窗口右侧的面板（配方面板），可拖动，记住相对那个窗口右上角的偏移。
 -- UI:Dockable(panel, settings, defaultX)：settings 为模块设置（偏移存在 dockX / dockY），defaultX 为默认的横向间距。
 -- panel:Dock(outer) 按偏移贴到 outer 右侧（高度与 outer 一致），panel:DockOffset() 返回当前偏移；
--- 左键拖动面板空白处移动，松手后记下偏移；右键面板复位到默认位置。
+-- 左键拖动面板空白处移动，松手后记下偏移；右键面板弹出菜单，里面可以复位到默认位置（不再一点就复位，避免误触）。
 --------------------------------------------------------------------------------
 
 function UI:Dockable(panel, settings, defaultX)
@@ -959,35 +989,44 @@ function UI:Dockable(panel, settings, defaultX)
             self.onDocked()
         end
     end)
+    function panel:ResetDock()
+        settings.dockX, settings.dockY = nil, nil
+        if self.dockOuter then
+            self:Dock(self.dockOuter)
+        end
+        if self.onDocked then
+            self.onDocked()
+        end
+    end
     panel:SetScript("OnMouseUp", function(self, button)
         if button == "RightButton" then
-            settings.dockX, settings.dockY = nil, nil
-            if self.dockOuter then
-                self:Dock(self.dockOuter)
-            end
-            if self.onDocked then
-                self.onDocked()
-            end
+            UI:ContextMenu({
+                { kind = "action", text = ns.L["Reset position"], onClick = function() self:ResetDock() end },
+            })
         end
     end)
     return panel
 end
 
 --------------------------------------------------------------------------------
--- 勾选菜单（小地图按钮右键的快捷设置），紧凑排列：行首是图标加简短名称，控件靠右。条目按顺序：
---   { kind = "title", text, onClick }             金色标题（可点击）
+-- 勾选菜单（小地图按钮右键的快捷设置、各处的右键菜单），紧凑排列：行首是图标加简短名称，控件靠右。条目按顺序：
+--   { kind = "title", text, onClick }             强调色标题（有 onClick 才可点击）
+--   { kind = "group", text, expanded, onClick }    可折叠的分组标题：行尾 + / -，点了以后菜单保持打开
+--   条目带 indent = true 时缩进一格（分组里的条目）；带 keepOpen = true 的按钮行点了以后菜单保持打开
 --   { kind = "check", text, checked, onClick, tip }  勾选项：行尾方框，点整行切换
 --   { kind = "choice", text, choices = { {id, text, tip} }, value, onClick(id), tip }
 --                                                  多选一：行尾横排选项（可以是图标贴图），当前项金色、其余淡色
 --   { kind = "action", text, onClick }             普通按钮行
 --   { kind = "separator" }                         分隔线
--- tip 为悬停提示。menu:Open(anchor, build)：build() 返回条目表；点了勾选项或选项后重新调用 build 刷新，
--- 菜单保持打开。点菜单以外的地方或按 Esc 关闭。
+-- tip 为悬停提示。menu:Open(anchor, build)：build 是条目表或返回条目表的函数；点了勾选项或选项后重新调用 build 刷新，
+-- 菜单保持打开。menu:OpenAtCursor(build) 在鼠标处弹出。点菜单以外的地方或按 Esc 关闭。
+-- UI:ContextMenu(build) 用全插件共用的一个右键菜单在鼠标处弹出。
 --------------------------------------------------------------------------------
 
 local MENU_ROW = 18
 local MENU_PAD = 6
 local MENU_GAP = 14 -- 名称与右侧控件之间至少留的空
+local MENU_INDENT = 10 -- 分组里的条目缩进
 
 local function MenuTip(owner, title, tip)
     if not tip then
@@ -1042,6 +1081,8 @@ function UI:CheckMenu(name)
         row.line:SetPoint("RIGHT", -MENU_PAD, 0)
         row.line:SetHeight(1)
         SetColor(row.line, "lineSoft")
+        row.fold = UI:Text(row, "Accent")
+        row.fold:SetPoint("RIGHT", -MENU_PAD - 1, 0)
         row.options = {}
         row:SetScript("OnEnter", function(self)
             self.hover:SetShown(Clickable(self.entry) and true or false)
@@ -1058,11 +1099,12 @@ function UI:CheckMenu(name)
             if not Clickable(entry) then
                 return
             end
-            if entry.kind ~= "check" then
+            local keepOpen = entry.kind == "check" or entry.kind == "group" or entry.keepOpen
+            if not keepOpen then
                 menu:Hide()
             end
             entry.onClick(not entry.checked)
-            if entry.kind == "check" then
+            if keepOpen then
                 menu:Refresh()
             end
         end)
@@ -1101,7 +1143,7 @@ function UI:CheckMenu(name)
     end
 
     function menu:Refresh()
-        local entries = self.build and self.build() or {}
+        local entries = type(self.build) == "function" and self.build() or self.build or {}
         local width, y = 150, MENU_PAD
         for index, entry in ipairs(entries) do
             local row = Row(index)
@@ -1115,11 +1157,15 @@ function UI:CheckMenu(name)
             row.text:SetShown(entry.kind ~= "separator")
             row.text:SetText(entry.text or "")
             row.text:SetTextColor(unpack(entry.kind == "title" and C.gold or C.text))
+            local indent = entry.indent and MENU_INDENT or 0
+            row.text:SetPoint("LEFT", MENU_PAD + indent, 0)
+            row.fold:SetShown(entry.kind == "group")
+            row.fold:SetText(entry.expanded and "-" or "+")
             for _, option in ipairs(row.options) do
                 option:Hide()
             end
-            local rowWidth = MENU_PAD + row.text:GetStringWidth() + MENU_PAD
-            if entry.kind == "check" then
+            local rowWidth = MENU_PAD + indent + row.text:GetStringWidth() + MENU_PAD
+            if entry.kind == "check" or entry.kind == "group" then
                 rowWidth = rowWidth + MENU_GAP + 11
             elseif entry.kind == "choice" then
                 -- 选项从右往左排
@@ -1172,13 +1218,52 @@ function UI:CheckMenu(name)
         end
     end
 
-    -- 点菜单以外的地方关闭（点锚点本身交给锚点的点击处理，避免关了又开）
-    ns:RegisterEvent("GLOBAL_MOUSE_DOWN", function()
-        if menu:IsShown() and not menu:IsMouseOver() and not (menu.anchor and menu.anchor:IsMouseOver()) then
-            menu:Hide()
-        end
+    -- 在鼠标处弹出（右键菜单）；菜单限制在屏幕内，靠近屏幕边缘时自动挪回来
+    function menu:OpenAtCursor(build)
+        self.build, self.anchor = build, nil
+        local scale = UIParent:GetEffectiveScale()
+        local x, y = GetCursorPosition()
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", (x or 0) / scale + 2, (y or 0) / scale - 2)
+        self:Refresh()
+        self:Show()
+    end
+
+    UI:AutoClose(menu, function()
+        return menu.anchor
     end)
     return menu
+end
+
+-- 右键菜单：全插件共用一个，在鼠标处弹出。build 是条目表或返回条目表的函数（见上面的条目说明）
+local contextMenu
+
+function UI:ContextMenu(build)
+    contextMenu = contextMenu or UI:CheckMenu("WowHandbookContextMenu")
+    GameTooltip_Hide()
+    contextMenu:OpenAtCursor(build)
+    return contextMenu
+end
+
+-- 浮动小窗（副本助手、解谜小窗）右键菜单里共用的两项：锁定位置、大小。
+-- settings 为模块设置（locked、scale），apply() 在大小改变后调用，由小窗按 settings.scale 重新缩放
+local WINDOW_SCALES = { 0.85, 1, 1.15, 1.3 }
+
+function UI:WindowMenuEntries(settings, apply)
+    local choices = {}
+    for _, scale in ipairs(WINDOW_SCALES) do
+        tinsert(choices, { id = scale, text = ("%d%%"):format(math.floor(scale * 100 + 0.5)) })
+    end
+    return {
+        { kind = "check", text = ns.L["Lock position"], checked = settings.locked == true,
+            tip = ns.L["Keep this window where it is; dragging no longer moves it"],
+            onClick = function(checked) settings.locked = checked or nil end },
+        { kind = "choice", text = ns.L["Size"], choices = choices, value = settings.scale or 1,
+            onClick = function(id)
+                settings.scale = id ~= 1 and id or nil
+                apply()
+            end },
+    }
 end
 
 --------------------------------------------------------------------------------
