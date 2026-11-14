@@ -21,7 +21,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ### Secrets
 
-- **Secrets helper**: a small window for the long hidden quest chains, the Cozy Sleeping Bag and Dawn's Awakener. It follows your quests, bags, bank and gear, ticks off the steps you have done and tells you what to do next. Missing items show in red; click a location to mark it on the map. The Secrets page in the handbook lays out every step in full.
+- **Secrets helper**: a small window for the long hidden quest chains, the Cozy Sleeping Bag and Dawn Waker. It follows your quests, bags, bank and gear, ticks off the steps you have done and tells you what to do next. Missing items show in red; click a location to mark it on the map. The Secrets page in the handbook lays out every step in full.
 - **Library books**: all 40 books for the library, with where each one can be found (track it on the map with one click), which ones you already carry or have donated, where to hand them in, and the rewards at each stage.
 
 ### Auction house and professions
