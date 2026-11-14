@@ -5,7 +5,7 @@
 ## Notes-zhCN: 魔兽世界：无限的副本任务与掉落、按等级学习的技能等游戏助手。
 ## Author: AntaresBuild
 ## X-Organization: ArcaneStudio
-## Version: 0.7.0
+## Version: 0.7.1
 ## SavedVariables: WowHandbookDB
 ## SavedVariablesPerCharacter: WowHandbookCharDB
 ## X-Website: https://wowhandbook.com

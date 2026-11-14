@@ -1272,7 +1272,9 @@ end
 --------------------------------------------------------------------------------
 
 function UI:Stack(parent)
-    local stack = { parent = parent, y = 0, pools = { text = {}, button = {}, item = {} }, used = {} }
+    -- inset / insetRight：BeginBox 与 EndBox 之间的内容整体内缩
+    local stack = { parent = parent, y = 0, inset = 0, insetRight = 0,
+        pools = { text = {}, button = {}, item = {}, texture = {} }, used = {} }
 
     local function Take(kind, create)
         local pool = stack.pools[kind]
@@ -1297,6 +1299,7 @@ function UI:Stack(parent)
         end
         wipe(self.used)
         self.y = 0
+        self.inset, self.insetRight, self.box = 0, 0, nil
     end
 
     function stack:Width()
@@ -1306,7 +1309,22 @@ function UI:Stack(parent)
             local scroll = self.parent:GetParent()
             width = scroll and scroll.GetWidth and scroll:GetWidth() or 0
         end
-        return width >= 100 and width or 640
+        width = width >= 100 and width or 640
+        return width - self.inset - self.insetRight
+    end
+
+    local function Left(indent)
+        return stack.inset + (indent or 0)
+    end
+
+    -- 纯色贴图（画在父框架的 BACKGROUND 层，文字与按钮都在它上面）
+    local function Fill(color, sublevel)
+        local texture = Take("texture", function()
+            return stack.parent:CreateTexture(nil, "BACKGROUND")
+        end)
+        texture:SetDrawLayer("BACKGROUND", sublevel or 0)
+        Theme:Paint(texture, color)
+        return texture
     end
 
     -- font: Theme 字体名（Title / Heading / Body / Small / Muted / Accent）；indent: 左缩进
@@ -1320,7 +1338,7 @@ function UI:Stack(parent)
         end)
         fontString:SetFontObject(Theme.fonts[font or "Body"])
         fontString:SetWidth(math.max(40, self:Width() - (indent or 0)))
-        fontString:SetPoint("TOPLEFT", indent or 0, -self.y)
+        fontString:SetPoint("TOPLEFT", Left(indent), -self.y)
         fontString:SetText(text or "")
         self.y = self.y + fontString:GetStringHeight() + (gap or 6)
         return fontString
@@ -1335,6 +1353,74 @@ function UI:Stack(parent)
         self.y = self.y + (height or 8)
     end
 
+    -- 小标题：强调色小字，比 Heading 轻，用于分组
+    function stack:Subheading(text, gap)
+        self.y = self.y + 4
+        self:Text(text, "Accent", 0, gap or 6)
+    end
+
+    -- 1 像素分隔线
+    function stack:Divider(gap)
+        local line = Fill("lineSoft", 1)
+        line:SetHeight(1)
+        line:SetPoint("TOPLEFT", Left(0), -self.y)
+        line:SetWidth(self:Width())
+        self.y = self.y + 1 + (gap or 8)
+    end
+
+    -- 进度条：fraction 0–1，color 为已完成部分的主题色
+    function stack:Progress(fraction, color, height)
+        height = height or 6
+        local width = self:Width()
+        local track = Fill("track", 1)
+        track:SetPoint("TOPLEFT", Left(0), -self.y)
+        track:SetSize(width, height)
+        fraction = math.max(0, math.min(1, fraction or 0))
+        if fraction > 0 then
+            local bar = Fill(color or "gold", 2)
+            bar:SetPoint("TOPLEFT", Left(0), -self.y)
+            bar:SetSize(math.max(1, width * fraction), height)
+        end
+        self.y = self.y + height + 8
+    end
+
+    -- 背景框：BeginBox 之后添加的内容内缩，EndBox 在这段内容背后画底色、边框与左侧色条。不嵌套
+    local BOX_PAD, BOX_LEFT = 10, 14
+    function stack:BeginBox(accent, background)
+        self.box = { top = self.y, accent = accent or "gold", background = background or "raised" }
+        self.inset, self.insetRight = BOX_LEFT, BOX_PAD
+        self.y = self.y + BOX_PAD
+    end
+
+    function stack:EndBox(gap)
+        local box = self.box
+        if not box then
+            return
+        end
+        self.box = nil
+        self.inset, self.insetRight = 0, 0
+        self.y = self.y + BOX_PAD - 4
+        local width, height = self:Width(), self.y - box.top
+        local background = Fill(box.background, 0)
+        background:SetPoint("TOPLEFT", 0, -box.top)
+        background:SetSize(width, height)
+        local edges = {
+            { "TOPLEFT", 0, -box.top, width, 1 },
+            { "TOPLEFT", 0, -(self.y - 1), width, 1 },
+            { "TOPLEFT", 0, -box.top, 1, height },
+            { "TOPLEFT", width - 1, -box.top, 1, height },
+        }
+        for _, edge in ipairs(edges) do
+            local line = Fill("lineSoft", 1)
+            line:SetPoint(edge[1], edge[2], edge[3])
+            line:SetSize(edge[4], edge[5])
+        end
+        local accent = Fill(box.accent, 2)
+        accent:SetPoint("TOPLEFT", 1, -(box.top + 1))
+        accent:SetSize(3, height - 2)
+        self.y = self.y + (gap or 8)
+    end
+
     -- 一行文字，右侧若干按钮：buttons = { { label = "...", onClick = fn, variant = "primary" }, ... }
     function stack:Row(text, buttons, font, indent)
         local top = self.y
@@ -1347,7 +1433,7 @@ function UI:Stack(parent)
             button.variant = definition.variant or "default"
             button:SetLabel(definition.label)
             button:SetWidth(math.max(44, button.label:GetStringWidth() + 18))
-            button:SetPoint("TOPRIGHT", -rightEdge, -top)
+            button:SetPoint("TOPRIGHT", -(self.insetRight + rightEdge), -top)
             button:SetScript("OnClick", definition.onClick)
             button:SetSelected(false)
             rightEdge = rightEdge + button:GetWidth() + 6
@@ -1361,7 +1447,7 @@ function UI:Stack(parent)
         end)
         fontString:SetFontObject(Theme.fonts[font or "Body"])
         fontString:SetWidth(math.max(40, self:Width() - (indent or 0) - rightEdge - 6))
-        fontString:SetPoint("TOPLEFT", indent or 0, -top - 3)
+        fontString:SetPoint("TOPLEFT", Left(indent), -top - 3)
         fontString:SetText(text or "")
         self.y = top + math.max(22, fontString:GetStringHeight() + 6) + 2
         return fontString
@@ -1379,7 +1465,7 @@ function UI:Stack(parent)
             local button = Take("item", function()
                 return UI:ItemButton(self.parent, size)
             end)
-            button:SetPoint("TOPLEFT", indent or 0, -self.y)
+            button:SetPoint("TOPLEFT", Left(indent), -self.y)
             button:SetItem(itemID)
             local label = Take("text", function()
                 return self.parent:CreateFontString(nil, "OVERLAY")

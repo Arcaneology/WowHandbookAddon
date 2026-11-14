@@ -643,6 +643,8 @@ local KEYS = {
     "%d of %d steps",
     "From level %d",
     "All steps done",
+    "What to do now",
+    "All steps",
     "Mark as not done",
     "Mark as done",
     "any order",

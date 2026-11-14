@@ -1069,6 +1069,10 @@ local function RenderLibrary(stack, result)
     local librarian = Librarian()
     local librarianName = librarian and ns.Name(librarian.name) or "?"
 
+    stack:Progress(result.total > 0 and result.donated / result.total or 0,
+        result.donated >= result.total and "green" or "gold")
+    stack:Spacer(4)
+
     -- 交书地点
     stack:Heading(L["Where to turn in"])
     if librarian then
@@ -1083,14 +1087,19 @@ local function RenderLibrary(stack, result)
     -- 阶段奖励
     stack:Heading(L["Rewards"])
     for _, milestone in ipairs(data.milestones or {}) do
-        stack:Text(MilestoneLine(milestone, result), "Body", 0, 2)
+        local claimed = QuestDone(milestone.quest)
+        local ready = not claimed and result.donated >= milestone.books
+            and ns.PlayerLevel() >= (milestone.minLevel or 1)
+        stack:BeginBox(claimed and "green" or (ready and "gold" or "lineSoft"), "panel")
+        stack:Text(MilestoneLine(milestone, result), "Body", 0, 4)
         local choices = {}
         for _, itemID in ipairs(milestone.choice or {}) do
             tinsert(choices, ns.ItemLink(itemID))
         end
         if #choices > 0 then
-            stack:Text(L["Choose one: %s"]:format(table.concat(choices, " / ")), "Small", 20, 8)
+            stack:Text(L["Choose one: %s"]:format(table.concat(choices, " / ")), "Small", 0, 4)
         end
+        stack:EndBox(6)
     end
 
     -- 在包里待交
@@ -1101,10 +1110,12 @@ local function RenderLibrary(stack, result)
     end
     if #inBags > 0 then
         stack:Heading(L["In your bags"] .. "  " .. ns.Theme:Color(("%d"):format(#inBags), "muted"))
+        stack:BeginBox("blue")
         for _, entry in ipairs(inBags) do
             stack:Text(BookName(entry.book) .. "  " .. ns.Theme:Color(L["Bring it to %s."]:format(librarianName), "blue"),
                 "Body", 0, 4)
         end
+        stack:EndBox(6)
     end
 
     -- 还没拿到：按区域分组
@@ -1123,11 +1134,14 @@ local function RenderLibrary(stack, result)
         for _, entry in ipairs(missing) do
             local book = entry.book
             if entry.zone ~= lastZone then
+                if lastZone then
+                    stack:Divider(2)
+                end
                 lastZone = entry.zone
-                stack:Text(ns.Theme:Color(entry.zone, "gold"), "Small", 0, 2)
+                stack:Subheading(entry.zone, 4)
             end
             local name = BookName(book)
-            stack:Text(name, "Body", 12, 2)
+            stack:Text(name, "Body", 12, 3)
             local plainName = C_Item.GetItemNameByID and C_Item.GetItemNameByID(book.id) or L["Library books"]
             for _, spot in ipairs(book.spots or {}) do
                 SpotRow(stack, ns.Theme:Color(SpotPlace(spot), "muted"), spot, plainName, 24)
@@ -1190,6 +1204,61 @@ local function RewardLine(chain)
     return L["Reward: %s"]:format(ns.ItemLink(chain.reward))
 end
 
+-- 行首的状态标记（贴图转义）：完成是绿勾，其余是彩色小方块
+local function MarkerIcon(state)
+    if state == "done" then
+        return "|T" .. READY_ICON .. ":14:14|t"
+    end
+    local color = ns.Theme.colors[(state == "next" and "gold") or (state == "active" and "blue") or "muted"]
+    local size = state == "todo" and 6 or 8
+    return ("|T%s:%d:%d:4:0:8:8:0:8:0:8:%d:%d:%d|t"):format(ns.Theme.WHITE, size, size,
+        math.floor(color[1] * 255 + 0.5), math.floor(color[2] * 255 + 0.5), math.floor(color[3] * 255 + 0.5))
+end
+
+-- 需要玩家自己勾选的步骤：行右侧的勾选按钮
+local function ManualButtons(chain, row)
+    local step = row.step
+    if not step.manual then
+        return nil
+    end
+    return { { label = ManualDone(chain, step) and L["Mark as not done"] or L["Mark as done"],
+        variant = row.done and "default" or "primary",
+        onClick = function() ToggleManual(chain, step) end } }
+end
+
+-- “现在做什么”里的一张步骤卡片
+local function RenderCurrentStep(stack, chain, result, row)
+    local accent = (row.state == "active" or row.state == "ready") and "blue" or "gold"
+    stack:BeginBox(accent)
+    stack:Row(StepTitle(row) .. "   " .. StateLabel(result, row), ManualButtons(chain, row), "Heading")
+    local hint = StepHint(row)
+    if hint then
+        stack:Text(hint, "Body", 0, 6)
+    end
+    for _, line in ipairs(MissingNeeds(row)) do
+        stack:Text(ns.Theme:Color(line, "red"), "Body", 0, 4)
+    end
+    local objectives = ObjectiveLines(row)
+    if #objectives > 0 then
+        stack:Text(table.concat(objectives, "\n"), "Small", 0, 6)
+    end
+    local spots = Spots(row.step)
+    if #spots > 0 then
+        stack:Spacer(2)
+        for _, spot in ipairs(spots) do
+            local name = L[spot[4]]
+            stack:Row(("|TInterface\\Minimap\\Tracking\\None:14:14|t %s  %s"):format(name,
+                ns.Theme:Color(("%s %.1f, %.1f"):format(ns.MapName(spot[1]) or "?", spot[2], spot[3]), "muted")),
+                { { label = L["Track"], variant = "primary", onClick = function()
+                    ns.Waypoints:Set(spot[1], spot[2], spot[3], name)
+                end }, { label = L["Map"], variant = "ghost", onClick = function()
+                    ns.Waypoints:ShowOnMap(spot[1], spot[2], spot[3], name)
+                end } }, "Small")
+        end
+    end
+    stack:EndBox(8)
+end
+
 function RefreshPage()
     if not (page and page:IsVisible()) then
         return
@@ -1232,46 +1301,53 @@ function RefreshPage()
 
     local stack = page.stack
     stack:Reset()
-    if result.complete and current.ending then
-        stack:Text(ns.Theme:Color(L[current.ending], "green"), "Body", 0, 10)
+    stack:Progress(result.total > 0 and result.done / result.total or 0, result.complete and "green" or "gold")
+    stack:Spacer(4)
+
+    -- 上半部分：现在要做的步骤，每步一张卡片，带完整提示、缺的东西、任务目标与地点
+    if result.complete then
+        if current.ending then
+            stack:BeginBox("green", "panel")
+            stack:Text(ns.Theme:Color(L[current.ending], "green"), "Body", 0, 4)
+            stack:EndBox(14)
+        end
+    else
+        stack:Heading(L["What to do now"])
+        for _, row in ipairs(result.rows) do
+            local active = row.state == "active" or row.state == "ready"
+            if not row.done and (active or result.next[row.step.id]) then
+                RenderCurrentStep(stack, current, result, row)
+            end
+        end
+        stack:Spacer(6)
     end
-    for _, group in ipairs(current.groups) do
+
+    -- 下半部分：全部步骤，每步一行；还没轮到的步骤附一行灰色提示
+    stack:Heading(L["All steps"])
+    for index, group in ipairs(current.groups) do
         if #current.groups > 1 then
-            stack:Heading(L[group.title] .. (group.parallel and ("  " .. ns.Theme:Color(L["any order"], "muted")) or ""))
+            if index > 1 then
+                stack:Divider(4)
+            end
+            stack:Subheading(L[group.title] .. (group.parallel and ("  " .. ns.Theme:Color(L["any order"], "muted")) or ""))
         end
         for _, row in ipairs(result.rows) do
             if row.step.group == group.id then
-                local marker = row.done and "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14|t "
-                    or (result.next[row.step.id] and ns.Theme:Color("> ", "gold") or "   ")
-                local buttons
-                if row.step.manual then
-                    local step = row.step
-                    buttons = { { label = ManualDone(current, step) and L["Mark as not done"] or L["Mark as done"],
-                        variant = row.done and "default" or "primary",
-                        onClick = function() ToggleManual(current, step) end } }
+                local state = MarkerState(result, row)
+                local title = StepTitle(row)
+                if state == "done" then
+                    title = ns.Theme:Color(title, "muted")
+                elseif state == "todo" then
+                    title = ns.Theme:Color(title, "textDim")
                 end
-                local title = row.done and ns.Theme:Color(StepTitle(row), "muted") or StepTitle(row)
-                stack:Row(marker .. title .. "  " .. StateLabel(result, row), buttons, "Body")
-                if not row.done then
+                stack:Row(MarkerIcon(state) .. "  " .. title .. "   " .. StateLabel(result, row),
+                    ManualButtons(current, row), "Body", 4)
+                if state == "todo" then
                     local hint = StepHint(row)
                     if hint then
-                        stack:Text(hint, "Small", 20, 4)
-                    end
-                    for _, line in ipairs(MissingNeeds(row)) do
-                        stack:Text(ns.Theme:Color(line, "red"), "Small", 20, 4)
-                    end
-                    for _, line in ipairs(ObjectiveLines(row)) do
-                        stack:Text(line, "Small", 20, 4)
-                    end
-                    for _, spot in ipairs(Spots(row.step)) do
-                        stack:Row(("%s  %s"):format(L[spot[4]], ns.Theme:Color(("%s %.1f, %.1f"):format(
-                            ns.MapName(spot[1]) or "?", spot[2], spot[3]), "muted")),
-                            { { label = L["Map"], variant = "ghost", onClick = function()
-                                ns.Waypoints:ShowOnMap(spot[1], spot[2], spot[3], L[spot[4]])
-                            end } }, "Small", 20)
+                        stack:Text(ns.Theme:Color(hint, "muted"), "Small", 24, 6)
                     end
                 end
-                stack:Spacer(4)
             end
         end
     end
@@ -1325,7 +1401,7 @@ local function CreatePage(parent)
     p.detail:SetPoint("BOTTOMRIGHT", -18, 10)
     p.stack = UI:Stack(p.detail.child)
     p.hint = UI:Text(p, "Small")
-    p.hint:SetPoint("BOTTOMLEFT", panel, "BOTTOMLEFT", 2, -16)
+    p.hint:SetPoint("TOPLEFT", panel, "BOTTOMLEFT", 2, -6) -- 往下排：英文两行时也不压到面板边框
     p.hint:SetPoint("RIGHT", -MARGIN, 0)
 
     p:SetScript("OnShow", function()

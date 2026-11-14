@@ -1,6 +1,6 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.7.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.7.1.
 
 ## Summary
 
@@ -86,7 +86,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.7.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.7.1。
 
 ### 简介
 
