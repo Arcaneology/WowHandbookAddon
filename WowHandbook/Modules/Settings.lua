@@ -31,7 +31,7 @@ local SECTIONS = {
     } },
     { module = "Professions", category = "professions", title = "Professions",
         note = "Profession trainers for your faction, one click to mark them on the map", options = {} },
-    { module = "Talents", category = "spells", title = "Talent simulator",
+    { module = "Talents", category = "spells", title = "Talent plans",
         note = "Plan talent builds and follow the recommended leveling builds level by level", options = {} },
     { module = "HunterPets", category = "spells", title = "Rare pets",
         note = "Rare pets you can tame, where they are and which ones you already have", options = {
@@ -97,7 +97,7 @@ local SECTIONS = {
     { module = "MerchantCrates", category = "professions", title = "Waylaid crates",
         note = "Shows what each waylaid crate takes and what it costs to fill at auction prices", options = {} },
     { module = "CraftingCost", category = "professions", title = "Crafting cost",
-        note = "Material cost, auction price, profit and margin for the recipe selected in the professions window", options = {} },
+        note = "Profit per craft in the professions window: sale price minus the auction cut and materials", options = {} },
     { module = "Enchanting", category = "professions", title = "Enchant all",
         note = "Enchant several times in a row from the professions window", options = {
         { key = "autoReplace", quick = true, icon = "Trade_Engraving", label = "Replace enchants without asking",

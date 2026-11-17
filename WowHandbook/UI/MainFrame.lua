@@ -346,4 +346,6 @@ WowHandbookAPI = {
     -- 共用的主题与控件，让其他页面与主窗口风格一致
     Theme = Theme,
     UI = UI,
+    -- 价格库（Core/Prices.lua）：拍卖行单价、阶梯价与商人售价，只读使用
+    Prices = ns.Prices,
 }

@@ -1237,17 +1237,405 @@ check("every profession's trainer list renders, learned or not", function()
     settings.selected = nil
     GetNumSkillLines, GetSkillLineInfo = nil, nil
 end)
-collectorCheck("collector recipes page: recipes and leveling guide for your profession", function()
+collectorCheck("collector profession workbench: follows the game window, route, recipe sources and profit", function()
     local R = collector.Recipes
-    local alchemy
-    for _, profession in ipairs(collector.recipeData) do
-        if profession.slug == "alchemy" then alchemy = profession end
+    local P = main.Prices
+    assert(WowHandbookAPI.Prices == P, "price library is not on the public API")
+    local bySlug = {}
+    for _, profession in ipairs(collector.recipeData) do bySlug[profession.slug] = profession end
+    local tailoring, enchanting = bySlug.tailoring, bySlug.enchanting
+    assert(tailoring and enchanting, "no tailoring or enchanting recipe data in the collector")
+    -- 主窗口不再重复放配方页
+    local hasTab = pcall(function() main.MainFrame:Open("recipes") end) and R.page ~= nil
+    assert(not hasTab, "recipes page should no longer be registered in the main window")
+    main.MainFrame:Hide()
+
+    -- 阶梯价：逐条挂单按价位累计；只有一档时退回最低价 × 在售数量
+    P.RecordAuction({ [2589] = { 100, 30, { [100] = 10, [120] = 20 } }, [2320] = { 50, 7 } })
+    local depth = P.Depth(2589)
+    assert(#depth == 2 and depth[1][1] == 100 and depth[1][2] == 10 and depth[2][1] == 120 and depth[2][2] == 20,
+        "price ladder not stored low to high")
+    local single = P.Depth(2320)
+    assert(#single == 1 and single[1][1] == 50 and single[1][2] == 7, "single level does not fall back to lowest price")
+    assert(P.Depth(999999) == nil and P.Available(2589) == 30, "depth or available quantity wrong")
+    local market = main.db.auctionPrices
+    local function priceAll(profession, price)
+        for _, recipe in ipairs(profession.recipes) do
+            for index = 1, #(recipe.reagents or {}), 2 do
+                P.RecordVendor(recipe.reagents[index], price)
+            end
+        end
     end
-    assert(alchemy and #alchemy.recipes > 0 and #alchemy.guide > 0, "no alchemy recipe data in the collector")
+    priceAll(tailoring, 100)
+    priceAll(enchanting, 100)
+
+    -- 模拟按需加载的暴雪专业窗口（Forever 为 ProfessionsFrame），里面打开的是裁缝，技能 1/75
+    ProfessionsFrame = CreateFrame("Frame", "ProfessionsFrame", UIParent)
+    local window = ProfessionsFrame
+    window.shown = false
+    fireAll("ADDON_LOADED", "Blizzard_Professions")
+    assert(window.scripts.OnShow and window.scripts.OnHide, "game profession window not hooked")
+    local line = 197
+    C_TradeSkillUI = { GetBaseProfessionInfo = function() return { professionID = line, professionName = "?" } end }
     GetProfessions = function() return 1 end
-    GetProfessionInfo = function() return "Alchemy", nil, 120, 150, 0, 0, 171 end
-    -- 打开专业窗口时读到的已学配方：旧版按名字、新版按配方 ID
-    local first, second = alchemy.recipes[1], alchemy.recipes[2]
+    local rank = 1
+    GetProfessionInfo = function() return "?", nil, rank, 75, 0, 0, line end
+    window.shown = true
+    window.scripts.OnShow(window)
+    local bench = R.bench
+    assert(bench and bench.shown, "workbench not shown with the profession window")
+    assert(bench.title:GetText() == main.Name(tailoring.name), "workbench does not name the open profession")
+    local function rows()
+        local count, first = 0, nil
+        for _, row in ipairs(bench.rows) do
+            if row:IsShown() and row.recipe then
+                count = count + 1
+                first = first or row
+            end
+        end
+        return count, first
+    end
+
+    -- 冲级路线
+    -- 技能 30：已走过的 1-30 默认收起，点开后列出按现在价格算的这一段
+    rank = 30
+    R.Refresh()
+    local function sectionRow(text)
+        for _, row in ipairs(bench.rows) do
+            if row:IsShown() and not row.recipe and (row.cells.a:GetText() or ""):find(text, 1, true) then
+                return row
+            end
+        end
+    end
+    local earlierTitle = collector.L["Earlier steps, skill %d-%d"]:format(1, 30)
+    local earlierRow = sectionRow(earlierTitle)
+    assert(earlierRow and earlierRow.cells.a:GetText():find("+ ", 1, true), "earlier steps not shown collapsed")
+    local collapsedRows = rows()
+    earlierRow.onClick()
+    assert(bench.collapsed.earlier == false and rows() > collapsedRows, "earlier steps do not expand")
+    local earlier = R.BuildRoute(tailoring, { rank = 30, max = 75 }, 1, 30)
+    assert(earlier.steps[1].from == 1 and earlier.steps[#earlier.steps].to == 30, "earlier route range wrong")
+    sectionRow(earlierTitle).onClick()
+    assert(bench.collapsed.earlier == true and rows() == collapsedRows, "earlier steps do not collapse again")
+    bench.collapsed.earlier = nil
+    rank = 1
+    R.Refresh()
+    assert(not sectionRow(earlierTitle), "earlier steps shown at skill 1")
+
+    local plan, from, to = R.BuildRoute(tailoring, { rank = 1, max = 75 })
+    assert(from == 1 and to == 75, "route does not run to the next rank cap by default")
+    assert(#plan.steps > 0 and not plan.blocked and plan.materials > 0, "priced route has gaps or no cost")
+    assert(plan.steps[1].from == 1 and plan.steps[#plan.steps].to == 75, "route does not cover the skill range")
+    assert(bench.routeOptions:IsShown() and not bench.unlearned:IsShown(), "route options not shown on the route view")
+    assert(not bench.commission:IsShown(), "commission option shown for a profession without enchants")
+    -- 路线下拉框：三种取向与手册路线在一起，默认均衡；切换后记住
+    local routeSettings = collector.db.settings.recipeRoute
+    assert(bench.mode:IsShown() and bench.mode.value == "balanced", "route mode dropdown not on balanced by default")
+    bench.mode.onChange("speed")
+    assert(routeSettings.priority == "speed" and routeSettings.mode == "live", "route priority not saved")
+    bench.mode.onChange("balanced")
+    local stepRows, firstRow = rows()
+    assert(stepRows >= #plan.steps, "route steps not drawn")
+    assert(bench.totals:IsShown() and bench.tiles.materials.value:GetText() == tostring(math.floor(
+        plan.materials / 100 + 0.5) * 100), "route totals missing the material cost")
+    assert(bench.tiles.net.title:GetText() == collector.L[plan.net >= 0 and "Net cost" or "Net profit"],
+        "route totals missing the net cost")
+    GameTooltip.spellID = nil
+    firstRow.scripts.OnEnter(firstRow)
+    assert(GameTooltip.spellID == firstRow.recipe.id, "hover does not show the recipe tooltip")
+    firstRow.scripts.OnLeave(firstRow)
+    -- 点一行展开明细（涨点概率一行，这一步买的每种材料一行，成品两行），再点收起
+    local function shownRows()
+        local count = 0
+        for _, row in ipairs(bench.rows) do
+            if row:IsShown() then count = count + 1 end
+        end
+        return count
+    end
+    local before, step = shownRows(), firstRow.recipe
+    firstRow.scripts.OnClick(firstRow)
+    local firstStep = plan.steps[1]
+    assert(firstStep.recipe == step and #firstStep.bought > 0, "first step does not list what it buys")
+    -- 展开里有回本率（成品与材料都有价格时）
+    local payback = step.makes and R.Profit(step) and 1 or 0
+    if payback == 1 then
+        local found = false
+        local prefix = collector.L["Payback %d%%"]:gsub("%%d%%%%", "")
+        for _, row in ipairs(bench.rows) do
+            found = found or (row:IsShown() and (row.cells.a:GetText() or ""):find(prefix, 1, true) ~= nil)
+        end
+        assert(found, "expanded step does not show the payback rate")
+    end
+    local expected = 1 + #firstStep.bought + #firstStep.used + #firstStep.prepared + (step.makes and 2 or 0) + payback
+    assert(shownRows() == before + expected, ("expanding a step added %d rows, expected %d"):format(
+        shownRows() - before, expected))
+    local _, reopened = rows()
+    reopened.scripts.OnClick(reopened)
+    assert(shownRows() == before, "collapsing a step did not remove its breakdown")
+    -- 点分段标题收起这一段，再点展开
+    local section
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.onClick and not row.recipe then section = row break end
+    end
+    assert(section, "route has no section title to fold")
+    section.scripts.OnClick(section)
+    assert(bench.collapsed.steps and rows() < stepRows, "folding the steps section did not hide its rows")
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.onClick and not row.recipe then row.scripts.OnClick(row) break end
+    end
+    assert(not bench.collapsed.steps and shownRows() == before, "unfolding the steps section did not restore it")
+    -- 手册路线：有攻略的专业可以换成固定顺序，步骤照路线数据走
+    assert(tailoring.route and #tailoring.route > 0 and bench.mode:IsShown(), "no handbook route for tailoring")
+    bench.mode.onChange("handbook")
+    assert(collector.db.settings.recipeRoute.mode == "handbook" and not bench.buyRecipes:IsShown(),
+        "handbook mode not selected")
+    local handbook = R.BuildRoute(tailoring, { rank = 1, max = 75 })
+    assert(handbook.steps[1].recipe.id == tailoring.route[1].recipe and handbook.steps[1].from == 1
+        and handbook.steps[#handbook.steps].to == 75 and handbook.materials > 0,
+        "handbook route does not follow the guide's order")
+    assert(handbook.net >= plan.net - 1e-6, "the cheapest route costs more than the handbook route")
+    -- 手册路线时下拉框还在，显示“手册路线”，直接选一种取向就切回计算路线
+    assert(bench.mode:IsShown() and bench.mode.value == "handbook" and #bench.mode.items == 4,
+        "route dropdown hidden or wrong in handbook mode")
+    bench.mode.onChange("saving")
+    assert(collector.db.settings.recipeRoute.mode == "live" and collector.db.settings.recipeRoute.priority == "saving"
+        and bench.mode.value == "saving" and bench.buyRecipes:IsShown(), "live mode not restored from the dropdown")
+    bench.mode.onChange("balanced")
+    bench.target.onChange(150)
+    assert(collector.db.settings.recipeRoute.target == 150, "target skill not saved")
+    collector.db.settings.recipeRoute.target = nil
+    bench.recovery.scripts.OnClick(bench.recovery)
+    assert(collector.db.settings.recipeRoute.recovery == false, "resale option not saved")
+    bench.recovery.scripts.OnClick(bench.recovery)
+
+    -- 流通档：别的配方的材料算卖得动，武器护甲卖不动，绑定的不回收
+    local savedInstant, savedInfo = C_Item.GetItemInfoInstant, C_Item.GetItemInfo
+    C_Item.GetItemInfoInstant = function(id) return id, nil, nil, nil, nil, id == 5001 and 4 or 1 end
+    assert(R.Tier(2996) == "high", "bolt of cloth (a reagent) is not high liquidity")
+    assert(R.Tier(5001) == "low" and R.Tier(5002) == "high", "armor or bag tier wrong (bags sell well)")
+    C_Item.GetItemInfo = function() return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 0, nil, nil, 1 end
+    assert(R.Tier(5001) == "none", "bound item still counted for resale")
+    C_Item.GetItemInfoInstant, C_Item.GetItemInfo = savedInstant, savedInfo
+
+    -- 图纸：没学的配方按学习技能排，商人卖的带价格与位置，点一行在地图上标出
+    bench.views.buttons.sources.scripts.OnClick(bench.views.buttons.sources)
+    assert(collector.db.settings.recipePanel.view == "sources" and not bench.routeOptions:IsShown(),
+        "sources view not selected")
+    local unlearned = 0
+    for _, recipe in ipairs(tailoring.recipes) do
+        if recipe.skill and not recipe.nip then unlearned = unlearned + 1 end
+    end
+    assert(rows() == unlearned, ("sources view shows %d of %d unlearned recipes"):format(rows(), unlearned))
+    local sold
+    for _, recipe in ipairs(tailoring.recipes) do
+        if recipe.spot and recipe.spot.A and recipe.buy and recipe.buy.A then sold = recipe break end
+    end
+    assert(sold, "no tailoring pattern with a vendor position in the data")
+    local _, price, spot = R.Source(sold, "A")
+    assert(price:find(tostring(sold.buy.A), 1, true) and spot == sold.spot.A, "vendor price or position missing")
+    assert(select(2, R.Source({ id = 1, skill = { 1, 2, 3 } }, "A")) == "", "trainer recipe should have no price")
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.recipe == sold then
+            row.scripts.OnClick(row)
+            break
+        end
+    end
+    local vendorLine
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.spot then vendorLine = row end
+    end
+    assert(vendorLine and vendorLine.spot[1] == sold.spot.A[1], "expanded pattern has no vendor line to click")
+    vendorLine.scripts.OnClick(vendorLine)
+    collector.Recipes.bench.expanded = {}
+    -- 利润：材料与成品都有价格的配方按利润排
+    local shirt
+    for _, recipe in ipairs(tailoring.recipes) do
+        if recipe.makes and recipe.skill and not recipe.nip and not shirt then shirt = recipe end
+    end
+    P.RecordAuction({ [shirt.makes] = 100000 })
+    local entry = R.Profit(shirt)
+    assert(entry and entry.value == 95000 * (shirt.count or 1) and entry.profit == entry.value - entry.cost,
+        "profit is not sale value after the cut minus material cost")
+    assert(math.abs(entry.margin - entry.profit / entry.cost) < 1e-9, "margin is not profit over cost")
+    local tier, reason = R.Tier(2996)
+    assert(tier == "high" and reason == "reagent", "liquidity reason missing")
+    bench.views.buttons.profit.scripts.OnClick(bench.views.buttons.profit)
+    assert(bench.unlearned:IsShown(), "profit option not shown")
+    assert(rows() == 0, "profit view lists recipes you have not learned")
+    bench.unlearned.scripts.OnClick(bench.unlearned)
+    local profitRows, top = rows()
+    assert(profitRows >= 1 and top.recipe == shirt, "most profitable recipe is not first")
+    -- 点表头排序：点“利润”反过来，点“利润率”按利润率从大到小
+    local header
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.sorters.d and row.sorters.d:IsShown() then header = row break end
+    end
+    assert(header, "profit header has no sort buttons")
+    header.sorters.d.scripts.OnClick(header.sorters.d)
+    local profitSettings = collector.db.settings.recipeProfit
+    assert(profitSettings.sort == "profit" and profitSettings.descending == false, "clicking the sorted column did not flip it")
+    header.sorters.e.scripts.OnClick(header.sorters.e)
+    assert(profitSettings.sort == "margin" and profitSettings.descending == true, "clicking another column did not sort by it")
+    profitSettings.sort, profitSettings.descending = "profit", true
+    R.Refresh()
+    local _, again = rows()
+    local beforeProfit = shownRows()
+    again.scripts.OnClick(again)
+    assert(shownRows() == beforeProfit + #shirt.reagents / 2 + 2, "profit row did not expand into its cost breakdown")
+    bench.expanded = {}
+    -- 往下看一层：丝绸卷（4305）可以买，也可以用丝绸（4306）x4 自己做，取便宜的
+    local boltOf
+    for _, recipe in ipairs(tailoring.recipes) do
+        if recipe.makes and recipe.makes ~= 4305 and not recipe.nip and not boltOf then
+            for index = 1, #(recipe.reagents or {}), 2 do
+                if recipe.reagents[index] == 4305 then boltOf = recipe end
+            end
+        end
+    end
+    assert(boltOf, "no tailoring recipe uses Bolt of Silk Cloth")
+    -- 用桩价格：前面的测试给所有材料都记了商人价
+    local realBuyCost = P.BuyCost
+    local boltPrices = { [4305] = 50000, [4306] = 1000 }
+    P.BuyCost = function(item)
+        if boltPrices[item] then return boltPrices[item], "auction" end
+        return realBuyCost(item)
+    end
+    P.RecordAuction({ [boltOf.makes] = 900000 })
+    local unit, source, via, buy = R.ReagentCost(tailoring, 4305, true)
+    assert(unit == 4000 and source == "craft" and via and via.makes == 4305 and buy == 50000,
+        "Bolt of Silk Cloth not costed as four Silk Cloth made yourself")
+    local deep = R.Profit(boltOf)
+    local expected = 0
+    for index = 1, #boltOf.reagents, 2 do
+        expected = expected + R.ReagentCost(tailoring, boltOf.reagents[index], true) * boltOf.reagents[index + 1]
+    end
+    assert(deep and deep.crafted >= 1 and math.abs(deep.cost - expected) < 1e-6, "profit does not use the cheaper made-yourself cost")
+    assert(select(2, R.ReagentCost(tailoring, 4305, false)) ~= "craft", "an unlearned recipe was used to make a material")
+    boltPrices[4305] = 3000
+    assert(select(2, R.ReagentCost(tailoring, 4305, true)) == "auction", "buying is cheaper but the material is still made")
+    boltPrices[4305] = 50000
+    local boltRow
+    R.Refresh()
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.recipe == boltOf then boltRow = row end
+    end
+    assert(boltRow, "recipe using Bolt of Silk Cloth not listed")
+    boltRow.scripts.OnClick(boltRow)
+    local madeLine, buyLine
+    for _, row in ipairs(bench.rows) do
+        local text = row:IsShown() and row.cells.a:GetText() or ""
+        madeLine = madeLine or text:find(collector.L["made yourself"], 1, true) ~= nil
+        buyLine = buyLine or text:find((collector.L["buying it instead: %s each"]):gsub("%%s.*", ""), 1, true) ~= nil
+    end
+    assert(madeLine and buyLine, "breakdown does not show the made-yourself cost next to the buying price")
+    bench.expanded = {}
+    P.BuyCost = realBuyCost
+    bench.unlearned.scripts.OnClick(bench.unlearned)
+
+    -- 附魔：按钮打开代工附魔的勾选表，逐个勾选；勾选的附魔按客人出材料算
+    line = 333
+    bench.views.buttons.route.scripts.OnClick(bench.views.buttons.route)
+    assert(bench.title:GetText() == main.Name(enchanting.name) and bench.commission:IsShown(),
+        "commission button missing for enchanting")
+    assert(#R.ChosenCommissions(enchanting) == 0, "enchants ticked before the player chose any")
+    local paid = R.BuildRoute(enchanting, { rank = 1, max = 75 })
+    bench.commission.scripts.OnClick(bench.commission)
+    assert(bench.picking and not bench.totals:IsShown(), "commission button does not open the enchant list")
+    local function pickRows()
+        local list = {}
+        for _, row in ipairs(bench.rows) do
+            if row:IsShown() and row.check ~= nil then table.insert(list, row) end
+        end
+        return list
+    end
+    local choices = pickRows()
+    assert(#choices > 0 and not choices[1].check and not choices[1].recipe.makes, "enchant list is empty or pre-ticked")
+    local picked = choices[1].recipe
+    choices[1].scripts.OnClick(choices[1])
+    assert(collector.db.settings.recipeRoute.commissionPicks[picked.id] and pickRows()[1].check
+        and pickRows()[1].box.mark:IsShown(), "clicking an enchant does not tick it")
+    local chosen = R.ChosenCommissions(enchanting)
+    assert(#chosen == 1 and chosen[1] == picked.id, "ticked enchant not passed to the route")
+    pickRows()[1].scripts.OnClick(pickRows()[1])
+    assert(#R.ChosenCommissions(enchanting) == 0, "clicking a ticked enchant does not clear it")
+    -- 全部勾选、全部取消
+    local actions = {}
+    for _, row in ipairs(bench.rows) do
+        if row:IsShown() and row.onClick and row.check == nil then table.insert(actions, row) end
+    end
+    assert(#actions == 2, "enchant list has no tick-all and clear-all rows")
+    actions[1].scripts.OnClick(actions[1])
+    assert(#R.ChosenCommissions(enchanting) == #choices, "tick all did not tick every listed enchant")
+    local free = R.BuildRoute(enchanting, { rank = 1, max = 75 })
+    assert(free.materials < paid.materials, "taking commissions does not lower the material cost")
+    local commissioned = false
+    for _, step in ipairs(free.steps) do
+        commissioned = commissioned or step.commission
+    end
+    assert(commissioned, "no commission step in the enchanting route")
+    bench.commission.scripts.OnClick(bench.commission)
+    assert(not bench.picking and bench.totals:IsShown(), "commission button does not go back to the route")
+    assert(bench.commission.label:GetText() == (collector.L["Customer enchants: %d"]):format(#choices),
+        "commission button does not count the ticked enchants")
+    collector.db.settings.recipeRoute.commissionPicks = {}
+
+    -- 每个专业三个视图都能画出来；战斗中不计算路线
+    for _, profession in ipairs(collector.recipeData) do
+        line = profession.skillLines[1]
+        for _, view in ipairs({ "route", "sources", "profit" }) do
+            collector.db.settings.recipePanel.view = view
+            R.Refresh()
+            assert(bench.title:GetText() == main.Name(profession.name), "profession not recognized: " .. profession.slug)
+        end
+    end
+    collector.db.settings.recipePanel.view = "route"
+    inCombat = true
+    R.Refresh()
+    assert(bench.summary:GetText():find(collector.L["The route is worked out after you leave combat"], 1, true),
+        "route computed in combat")
+    inCombat = false
+
+    -- 旧版窗口按名字认专业
+    C_TradeSkillUI = nil
+    GetTradeSkillLine = function() return "Alchemy", 60, 75 end
+    assert(R.CurrentProfession(window) == bySlug.alchemy, "profession not recognized by name")
+    GetTradeSkillLine = nil
+    -- 收起留小按钮；可拖动并记住相对专业窗口的偏移；窗口关了一起隐藏
+    bench.close.scripts.OnClick(bench.close)
+    assert(not bench.shown and R.tab.shown, "collapse should leave the small button")
+    -- 小按钮可拖动：与工作台共用相对专业窗口右上角的偏移；拖动松手不算点击；右键放回原位
+    window.GetRight = function() return 800 end
+    window.GetTop = function() return 600 end
+    R.tab.GetLeft = function() return 820 end
+    R.tab.GetTop = function() return 500 end
+    R.tab.scripts.OnDragStart(R.tab)
+    R.tab.scripts.OnDragStop(R.tab)
+    local panelSettings = collector.db.settings.recipePanel
+    assert(panelSettings.dockX == 20 and panelSettings.dockY == -100, "button position should become the workbench offset")
+    local tx, ty = bench:DockOffset()
+    assert(tx == 20 and ty == -100, "workbench should open where the button was")
+    R.tab.scripts.OnClick(R.tab, "LeftButton")
+    assert(not bench.shown, "releasing a drag should not open the workbench")
+    R.tab.draggedAt = nil
+    R.tab.scripts.OnClick(R.tab, "RightButton")
+    assert(panelSettings.dockX == nil and not bench.shown, "right-click should put the button back")
+    R.tab.scripts.OnClick(R.tab, "LeftButton")
+    assert(bench.shown, "button should expand the workbench")
+    window.GetRight = function() return 800 end
+    window.GetTop = function() return 600 end
+    bench.GetLeft = function() return 850 end
+    bench.GetTop = function() return 600 end
+    bench.scripts.OnDragStart(bench)
+    bench.scripts.OnDragStop(bench)
+    assert(collector.db.settings.recipePanel.dockX == 50 and collector.db.settings.recipePanel.dockY == 0,
+        "workbench offset not remembered")
+    collector.db.settings.recipePanel.dockX = nil
+    window.shown = false
+    window.scripts.OnHide(window)
+    assert(not bench.shown and not R.tab.shown, "workbench should hide with the profession window")
+
+    -- 已学配方：打开专业窗口时读到的（旧版按名字、新版按配方 ID）
+    local first, second = bySlug.alchemy.recipes[1], bySlug.alchemy.recipes[2]
     spellNames[first.id] = "Elixir of Minor Force"
     GetNumTradeSkills = function() return 2 end
     GetTradeSkillInfo = function(index)
@@ -1261,118 +1649,25 @@ collectorCheck("collector recipes page: recipes and leveling guide for your prof
     R.RecordKnownRecipes()
     C_TradeSkillUI, GetNumTradeSkills, GetTradeSkillInfo = nil, nil, nil
     assert(R.KnownRecipe(first) and R.KnownRecipe(second), "recipes seen in the profession window are not known")
-    -- “配方”页挂在主窗口
-    main.MainFrame:Open("recipes")
-    local page = R.page
-    assert(page and page:IsVisible(), "recipes page not registered in the main window")
-    assert(page.title:GetText() == main.Name(alchemy.name), "learned profession is not selected by default")
-    local recipeRows = 0
-    for _, row in ipairs(page.rows) do
-        if row:IsShown() and row.recipe then recipeRows = recipeRows + 1 end
-    end
-    assert(recipeRows == #alchemy.recipes, ("recipes view shows %d of %d"):format(recipeRows, #alchemy.recipes))
-    local orange
-    for _, recipe in ipairs(alchemy.recipes) do
-        if recipe.skill and recipe.skill[1] > 120 then orange = recipe break end
-    end
-    assert(R.Difficulty(orange, { rank = 120, max = 150 }) == "skillOrange", "recipe above your skill is not orange")
     assert(R.Difficulty(first, { rank = 120, max = 150 }) == "skillGray", "low recipe is not gray")
-    -- 图标：有成品的用成品物品图标，没有成品的用技能图标
     local savedIcon, savedTexture = C_Item.GetItemIconByID, C_Spell.GetSpellTexture
     C_Item.GetItemIconByID = function(id) return id == first.makes and 999001 or 134400 end
     C_Spell.GetSpellTexture = function() return 999002 end
     assert(R.RecipeIcon(first):find("999001", 1, true), "recipe with a product does not use the item icon")
     assert(R.RecipeIcon({ id = 1 }):find("999002", 1, true), "enchant does not use the spell icon")
     C_Item.GetItemIconByID, C_Spell.GetSpellTexture = savedIcon, savedTexture
-    page.hideLearned.scripts.OnClick(page.hideLearned)
-    local afterHide = 0
-    for _, row in ipairs(page.rows) do
-        if row:IsShown() and row.recipe then afterHide = afterHide + 1 end
-    end
-    assert(afterHide == recipeRows - 2, "hiding learned recipes did not remove the two learned rows")
-    collector.db.settings.recipes.hideLearned = false
-    -- 冲级指南：每段的推荐配方，技能 120 所在的 75-150 段高亮
-    page.views.buttons.guide.scripts.OnClick(page.views.buttons.guide)
-    local picks, highlightedPicks = 0, 0
-    for _, row in ipairs(page.rows) do
-        if row:IsShown() and row.recipe then
-            picks = picks + 1
-            if row.tint.shown then highlightedPicks = highlightedPicks + 1 end
-        end
-    end
-    local expectedPicks, bracketPicks = 0, 0
-    for _, bracket in ipairs(alchemy.guide) do
-        expectedPicks = expectedPicks + #bracket.picks
-        if bracket.from == 75 then bracketPicks = #bracket.picks end
-    end
-    assert(picks == expectedPicks and picks > 0, ("guide shows %d of %d picks"):format(picks, expectedPicks))
-    assert(highlightedPicks == bracketPicks, "the bracket you are in is not highlighted")
-    -- 每个专业两个视图都能画出来，悬停不报错
-    for _, profession in ipairs(collector.recipeData) do
-        for _, view in ipairs({ "recipes", "guide" }) do
-            collector.db.settings.recipes.selected, collector.db.settings.recipes.view = profession.slug, view
-            R.Refresh()
-            for _, row in ipairs(page.rows) do
-                if row:IsShown() and row.recipe then
-                    row.scripts.OnEnter(row)
-                    row.scripts.OnLeave(row)
-                end
+
+    -- 清掉测试写进去的价格
+    for _, profession in ipairs({ tailoring, enchanting }) do
+        for _, recipe in ipairs(profession.recipes) do
+            for index = 1, #(recipe.reagents or {}), 2 do
+                main.db.vendorPrices[recipe.reagents[index]] = nil
             end
         end
     end
-    collector.db.settings.recipes.selected, collector.db.settings.recipes.view = nil, "recipes"
-    main.MainFrame:Hide()
-    GetProfessions, GetProfessionInfo = nil, nil
-end)
-collectorCheck("collector recipe panel follows the game profession window", function()
-    -- 模拟按需加载的暴雪专业窗口（Forever 为 ProfessionsFrame）
-    ProfessionsFrame = CreateFrame("Frame", "ProfessionsFrame", UIParent)
-    local window = ProfessionsFrame
-    window.shown = false
-    fireAll("ADDON_LOADED", "Blizzard_Professions")
-    assert(window.scripts.OnShow and window.scripts.OnHide, "game profession window not hooked")
-    local R = collector.Recipes
-    local alchemy
-    for _, profession in ipairs(collector.recipeData) do
-        if profession.slug == "alchemy" then alchemy = profession end
+    for _, prices in pairs(market) do
+        if type(prices) == "table" then prices[tostring(shirt.makes)] = nil end
     end
-    -- 窗口里打开的是炼金术（子技能线 2937），技能 60/75
-    C_TradeSkillUI = { GetBaseProfessionInfo = function() return { professionID = 2937, professionName = "?" } end }
-    GetProfessions = function() return 1 end
-    GetProfessionInfo = function() return "Alchemy", nil, 60, 75, 0, 0, 171 end
-    window.shown = true
-    window.scripts.OnShow(window)
-    assert(R.panel and R.panel.shown, "panel not shown with the profession window")
-    assert(R.panel.title:GetText() == main.Name(alchemy.name), "panel does not name the open profession")
-    local entries = R.Entries(alchemy)
-    assert(#entries == #alchemy.recipes, ("panel lists %d of %d recipes"):format(#entries, #alchemy.recipes))
-    assert(not entries[1].row.known and entries[#entries].row.known, "unlearned recipes should come first, learned last")
-    GameTooltip.spellID = nil
-    R.panel.list.onEntryEnter(R.panel, entries[1].id)
-    assert(GameTooltip.spellID == entries[1].row.recipe.id, "hover does not show the recipe tooltip")
-    -- 旧版窗口按名字认专业
-    C_TradeSkillUI = nil
-    GetTradeSkillLine = function() return "Alchemy", 60, 75 end
-    assert(R.CurrentProfession(window) == alchemy, "profession not recognized by name")
-    GetTradeSkillLine = nil
-    -- 收起留小按钮；窗口关了面板一起隐藏
-    R.panel.close.scripts.OnClick(R.panel.close)
-    assert(not R.panel.shown and R.tab.shown, "collapse should leave the small button")
-    R.tab.scripts.OnClick(R.tab)
-    assert(R.panel.shown, "button should expand the panel")
-    -- 可拖动并记住相对专业窗口的偏移
-    window.GetRight = function() return 800 end
-    window.GetTop = function() return 600 end
-    R.panel.GetLeft = function() return 850 end
-    R.panel.GetTop = function() return 600 end
-    R.panel.scripts.OnDragStart(R.panel)
-    R.panel.scripts.OnDragStop(R.panel)
-    assert(collector.db.settings.recipePanel.dockX == 50 and collector.db.settings.recipePanel.dockY == 0,
-        "recipe panel offset not remembered")
-    collector.db.settings.recipePanel.dockX = nil
-    window.shown = false
-    window.scripts.OnHide(window)
-    assert(not R.panel.shown and not R.tab.shown, "panel should hide with the profession window")
     GetProfessions, GetProfessionInfo = nil, nil
 end)
 check("quest item glow: the switch shows the client's real state and asks to reload after a change", function()
@@ -1437,7 +1732,7 @@ check("auto quest: accepts and turns in on its own, rewards by the chosen rule, 
     C_GossipInfo.SelectActiveQuest = function(id) tinsert(log, "turnin:" .. id) end
     C_GossipInfo.SelectAvailableQuest = function(id) tinsert(log, "pick:" .. id) end
     -- 对话菜单：先交已完成的，再接可接的；灰色任务不接；推迟到下一帧
-    active = { { questID = 11, isComplete = false }, { questID = 12, isComplete = true } }
+    active = { { questID = 11, isComplete = false }, { questID = 12, isComplete = true, isTrivial = true } }
     available = { { questID = 21, isTrivial = true }, { questID = 22, isTrivial = false } }
     fireAll("GOSSIP_SHOW")
     assert(#log == 0, "acted in the same frame; other addons need to read the window first")
@@ -1478,6 +1773,12 @@ check("auto quest: accepts and turns in on its own, rewards by the chosen rule, 
     -- 任务说明：接受一次；同一任务再弹出不再接；游戏确认接下后可以再自动处理
     AcceptQuest = function() tinsert(log, "accept") end
     QuestGetAutoAccept = function() return false end
+    local savedTrivial = C_QuestLog.IsQuestTrivial
+    C_QuestLog.IsQuestTrivial = function(id) return id == 25 end
+    windowQuest = 25
+    fireAll("QUEST_DETAIL"); runTimers()
+    assert(#log == count, "accepted a gray quest from the detail window")
+    C_QuestLog.IsQuestTrivial = savedTrivial
     windowQuest = 22
     fireAll("QUEST_DETAIL"); runTimers()
     assert(log[#log] == "accept", "quest detail was not accepted")
@@ -3317,71 +3618,60 @@ check("appearance: accent follows the class by default, schemes and background o
     list.schemeDropdown.onChange("class")
     assert(Theme.hex.gold == "ff3fc7eb", "did not return to the class scheme")
 end)
-check("talent simulator: every class renders, points follow the game rules, builds are saved and shareable", function()
+check("talent rules: every class has data, points follow the game rules, builds are saved and shareable", function()
     local Module = main.modules.Talents
     assert(Module and Module.enabled, "talent module not enabled")
     local Rules = Module.Rules
-    main.MainFrame:Open("talents")
-    local page = Module.page
-    assert(page and page:IsVisible(), "talent page did not open")
-    -- 默认是当前角色的职业（法师），三棵树都画出来
+    -- 主窗口不再有天赋标签（界面在游戏天赋窗口的方案视图里）
+    assert(not main.MainFrame:HasTab("talents"), "talents tab still registered in the main window")
+    Module.SelectClass()
+    -- 默认是当前角色的职业（法师）
     assert(Module.State.class == "mage", "should start on the player's class: " .. tostring(Module.State.class))
     local classes = main.Data.talents
     for _, class in ipairs(main.Theme.CLASS_ORDER) do
         assert(classes[class] and #classes[class].trees == 3, "no talent data for " .. class)
-        page.classDropdown.onChange(class)
+        Module.SelectClass(class)
         assert(Module.State.class == class, "class did not switch")
         for t, tree in ipairs(classes[class].trees) do
-            local panel = page.trees[t]
-            assert(panel.shown and panel.title:GetText() == main.Name(tree.name), "tree header wrong for " .. class)
-            local shown = 0
-            for _, button in ipairs(panel.buttons) do
-                if button.shown then shown = shown + 1 end
-            end
-            assert(shown == #tree.talents, ("%s tree %d: %d buttons for %d talents"):format(class, t, shown, #tree.talents))
             for index, talent in ipairs(tree.talents) do
                 assert(talent.max >= 1 and talent.max <= 5 and #talent.ranks.enUS == talent.max and #talent.ranks.zhCN == talent.max,
                     "rank texts missing: " .. talent.name.enUS)
                 assert(talent.row >= 1 and talent.row <= 7 and talent.col >= 1 and talent.col <= 4, "talent off the grid")
                 assert(not talent.req or (tree.talents[talent.req] and tree.talents[talent.req].row <= talent.row),
                     "bad prerequisite: " .. talent.name.enUS)
-                panel.buttons[index].scripts.OnEnter(panel.buttons[index]) -- 鼠标提示不报错
+                Module.ShowTooltip({ treeIndex = t, talentIndex = index }) -- 鼠标提示不报错
             end
         end
     end
     -- 战士武器系：第一层可点，第二层要先投 5 点
-    page.classDropdown.onChange("warrior")
+    Module.SelectClass("warrior")
     Module.Reset()
-    Module.Refresh()
     local trees = classes.warrior.trees
-    local arms, panel = trees[1], page.trees[1]
+    local arms = trees[1]
     local first, second
     for index, talent in ipairs(arms.talents) do
         if talent.row == 1 and not first then first = index end
         if talent.row == 2 and not talent.req and not second then second = index end
     end
-    assert(panel.buttons[second].icon.desaturated == true, "a locked talent should look dimmed")
-    panel.buttons[second]:Click()
+    assert(not Rules.IsAvailable(arms, Module.State.build[1], second), "row 2 open before 5 points in the tree")
+    Module.Spend(1, second, 1)
     assert(Module.State.build[1][second] == 0, "row 2 took a point before 5 points in the tree")
-    for _ = 1, arms.talents[first].max + 2 do panel.buttons[first]:Click() end
+    for _ = 1, arms.talents[first].max + 2 do Module.Spend(1, first, 1) end
     assert(Module.State.build[1][first] == arms.talents[first].max, "left-click did not fill the talent to its maximum")
-    assert(panel.buttons[first].count:GetText() == ("%d/%d"):format(arms.talents[first].max, arms.talents[first].max),
-        "rank label not updated")
     -- 第一层凑满 5 点后第二层开放
     for index, talent in ipairs(arms.talents) do
         if talent.row == 1 then
             while Rules.PointsBelow(arms, Module.State.build[1], 2) < 5 and Module.Spend(1, index, 1) do end
         end
     end
-    Module.Refresh()
     assert(Rules.PointsBelow(arms, Module.State.build[1], 2) == 5, "could not put 5 points in row 1")
-    assert(panel.buttons[second].icon.desaturated == false, "row 2 did not open after 5 points")
-    panel.buttons[second]:Click()
+    assert(Rules.IsAvailable(arms, Module.State.build[1], second), "row 2 did not open after 5 points")
+    Module.Spend(1, second, 1)
     assert(Module.State.build[1][second] == 1, "row 2 did not take a point after 5 points")
     -- 第二层有点时，第一层不能减到 5 点以下
-    panel.buttons[first].scripts.OnClick(panel.buttons[first], "RightButton")
+    Module.Spend(1, first, -1)
     assert(Rules.PointsBelow(arms, Module.State.build[1], 2) == 5, "right-click removed a point the next row depends on")
-    panel.buttons[second].scripts.OnClick(panel.buttons[second], "RightButton")
+    Module.Spend(1, second, -1)
     assert(Module.State.build[1][second] == 0, "right-click did not remove a point")
     -- 前置天赋：没点满前置不能点
     local dependent
@@ -3414,49 +3704,40 @@ check("talent simulator: every class renders, points follow the game rules, buil
     local code = Module.Code()
     assert(code:match("^[%d%-]+$") and Rules.Encode(Rules.Decode(trees, code)) == code, "share code does not round-trip")
     assert(main.db.modules.Talents.builds.warrior == code, "build not saved")
-    page.classDropdown.onChange("mage")
-    page.classDropdown.onChange("warrior")
+    Module.SelectClass("mage")
+    Module.SelectClass("warrior")
     assert(Module.Code() == code, "build lost after switching class")
     assert(Rules.Encode(Rules.Decode(trees, "9")) == "" and Rules.Encode(Rules.Decode(trees, "abc")) == "",
         "an illegal code should decode to an empty build")
     assert(Rules.Encode({ { 3, 0, 2, 0 }, { 0, 0 }, { 0, 1 } }) == "302--01", "share code format differs from the website")
     -- 网站链接：职业页加分享码；空加点不带 #
-    page.link:Click()
     local expected = main.Links:Build("talents", "warrior") .. "#" .. code
-    assert(WowHandbookLinkDialog.shown and WowHandbookLinkDialog.url == expected, "wrong build link: " .. tostring(WowHandbookLinkDialog.url))
+    assert(main.Links:Build("talents", Module.State.class, code) == expected, "wrong build link")
     assert(expected:find("/talents/warrior/#", 1, true), "talent link has the wrong route")
-    WowHandbookLinkDialog:Hide()
-    panel.reset:Click()
+    Module.Reset(1)
     assert(Rules.TreeTotal(Module.State.build[1]) == 0 and Rules.Total(Module.State.build) > 0, "tree reset should clear one tree only")
-    page.resetAll:Click()
+    Module.Reset()
     assert(Module.Code() == "" and main.db.modules.Talents.builds.warrior == nil, "reset did not clear the build")
     assert(main.Links:Build("talents", "warrior"):sub(-1) == "/", "an empty build should link to the plain class page")
     assert(not pcall(main.Links.Build, main.Links, "talents", "warrior", "x<y"), "unsafe link fragment accepted")
-    -- /wh talents 打开模拟器
-    main.MainFrame:SelectTab("home")
-    SlashCmdList.WOWHANDBOOK("talents")
-    assert(page:IsVisible(), "/wh talents did not open the simulator")
-    page.classDropdown.onChange("mage")
+    Module.SelectClass("mage")
 end)
 check("talent plans: website plans level by level, respec marked, editing a point leaves the plan", function()
     local Module = main.modules.Talents
     local Rules = Module.Rules
-    main.MainFrame:Open("talents")
-    local page = Module.page
     local plans = main.Data.talentPlans
     assert(plans and plans.mage and #plans.mage.plans > 0, "no talent plans exported")
     -- 没选过方案也没有自己的加点：用网站的默认方案，停在角色当前等级
     main.db.modules.Talents.plans.mage = nil
     main.db.modules.Talents.builds.mage = nil
-    page.classDropdown.onChange("mage")
+    Module.SelectClass("mage")
     local plan = Module.State.plan
     assert(plan and plan.id == plans.mage.default, "default plan not picked: " .. tostring(plan and plan.id))
     assert(Module.State.level == math.max(10, main.PlayerLevel()), "plan should start at the player's level")
-    assert(page.planBar.shown and page.planDropdown.value == plan.id, "plan bar or dropdown not shown")
     -- 每一级的点法就是这一级的分享码，加的点数等于等级减 9
     local trees = main.Data.talents.mage.trees
     for level = plan.first, plan.last do
-        page.slider.onChange(level)
+        Module.SetLevel(level)
         assert(Module.State.level == level, "slider did not move the plan")
         assert(Rules.Encode(Module.State.build) == plan.codes[level - plan.first + 1], "build differs from the plan at " .. level)
         assert(Rules.Total(Module.State.build) == level - 9, "points do not match level " .. level)
@@ -3464,31 +3745,23 @@ check("talent plans: website plans level by level, respec marked, editing a poin
         for t in ipairs(trees) do
             for _ in pairs(Module.State.picks[t]) do picked = picked + 1 end
         end
-        if Module.State.respec then
-            assert(page.pickText:GetText():find("%d", 1, false), "respec level not explained")
-        else
+        if not Module.State.respec then
             assert(picked == 1, ("level %d should add exactly one point, got %d"):format(level, picked))
-            assert(page.pickText:GetText() ~= "", "pick not described at level " .. level)
         end
     end
     -- 先奥后冰：40 级洗天赋，等级条上标出
     local arcaneFrost = Module.FindPlan("mage-arcane-frost-leveling")
     assert(arcaneFrost and arcaneFrost.respecs and arcaneFrost.respecs[1] == 40, "respec level missing")
-    page.planDropdown.onChange(arcaneFrost.id)
-    page.slider.onChange(40)
+    Module.UsePlan(Module.FindPlan(arcaneFrost.id))
+    Module.SetLevel(40)
     assert(Module.State.respec, "level 40 should be a respec")
-    -- 高亮这一级点的天赋
-    page.slider.onChange(41)
+    -- 这一级点的天赋只有一个
+    Module.SetLevel(41)
     local highlighted = 0
-    for t, panel in ipairs(page.trees) do
-        for index, button in ipairs(panel.buttons) do
-            if button.shown and button.border == "green" then
-                highlighted = highlighted + 1
-                assert(Module.State.picks[t][index], "highlighted a talent that was not picked")
-            end
-        end
+    for t in ipairs(trees) do
+        for _ in pairs(Module.State.picks[t]) do highlighted = highlighted + 1 end
     end
-    assert(highlighted == 1, "the talent of this level should be highlighted")
+    assert(highlighted == 1 and not Module.State.respec, "level 41 should pick exactly one talent")
     -- 方案不会改动玩家自己的加点；改动一点就变回“我的加点”，从这一级的点法出发
     assert(main.db.modules.Talents.builds.mage == nil, "viewing a plan overwrote the saved build")
     local code = Module.Code()
@@ -3500,15 +3773,15 @@ check("talent plans: website plans level by level, respec marked, editing a poin
     end
     assert(spent and Module.State.plan == nil and main.db.modules.Talents.plans.mage == "", "editing did not leave the plan")
     assert(Module.Code() ~= code and main.db.modules.Talents.builds.mage == Module.Code(), "edited build not saved")
-    page.classDropdown.onChange("warrior")
-    page.classDropdown.onChange("mage")
+    Module.SelectClass("warrior")
+    Module.SelectClass("mage")
     assert(Module.State.plan == nil, "my build choice not remembered")
-    page.planDropdown.onChange(arcaneFrost.id)
-    page.classDropdown.onChange("warrior")
-    page.classDropdown.onChange("mage")
+    Module.UsePlan(Module.FindPlan(arcaneFrost.id))
+    Module.SelectClass("warrior")
+    Module.SelectClass("mage")
     assert(Module.State.plan == arcaneFrost, "plan choice not remembered")
-    page.planDropdown.onChange("")
-    assert(Module.State.plan == nil and not page.planBar.shown, "my build should hide the level bar")
+    Module.UsePlan(Module.FindPlan(""))
+    assert(Module.State.plan == nil, "my build should leave the plan")
 end)
 check("game windows: our tabs join the game's own tab bars and open native-looking pages", function()
     local Module = main.modules.NativeTabs
@@ -4539,6 +4812,8 @@ check("auction house: searches and a full scan record prices, the corner scan bu
         replicate[i] = { itemID = 2589 + (i % 3), count = 5, buyout = 1000 + i }
     end
     replicate[7] = { itemID = 2592, count = 1, buyout = 0 } -- 只能竞拍的不算
+    -- 全量扫描的一口价是整条挂单的：一条 20 件的背包按总价除以件数（与 Auctionator 的全量扫描相同）
+    replicate[8] = { itemID = 5763, count = 20, buyout = 39900 }
     C_AuctionHouse = {
         GetBrowseResults = function()
             return { { itemKey = { itemID = 2770, battlePetSpeciesID = 0 }, minPrice = 150 },
@@ -4550,7 +4825,8 @@ check("auction house: searches and a full scan record prices, the corner scan bu
         end,
         GetNumItemSearchResults = function() return 2 end,
         GetItemSearchResultInfo = function(_, index)
-            return ({ { quantity = 1, buyoutAmount = 30000 }, { quantity = 2, buyoutAmount = 50000 } })[index]
+            -- buyoutAmount 是单件价：一条 82 件、每件 1995 的背包不能除成 24
+            return ({ { quantity = 1, buyoutAmount = 30000 }, { quantity = 82, buyoutAmount = 25000 } })[index]
         end,
         ReplicateItems = function() replicateRequests = replicateRequests + 1 end,
         GetNumReplicateItems = function() return 2500 end,
@@ -4576,12 +4852,35 @@ check("auction house: searches and a full scan record prices, the corner scan bu
     assert(main.Prices.Auction(2770) == 120, "browse minimum not recorded")
     assert(main.Prices.Auction(9999) == nil, "battle pet recorded")
     fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2771)
+    assert(main.Prices.Auction(2771) == nil, "commodity results read before the merge delay")
+    runTimers(1)
     assert(main.Prices.Auction(2771) == 75, "commodity price not recorded")
     fireAll("ITEM_SEARCH_RESULTS_UPDATED", { itemID = 2772, battlePetSpeciesID = 0 })
-    assert(main.Prices.Auction(2772) == 25000, "item unit price not recorded")
+    runTimers(1)
+    assert(main.Prices.Auction(2772) == 25000, "item search buyout is per unit, not per listing: " .. tostring(main.Prices.Auction(2772)))
+    -- 分页到达的后续结果（Auctionator 与长列表常见）也记：商品与物品的 _ADDED 事件，同一件多次事件只读一次
+    local commodityReads = 0
+    local commodityInfo = C_AuctionHouse.GetCommoditySearchResultInfo
+    C_AuctionHouse.GetCommoditySearchResultInfo = function(itemID, index)
+        if itemID == 2774 and index == 1 then
+            commodityReads = commodityReads + 1
+            return { itemID = 2774, unitPrice = 60 }
+        end
+        return commodityInfo(itemID, index)
+    end
+    fireAll("COMMODITY_SEARCH_RESULTS_ADDED", 2774)
+    fireAll("COMMODITY_SEARCH_RESULTS_ADDED", 2774)
+    fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2774)
+    runTimers(1)
+    assert(main.Prices.Auction(2774) == 60 and commodityReads == 1, "later commodity pages not recorded once")
+    C_AuctionHouse.GetCommoditySearchResultInfo = commodityInfo
+    fireAll("ITEM_SEARCH_RESULTS_ADDED", { itemID = 2775, battlePetSpeciesID = 0 })
+    runTimers(1)
+    assert(main.Prices.Auction(2775) == 25000, "later item pages not recorded")
     -- 关掉“记录搜索价格”后不再记
     main.db.modules.AuctionHouse.recordSearches = false
     fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2773)
+    runTimers(1)
     assert(main.Prices.Auction(2773) == nil, "recorded with the option off")
     main.db.modules.AuctionHouse.recordSearches = true
 
@@ -4596,6 +4895,8 @@ check("auction house: searches and a full scan record prices, the corner scan bu
     -- 2589 最便宜的一条是第 0 条：5 个一组 1000 铜，单价 200
     assert(main.Prices.Auction(2589) == 200, "scan unit price wrong: " .. tostring(main.Prices.Auction(2589)))
     assert(main.Prices.Auction(2592) == nil, "bid-only auction recorded")
+    assert(main.Prices.Auction(5763) == 1995, "scan listing total not divided by its count: "
+        .. tostring(main.Prices.Auction(5763)))
     -- 存档与 Auctionator 价格库同构：“服务器 阵营”下按字符串物品 ID 存 m / h / l / a，天数从 2020-01-01 算
     local store = main.db.auctionPrices
     assert(store.__dbversion == 6 and type(store["Test Realm Horde"]) == "table", "price database key or version wrong")
@@ -4657,16 +4958,21 @@ check("auction house: searches and a full scan record prices, the corner scan bu
     main:DisableModule(Module)
     assert(not button.shown, "scan button still shown after disabling")
     fireAll("COMMODITY_SEARCH_RESULTS_UPDATED", 2773)
+    runTimers(1)
     assert(main.Prices.Auction(2773) == nil, "disabled module still records")
     main:EnableModule(Module)
     GameTooltip.AddDoubleLine = nil
 end)
 
-check("crafting cost: the professions window shows material cost, auction price and profit", function()
+check("crafting cost: the professions window shows the profit per craft as a top-down sum", function()
     local Module = main.modules.CraftingCost
     local savedTradeSkill, savedMerchant = C_TradeSkillUI, C_MerchantFrame
     -- 配方：2 个 2589（拍卖 200）+ 1 个 2320（商人 10，拍卖 50）+ 一个可选材料槽；成品 2580 每次 1–3 个
     C_TradeSkillUI = { GetRecipeSchematic = function(recipeID)
+        if recipeID == 4000 then -- 没有成品的配方（附魔）
+            return { recipeID = 4000, reagentSlotSchematics = {
+                { required = true, quantityRequired = 3, reagents = { { itemID = 2589 } } } } }
+        end
         if recipeID ~= 3275 then return { reagentSlotSchematics = {} } end
         return { recipeID = 3275, outputItemID = 2580, quantityMin = 1, quantityMax = 3, reagentSlotSchematics = {
             { required = true, quantityRequired = 2, reagents = { { itemID = 2589 } } },
@@ -4703,17 +5009,96 @@ check("crafting cost: the professions window shows material cost, auction price 
     assert(panel.shown, "cost panel hidden for a recipe with reagents")
     local result = Module.Evaluate(3275)
     assert(result.cost == 410 and result.missing == 0 and result.value == 2000, "cost or value wrong")
-    assert(panel.cost.text == "410" and panel.value.text == "2000", "panel text wrong")
-    assert(panel.profit.text:find("+1490", 1, true), "profit after the 5% cut wrong: " .. panel.profit.text)
-    -- 利润率 = 利润 ÷ 材料成本：1490 / 410 ≈ 363%
-    assert(panel.margin.text:find("+363%", 1, true), "margin wrong: " .. panel.margin.text)
+    local L = main.L
+    assert(result.unitValue == 1000, "unit value not kept for the breakdown")
+    -- 算式自上而下：成品卖价（平均 2 个）− 手续费 5% − 材料 = 利润，再一句结论
+    assert(panel.title.text == L["Profit per craft"], "title wrong: " .. tostring(panel.title.text))
+    assert(panel.sells.label.text == L["Sells for (x%s)"]:format("2") and panel.sells.value.text == "2000",
+        "sells-for row wrong: " .. tostring(panel.sells.label.text))
+    assert(panel.cut.value.shown and panel.cut.value.text == "-100", "auction cut row wrong: " .. panel.cut.value.text)
+    assert(panel.materials.value.text == "-410", "materials row wrong: " .. panel.materials.value.text)
+    assert(panel.profit.value.text:find("+1490", 1, true), "profit after the 5% cut wrong: " .. panel.profit.value.text)
+    -- 1490 / 410 ≈ 363%
+    assert(panel.note.shown and panel.note.text:find("363%", 1, true), "verdict wrong: " .. panel.note.text)
+    assert(panel:GetHeight() > 60, "panel not sized to its rows")
 
-    -- 缺价格的材料：成本标出几种没价格，利润不算
+    -- 卖店比拍卖值钱：成品卖店 1500（拍卖 1000 扣手续费只剩 950），按卖店算、不扣手续费：2 × 1500 − 410 = 2590
+    local savedItemInfo = C_Item.GetItemInfo
+    C_Item.GetItemInfo = function(id) if id == 2580 then return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 1500 end end
+    form:Init({ recipeID = 3275 })
+    assert(panel.sells.label.text == L["Sells to a vendor for (x%s)"]:format("2") and panel.sells.value.text == "3000"
+        and not panel.cut.value.shown, "vendor sale not used: " .. tostring(panel.sells.label.text))
+    assert(panel.profit.value.text:find("+2590", 1, true), "vendor profit wrong: " .. panel.profit.value.text)
+    -- 卖店不如拍卖时照旧按拍卖
+    C_Item.GetItemInfo = function(id) if id == 2580 then return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 900 end end
+    form:Init({ recipeID = 3275 })
+    assert(panel.cut.value.shown and panel.profit.value.text:find("+1490", 1, true), "auction no longer preferred")
+    C_Item.GetItemInfo = savedItemInfo
+
+    -- 亏本：成品只卖 100，(200 × 0.95) − 410 = −220
+    main.Prices.RecordAuction({ [2580] = 100 })
+    form:Init({ recipeID = 3275 })
+    assert(panel.profit.value.text:find("-220", 1, true), "loss wrong: " .. panel.profit.value.text)
+    assert(panel.note.text:find(L["Crafting to sell loses money at current prices."], 1, true), "loss verdict missing")
+
+    -- 成品没有价格：卖价写暂无价格，手续费不显示，利润为问号并提示去搜成品
+    main.db.auctionPrices["Test Realm Horde"]["2580"] = nil
+    form:Init({ recipeID = 3275 })
+    assert(panel.sells.value.text:find(L["no price yet"], 1, true) and not panel.cut.value.shown, "missing output price not shown")
+    assert(panel.profit.value.text:find("?", 1, true)
+        and panel.note.text:find(L["Search for this item at the auction house to see the profit."], 1, true),
+        "missing output hint wrong")
+    main.Prices.RecordAuction({ [2580] = 1000 })
+
+    -- 没有成品的配方：只显示材料花费
+    form:Init({ recipeID = 4000 })
+    assert(panel.shown and panel.title.text == L["Material cost per craft"] and panel.materials.value.text == "600"
+        and not panel.profit.value.shown and not panel.sells.value.shown, "no-output recipe layout wrong")
+
+    -- 能自己做的材料：2589 用本专业已学的配方 2963 做，2 个 2592（拍卖 50）出 1 个 = 每个 100，比买（200）便宜
+    local savedSchematic = C_TradeSkillUI.GetRecipeSchematic
+    C_TradeSkillUI.GetRecipeSchematic = function(recipeID)
+        if recipeID == 2963 then
+            return { recipeID = 2963, outputItemID = 2589, quantityMin = 1, quantityMax = 1, reagentSlotSchematics = {
+                { required = true, quantityRequired = 2, reagents = { { itemID = 2592 } } } } }
+        end
+        return savedSchematic(recipeID)
+    end
+    C_TradeSkillUI.GetAllRecipeIDs = function() return { 3275, 2963 } end
+    C_TradeSkillUI.GetRecipeInfo = function(recipeID) return { recipeID = recipeID, learned = true } end
+    main.Prices.RecordAuction({ [2592] = 50 })
+    fireAll("TRADE_SKILL_LIST_UPDATE")
+    form:Init({ recipeID = 3275 })
+    result = Module.Evaluate(3275)
+    -- 两个方案：自己做 2589（材料 2×100 + 10 = 210，利润 1900 − 210 = 1690）在前，全部买（410，1490）在后
+    assert(#result.plans == 2 and result.cost == 210 and result.best.profit == 1690
+        and result.plans[2].profit == 1490 and result.best.crafted[1] == 2589, "craft-or-buy plans wrong")
+    assert(panel.plan.shown and panel.plan.text:find(L["Most profitable of %d plans: %s"]:format(2, ""), 1, true),
+        "best plan line missing: " .. tostring(panel.plan.text))
+    assert(panel.materials.value.text == "-210" and panel.profit.value.text:find("+1690", 1, true), "best plan not shown")
+    -- 悬停：列出全部方案与所选方案的下一层材料
+    GameTooltip.doubleLines = {}
+    GameTooltip.AddDoubleLine = function(self, left, right) tinsert(self.doubleLines, { left, right }) end
+    panel:GetScript("OnEnter")(panel)
+    assert(#GameTooltip.doubleLines >= 5 and GameTooltip.doubleLines[1][2]:find("+1690", 1, true)
+        and GameTooltip.doubleLines[2][2]:find("+1490", 1, true), "plans missing from the tooltip")
+    GameTooltip.AddDoubleLine = nil
+    -- 正在冷却的配方不算自己做
+    C_TradeSkillUI.GetRecipeCooldown = function(recipeID) return recipeID == 2963 and 3600 or nil end
+    assert(#Module.Evaluate(3275).plans == 1, "recipe on cooldown still offered")
+    C_TradeSkillUI.GetRecipeCooldown = nil
+    C_TradeSkillUI.GetAllRecipeIDs, C_TradeSkillUI.GetRecipeInfo, C_TradeSkillUI.GetRecipeSchematic = nil, nil, savedSchematic
+    fireAll("TRADE_SKILL_LIST_UPDATE")
+    form:Init({ recipeID = 3275 })
+    assert(not panel.plan.shown, "plan line shown with a single plan")
+
+    -- 缺价格的材料：材料行标出几种没价格，利润不算
     main.Prices.RecordVendor(2320, nil)
     main.db.vendorPrices[2320] = nil
     main.db.auctionPrices["Test Realm Horde"]["2320"] = nil
     form:Init({ recipeID = 3275 })
-    assert(panel.cost.text:find("1", 1, true) and panel.profit.text == "-" and panel.margin.text == "-",
+    assert(panel.materials.value.text:find("1", 1, true) and panel.profit.value.text:find("?", 1, true)
+        and panel.note.text:find(L["Some materials have no price yet. Search them at the auction house, or scan it."], 1, true),
         "missing reagent price not shown")
     -- 没有材料的配方不显示面板
     form:Init({ recipeID = 1 })

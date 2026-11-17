@@ -1,7 +1,8 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
--- 天赋模拟器：九个职业的三棵天赋树，左键加点、右键减点，规则与游戏一致
+-- 天赋加点的规则与状态（界面在游戏天赋窗口里：Modules/NativeTalentView.lua 的方案视图；
+-- /wh 主窗口不再有天赋页）：三棵天赋树，左键加点、右键减点，规则与游戏一致
 -- （10 级起每级 1 点、共 51 点；一棵树里每投 5 点开放下一层；前置天赋要点满）。
 -- 只是模拟，不会改动角色的真实天赋。每个职业的加点记在账号存档里；
 -- 加点可生成网站天赋模拟器的链接（分享码格式与网站一致）。
@@ -10,17 +11,10 @@ local L = ns.L
 -- 数据 Data/Talents.lua 由网站的天赋数据生成（取自客户端天赋表）。
 -- plans[职业] = 选中的方案 ID；"" 表示玩家选了“我的加点”，nil 表示没选过（有默认方案时用默认方案）。
 local Module = ns:NewModule("Talents", { builds = {}, plans = {} })
-local UI
 
 local TOTAL_POINTS = 51
 local POINTS_PER_ROW = 5
 local FIRST_TALENT_LEVEL = 10
-
-local page
-
-local function Color(text, name)
-    return ns.Theme:Color(text, name)
-end
 
 --------------------------------------------------------------------------------
 -- 规则：build[树序号][天赋序号] = 已投点数
@@ -322,7 +316,7 @@ local function Reset(t)
     SaveBuild()
 end
 
--- 供测试与斜杠命令使用
+-- 方案视图与测试使用
 Module.SelectClass = SelectClass
 Module.Spend = Spend
 Module.Reset = Reset
@@ -335,27 +329,8 @@ Module.Trees = Trees
 Module.ClassPlans = ClassPlans
 
 --------------------------------------------------------------------------------
--- 页面：顶部标题、点数、职业选择与按钮；下面并排三棵树
+-- 天赋鼠标提示：游戏天赋窗口里的方案视图使用（按钮上带 treeIndex / talentIndex）
 --------------------------------------------------------------------------------
-
-local PAD = 20
-local TREE_WIDTH, TREE_GAP = 234, 10
-local TREE_HEADER = 34
-local ICON, COL_PITCH, ROW_PITCH = 40, 54, 57
-local TREES_TOP = 100 -- 树面板顶部：上面是标题、按钮、摘要与方案等级条
-local LINE = 2
-
-local Refresh
-
-local ROLE_LABELS = { damage = "Damage", tank = "Tank", healer = "Healer" }
-
--- 天赋图标左上角在树面板里的位置
-local function CellPosition(talent)
-    local margin = (TREE_WIDTH - COL_PITCH * 4) / 2
-    local x = margin + (talent.col - 1) * COL_PITCH + (COL_PITCH - ICON) / 2
-    local y = TREE_HEADER + 6 + (talent.row - 1) * ROW_PITCH
-    return x, y
-end
 
 local function ShowTooltip(button)
     local trees = Trees()
@@ -395,331 +370,13 @@ local function ShowTooltip(button)
     GameTooltip:Show()
 end
 
-Module.ShowTooltip = ShowTooltip -- 游戏天赋窗口里的方案视图共用（按钮上带 treeIndex / talentIndex）
-
-local function OnTalentClick(button, mouseButton)
-    if Spend(button.treeIndex, button.talentIndex, mouseButton == "RightButton" and -1 or 1) then
-        Refresh()
-        if button:IsMouseOver() then
-            ShowTooltip(button)
-        end
-    end
-end
-
-local function TalentButton(panel, index)
-    local button = panel.buttons[index]
-    if not button then
-        button = UI:IconButton(panel, ICON)
-        button:SetScript("OnClick", OnTalentClick)
-        button:SetScript("OnEnter", ShowTooltip)
-        button:SetScript("OnLeave", GameTooltip_Hide)
-        panel.buttons[index] = button
-    end
-    return button
-end
-
-local function Line(panel, index)
-    local line = panel.lines[index]
-    if not line then
-        line = panel:CreateTexture(nil, "ARTWORK")
-        panel.lines[index] = line
-    end
-    line:ClearAllPoints()
-    line:Show()
-    return line
-end
-
--- 前置连线：同列画竖线，同层画横线，其余先横后竖；前置点满后线变成强调色
-local function DrawLinks(panel, tree, ranks)
-    local used = 0
-    local function Segment(x, y, width, height, met)
-        used = used + 1
-        local line = Line(panel, used)
-        line:SetPoint("TOPLEFT", x, -y)
-        line:SetSize(math.max(LINE, width), math.max(LINE, height))
-        line:SetColorTexture(unpack(ns.Theme.colors[met and "gold" or "line"]))
-    end
-    for index, talent in ipairs(tree.talents) do
-        local req = talent.req and tree.talents[talent.req]
-        if req then
-            local met = Rules.PrereqMet(tree, ranks, index)
-            local fromX, fromY = CellPosition(req)
-            local toX, toY = CellPosition(talent)
-            local half = (ICON - LINE) / 2
-            if req.col == talent.col then
-                Segment(fromX + half, fromY + ICON, LINE, toY - fromY - ICON, met)
-            elseif req.row == talent.row then
-                local left = math.min(fromX, toX) + ICON
-                Segment(left, fromY + half, math.abs(toX - fromX) - ICON, LINE, met)
-            else
-                local left = toX > fromX and fromX + ICON or toX + half
-                local right = toX > fromX and toX + half + LINE or fromX
-                Segment(left, fromY + half, right - left, LINE, met)
-                Segment(toX + half, fromY + half, LINE, toY - fromY - half, met)
-            end
-        end
-    end
-    for index = used + 1, #panel.lines do
-        panel.lines[index]:Hide()
-    end
-end
-
-local function RenderTree(panel, t, tree, ranks, pointsLeft, picks)
-    local spent = Rules.TreeTotal(ranks)
-    panel.icon:SetTexture(tree.icon and ("Interface\\Icons\\" .. tree.icon) or nil)
-    panel.title:SetText(ns.Name(tree.name) or "")
-    panel.points:SetText(Color(tostring(spent), spent > 0 and "gold" or "muted"))
-    panel.reset:SetEnabled(spent > 0)
-    for index, talent in ipairs(tree.talents) do
-        local button = TalentButton(panel, index)
-        local rank = ranks[index]
-        local available = Rules.IsAvailable(tree, ranks, index)
-        button.treeIndex, button.talentIndex = t, index
-        local x, y = CellPosition(talent)
-        button:ClearAllPoints()
-        button:SetPoint("TOPLEFT", x, -y)
-        button:SetIcon(talent.icon and ("Interface\\Icons\\" .. talent.icon) or 134400)
-        local open = rank > 0 or (available and pointsLeft > 0)
-        button:SetDimmed(not open)
-        if picks[index] and not state.respec then
-            -- 方案在这一级点的天赋
-            button:SetBorder("green")
-            button:SetCount(("%d/%d"):format(rank, talent.max), "green")
-        elseif rank >= talent.max then
-            button:SetBorder("gold")
-            button:SetCount(("%d/%d"):format(rank, talent.max), "gold")
-        elseif rank > 0 then
-            button:SetBorder("goldDim")
-            button:SetCount(("%d/%d"):format(rank, talent.max), "green")
-        else
-            button:SetBorder(open and "line" or "lineSoft")
-            button:SetCount(("%d/%d"):format(rank, talent.max), open and "textDim" or "muted")
-        end
-        button:Show()
-    end
-    for index = #tree.talents + 1, #panel.buttons do
-        panel.buttons[index]:Hide()
-    end
-    DrawLinks(panel, tree, ranks)
-end
-
-function Refresh()
-    if not (page and page:IsVisible()) then
-        return
-    end
-    if not state.class then
-        SelectClass()
-    end
-    local trees = Trees()
-    local total = Rules.Total(state.build or {})
-    local parts = {
-        (L["Points: %s"]):format(Color(("%d/%d"):format(total, TOTAL_POINTS), total > 0 and "gold" or "textDim")),
-    }
-    if total > 0 then
-        tinsert(parts, (L["Requires level %d"]):format(Rules.RequiredLevel(total)))
-    end
-    local spent = {}
-    for t in ipairs(trees) do
-        spent[t] = Rules.TreeTotal(state.build[t])
-    end
-    tinsert(parts, table.concat(spent, " / "))
-    if state.class == ns.PlayerClass() then
-        tinsert(parts, (L["You have %d points at level %d"]):format(Rules.PointsAtLevel(ns.PlayerLevel()), ns.PlayerLevel()))
-    end
-    page.summary:SetText(table.concat(parts, "  ·  "))
-    page.classDropdown:SetValue(state.class)
-    page.resetAll:SetEnabled(total > 0)
-
-    -- 推荐方案：下拉框列出本职业的方案，选中时显示等级条与这一级点的天赋
-    local plans = ClassPlans()
-    local items = { { id = "", label = L["My build"] } }
-    for _, plan in ipairs(plans) do
-        tinsert(items, { id = plan.id, label = ns.Name(plan.name) or plan.id })
-    end
-    page.planDropdown:SetItems(items)
-    page.planDropdown:SetValue(state.plan and state.plan.id or "")
-    page.planDropdown:SetShown(#plans > 0)
-    local plan = state.plan
-    page.planBar:SetShown(plan ~= nil)
-    if plan then
-        page.slider:SetRange(plan.first, plan.last)
-        page.slider:SetMarks(plan.respecs)
-        page.slider:SetLevel(state.level)
-        page.levelText:SetText(Color((L["Level %d"]):format(state.level), "gold"))
-        local picked = {}
-        for t, tree in ipairs(trees) do
-            for i in pairs(state.picks[t] or {}) do
-                tinsert(picked, ("%s %d/%d"):format(ns.Name(tree.talents[i].name) or "?", state.build[t][i],
-                    tree.talents[i].max))
-            end
-        end
-        if state.respec then
-            page.pickText:SetText(Color((L["Respec at this level: reset every point and spend %d on the new plan."]):format(total), "red"))
-        elseif #picked > 0 then
-            page.pickText:SetText((L["This level: %s"]):format(Color(table.concat(picked, ", "), "green")))
-        else
-            page.pickText:SetText("")
-        end
-    end
-
-    for t, panel in ipairs(page.trees) do
-        local tree = trees[t]
-        panel:SetShown(tree ~= nil)
-        if tree then
-            RenderTree(panel, t, tree, state.build[t], TOTAL_POINTS - total, plan and state.picks[t] or {})
-        end
-    end
-    page.empty:SetShown(#trees == 0)
-end
-Module.Refresh = function() Refresh() end -- 供测试使用
-
-local function CreateTreePanel(parent, t)
-    local panel = UI:Panel(parent, "panel", "lineSoft")
-    panel:SetWidth(TREE_WIDTH)
-    panel.buttons, panel.lines = {}, {}
-    panel.icon = panel:CreateTexture(nil, "ARTWORK")
-    panel.icon:SetSize(20, 20)
-    panel.icon:SetPoint("TOPLEFT", 10, -7)
-    panel.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-    panel.title = UI:Text(panel, "Heading")
-    panel.title:SetPoint("LEFT", panel.icon, "RIGHT", 8, 0)
-    panel.reset = UI:CloseButton(panel, function()
-        Reset(t)
-        Refresh()
-    end, 20)
-    panel.reset:SetPoint("TOPRIGHT", -6, -7)
-    panel.reset:HookScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(L["Reset this tree"], 1, 1, 1)
-        GameTooltip:Show()
-    end)
-    panel.reset:HookScript("OnLeave", GameTooltip_Hide)
-    panel.points = UI:Text(panel, "Body")
-    panel.points:SetPoint("RIGHT", panel.reset, "LEFT", -4, 0)
-    local line = ns.Theme:Fill(panel, "lineSoft", "ARTWORK")
-    line:SetPoint("TOPLEFT", 1, -TREE_HEADER)
-    line:SetPoint("TOPRIGHT", -1, -TREE_HEADER)
-    line:SetHeight(1)
-    return panel
-end
-
-local function CreatePage(parent)
-    UI = ns.UI
-    local p = CreateFrame("Frame", nil, parent)
-    page = p
-    Module.page = p -- 供测试使用
-
-    local title = UI:Text(p, "Title", L["Talent simulator"])
-    title:SetPoint("TOPLEFT", PAD, -18)
-    p.summary = UI:Text(p, "Muted")
-    p.summary:SetPoint("TOPLEFT", PAD, -50)
-
-    -- 职业选择：名字用客户端的职业名，按职业色显示
-    local items = {}
-    for _, class in ipairs(ns.Theme.CLASS_ORDER) do
-        if Classes()[class] then
-            tinsert(items, { id = class, label = ("|cff%s%s|r"):format(ns.Theme:AccentHex(class), ns.ClassName(class)) })
-        end
-    end
-    p.classDropdown = UI:Dropdown(p, items, function(class)
-        SelectClass(class)
-        Refresh()
-    end, 130)
-    p.classDropdown:SetPoint("TOPRIGHT", -PAD, -18)
-
-    -- 推荐方案下拉框：悬停时显示方案的定位与用途
-    p.planDropdown = UI:Dropdown(p, {}, function(id)
-        UsePlan(FindPlan(id))
-        Refresh()
-    end, 220)
-    p.planDropdown:SetPoint("RIGHT", p.classDropdown, "LEFT", -6, 0)
-    p.planDropdown:HookScript("OnEnter", function(self)
-        local plan = state.plan
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:SetText(L["Recommended plans"], 1, 0.82, 0)
-        if plan then
-            GameTooltip:AddLine(ns.Name(plan.name) or plan.id, 1, 1, 1)
-            GameTooltip:AddLine(L[ROLE_LABELS[plan.role] or "Damage"], 0.54, 0.51, 0.45)
-            if plan.use then
-                GameTooltip:AddLine(ns.Name(plan.use), 1, 1, 1, true)
-            end
-        else
-            GameTooltip:AddLine(L["Pick a leveling plan from wowhandbook.com, then drag the level bar to see what to spend at each level."],
-                1, 1, 1, true)
-        end
-        GameTooltip:Show()
-    end)
-    p.planDropdown:HookScript("OnLeave", GameTooltip_Hide)
-
-    p.resetAll = UI:Button(p, L["Reset"], 70, 24)
-    p.resetAll:SetPoint("TOPRIGHT", -PAD, -46)
-    p.resetAll:SetScript("OnClick", function()
-        Reset()
-        Refresh()
-    end)
-
-    -- 网站链接：在网站天赋模拟器里打开这套加点（分享给别人，或在浏览器里继续调整）
-    p.link = UI:Button(p, L["Copy build link"], 130, 24, "primary")
-    p.link:SetPoint("RIGHT", p.resetAll, "LEFT", -6, 0)
-    p.link:SetScript("OnClick", function()
-        if state.class then
-            ns.Links:ShowCopyDialog(ns.Links:Build("talents", state.class, Code()))
-        end
-    end)
-    p.link:HookScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:SetText(L["Copy build link"], 1, 0.82, 0)
-        GameTooltip:AddLine(L["Open this build in the talent calculator on wowhandbook.com to share it or keep editing."],
-            1, 1, 1, true)
-        GameTooltip:Show()
-    end)
-    p.link:HookScript("OnLeave", GameTooltip_Hide)
-
-    -- 方案等级条：拖动查看每一级的点法；洗天赋的等级在条上标出
-    local bar = CreateFrame("Frame", nil, p)
-    bar:SetPoint("TOPLEFT", PAD, -72)
-    bar:SetPoint("TOPRIGHT", -PAD, -72)
-    bar:SetHeight(20)
-    p.planBar = bar
-    p.levelText = UI:Text(bar, "Body")
-    p.levelText:SetPoint("LEFT")
-    p.levelText:SetWidth(64)
-    p.slider = UI:Slider(bar, 260, function(level)
-        SetLevel(level)
-        Refresh()
-    end)
-    p.slider:SetPoint("LEFT", 68, 0)
-    p.pickText = UI:Text(bar, "Small")
-    p.pickText:SetPoint("LEFT", p.slider, "RIGHT", 14, 0)
-    p.pickText:SetPoint("RIGHT")
-    p.pickText:SetWordWrap(false)
-    bar:Hide()
-
-    p.trees = {}
-    for t = 1, 3 do
-        local panel = CreateTreePanel(p, t)
-        panel:SetPoint("TOPLEFT", PAD + (t - 1) * (TREE_WIDTH + TREE_GAP), -TREES_TOP)
-        panel:SetPoint("BOTTOMLEFT", PAD + (t - 1) * (TREE_WIDTH + TREE_GAP), 10)
-        p.trees[t] = panel
-    end
-    p.empty = UI:Text(p, "Muted", L["No talent data for this class yet."])
-    p.empty:SetPoint("TOPLEFT", PAD, -TREES_TOP - 6)
-    p.empty:Hide()
-
-    p:SetScript("OnShow", Refresh)
-    return p
-end
+Module.ShowTooltip = ShowTooltip
 
 function Module:OnEnable()
-    ns.MainFrame:RegisterTab({ id = "talents", title = L["Talents"], order = 22, create = CreatePage, onShow = Refresh })
-    ns:AddCommand("talents", L["open the talent simulator"], function()
-        ns.MainFrame:Open("talents")
-    end)
-    -- 升级时，正在看本职业方案的等级条跟到新等级
+    -- 升级时，正在看本职业方案的等级条跟到新等级（方案视图下次刷新时画出来）
     ns:RegisterEvent("PLAYER_LEVEL_UP", function(_, level)
         if state.plan and state.class == ns.PlayerClass() and level then
             SetLevel(level)
-            Refresh()
         end
     end)
 end

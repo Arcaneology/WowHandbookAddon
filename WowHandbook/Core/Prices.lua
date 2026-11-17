@@ -10,6 +10,9 @@ local L = ns.L
 --                a = { ["天"] = 当天看到的最多在售数量 } }
 --   “天”是 2020-01-01 0 点（本地时间）起的天数，写成字符串；超过 21 天的按天记录删掉。
 -- 拍卖行按“服务器 阵营”分开存（与 Auctionator 旧版拍卖行的键相同）。全量扫描时间另存在 ns.db.auctionScans。
+-- 阶梯价（买得多时逐档往上吃，冲级路线算材料花费用）另存，不放进上面那张与 Auctionator 同构的表：
+--   ns.db.auctionDepth = { ["服务器 阵营"] = { [物品 ID] = { 天, 单价 1, 数量 1, 单价 2, 数量 2, ... } } }
+--   单价从低到高，最多 DEPTH_LEVELS 档；只有一档时不存（最低单价与在售数量已在价格记录里）。
 -- 商人售价全账号共用：ns.db.vendorPrices[itemID] = 单价。
 -- 勾选“使用 Auctionator 价格”且装了 Auctionator 时，还通过它的公开接口（Auctionator.API.v1）读它记下的价格，
 -- 两边取更新的一份。
@@ -19,6 +22,9 @@ ns.Prices = Prices
 
 local DB_VERSION = 6        -- Auctionator 未序列化价格库的版本号，表结构与之相同
 local HISTORY_DAYS = 21     -- 按天记录保留的天数（Auctionator 的默认值）
+local DEPTH_LEVELS = 6      -- 阶梯价最多存几档（最便宜的几档）
+local DEPTH_DAYS = 3        -- 阶梯价超过这么多天就不再使用（挂单变化快）
+local FULL_SCAN_SIZE = 1000 -- 一批写入超过这么多件物品视为全量扫描，顺带清掉过期的阶梯价
 local dayZero -- 2020-01-01 0 点（本地时间），第一次用到时再算
 local CALLER_ID = ADDON_NAME -- 调用 Auctionator 接口时报的名字
 
@@ -147,7 +153,43 @@ local function SetPrice(market, itemID, price, available, today)
     end
 end
 
--- 写入一批拍卖行价格：{ [itemID] = 单价 } 或 { [itemID] = { 单价, 在售数量 } }
+local function DepthMarket(create)
+    if not Database() then
+        return nil
+    end
+    local db = ns.db
+    db.auctionDepth = db.auctionDepth or {}
+    local key = MarketKey()
+    local market = db.auctionDepth[key]
+    if not market and create then
+        market = {}
+        db.auctionDepth[key] = market
+    end
+    return market
+end
+
+-- 把 { [单价] = 数量 } 整理成 { 天, 单价, 数量, ... }（单价从低到高，最多 DEPTH_LEVELS 档）；不足两档时返回 nil
+local function DepthRecord(buckets, today)
+    local prices = {}
+    for price, quantity in pairs(buckets) do
+        if type(price) == "number" and price > 0 and type(quantity) == "number" and quantity > 0 then
+            tinsert(prices, price)
+        end
+    end
+    if #prices < 2 then
+        return nil
+    end
+    table.sort(prices)
+    local record = { today }
+    for index = 1, math.min(#prices, DEPTH_LEVELS) do
+        tinsert(record, floor(prices[index] + 0.5))
+        tinsert(record, buckets[prices[index]])
+    end
+    return record
+end
+
+-- 写入一批拍卖行价格：{ [itemID] = 单价 }、{ [itemID] = { 单价, 在售数量 } }
+-- 或 { [itemID] = { 单价, 在售数量, { [单价] = 数量 } } }（第三项是各价位的在售数量，存成阶梯价）
 function Prices.RecordAuction(batch)
     local market = Market(true)
     if not market then
@@ -155,14 +197,26 @@ function Prices.RecordAuction(batch)
     end
     local today = Today()
     local count = 0
+    local depth
     for itemID, value in pairs(batch) do
-        local price, available = value, nil
+        local price, available, buckets = value, nil, nil
         if type(value) == "table" then
-            price, available = value[1], value[2]
+            price, available, buckets = value[1], value[2], value[3]
         end
         if type(itemID) == "number" and type(price) == "number" and price > 0 then
             SetPrice(market, itemID, floor(price + 0.5), available, today)
             count = count + 1
+            if type(buckets) == "table" then
+                depth = depth or DepthMarket(true)
+                depth[itemID] = DepthRecord(buckets, today)
+            end
+        end
+    end
+    if depth and count > FULL_SCAN_SIZE then
+        for itemID, record in pairs(depth) do
+            if type(record) ~= "table" or (record[1] or 0) < today - DEPTH_DAYS then
+                depth[itemID] = nil
+            end
         end
     end
     if count > 0 then
@@ -230,6 +284,42 @@ function Prices.Auction(itemID)
     end
     if own then
         return own, ownAge, "own"
+    end
+    return nil
+end
+
+-- 自己记下的在售数量（最近一次有记录的那天看到的最多数量）；没有记录时返回 nil
+function Prices.Available(itemID)
+    local market = Market(false)
+    local entry = market and market[tostring(itemID)]
+    local latest, quantity
+    for key, value in pairs(entry and entry.a or {}) do
+        local day = tonumber(key)
+        if day and (not latest or day > latest) then
+            latest, quantity = day, value
+        end
+    end
+    return quantity
+end
+
+-- 阶梯价：{ { 单价, 数量 }, ... }（单价从低到高）。没有近 DEPTH_DAYS 天内的阶梯记录时，
+-- 退回“最低单价 × 在售数量”这一档；连在售数量也没有时返回 nil（只知道最低价）
+function Prices.Depth(itemID)
+    local depth = DepthMarket(false)
+    local record = depth and depth[itemID]
+    if type(record) == "table" and (record[1] or 0) >= Today() - DEPTH_DAYS then
+        local levels = {}
+        for index = 2, #record - 1, 2 do
+            tinsert(levels, { record[index], record[index + 1] })
+        end
+        if #levels > 0 then
+            return levels
+        end
+    end
+    local own = OwnPrice(itemID)
+    local available = own and Prices.Available(itemID)
+    if available and available > 0 then
+        return { { own, available } }
     end
     return nil
 end

@@ -4,7 +4,7 @@ local L = ns.L
 -- 暴雪天赋窗口里的“天赋方案”页：原生天赋窗口的样子（同一张职业背景、内框、树标题、方形天赋节点与箭头连线，
 -- 下拉框、带步进按钮的滑条、按钮都用暴雪模板），内容是插件的天赋模拟器：
 -- 选网站推荐方案后拖动等级查看每一级的点法，这一级点的天赋带暴雪的“可学”加号；左键加点、右键减点。
--- 状态与规则都在 Modules/Talents.lua（与 /wh 天赋页共用同一份加点与方案），这里只负责画。
+-- 状态与规则都在 Modules/Talents.lua（加点与方案的规则和存档），这里只负责画。
 -- 只看本职业。全部是插件自己的框架，盖在暴雪天赋画布上面，暴雪的天赋按钮与应用天赋不受影响。
 -- 由 Modules/NativeTabs.lua 创建与切换。
 local NativeTalentView = {}
@@ -42,7 +42,6 @@ local function OnNodeClick(button, mouseButton)
     local module = Talents()
     if module.Spend(button.treeIndex, button.talentIndex, mouseButton == "RightButton" and -1 or 1) then
         button.view:Refresh()
-        module.Refresh()
         if button:IsMouseOver() then
             module.ShowTooltip(button)
         end
@@ -253,7 +252,6 @@ local function CreateControls(view)
         local function SetSelected(id)
             module.UsePlan(module.FindPlan(id))
             view:Refresh()
-            module.Refresh()
         end
         root:CreateRadio(L["My build"], IsSelected, SetSelected, "")
         for _, plan in ipairs((module.ClassPlans())) do
@@ -276,7 +274,6 @@ local function CreateControls(view)
         if module.State.plan and level ~= module.State.level then
             module.SetLevel(level)
             view:Refresh()
-            module.Refresh()
         end
     end, view)
     view.slider = slider
@@ -288,7 +285,6 @@ local function CreateControls(view)
     view.reset:SetScript("OnClick", function()
         module.Reset()
         view:Refresh()
-        module.Refresh()
     end)
     view.link = CreateFrame("Button", nil, view, "UIPanelButtonTemplate")
     view.link:SetSize(150, 22)

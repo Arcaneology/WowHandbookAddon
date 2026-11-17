@@ -1,10 +1,10 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.7.1.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.8.0.
 
 ## Summary
 
-WoW Forever companion: dungeon guides with quest chains, loot and maps, BiS gear by level, a talent simulator with recommended builds, spells by level, rare hunter pets, auction prices and crafting profit, a secrets helper, trainers, herb and ore nodes, zeppelins, boats and zone paths on your maps, auto quests, red out-of-range buttons. Type /wh to open.
+WoW Forever companion: dungeon guides with quest chains, loot and maps, BiS gear by level, recommended talent builds in the talent window, spells by level, rare hunter pets, auction prices and crafting profit, a secrets helper, trainers, herb and ore nodes, zeppelins, boats and zone paths on your maps, auto quests, red out-of-range buttons. Type /wh to open.
 
 ## Description
 
@@ -27,7 +27,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 ### Auction house and professions
 
 - **Auction prices**: prices are recorded as you search the auction house, and a "Scan auction house" button in its bottom right corner scans everything at once. Item tooltips show the auction price and how old it is. Already using Auctionator? Tick "Use Auctionator prices" and the handbook reads its prices instead.
-- **Crafting cost**: the crafting page of the profession window shows material cost, sale price, profit and margin for every recipe.
+- **Profit per craft**: the crafting page of the profession window works out each recipe as a simple sum: sale price, minus the auction house cut, minus materials, equals profit, with a one-line verdict. When a material can be made with one of your own recipes (Bolt of Woolen Cloth from Wool Cloth), it compares buying with crafting and shows the most profitable plan; hover to compare every plan. The sale uses the vendor price whenever a vendor pays more than the auction house.
 - **Enchant all**: when enchanting gear, one button enchants once per click and shows how many casts are left; the "replace enchant" prompt is confirmed for you.
 - **Waylaid crates**: the tooltip of an identified crate lists every kind of goods it takes and what filling it costs at auction prices, with the cheapest one in green.
 
@@ -39,7 +39,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ### Talents, spells and trainers
 
-- **Talent simulator**: all nine classes, three trees side by side. Left-click adds a point, right-click removes one, and the game's own rules apply: 51 points, five points per row, prerequisites first. Each class keeps its own build, and one button copies a link that opens the same build in the talent calculator on wowhandbook.com. It only simulates; your character's real talents are never touched. Choose a recommended build and drag the level slider to follow it from level 10 to 60.
+- **Talent plans**: a Talent plans tab inside the game's own talent window shows your class's three trees. Left-click adds a point, right-click removes one, and the game's own rules apply: 51 points, five points per row, prerequisites first. One button copies a link that opens the same build in the talent calculator on wowhandbook.com. It only simulates; your character's real talents are never touched. Choose a recommended build and drag the level slider to follow it from level 10 to 60.
 - **Spells by level**: every spell your class learns at each level, with a reminder when new ranks are waiting. Race-only spells are tagged with their race: green for yours, grey for the others. Warlocks get demon abilities and grimoires in clear groups.
 - **Action bar upgrades**: new ranks replace lower ranks on your bars, and new active spells go into empty slots.
 - **Out of range in red**: when your target is out of range, the whole action button turns red, not just the small hotkey number.
@@ -76,7 +76,6 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 - `/wh` or `/wowhandbook`: open or close the handbook.
 - `/wh home`, `/wh dungeons`, `/wh spellbook`, `/wh professions`, `/wh pets`, `/wh settings`: open that page.
-- `/wh talents`: open the talent simulator.
 - `/wh secrets`: show or hide the secrets helper.
 - `/wh reset`: move the handbook back to the center of the screen.
 - `/wh quests`: show or hide the dungeon helper.
@@ -86,11 +85,11 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.7.1。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.8.0。
 
 ### 简介
 
-《魔兽世界：无限》一站式助手：按等级推荐副本与任务链、首领掉落与副本地图，逐级 BiS 装备，带推荐方案的天赋模拟器，按等级技能书，猎人稀有宠物，拍卖价格与制作利润，解谜助手，地图上的训练师、草药、矿点、飞艇与船、区域路口，自动接交任务，超出距离的技能整块染红，动作条自动升级与自动卖灰。游戏内输入 `/wh` 打开。
+《魔兽世界：无限》一站式助手：按等级推荐副本与任务链、首领掉落与副本地图，逐级 BiS 装备，天赋窗口里的推荐加点方案，按等级技能书，猎人稀有宠物，拍卖价格与制作利润，解谜助手，地图上的训练师、草药、矿点、飞艇与船、区域路口，自动接交任务，超出距离的技能整块染红，动作条自动升级与自动卖灰。游戏内输入 `/wh` 打开。
 
 ### 详细介绍
 
@@ -113,7 +112,7 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 #### 拍卖行与专业
 
 - **拍卖价格**：搜索拍卖行时自动记下价格，拍卖行右下角的“扫描拍卖行”按钮一次扫描全部。物品鼠标提示显示拍卖价格与记录时间。已经在用 Auctionator？勾选“使用 Auctionator 价格”，手册直接读取它的价格。
-- **制作成本**：专业窗口的制作页显示每个配方的材料成本、售价、利润与利润率。
+- **每次制作的利润**：专业窗口的制作页把每个配方算成一道算式：成品卖价减去拍卖行手续费、减去材料，就是利润，再用一句话给出结论。材料能用你自己的配方做出来时（毛布卷用毛料做），会比较直接买与自己做，显示利润最高的方案，悬停可对比全部方案。商人收购价高于拍卖行时按卖给商人算。
 - **全部附魔**：附魔到装备时，每点一次附魔一次，按钮显示剩余次数；“替换附魔”的确认框自动确认。
 - **遭劫的板条箱**：已辨认的板条箱鼠标提示列出可装的每种货物与装满所需的拍卖行价格，最便宜的一种标绿。
 
@@ -125,7 +124,7 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 #### 天赋、技能与训练师
 
-- **天赋模拟器**：九个职业，三棵天赋树并排显示。左键加点、右键减点，规则与游戏一致：共 51 点，每层 5 点，前置天赋先点满。每个职业的加点各自保存，一键复制链接即可在 wowhandbook.com 的天赋模拟器里打开同一套加点。只做模拟，不会改动角色的真实天赋。可选推荐方案，拖动等级条从 10 级看到 60 级。
+- **天赋方案**：游戏天赋窗口里多一个“天赋方案”标签，显示本职业的三棵天赋树。左键加点、右键减点，规则与游戏一致：共 51 点，每层 5 点，前置天赋先点满。一键复制链接即可在 wowhandbook.com 的天赋模拟器里打开同一套加点。只做模拟，不会改动角色的真实天赋。可选推荐方案，拖动等级条从 10 级看到 60 级。
 - **按等级技能书**：列出职业每一级能学的全部技能，有新等级可学时提醒；种族专属技能带种族标签，本种族绿色、其他种族灰色；术士的恶魔技能与魔典分类清楚。
 - **动作条自动升级**：学会高等级技能后替换动作条上的低等级版本，新的主动技能放进空位。
 - **超距染红**：目标超出技能距离时，整个动作条按钮染红，不再只是右上角的小数字变红。
@@ -162,7 +161,6 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 - `/wh` 或 `/wowhandbook`：打开或关闭手册。
 - `/wh home`、`/wh dungeons`、`/wh spellbook`、`/wh professions`、`/wh pets`、`/wh settings`：直接打开对应页面。
-- `/wh talents`：打开天赋模拟器。
 - `/wh secrets`：显示或隐藏解谜助手小窗。
 - `/wh reset`：把手册窗口放回屏幕中央。
 - `/wh quests`：显示或隐藏副本助手小窗。

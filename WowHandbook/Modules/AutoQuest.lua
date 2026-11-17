@@ -2,7 +2,7 @@ local ADDON_NAME, ns = ...
 local L = ns.L
 
 -- 自动任务：和 NPC 对话时自动接任务、自动交任务，两项可分别开关（默认都开）。
--- · 对话菜单（GOSSIP_SHOW）与任务问候（QUEST_GREETING）里：先交已完成的，再接可接的（灰色任务不自动接）。
+-- · 对话菜单（GOSSIP_SHOW）与任务问候（QUEST_GREETING）里：先交已完成的，再接可接的（灰色任务不自动接，但照常自动交）。
 -- · 任务说明（QUEST_DETAIL）：接受。进行中（QUEST_PROGRESS）：能交就继续。
 -- · 奖励（QUEST_COMPLETE）：只有一个或没有可选奖励时直接交；有多个可选奖励时按 rewardMode：
 --   manual（默认）留给玩家自己选；usable 先在能用的奖励里挑卖价最高的，都用不了就挑卖价最高的。
@@ -94,6 +94,27 @@ local function WindowQuestKey()
     return GetTitleText and GetTitleText() or nil
 end
 
+-- 任务等级是不是已经灰色（低于玩家等级减去绿色范围）；取不到信息按不是灰色算。只用于不自动接灰色任务
+local function IsGreyLevel(level)
+    if not (level and level > 0 and UnitLevel and GetQuestGreenRange) then
+        return false
+    end
+    return level < UnitLevel("player") - GetQuestGreenRange()
+end
+
+-- 任务窗口里的任务是不是灰色任务
+local function WindowQuestIsGrey()
+    local questID = GetQuestID and GetQuestID()
+    if not questID or questID == 0 then
+        return false
+    end
+    if C_QuestLog and C_QuestLog.IsQuestTrivial then
+        return C_QuestLog.IsQuestTrivial(questID) and true or false
+    end
+    local level = C_QuestLog and C_QuestLog.GetQuestDifficultyLevel and C_QuestLog.GetQuestDifficultyLevel(questID)
+    return IsGreyLevel(level)
+end
+
 -- 按住 Shift：本次交给玩家自己操作
 local function Paused()
     return IsShiftKeyDown and IsShiftKeyDown()
@@ -153,7 +174,7 @@ local function OnGreeting()
 end
 
 local function OnDetail()
-    if not Settings().autoAccept or Paused() then
+    if not Settings().autoAccept or Paused() or WindowQuestIsGrey() then
         return
     end
     -- 进入区域自动接的任务游戏已经接了，只需确认

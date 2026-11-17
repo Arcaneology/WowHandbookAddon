@@ -541,7 +541,6 @@ local SHORTCUTS = {
         end
         return ("%s  %s"):format(L["Rare pets"], Theme:Color(("%d/%d"):format(tamed, total), "gold"))
     end },
-    { tab = "talents", label = function() return L["Talents"] end },
     { tab = "professions", label = function() return L["Professions"] end },
 }
 
