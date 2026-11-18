@@ -1,6 +1,6 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.8.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.9.0.
 
 ## Summary
 
@@ -28,6 +28,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 - **Auction prices**: prices are recorded as you search the auction house, and a "Scan auction house" button in its bottom right corner scans everything at once. Item tooltips show the auction price and how old it is. Already using Auctionator? Tick "Use Auctionator prices" and the handbook reads its prices instead.
 - **Profit per craft**: the crafting page of the profession window works out each recipe as a simple sum: sale price, minus the auction house cut, minus materials, equals profit, with a one-line verdict. When a material can be made with one of your own recipes (Bolt of Woolen Cloth from Wool Cloth), it compares buying with crafting and shows the most profitable plan; hover to compare every plan. The sale uses the vendor price whenever a vendor pays more than the auction house.
+- **Profession workbench**: opening a profession docks a workbench beside the window with three views. *Leveling route* works out the cheapest way from your skill to the next cap at today's auction and vendor prices, counting what you can sell the results for (bags and materials sell well, gear mostly goes to a vendor); pick Fastest, Balanced or Cheapest, or follow the handbook's fixed route priced at today's prices. You get the steps, a shopping list, the recipes to buy and where each product goes. Enchanters can tick which enchants to do for customers. *Recipe sources* lists the recipes you have not learned, the skill they need and where they come from; click a vendor to mark it on the map. *Profit* ranks every recipe by profit and margin. Collapse it to a small button and drag it wherever you like.
 - **Enchant all**: when enchanting gear, one button enchants once per click and shows how many casts are left; the "replace enchant" prompt is confirmed for you.
 - **Waylaid crates**: the tooltip of an identified crate lists every kind of goods it takes and what filling it costs at auction prices, with the cheapest one in green.
 
@@ -85,7 +86,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.8.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.9.0。
 
 ### 简介
 
@@ -113,6 +114,7 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 - **拍卖价格**：搜索拍卖行时自动记下价格，拍卖行右下角的“扫描拍卖行”按钮一次扫描全部。物品鼠标提示显示拍卖价格与记录时间。已经在用 Auctionator？勾选“使用 Auctionator 价格”，手册直接读取它的价格。
 - **每次制作的利润**：专业窗口的制作页把每个配方算成一道算式：成品卖价减去拍卖行手续费、减去材料，就是利润，再用一句话给出结论。材料能用你自己的配方做出来时（毛布卷用毛料做），会比较直接买与自己做，显示利润最高的方案，悬停可对比全部方案。商人收购价高于拍卖行时按卖给商人算。
+- **专业工作台**：打开专业窗口时，右侧贴出工作台，分三个视图。“冲级路线”按现在的拍卖与商人价格，算出从当前技能到下一档的最省路线，并计入成品能卖回的钱（背包、材料好卖，装备多半卖给商人）；可选效率优先、均衡、省钱优先，或按手册的固定路线以现价计价；列出步骤、购物清单、要买的图纸与每件成品的去向。附魔师可以逐个勾选接代工的附魔。“图纸”列出还没学的配方、所需技能与来源，点商人一行即在地图上标出。“利润”按利润与利润率给全部配方排序。工作台可收起成小按钮，拖到任意位置。
 - **全部附魔**：附魔到装备时，每点一次附魔一次，按钮显示剩余次数；“替换附魔”的确认框自动确认。
 - **遭劫的板条箱**：已辨认的板条箱鼠标提示列出可装的每种货物与装满所需的拍卖行价格，最便宜的一种标绿。
 

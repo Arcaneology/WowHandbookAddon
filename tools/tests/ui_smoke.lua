@@ -1237,14 +1237,14 @@ check("every profession's trainer list renders, learned or not", function()
     settings.selected = nil
     GetNumSkillLines, GetSkillLineInfo = nil, nil
 end)
-collectorCheck("collector profession workbench: follows the game window, route, recipe sources and profit", function()
-    local R = collector.Recipes
+check("profession workbench: follows the game window, route, recipe sources and profit", function()
+    local R = main.modules.Workbench
     local P = main.Prices
     assert(WowHandbookAPI.Prices == P, "price library is not on the public API")
     local bySlug = {}
-    for _, profession in ipairs(collector.recipeData) do bySlug[profession.slug] = profession end
+    for _, profession in ipairs(main.Data.recipes) do bySlug[profession.slug] = profession end
     local tailoring, enchanting = bySlug.tailoring, bySlug.enchanting
-    assert(tailoring and enchanting, "no tailoring or enchanting recipe data in the collector")
+    assert(tailoring and enchanting, "no tailoring or enchanting recipe data")
     -- 主窗口不再重复放配方页
     local hasTab = pcall(function() main.MainFrame:Open("recipes") end) and R.page ~= nil
     assert(not hasTab, "recipes page should no longer be registered in the main window")
@@ -1307,7 +1307,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
             end
         end
     end
-    local earlierTitle = collector.L["Earlier steps, skill %d-%d"]:format(1, 30)
+    local earlierTitle = main.L["Earlier steps, skill %d-%d"]:format(1, 30)
     local earlierRow = sectionRow(earlierTitle)
     assert(earlierRow and earlierRow.cells.a:GetText():find("+ ", 1, true), "earlier steps not shown collapsed")
     local collapsedRows = rows()
@@ -1329,7 +1329,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     assert(bench.routeOptions:IsShown() and not bench.unlearned:IsShown(), "route options not shown on the route view")
     assert(not bench.commission:IsShown(), "commission option shown for a profession without enchants")
     -- 路线下拉框：三种取向与手册路线在一起，默认均衡；切换后记住
-    local routeSettings = collector.db.settings.recipeRoute
+    local routeSettings = main.db.modules.Workbench.route
     assert(bench.mode:IsShown() and bench.mode.value == "balanced", "route mode dropdown not on balanced by default")
     bench.mode.onChange("speed")
     assert(routeSettings.priority == "speed" and routeSettings.mode == "live", "route priority not saved")
@@ -1338,7 +1338,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     assert(stepRows >= #plan.steps, "route steps not drawn")
     assert(bench.totals:IsShown() and bench.tiles.materials.value:GetText() == tostring(math.floor(
         plan.materials / 100 + 0.5) * 100), "route totals missing the material cost")
-    assert(bench.tiles.net.title:GetText() == collector.L[plan.net >= 0 and "Net cost" or "Net profit"],
+    assert(bench.tiles.net.title:GetText() == main.L[plan.net >= 0 and "Net cost" or "Net profit"],
         "route totals missing the net cost")
     GameTooltip.spellID = nil
     firstRow.scripts.OnEnter(firstRow)
@@ -1360,7 +1360,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     local payback = step.makes and R.Profit(step) and 1 or 0
     if payback == 1 then
         local found = false
-        local prefix = collector.L["Payback %d%%"]:gsub("%%d%%%%", "")
+        local prefix = main.L["Payback %d%%"]:gsub("%%d%%%%", "")
         for _, row in ipairs(bench.rows) do
             found = found or (row:IsShown() and (row.cells.a:GetText() or ""):find(prefix, 1, true) ~= nil)
         end
@@ -1387,7 +1387,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     -- 手册路线：有攻略的专业可以换成固定顺序，步骤照路线数据走
     assert(tailoring.route and #tailoring.route > 0 and bench.mode:IsShown(), "no handbook route for tailoring")
     bench.mode.onChange("handbook")
-    assert(collector.db.settings.recipeRoute.mode == "handbook" and not bench.buyRecipes:IsShown(),
+    assert(main.db.modules.Workbench.route.mode == "handbook" and not bench.buyRecipes:IsShown(),
         "handbook mode not selected")
     local handbook = R.BuildRoute(tailoring, { rank = 1, max = 75 })
     assert(handbook.steps[1].recipe.id == tailoring.route[1].recipe and handbook.steps[1].from == 1
@@ -1398,14 +1398,14 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     assert(bench.mode:IsShown() and bench.mode.value == "handbook" and #bench.mode.items == 4,
         "route dropdown hidden or wrong in handbook mode")
     bench.mode.onChange("saving")
-    assert(collector.db.settings.recipeRoute.mode == "live" and collector.db.settings.recipeRoute.priority == "saving"
+    assert(main.db.modules.Workbench.route.mode == "live" and main.db.modules.Workbench.route.priority == "saving"
         and bench.mode.value == "saving" and bench.buyRecipes:IsShown(), "live mode not restored from the dropdown")
     bench.mode.onChange("balanced")
     bench.target.onChange(150)
-    assert(collector.db.settings.recipeRoute.target == 150, "target skill not saved")
-    collector.db.settings.recipeRoute.target = nil
+    assert(main.db.modules.Workbench.route.target == 150, "target skill not saved")
+    main.db.modules.Workbench.route.target = nil
     bench.recovery.scripts.OnClick(bench.recovery)
-    assert(collector.db.settings.recipeRoute.recovery == false, "resale option not saved")
+    assert(main.db.modules.Workbench.route.recovery == false, "resale option not saved")
     bench.recovery.scripts.OnClick(bench.recovery)
 
     -- 流通档：别的配方的材料算卖得动，武器护甲卖不动，绑定的不回收
@@ -1419,7 +1419,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
 
     -- 图纸：没学的配方按学习技能排，商人卖的带价格与位置，点一行在地图上标出
     bench.views.buttons.sources.scripts.OnClick(bench.views.buttons.sources)
-    assert(collector.db.settings.recipePanel.view == "sources" and not bench.routeOptions:IsShown(),
+    assert(main.db.modules.Workbench.panel.view == "sources" and not bench.routeOptions:IsShown(),
         "sources view not selected")
     local unlearned = 0
     for _, recipe in ipairs(tailoring.recipes) do
@@ -1446,7 +1446,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     end
     assert(vendorLine and vendorLine.spot[1] == sold.spot.A[1], "expanded pattern has no vendor line to click")
     vendorLine.scripts.OnClick(vendorLine)
-    collector.Recipes.bench.expanded = {}
+    R.bench.expanded = {}
     -- 利润：材料与成品都有价格的配方按利润排
     local shirt
     for _, recipe in ipairs(tailoring.recipes) do
@@ -1472,7 +1472,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     end
     assert(header, "profit header has no sort buttons")
     header.sorters.d.scripts.OnClick(header.sorters.d)
-    local profitSettings = collector.db.settings.recipeProfit
+    local profitSettings = main.db.modules.Workbench.profit
     assert(profitSettings.sort == "profit" and profitSettings.descending == false, "clicking the sorted column did not flip it")
     header.sorters.e.scripts.OnClick(header.sorters.e)
     assert(profitSettings.sort == "margin" and profitSettings.descending == true, "clicking another column did not sort by it")
@@ -1524,8 +1524,8 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     local madeLine, buyLine
     for _, row in ipairs(bench.rows) do
         local text = row:IsShown() and row.cells.a:GetText() or ""
-        madeLine = madeLine or text:find(collector.L["made yourself"], 1, true) ~= nil
-        buyLine = buyLine or text:find((collector.L["buying it instead: %s each"]):gsub("%%s.*", ""), 1, true) ~= nil
+        madeLine = madeLine or text:find(main.L["made yourself"], 1, true) ~= nil
+        buyLine = buyLine or text:find((main.L["buying it instead: %s each"]):gsub("%%s.*", ""), 1, true) ~= nil
     end
     assert(madeLine and buyLine, "breakdown does not show the made-yourself cost next to the buying price")
     bench.expanded = {}
@@ -1552,7 +1552,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     assert(#choices > 0 and not choices[1].check and not choices[1].recipe.makes, "enchant list is empty or pre-ticked")
     local picked = choices[1].recipe
     choices[1].scripts.OnClick(choices[1])
-    assert(collector.db.settings.recipeRoute.commissionPicks[picked.id] and pickRows()[1].check
+    assert(main.db.modules.Workbench.route.commissionPicks[picked.id] and pickRows()[1].check
         and pickRows()[1].box.mark:IsShown(), "clicking an enchant does not tick it")
     local chosen = R.ChosenCommissions(enchanting)
     assert(#chosen == 1 and chosen[1] == picked.id, "ticked enchant not passed to the route")
@@ -1575,23 +1575,23 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     assert(commissioned, "no commission step in the enchanting route")
     bench.commission.scripts.OnClick(bench.commission)
     assert(not bench.picking and bench.totals:IsShown(), "commission button does not go back to the route")
-    assert(bench.commission.label:GetText() == (collector.L["Customer enchants: %d"]):format(#choices),
+    assert(bench.commission.label:GetText() == (main.L["Customer enchants: %d"]):format(#choices),
         "commission button does not count the ticked enchants")
-    collector.db.settings.recipeRoute.commissionPicks = {}
+    main.db.modules.Workbench.route.commissionPicks = {}
 
     -- 每个专业三个视图都能画出来；战斗中不计算路线
-    for _, profession in ipairs(collector.recipeData) do
+    for _, profession in ipairs(main.Data.recipes) do
         line = profession.skillLines[1]
         for _, view in ipairs({ "route", "sources", "profit" }) do
-            collector.db.settings.recipePanel.view = view
+            main.db.modules.Workbench.panel.view = view
             R.Refresh()
             assert(bench.title:GetText() == main.Name(profession.name), "profession not recognized: " .. profession.slug)
         end
     end
-    collector.db.settings.recipePanel.view = "route"
+    main.db.modules.Workbench.panel.view = "route"
     inCombat = true
     R.Refresh()
-    assert(bench.summary:GetText():find(collector.L["The route is worked out after you leave combat"], 1, true),
+    assert(bench.summary:GetText():find(main.L["The route is worked out after you leave combat"], 1, true),
         "route computed in combat")
     inCombat = false
 
@@ -1610,7 +1610,7 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     R.tab.GetTop = function() return 500 end
     R.tab.scripts.OnDragStart(R.tab)
     R.tab.scripts.OnDragStop(R.tab)
-    local panelSettings = collector.db.settings.recipePanel
+    local panelSettings = main.db.modules.Workbench.panel
     assert(panelSettings.dockX == 20 and panelSettings.dockY == -100, "button position should become the workbench offset")
     local tx, ty = bench:DockOffset()
     assert(tx == 20 and ty == -100, "workbench should open where the button was")
@@ -1627,9 +1627,9 @@ collectorCheck("collector profession workbench: follows the game window, route, 
     bench.GetTop = function() return 600 end
     bench.scripts.OnDragStart(bench)
     bench.scripts.OnDragStop(bench)
-    assert(collector.db.settings.recipePanel.dockX == 50 and collector.db.settings.recipePanel.dockY == 0,
+    assert(main.db.modules.Workbench.panel.dockX == 50 and main.db.modules.Workbench.panel.dockY == 0,
         "workbench offset not remembered")
-    collector.db.settings.recipePanel.dockX = nil
+    main.db.modules.Workbench.panel.dockX = nil
     window.shown = false
     window.scripts.OnHide(window)
     assert(not bench.shown and not R.tab.shown, "workbench should hide with the profession window")

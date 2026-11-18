@@ -5,7 +5,7 @@
 ## Notes-zhCN: 魔兽世界：无限的副本任务与掉落、按等级学习的技能等游戏助手。
 ## Author: AntaresBuild
 ## X-Organization: ArcaneStudio
-## Version: 0.8.0
+## Version: 0.9.0
 ## SavedVariables: WowHandbookDB
 ## SavedVariablesPerCharacter: WowHandbookCharDB
 ## X-Website: https://wowhandbook.com
@@ -17,6 +17,7 @@ Locales\zhCN.lua
 Core\Init.lua
 Core\Util.lua
 Core\Prices.lua
+Core\LevelingPlan.lua
 Core\SpellScan.lua
 Core\Waypoints.lua
 Core\Transport.lua
@@ -35,6 +36,7 @@ Data\MapOverlays.lua
 Data\Graveyards.lua
 Data\GraveyardAreas.lua
 Data\Professions.lua
+Data\Recipes.lua
 Data\ClassTrainers.lua
 Data\Transmogrifiers.lua
 Data\Transport.lua
@@ -63,6 +65,7 @@ Modules\ActionBarRange.lua
 Modules\Vendor.lua
 Modules\AuctionHouse.lua
 Modules\CraftingCost.lua
+Modules\Workbench.lua
 Modules\MerchantCrates.lua
 Modules\Enchanting.lua
 Modules\AutoQuest.lua

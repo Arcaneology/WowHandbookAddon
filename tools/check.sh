@@ -14,6 +14,7 @@ echo "== smoke tests"
 lua tools/tests/core_smoke.lua enUS
 lua tools/tests/core_smoke.lua zhCN
 lua tools/tests/ui_smoke.lua
+lua tools/tests/leveling_plan_test.lua
 
 echo "== python tests"
 python3 -m unittest discover -s tools/tests -p 'test_*.py'

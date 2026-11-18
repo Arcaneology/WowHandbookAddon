@@ -98,6 +98,8 @@ local SECTIONS = {
         note = "Shows what each waylaid crate takes and what it costs to fill at auction prices", options = {} },
     { module = "CraftingCost", category = "professions", title = "Crafting cost",
         note = "Profit per craft in the professions window: sale price minus the auction cut and materials", options = {} },
+    { module = "Workbench", category = "professions", title = "Profession workbench",
+        note = "A workbench beside the professions window: leveling route, recipe sources and profit", options = {} },
     { module = "Enchanting", category = "professions", title = "Enchant all",
         note = "Enchant several times in a row from the professions window", options = {
         { key = "autoReplace", quick = true, icon = "Trade_Engraving", label = "Replace enchants without asking",
