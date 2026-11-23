@@ -29,8 +29,6 @@ local SECTIONS = {
         { key = "levelUpNotice", quick = true, icon = "INV_Misc_Book_11", label = "Level-up reminder",
             tip = "Tell me which spells to train when I level up" },
     } },
-    { module = "SpellEfficiency", category = "spells", title = "Spell DPS and DPM",
-        note = "Damaging mana spells show damage per second and per mana in their tooltips", options = {} },
     { module = "Talents", category = "spells", title = "Talent plans",
         note = "Plan talent builds and follow the recommended leveling builds level by level", options = {} },
     { module = "HunterPets", category = "spells", title = "Rare pets",

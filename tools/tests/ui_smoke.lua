@@ -6182,9 +6182,11 @@ check("waylaid crates: the crate tooltip lists each bundle with its cost and mar
     GameTooltip.AddDoubleLine = nil
 end)
 
-check("spell efficiency: reads damage from the description and shows DPS and DPM", function()
-    local Module = main.modules.SpellEfficiency
-    assert(Module and Module.enabled, "spell efficiency module not enabled by default")
+-- 技能 DPS 与 DPM 只在采集插件里（/whc dps 开关）
+collectorCheck("spell efficiency (collector): reads damage from the description and shows DPS and DPM", function()
+    local Module = collector.SpellEfficiency
+    assert(Module and Module.IsOn(), "spell efficiency not on by default")
+    assert(main.modules.SpellEfficiency == nil, "spell efficiency should not be in the public addon")
     -- 英文说明
     local direct, dot, duration = Module.Parse("Hurls a fiery ball that causes 14 to 20 Fire damage and an additional 2 Fire damage over 4 sec.", false)
     assert(direct == 17 and dot == 2 and duration == 4, "english direct+dot parse: " .. direct .. " " .. dot .. " " .. duration)
@@ -6233,10 +6235,12 @@ check("spell efficiency: reads damage from the description and shows DPS and DPM
     Module.AddTooltip(GameTooltip, { id = 133, dataInstanceID = 903 })
     assert(#GameTooltip.doubleLines == 2, "non-damage spell got dps/dpm")
     C_Spell.GetSpellDescription = function() return "造成14到20点火焰伤害。" end
-    main:DisableModule(Module)
+    SlashCmdList.WOWHANDBOOKCOLLECTOR("dps")
+    assert(not Module.IsOn(), "/whc dps did not turn it off")
     Module.AddTooltip(GameTooltip, { id = 133, dataInstanceID = 904 })
-    assert(#GameTooltip.doubleLines == 2, "disabled module still adds lines")
-    main:EnableModule(Module)
+    assert(#GameTooltip.doubleLines == 2, "turned-off spell efficiency still adds lines")
+    SlashCmdList.WOWHANDBOOKCOLLECTOR("dps")
+    assert(Module.IsOn(), "/whc dps did not turn it back on")
     C_Spell, GetSpellPowerCost = savedSpell, savedGlobal
     GameTooltip.AddDoubleLine = nil
 end)

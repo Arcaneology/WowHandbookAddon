@@ -1,6 +1,6 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.10.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.10.1.
 
 ## Summary
 
@@ -44,7 +44,6 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 - **Talent plans**: a Talent plans tab inside the game's own talent window shows your class's three trees. Left-click adds a point, right-click removes one, and the game's own rules apply: 51 points, five points per row, prerequisites first. One button copies a link that opens the same build in the talent calculator on wowhandbook.com. It only simulates; your character's real talents are never touched. Choose a recommended build and drag the level slider to follow it from level 10 to 60.
 - **Spells by level**: every spell your class learns at each level, with a reminder when new ranks are waiting. Race-only spells are tagged with their race: green for yours, grey for the others. Warlocks get demon abilities and grimoires in clear groups.
-- **Spell DPS and DPM**: tooltips of damaging spells that cost mana add damage per second and damage per point of mana, with the numbers behind them.
 - **Action bar upgrades**: new ranks replace lower ranks on your bars, and new active spells go into empty slots.
 - **Out of range in red**: when your target is out of range, the whole action button turns red, not just the small hotkey number.
 - **Class trainers on the map**, with how many spells you can train right now.
@@ -91,7 +90,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.10.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.10.1。
 
 ### 简介
 
@@ -135,7 +134,6 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 - **天赋方案**：游戏天赋窗口里多一个“天赋方案”标签，显示本职业的三棵天赋树。左键加点、右键减点，规则与游戏一致：共 51 点，每层 5 点，前置天赋先点满。一键复制链接即可在 wowhandbook.com 的天赋模拟器里打开同一套加点。只做模拟，不会改动角色的真实天赋。可选推荐方案，拖动等级条从 10 级看到 60 级。
 - **按等级技能书**：列出职业每一级能学的全部技能，有新等级可学时提醒；种族专属技能带种族标签，本种族绿色、其他种族灰色；术士的恶魔技能与魔典分类清楚。
-- **技能 DPS 与 DPM**：耗法力的伤害技能在鼠标提示里加上每秒伤害与每点法力伤害，并写明计算依据。
 - **动作条自动升级**：学会高等级技能后替换动作条上的低等级版本，新的主动技能放进空位。
 - **超距染红**：目标超出技能距离时，整个动作条按钮染红，不再只是右上角的小数字变红。
 - **职业训练师地图标记**：显示本职业训练师，并提示现在可学几个技能。

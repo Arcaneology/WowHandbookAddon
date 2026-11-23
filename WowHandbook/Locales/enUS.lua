@@ -550,15 +550,6 @@ local KEYS = {
     "Choose the item to enchant first.",
     "Enchanting stopped.",
     "Enchanting finished.",
-    -- 技能效率（DPS / DPM 提示）
-    "Spell DPS and DPM",
-    "Damaging mana spells show damage per second and per mana in their tooltips",
-    "DPS",
-    "DPM",
-    "channeled %s sec",
-    "instant, %s sec global cooldown",
-    "cast %s sec",
-    "Damage %s, %s, mana %d",
     -- 遭劫的板条箱（Waylaid Crate）
     "Waylaid crates",
     "Shows what each waylaid crate takes and what it costs to fill at auction prices",
