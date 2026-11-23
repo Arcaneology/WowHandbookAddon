@@ -210,6 +210,10 @@ local function AddPoiSpots(mapID)
         tinsert(state.spots, { x = npc.x / 100, y = npc.y / 100, poi = "transmog",
             lines = { ns.Name(npc.name) or "?", L["Transmogrifier"] }, icon = Module.TRANSMOG_ICON, alpha = 1 })
     end
+    for _, npc in ipairs(Module.RidingTrainersForMap(mapID)) do
+        tinsert(state.spots, { x = npc.x / 100, y = npc.y / 100, poi = "riding",
+            lines = Module.RidingTrainerLines(npc), icon = Module.RIDING_ICON, alpha = 1 })
+    end
     -- 飞艇塔与码头：跟随大地图的 transportPins，一个泊位一个箭头
     if Settings().transportPins ~= false and ns.Transport then
         for _, entry in ipairs(ns.Transport.HubsForMap(mapID, ns.PlayerFaction())) do

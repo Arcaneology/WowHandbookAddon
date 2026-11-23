@@ -28,8 +28,9 @@ end
 -- NPC 的客户端名字（当前客户端语言）：按 ID 取 NPC 鼠标提示的第一行。客户端还没缓存这个 NPC 时返回 nil，
 -- 调用方先用数据里的名字兜底、稍后再取。取到的名字在本次登录内缓存，同一个 NPC 只问一次客户端。
 local npcNames = {}
+-- 负数编号是数据里只有名字、没有游戏 NPC ID 的条目（专业插件名单补进来的技能书商人等），直接用数据里的名字
 function ns.NpcName(npcID)
-    if not npcID then
+    if type(npcID) ~= "number" or npcID <= 0 then
         return nil
     end
     if npcNames[npcID] then
@@ -80,15 +81,18 @@ end
 -- Forever 跑在正式服引擎上：用 GetProfessions / GetProfessionInfo，按技能线 ID 对照数据里的 skillLines
 -- （主技能线与其下的子技能线），对不上再按名字（客户端语言）对照。经典旧世客户端没有这组接口，
 -- 改读技能列表 GetSkillLineInfo（同样按名字对照）。
-function ns.ProfessionSkills()
+-- extra：另一份专业表（如配方数据 ns.Data.recipes），它的技能线与名字也一并对照
+function ns.ProfessionSkills(extra)
     local learned = {}
     local byLine, byName = {}, {}
-    for _, profession in ipairs(ns.Data.professions or {}) do
-        for _, line in ipairs(profession.skillLines or {}) do
-            byLine[line] = profession.slug
-        end
-        for _, name in pairs(profession.name or {}) do
-            byName[name:lower()] = profession.slug
+    for _, list in ipairs({ ns.Data.professions or {}, extra or {} }) do
+        for _, profession in ipairs(list) do
+            for _, line in ipairs(profession.skillLines or {}) do
+                byLine[line] = byLine[line] or profession.slug
+            end
+            for _, name in pairs(profession.name or {}) do
+                byName[name:lower()] = byName[name:lower()] or profession.slug
+            end
         end
     end
     if GetProfessions and GetProfessionInfo then

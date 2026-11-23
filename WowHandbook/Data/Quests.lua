@@ -4232,7 +4232,7 @@ ns.Data.quests = {
     [167] = {
         name = {
             enUS = "Oh Brother...",
-            zhCN = "我的兄弟……",
+            zhCN = "啊，兄弟……",
         },
         level = 20,
         min = 15,
@@ -4782,7 +4782,6 @@ ns.Data.quests = {
             x = 31.65,
             y = 43.45,
         },
-        after = { 7483, 7484, 7485 },
         summary = {
             enUS = "Search Dire Maul for Kariel Winthalus. Report back to Scholar Runethorn at Feathermoon with whatever information that you may find.",
             zhCN = "到厄运之槌去寻找泰尔米乌斯·探梦者。向羽月要塞的学者卢索恩·纹角报告你所找到的信息。",
@@ -6027,7 +6026,7 @@ ns.Data.quests = {
             id = 265003,
             name = {
                 enUS = "Thom Filch",
-                zhCN = "托姆·菲尔奇",
+                zhCN = "汤姆·费尔奇",
             },
             map = 1455,
             x = 32.4,
@@ -6038,7 +6037,7 @@ ns.Data.quests = {
             id = 265003,
             name = {
                 enUS = "Thom Filch",
-                zhCN = "托姆·菲尔奇",
+                zhCN = "汤姆·费尔奇",
             },
         },
         summary = {
@@ -6087,7 +6086,7 @@ ns.Data.quests = {
             id = 264943,
             name = {
                 enUS = "Afadra Dunwall",
-                zhCN = "阿法德拉·邓沃尔",
+                zhCN = "阿法德拉·顿沃尔",
             },
             map = 1455,
             x = 33.2,
@@ -6098,7 +6097,7 @@ ns.Data.quests = {
             id = 264943,
             name = {
                 enUS = "Afadra Dunwall",
-                zhCN = "阿法德拉·邓沃尔",
+                zhCN = "阿法德拉·顿沃尔",
             },
         },
         summary = {
@@ -6543,8 +6542,18 @@ ns.Data.quests = {
             zhCN = "阅读贱民的指引，然后从玛拉顿得到联合坠饰，将其交给凄凉之地南部的半人马贱民。",
         },
         rewards = {
-            xp = 5450,
+            xp = 10650,
             money = 14000,
+            items = {
+                {
+                    id = 17774,
+                    count = 1,
+                },
+                {
+                    id = 17757,
+                    count = 1,
+                },
+            },
             extraItems = {
                 {
                     id = 17774,
@@ -8013,6 +8022,7 @@ ns.Data.quests = {
         min = 15,
         faction = "H",
         instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
         start = {
             kind = "item",
             id = 280438,
@@ -8033,8 +8043,7 @@ ns.Data.quests = {
             x = 48.82,
             y = 69.28,
         },
-        before = { 97292 },
-        after = { 97289 },
+        after = { 97289, 97290, 97291, 97292 },
         summary = {
             enUS = "Deliver the Abominable Head to Master Apothecary Faranell in the Undercity.",
             zhCN = "把憎恶头颅交给幽暗城的大药剂师法拉尼尔。",
@@ -8416,6 +8425,7 @@ ns.Data.quests = {
         min = 16,
         faction = "H",
         instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
         start = {
             kind = "npc",
             id = 11835,
@@ -8438,7 +8448,7 @@ ns.Data.quests = {
             x = 46.31,
             y = 71.91,
         },
-        before = { 451 },
+        before = { 447, 450, 451 },
         summary = {
             enUS = "Collect the Highly Toxic Strain from Witherfang in Ruins of Lordaeron for Theodore Griffs in Undercity.",
             zhCN = "从洛丹伦废墟的枯牙身上取得剧毒的毒株，交给幽暗城的萨多雷·格雷夫。",
@@ -8479,6 +8489,7 @@ ns.Data.quests = {
         min = 15,
         faction = "H",
         instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
         start = {
             kind = "npc",
             id = 251001,
@@ -8501,7 +8512,7 @@ ns.Data.quests = {
             x = 65.2,
             y = 60.2,
         },
-        before = { 99156 },
+        before = { 356, 99156 },
         summary = {
             enUS = "Kill Rath'mael in the Ruins of Lordaeron for Deathguard Kristof in Brill.",
             zhCN = "为布瑞尔的死亡卫士克里斯托夫消灭洛丹伦废墟中的拉斯玛尔。",
@@ -13549,7 +13560,7 @@ ns.Data.quests = {
     },
     [95647] = {
         name = {
-            enUS = "Lost in the Thicket",
+            enUS = "Lost in the Thicket Things",
             zhCN = "迷失在灌木丛中",
         },
         level = 31,
@@ -13582,7 +13593,7 @@ ns.Data.quests = {
     },
     [95809] = {
         name = {
-            enUS = "Heartweave",
+            enUS = "Heartwoven",
             zhCN = "心之编织",
         },
         level = 31,
@@ -13767,7 +13778,7 @@ ns.Data.quests = {
     [95663] = {
         name = {
             enUS = "Dragonmaw Rumors",
-            zhCN = "龙喉传闻",
+            zhCN = "龙喉氏族的流言",
         },
         level = 31,
         min = 24,
@@ -14027,7 +14038,7 @@ ns.Data.quests = {
     [95664] = {
         name = {
             enUS = "Elder Knowledge",
-            zhCN = "长者的知识",
+            zhCN = "长者的智慧",
         },
         level = 31,
         min = 24,
@@ -14069,7 +14080,7 @@ ns.Data.quests = {
     [98823] = {
         name = {
             enUS = "Earthen Echo",
-            zhCN = "大地回响",
+            zhCN = "大地的回音",
         },
         level = 31,
         min = 24,
@@ -14233,7 +14244,7 @@ ns.Data.quests = {
     [92457] = {
         name = {
             enUS = "Starving Arcane",
-            zhCN = "饥饿的奥术",
+            zhCN = "饥渴的奥术",
         },
         level = 33,
         min = 24,
@@ -14771,6 +14782,4382 @@ ns.Data.quests = {
                     count = 1,
                 },
             },
+        },
+    },
+    [95775] = {
+        name = {
+            enUS = "The Drowned City",
+            zhCN = "沉没之城",
+        },
+        level = 40,
+        min = 30,
+        faction = "H",
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 2519,
+            name = {
+                enUS = "Kin'weelay",
+                zhCN = "肯维雷",
+            },
+            map = 1434,
+            x = 32.3,
+            y = 27.7,
+        },
+        finish = {
+            kind = "npc",
+            id = 2519,
+            name = {
+                enUS = "Kin'weelay",
+                zhCN = "肯维雷",
+            },
+            map = 1434,
+            x = 32.3,
+            y = 27.7,
+        },
+        summary = {
+            enUS = "Make rubbings of the four tablets of I'lalai in the Drowned City.",
+            zhCN = "用兽皮和木炭拓印沉没之城里的四块伊拉莱石板。",
+        },
+        objectives = {
+            enUS = { "First Tablet of I'lalai", "Second Tablet of I'lalai", "Third Tablet of I'lalai", "Fourth Tablet of I'lalai" },
+            zhCN = { "伊拉莱第一石板", "伊拉莱第二石板", "伊拉莱第三石板", "伊拉莱第四石板" },
+        },
+        rewards = {
+            xp = 8426,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Darkspear Trolls",
+                        zhCN = "暗矛巨魔",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [95776] = {
+        name = {
+            enUS = "The Only Good Brinescale...",
+            zhCN = "唯一的好盐鳞……",
+        },
+        level = 38,
+        min = 30,
+        faction = "H",
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 2464,
+            name = {
+                enUS = "Commander Aggro'gosh",
+                zhCN = "指挥官阿格罗戈什",
+            },
+            map = 1434,
+            x = 32.2,
+            y = 28.9,
+        },
+        finish = {
+            kind = "npc",
+            id = 2464,
+            name = {
+                enUS = "Commander Aggro'gosh",
+                zhCN = "指挥官阿格罗戈什",
+            },
+            map = 1434,
+            x = 32.2,
+            y = 28.9,
+        },
+        summary = {
+            enUS = "Defeat Var'Taka in the Drowned City.",
+            zhCN = "在沉没之城击杀瓦尔塔卡。",
+        },
+        objectives = {
+            enUS = { "Var'Taka slain" },
+            zhCN = { "击杀瓦尔塔卡" },
+        },
+        rewards = {
+            xp = 9496,
+            money = 13000,
+            choices = {
+                {
+                    id = 279888,
+                    count = 1,
+                },
+                {
+                    id = 279889,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Darkspear Trolls",
+                        zhCN = "暗矛巨魔",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [96774] = {
+        name = {
+            enUS = "Ancient Gurubashi Idol",
+            zhCN = "上古古拉巴什神像",
+        },
+        level = 40,
+        min = 30,
+        faction = "H",
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 264074,
+            name = {
+                enUS = "Mazu'kon",
+                zhCN = "马祖空",
+            },
+            map = 1412,
+            x = 32.4,
+            y = 20.6,
+        },
+        summary = {
+            enUS = "Recover the ancient Gurubashi idol.",
+            zhCN = "取回上古古拉巴什神像。",
+        },
+        objectives = {
+            enUS = { "Ancient Gurubashi Idol" },
+            zhCN = { "上古古拉巴什神像" },
+        },
+        rewards = {
+            xp = 8775,
+            money = 10000,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Earthen Ring",
+                        zhCN = "大地之环",
+                    },
+                    value = 300,
+                },
+                {
+                    name = {
+                        enUS = "Darkspear Trolls",
+                        zhCN = "暗矛巨魔",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [92066] = {
+        name = {
+            enUS = "The Twin Bears",
+            zhCN = "双生熊神",
+        },
+        level = 55,
+        min = 47,
+        instances = { "blackmaw-hold" },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Lorekeeper Nok",
+                zhCN = "博学者诺克",
+            },
+        },
+        summary = {
+            enUS = "Recover the Totems of Ursoc and Ursol in Blackmaw Hold for Lorekeeper Nok at Ursolan.",
+            zhCN = "在黑喉要塞找回乌索克和乌索尔的图腾，交给乌索兰的博学者诺克。",
+        },
+        objectives = {
+            enUS = { "Totem of Ursoc", "Totem of Ursol" },
+            zhCN = { "乌索克的图腾", "乌索尔的图腾" },
+        },
+        rewards = {
+            xp = 11300,
+            choices = {
+                {
+                    id = 279891,
+                    count = 1,
+                },
+                {
+                    id = 279892,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Timbermaw Hold",
+                        zhCN = "木喉要塞",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [92069] = {
+        name = {
+            enUS = "Claws That Rend, Tusks that Gore",
+            zhCN = "撕裂之爪，刺骨之牙",
+        },
+        level = 58,
+        min = 45,
+        instances = { "blackmaw-hold" },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Ogtinc",
+                zhCN = "奥汀克",
+            },
+            map = 1447,
+        },
+        summary = {
+            enUS = "Bring the Claws of the Great Bear and the Tusks of the Unbroken to Ogtinc in Azshara.",
+            zhCN = "把巨熊之爪和不屈者之牙交给艾萨拉的奥汀克。",
+        },
+        objectives = {
+            enUS = { "Claws of the Great Bear", "Tusks of the Unbroken" },
+            zhCN = { "巨熊之爪", "不屈者之牙" },
+        },
+        rewards = {
+            xp = 12400,
+            choices = {
+                {
+                    id = 260213,
+                    count = 1,
+                },
+                {
+                    id = 260214,
+                    count = 1,
+                },
+                {
+                    id = 260215,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Timbermaw Hold",
+                        zhCN = "木喉要塞",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [92344] = {
+        name = {
+            enUS = "Get to the Roots of It",
+            zhCN = "追根溯源",
+        },
+        level = 55,
+        min = 45,
+        faction = "A",
+        instances = { "blackmaw-hold" },
+        start = {
+            kind = "npc",
+            id = 4217,
+            name = {
+                enUS = "Mathrengyl Bearwalker",
+                zhCN = "玛斯雷·驭熊者",
+            },
+            map = 1457,
+            x = 35.4,
+            y = 8.4,
+        },
+        finish = {
+            kind = "npc",
+            id = 4217,
+            name = {
+                enUS = "Mathrengyl Bearwalker",
+                zhCN = "玛斯雷·驭熊者",
+            },
+            map = 1457,
+            x = 35.4,
+            y = 8.4,
+        },
+        summary = {
+            enUS = "Gather ten Nordrassil Root Caps in Blackmaw Hold for Mathrengyl Bearwalker in Darnassus.",
+            zhCN = "在黑喉要塞采集十个诺达希尔根帽，交给达纳苏斯的玛斯雷·驭熊者。",
+        },
+        objectives = {
+            enUS = { "Nordrassil Root Cap ×10" },
+            zhCN = { "诺达希尔根帽 ×10" },
+        },
+        rewards = {
+            xp = 11300,
+            money = 13419,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Darnassus",
+                        zhCN = "达纳苏斯",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [97173] = {
+        name = {
+            enUS = "Blackmaw Magic",
+            zhCN = "黑喉魔法",
+        },
+        level = 59,
+        min = 52,
+        faction = "A",
+        instances = { "blackmaw-hold" },
+        summary = {
+            enUS = "Retrieve a Blackmaw Ritual Totem from Blackmaw Hold.",
+            zhCN = "在黑喉要塞取得黑喉仪祭图腾。",
+        },
+        objectives = {
+            enUS = { "Blackmaw Ritual Totem" },
+            zhCN = { "黑喉仪祭图腾" },
+        },
+        rewards = {
+            xp = 12800,
+            money = 22713,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Kirin Tor",
+                        zhCN = "肯瑞托",
+                    },
+                    value = 300,
+                },
+                {
+                    name = {
+                        enUS = "Darnassus",
+                        zhCN = "达纳苏斯",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [97327] = {
+        name = {
+            enUS = "Blackmaw Pouches",
+            zhCN = "黑喉袋子",
+        },
+        level = 60,
+        min = 55,
+        instances = { "blackmaw-hold" },
+        start = {
+            kind = "npc",
+            id = 235903,
+            name = {
+                enUS = "Ekkal",
+                zhCN = "埃卡尔",
+            },
+            map = 1447,
+            x = 42.0,
+            y = 38.9,
+        },
+        finish = {
+            kind = "npc",
+            id = 235903,
+            name = {
+                enUS = "Ekkal",
+                zhCN = "埃卡尔",
+            },
+            map = 1447,
+            x = 42.0,
+            y = 38.9,
+        },
+        summary = {
+            enUS = "Recover five Blackmaw Pouches for Ekkal at the Ruins of Eldarath in Azshara.",
+            zhCN = "为艾萨拉埃达拉斯废墟的埃卡尔找回五个黑喉袋子。",
+        },
+        objectives = {
+            enUS = { "Blackmaw Pouch ×5" },
+            zhCN = { "黑喉袋子 ×5" },
+        },
+        rewards = {
+            xp = 13200,
+            money = 24300,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Timbermaw Hold",
+                        zhCN = "木喉要塞",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [94980] = {
+        name = {
+            enUS = "Krol'dok Moulding",
+            zhCN = "克罗多克铸件",
+        },
+        level = 41,
+        min = 38,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        finish = {
+            kind = "npc",
+            id = 259250,
+            name = {
+                enUS = "Alphonse Dumas",
+                zhCN = "阿尔方斯·杜马斯",
+            },
+            map = 2548,
+            x = 64.4,
+            y = 82.0,
+        },
+        after = { 94981 },
+        summary = {
+            enUS = "Find someone at Farholde Keep who recognizes the mould.",
+            zhCN = "在法霍德要塞找认得这块铸件的人。",
+        },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+            items = {
+                {
+                    id = 267138,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [94981] = {
+        name = {
+            enUS = "Key Ingredients",
+            zhCN = "关键耗材",
+        },
+        level = 41,
+        min = 38,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 259250,
+            name = {
+                enUS = "Alphonse Dumas",
+                zhCN = "阿尔方斯·杜马斯",
+            },
+            map = 2548,
+            x = 64.4,
+            y = 82.0,
+        },
+        finish = {
+            kind = "npc",
+            id = 259250,
+            name = {
+                enUS = "Alphonse Dumas",
+                zhCN = "阿尔方斯·杜马斯",
+            },
+            map = 2548,
+            x = 64.4,
+            y = 82.0,
+        },
+        before = { 94980 },
+        summary = {
+            enUS = "Bring four Thick Leather and twelve Iron Bars to Alphonse Dumas.",
+            zhCN = "把四张厚皮和十二块铁锭交给阿尔方斯·杜马斯。",
+        },
+        objectives = {
+            enUS = { "Thick Leather ×4", "Iron Bar ×12" },
+            zhCN = { "厚皮 ×4", "铁锭 ×12" },
+        },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+            items = {
+                {
+                    id = 267089,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [94983] = {
+        name = {
+            enUS = "Twilight Mementos",
+            zhCN = "暮光遗物",
+        },
+        level = 42,
+        min = 38,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 258023,
+            name = {
+                enUS = "Sergeant Riftan",
+                zhCN = "里夫坦中士",
+            },
+            map = 2548,
+            x = 30.4,
+            y = 49.0,
+        },
+        finish = {
+            kind = "npc",
+            id = 258023,
+            name = {
+                enUS = "Sergeant Riftan",
+                zhCN = "里夫坦中士",
+            },
+            map = 2548,
+            x = 30.4,
+            y = 49.0,
+        },
+        after = { 94997 },
+        summary = {
+            enUS = "Collect eight Cultist Bangles in Krol’dok Stronghold.",
+            zhCN = "在克罗多克要塞收集八只暮光手镯。",
+        },
+        objectives = {
+            enUS = { "Twilight Bangle ×8" },
+            zhCN = { "暮光手镯 ×8" },
+        },
+        rewards = {
+            xp = 10212,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Brotherhood of the Horse",
+                        zhCN = "铁马兄弟会",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [94998] = {
+        name = {
+            enUS = "Curios of Curiosity",
+            zhCN = "奇珍异宝",
+        },
+        level = 42,
+        min = 38,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 257591,
+            name = {
+                enUS = "Ashe Amberhall",
+                zhCN = "艾什·安伯霍尔",
+            },
+            map = 2548,
+            x = 66.7,
+            y = 81.1,
+        },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Melanie Sable",
+                zhCN = "梅兰妮·萨布尔",
+            },
+            map = 2548,
+            x = 66.2,
+            y = 83.3,
+        },
+        summary = {
+            enUS = "Bring the Satchel of Mementos to Melanie Sable.",
+            zhCN = "把遗物背包交给梅兰妮·萨布尔。",
+        },
+        rewards = {
+            xp = 3450,
+            money = 5500,
+            items = {
+                {
+                    id = 268036,
+                    count = 1,
+                },
+            },
+            choices = {
+                {
+                    id = 279850,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Brotherhood of the Horse",
+                        zhCN = "铁马兄弟会",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [95924] = {
+        name = {
+            enUS = "Panic at the Digsite",
+            zhCN = "挖掘场的恐慌",
+        },
+        level = 60,
+        min = 55,
+        faction = "A",
+        instances = { "shapers-terrace" },
+        summary = {
+            enUS = "Defeat six Ravasaur Matriarchs, nine Ironhide Ravasaurs, and Venomridge.",
+            zhCN = "击杀六只暴掠龙女王、九只铁皮暴掠龙和毒脊。",
+        },
+        objectives = {
+            enUS = { "Venomridge slain", "Ravasaur Matriarch slain ×6", "Ironhide Ravasaur slain ×9" },
+            zhCN = { "击杀毒脊", "击杀暴掠龙女王 ×6", "击杀铁皮暴掠龙 ×9" },
+        },
+        rewards = {
+            xp = 17655,
+            money = 9000,
+            choices = {
+                {
+                    id = 279903,
+                    count = 1,
+                },
+                {
+                    id = 279905,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Ironforge",
+                        zhCN = "铁炉堡",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [95925] = {
+        name = {
+            enUS = "Mapping the Way Forward",
+            zhCN = "绘制前路",
+        },
+        level = 60,
+        min = 55,
+        faction = "A",
+        instances = { "shapers-terrace" },
+        summary = {
+            enUS = "Record five landmarks on the explorer’s map inside Shaper’s Terrace.",
+            zhCN = "在塑造者之台的探索者地图上记下五处地标。",
+        },
+        objectives = {
+            enUS = { "Pillar of Assimilation", "The Achromatic Crystal", "The Western Gates", "The Regrowth Vestibule", "The Unearthed Stone Watcher" },
+            zhCN = { "同化之柱", "无色水晶", "西部大门", "愈合前厅", "出土的石头卫士" },
+        },
+        rewards = {
+            xp = 17655,
+            items = {
+                {
+                    id = 271770,
+                    count = 1,
+                },
+            },
+            choices = {
+                {
+                    id = 279908,
+                    count = 1,
+                },
+                {
+                    id = 279910,
+                    count = 1,
+                },
+                {
+                    id = 279912,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Ironforge",
+                        zhCN = "铁炉堡",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [96335] = {
+        name = {
+            enUS = "The Man in the Iron Chains",
+            zhCN = "铁链囚徒",
+        },
+        level = 53,
+        min = 48,
+        instances = { "alcaz-prison" },
+        after = { 95263 },
+        summary = {
+            enUS = "Take the Ornate Shackle Key from The Questioner inside Alcaz Prison.",
+            zhCN = "在奥卡兹监狱从“质问者”身上夺取华丽的镣铐钥匙。",
+        },
+        objectives = {
+            enUS = { "Ornate Shackle Key" },
+            zhCN = { "华丽的镣铐钥匙" },
+        },
+        rewards = {
+            xp = 2860,
+        },
+    },
+    [96337] = {
+        name = {
+            enUS = "More Valuable Than Gold",
+            zhCN = "可贵胜金",
+        },
+        level = 53,
+        min = 48,
+        instances = { "alcaz-prison" },
+        summary = {
+            enUS = "Use Mason Connery’s note to find his hidden treasure.",
+            zhCN = "根据梅森·康纳利的便条找到他藏起来的宝物。",
+        },
+        objectives = {
+            enUS = { "Find Mason Connery's treasure" },
+            zhCN = { "找到梅森·康纳利的宝物" },
+        },
+        rewards = {
+            xp = 11550,
+        },
+    },
+    [96377] = {
+        name = {
+            enUS = "State Secrets",
+            zhCN = "国家机密",
+        },
+        level = 53,
+        min = 48,
+        faction = "A",
+        instances = { "alcaz-prison" },
+        summary = {
+            enUS = "Locate Mason Connery’s treasure.",
+            zhCN = "找到梅森·康纳利的宝物。",
+        },
+        objectives = {
+            enUS = { "Find Mason Connery's treasure" },
+            zhCN = { "找到梅森·康纳利的宝物" },
+        },
+        rewards = {
+            xp = 6550,
+        },
+    },
+    [96381] = {
+        name = {
+            enUS = "A Bit of Wet Work",
+            zhCN = "一趟湿活",
+        },
+        level = 53,
+        min = 48,
+        faction = "A",
+        instances = { "alcaz-prison" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Sully McCleary",
+                zhCN = "萨利·麦克利里",
+            },
+            map = 1445,
+        },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Sully McCleary",
+                zhCN = "萨利·麦克利里",
+            },
+            map = 1445,
+        },
+        summary = {
+            enUS = "Kill fifteen Strashaz Soldiers and eight Strashaz Enchantresses, then bring Ca'zass's head to Sully McCleary.",
+            zhCN = "击杀十五名斯塔莎兹士兵和八名斯塔莎兹女巫，把海潮主母卡扎斯的徽记交给萨利·麦克利里。",
+        },
+        objectives = {
+            enUS = { "Strashaz Soldier slain ×15", "Strashaz Enchantress slain ×8", "Ca'zass's Head" },
+            zhCN = { "击杀斯塔莎兹士兵 ×15", "击杀斯塔莎兹女巫 ×8", "卡扎斯的徽记" },
+        },
+        rewards = {
+            xp = 11550,
+            money = 8000,
+            choices = {
+                {
+                    id = 279825,
+                    count = 1,
+                },
+                {
+                    id = 279826,
+                    count = 1,
+                },
+                {
+                    id = 279829,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Ironforge",
+                        zhCN = "铁炉堡",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [96772] = {
+        name = {
+            enUS = "The Dragon's Journal",
+            zhCN = "巨龙日记",
+        },
+        level = 53,
+        min = 46,
+        faction = "A",
+        instances = { "alcaz-prison" },
+        start = {
+            kind = "npc",
+            id = 20735,
+            name = {
+                enUS = "Archmage Lan'dalock",
+                zhCN = "大法师兰达洛克",
+            },
+            map = 1416,
+            x = 15.3,
+            y = 73.9,
+        },
+        summary = {
+            enUS = "Recover Zarla’s journal from inside Alcaz Prison.",
+            zhCN = "到奥卡兹监狱深处取回日志。",
+        },
+        objectives = {
+            enUS = { "Journal recovered" },
+            zhCN = { "取回日志" },
+        },
+        rewards = {
+            xp = 14410,
+            money = 16752,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Kirin Tor",
+                        zhCN = "肯瑞托",
+                    },
+                    value = 300,
+                },
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [356] = {
+        name = {
+            enUS = "Rear Guard Patrol",
+            zhCN = "巡查后方",
+        },
+        level = 11,
+        min = 6,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 1495,
+            name = {
+                enUS = "Deathguard Linnea",
+                zhCN = "亡灵卫兵林奈",
+            },
+            map = 1420,
+            x = 65.5,
+            y = 60.2,
+        },
+        finish = {
+            kind = "npc",
+            id = 1495,
+            name = {
+                enUS = "Deathguard Linnea",
+                zhCN = "亡灵卫兵林奈",
+            },
+            map = 1420,
+            x = 65.5,
+            y = 60.2,
+        },
+        after = { 99156, 92422 },
+        summary = {
+            enUS = "Kill eight of each of the two assigned undead in Tirisfal Glades.",
+            zhCN = "在提瑞斯法林地击杀八只可怕的血僵尸和八只游荡的幽灵。",
+        },
+        objectives = {
+            enUS = { "Dire Blood Zombie slain ×8", "Wandering Spirit slain ×8" },
+            zhCN = { "击杀可怕的血僵尸 ×8", "击杀游荡的幽灵 ×8" },
+        },
+        rewards = {
+            xp = 660,
+            money = 300,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 75,
+                },
+            },
+        },
+    },
+    [99156] = {
+        name = {
+            enUS = "Rear Guard Patrol",
+            zhCN = "巡查后方",
+        },
+        level = 13,
+        min = 10,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 1495,
+            name = {
+                enUS = "Deathguard Linnea",
+                zhCN = "亡灵卫兵林奈",
+            },
+            map = 1420,
+            x = 65.5,
+            y = 60.2,
+        },
+        finish = {
+            kind = "npc",
+            id = 1495,
+            name = {
+                enUS = "Deathguard Linnea",
+                zhCN = "亡灵卫兵林奈",
+            },
+            map = 1420,
+            x = 65.5,
+            y = 60.2,
+        },
+        before = { 356 },
+        after = { 92422 },
+        summary = {
+            enUS = "Recover the Ripper’s heart for Deathguard Linnea.",
+            zhCN = "取回撕裂者的心脏交给亡灵卫兵林奈。",
+        },
+        objectives = {
+            enUS = { "The Ripper's heart" },
+            zhCN = { "撕裂者的心脏" },
+        },
+        rewards = {
+            xp = 910,
+            choices = {
+                {
+                    id = 286742,
+                    count = 1,
+                },
+                {
+                    id = 286743,
+                    count = 1,
+                },
+                {
+                    id = 286744,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [447] = {
+        name = {
+            enUS = "A Recipe For Death",
+            zhCN = "致命的配方",
+        },
+        level = 12,
+        min = 9,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 1937,
+            name = {
+                enUS = "Apothecary Renferrel",
+                zhCN = "药剂师伦弗利尔",
+            },
+            map = 1421,
+            x = 42.8,
+            y = 40.9,
+        },
+        finish = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        after = { 450, 451, 95216 },
+        summary = {
+            enUS = "Gather six Grizzled Bear Hearts and six samples of Grizzled Bear Blood.",
+            zhCN = "收集六颗灰熊的心脏和六份粘稠的血液。",
+        },
+        objectives = {
+            enUS = { "Grizzled Bear Heart ×6", "Skittering Blood ×6" },
+            zhCN = { "灰熊的心脏 ×6", "粘稠的血液 ×6" },
+        },
+        rewards = {
+            xp = 910,
+            money = 500,
+            items = {
+                {
+                    id = 3448,
+                    count = 20,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [450] = {
+        name = {
+            enUS = "A Recipe For Death",
+            zhCN = "致命的配方",
+        },
+        level = 15,
+        min = 9,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        finish = {
+            kind = "npc",
+            id = 1937,
+            name = {
+                enUS = "Apothecary Renferrel",
+                zhCN = "药剂师伦弗利尔",
+            },
+            map = 1421,
+            x = 42.8,
+            y = 40.9,
+        },
+        before = { 447 },
+        after = { 451, 95216 },
+        summary = {
+            enUS = "Recover Berard’s Journal.",
+            zhCN = "取回伯纳德的日记。",
+        },
+        objectives = {
+            enUS = { "Berard's Journal" },
+            zhCN = { "伯纳德的日记" },
+        },
+        rewards = {
+            xp = 1350,
+            money = 1400,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [451] = {
+        name = {
+            enUS = "A Recipe For Death",
+            zhCN = "致命的配方",
+        },
+        level = 18,
+        min = 9,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 1937,
+            name = {
+                enUS = "Apothecary Renferrel",
+                zhCN = "药剂师伦弗利尔",
+            },
+            map = 1421,
+            x = 42.8,
+            y = 40.9,
+        },
+        finish = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        before = { 447, 450 },
+        after = { 95216 },
+        summary = {
+            enUS = "Collect six samples of each lake creeper and lurker moss and one hardened tumor.",
+            zhCN = "各收集六份湖岸爬行者和湖岸潜藏者苔藓，再带上一块硬瘤。",
+        },
+        objectives = {
+            enUS = { "Lake Skulker Moss ×6", "Lake Creeper Moss ×6", "Hardened Tumor" },
+            zhCN = { "湖岸潜藏者苔藓 ×6", "湖岸爬行者苔藓 ×6", "硬瘤" },
+        },
+        rewards = {
+            xp = 2050,
+            items = {
+                {
+                    id = 2458,
+                    count = 1,
+                },
+                {
+                    id = 2459,
+                    count = 1,
+                },
+            },
+            choices = {
+                {
+                    id = 3451,
+                    count = 1,
+                },
+                {
+                    id = 3582,
+                    count = 1,
+                },
+                {
+                    id = 276723,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [97289] = {
+        name = {
+            enUS = "Unending Torment",
+            zhCN = "无尽的折磨",
+        },
+        level = 21,
+        min = 16,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        finish = {
+            kind = "npc",
+            id = 271613,
+            name = {
+                enUS = "Unfinished Abomination",
+                zhCN = "未完成的憎恶",
+            },
+            map = 1458,
+            x = 46.0,
+            y = 62.2,
+        },
+        before = { 97288 },
+        after = { 97290, 97291, 97292 },
+        summary = {
+            enUS = "Bring the Baron’s head to the body in the Undercity.",
+            zhCN = "将男爵的头颅带到幽暗城指定的尸体旁。",
+        },
+        objectives = {
+            enUS = { "The Baron's insignia" },
+            zhCN = { "男爵的徽记" },
+        },
+        rewards = {
+            xp = 1650,
+            money = 1300,
+        },
+    },
+    [97290] = {
+        name = {
+            enUS = "Unending Torment",
+            zhCN = "无尽的折磨",
+        },
+        level = 21,
+        min = 16,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 271613,
+            name = {
+                enUS = "Unfinished Abomination",
+                zhCN = "未完成的憎恶",
+            },
+            map = 1458,
+            x = 46.0,
+            y = 62.2,
+        },
+        finish = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        before = { 97288, 97289 },
+        after = { 97291, 97292 },
+        summary = {
+            enUS = "Go back to Master Apothecary Faranell.",
+            zhCN = "回去见大药剂师法拉尼尔。",
+        },
+        rewards = {
+            xp = 1650,
+            money = 1300,
+            choices = {
+                {
+                    id = 279867,
+                    count = 1,
+                },
+                {
+                    id = 279865,
+                    count = 1,
+                },
+                {
+                    id = 279864,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [97291] = {
+        name = {
+            enUS = "Unending Torment",
+            zhCN = "无尽的折磨",
+        },
+        level = 21,
+        min = 15,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        finish = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        before = { 97288, 97289, 97290 },
+        after = { 97292 },
+        summary = {
+            enUS = "Collect a Toxic Skullcap, Blisterweed and an Essence of Agony.",
+            zhCN = "收集剧毒骨帽、水疱草和苦楚精华。",
+        },
+        objectives = {
+            enUS = { "Toxic Skullcap", "Blisterweed", "Essence of Agony" },
+            zhCN = { "剧毒骨帽", "水疱草", "苦楚精华" },
+        },
+        rewards = {
+            xp = 1650,
+            money = 1300,
+        },
+    },
+    [97292] = {
+        name = {
+            enUS = "Unending Torment",
+            zhCN = "无尽的折磨",
+        },
+        level = 21,
+        min = 16,
+        faction = "H",
+        instances = { "ruins-of-lordaeron" },
+        newInForeverChain = true,
+        start = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        finish = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 69.4,
+        },
+        before = { 97288, 97289, 97290, 97291 },
+        summary = {
+            enUS = "Use the Hissing Serum on the apparatus above the body.",
+            zhCN = "把嘶嘶血清注入尸体上方的装置。",
+        },
+        objectives = {
+            enUS = { "Hissing Serum applied", "Hissing Serum" },
+            zhCN = { "施用嘶嘶血清", "嘶嘶血清" },
+        },
+        rewards = {
+            xp = 1650,
+            money = 1300,
+        },
+    },
+    [95787] = {
+        name = {
+            enUS = "Take Two With Water",
+            zhCN = "就水服下两片",
+        },
+        level = 40,
+        min = 30,
+        faction = "A",
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 2277,
+            name = {
+                enUS = "Loremaster Dibbs",
+                zhCN = "博学者迪布斯",
+            },
+            map = 1424,
+            x = 50.6,
+            y = 57.1,
+        },
+        after = { 95799 },
+        summary = {
+            enUS = "Make rubbings of the four tablets of I'lalai in the Drowned City.",
+            zhCN = "用兽皮和木炭拓印沉没之城里的四块伊拉莱石板。",
+        },
+        objectives = {
+            enUS = { "First Tablet of I'lalai", "Second Tablet of I'lalai", "Third Tablet of I'lalai", "Fourth Tablet of I'lalai" },
+            zhCN = { "伊拉莱第一石板", "伊拉莱第二石板", "伊拉莱第三石板", "伊拉莱第四石板" },
+        },
+        rewards = {
+            xp = 8426,
+            money = 15000,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [95788] = {
+        name = {
+            enUS = "Magics of the Drowned City",
+            zhCN = "沉没之城的魔法",
+        },
+        level = 40,
+        min = 30,
+        faction = "A",
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 2277,
+            name = {
+                enUS = "Loremaster Dibbs",
+                zhCN = "博学者迪布斯",
+            },
+            map = 1424,
+            x = 50.6,
+            y = 57.1,
+        },
+        after = { 95798 },
+        summary = {
+            enUS = "Collect five I'lalai Fetishes from the trolls of the Drowned City.",
+            zhCN = "从沉没之城的巨魔身上收集五个伊拉莱神像。",
+        },
+        objectives = {
+            enUS = { "I'lalai Fetish ×5" },
+            zhCN = { "伊拉莱神像 ×5" },
+        },
+        rewards = {
+            xp = 8426,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [95789] = {
+        name = {
+            enUS = "Shady Saltseers",
+            zhCN = "可疑的盐水先知",
+        },
+        level = 40,
+        min = 34,
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 773,
+            name = {
+                enUS = "Krazek",
+                zhCN = "克拉兹克",
+            },
+            map = 1434,
+            x = 27,
+            y = 77.2,
+        },
+        summary = {
+            enUS = "Collect ten voodoo-infused artifacts.",
+            zhCN = "收集十件注入巫毒的神器。",
+        },
+        objectives = {
+            enUS = { "Voodoo Infused Artifact ×10" },
+            zhCN = { "注入巫毒的神器 ×10" },
+        },
+        rewards = {
+            xp = 10432,
+            money = 10000,
+            choices = {
+                {
+                    id = 279882,
+                    count = 1,
+                },
+                {
+                    id = 279930,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Booty Bay",
+                        zhCN = "藏宝海湾",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Ratchet",
+                        zhCN = "棘齿城",
+                    },
+                    value = 50,
+                },
+                {
+                    name = {
+                        enUS = "Gadgetzan",
+                        zhCN = "加基森",
+                    },
+                    value = 50,
+                },
+                {
+                    name = {
+                        enUS = "Everlook",
+                        zhCN = "永望镇",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [95791] = {
+        name = {
+            enUS = "The Saltseer Captain",
+            zhCN = "盐水先知船长",
+        },
+        level = 40,
+        min = 34,
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 773,
+            name = {
+                enUS = "Krazek",
+                zhCN = "克拉兹克",
+            },
+            map = 1434,
+            x = 27,
+            y = 77.2,
+        },
+        summary = {
+            enUS = "Defeat Captain Dreadrise and three Saltseer Coroners in the Drowned City.",
+            zhCN = "击杀德雷德莱斯船长和三名盐水先知验尸官。",
+        },
+        objectives = {
+            enUS = { "Captain Dreadrise slain", "Saltseer Coroner slain ×3" },
+            zhCN = { "击杀德雷德莱斯船长", "击杀盐水先知验尸官 ×3" },
+        },
+        rewards = {
+            xp = 10432,
+            choices = {
+                {
+                    id = 279883,
+                    count = 1,
+                },
+                {
+                    id = 279884,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Booty Bay",
+                        zhCN = "藏宝海湾",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Gadgetzan",
+                        zhCN = "加基森",
+                    },
+                    value = 50,
+                },
+                {
+                    name = {
+                        enUS = "Everlook",
+                        zhCN = "永望镇",
+                    },
+                    value = 50,
+                },
+                {
+                    name = {
+                        enUS = "Ratchet",
+                        zhCN = "棘齿城",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [97130] = {
+        name = {
+            enUS = "Ancient Gurubashi Secrets",
+            zhCN = "上古古拉巴什秘密",
+        },
+        level = 40,
+        min = 34,
+        faction = "A",
+        instances = { "drowned-city" },
+        start = {
+            kind = "npc",
+            id = 31439,
+            name = {
+                enUS = "Archmage Timear",
+                zhCN = "大法师提迈尔",
+            },
+            map = 1416,
+            x = 15.6,
+            y = 73.6,
+        },
+        summary = {
+            enUS = "Recover the ancient Gurubashi idol.",
+            zhCN = "取回上古古拉巴什神像。",
+        },
+        objectives = {
+            enUS = { "Ancient Gurubashi Idol" },
+            zhCN = { "上古古拉巴什神像" },
+        },
+        rewards = {
+            xp = 10432,
+            money = 5000,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Kirin Tor",
+                        zhCN = "肯瑞托",
+                    },
+                    value = 300,
+                },
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [92065] = {
+        name = {
+            enUS = "Blackmaw Reclamation",
+            zhCN = "光复黑喉",
+        },
+        level = 60,
+        min = 47,
+        instances = { "blackmaw-hold" },
+        summary = {
+            enUS = "Bring the head of Valrox Darkhoof to the gatekeeper at Ursolan.",
+            zhCN = "将瓦罗克斯·暗蹄的头颅交给乌索兰的护门者拉格罗尔。",
+        },
+        objectives = {
+            enUS = { "Head of Valrox Darkhoof" },
+            zhCN = { "瓦罗克斯·暗蹄的头颅" },
+        },
+        rewards = {
+            xp = 13200,
+            choices = {
+                {
+                    id = 260216,
+                    count = 1,
+                },
+                {
+                    id = 260217,
+                    count = 1,
+                },
+                {
+                    id = 260218,
+                    count = 1,
+                },
+                {
+                    id = 260219,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Timbermaw Hold",
+                        zhCN = "木喉要塞",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [92070] = {
+        name = {
+            enUS = "A Lost Memento",
+            zhCN = "遗失的信物",
+        },
+        level = 55,
+        min = 47,
+        instances = { "blackmaw-hold" },
+        summary = {
+            enUS = "Find the owner of the feathered charm necklace, a child’s keepsake from the Blackmaw furbolgs.",
+            zhCN = "为这条羽饰护符项链寻找失主，它像是黑喉熊怪孩子的心爱之物。",
+        },
+        objectives = {
+            enUS = { "Feathered charm necklace" },
+            zhCN = { "羽饰护符项链" },
+        },
+        rewards = {
+            xp = 11300,
+            choices = {
+                {
+                    id = 279893,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Timbermaw Hold",
+                        zhCN = "木喉要塞",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [92343] = {
+        name = {
+            enUS = "Get to the Roots of It",
+            zhCN = "追根溯源",
+        },
+        level = 55,
+        min = 45,
+        faction = "H",
+        instances = { "blackmaw-hold" },
+        start = {
+            kind = "npc",
+            id = 5770,
+            name = {
+                enUS = "Nara Wildmane",
+                zhCN = "纳拉·蛮鬃",
+            },
+            map = 1456,
+            x = 75.7,
+            y = 31.6,
+        },
+        finish = {
+            kind = "npc",
+            id = 5770,
+            name = {
+                enUS = "Nara Wildmane",
+                zhCN = "纳拉·蛮鬃",
+            },
+            map = 1456,
+            x = 75.7,
+            y = 31.6,
+        },
+        summary = {
+            enUS = "Gather ten Nordrassil Root Caps in Blackmaw Hold for Nara Wildmane in Thunder Bluff.",
+            zhCN = "在黑喉要塞采集十个诺达希尔根帽，交给雷霆崖的纳拉·蛮鬃。",
+        },
+        objectives = {
+            enUS = { "Nordrassil Root Cap ×10" },
+            zhCN = { "诺达希尔根帽 ×10" },
+        },
+        rewards = {
+            xp = 11300,
+            money = 13419,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Thunder Bluff",
+                        zhCN = "雷霆崖",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [97198] = {
+        name = {
+            enUS = "Blackmaw Magic",
+            zhCN = "黑喉魔法",
+        },
+        level = 59,
+        min = 52,
+        faction = "H",
+        instances = { "blackmaw-hold" },
+        summary = {
+            enUS = "Recover a Blackmaw Ritual Totem.",
+            zhCN = "取回黑喉仪祭图腾。",
+        },
+        objectives = {
+            enUS = { "Blackmaw Ritual Totem" },
+            zhCN = { "黑喉仪祭图腾" },
+        },
+        rewards = {
+            xp = 16100,
+            money = 27456,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Earthen Ring",
+                        zhCN = "大地之环",
+                    },
+                    value = 300,
+                },
+                {
+                    name = {
+                        enUS = "Thunder Bluff",
+                        zhCN = "雷霆崖",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [94969] = {
+        name = {
+            enUS = "Krol’dok No More!",
+            zhCN = "踏平克罗多克！",
+        },
+        level = 42,
+        min = 40,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        summary = {
+            enUS = "Escort Marcus Tilwell out of Krol’dok Stronghold.",
+            zhCN = "护送马库斯·提尔威尔到安全地带。",
+        },
+        rewards = {
+            xp = 3450,
+        },
+    },
+    [94997] = {
+        name = {
+            enUS = "Lingering Essence",
+            zhCN = "残留精华",
+        },
+        level = 42,
+        min = 38,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 258023,
+            name = {
+                enUS = "Sergeant Riftan",
+                zhCN = "里夫坦中士",
+            },
+            map = 2548,
+            x = 30.4,
+            y = 49.0,
+        },
+        finish = {
+            kind = "npc",
+            id = 257591,
+            name = {
+                enUS = "Ashe Amberhall",
+                zhCN = "艾什·安伯霍尔",
+            },
+            map = 2548,
+            x = 66.7,
+            y = 81.1,
+        },
+        before = { 94983 },
+        summary = {
+            enUS = "Bring the Satchel of Cursed Mementos to Ashe Amberhall at Farholde Keep.",
+            zhCN = "把被诅咒的遗物背包交给法霍德要塞的艾什·安伯霍尔。",
+        },
+        rewards = {
+            xp = 3450,
+            money = 5500,
+            items = {
+                {
+                    id = 268035,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Brotherhood of the Horse",
+                        zhCN = "铁马兄弟会",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [94984] = {
+        name = {
+            enUS = "Tome of Twilight",
+            zhCN = "暮光宝典",
+        },
+        level = 44,
+        min = 39,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 257591,
+            name = {
+                enUS = "Ashe Amberhall",
+                zhCN = "艾什·安伯霍尔",
+            },
+            map = 2548,
+            x = 66.7,
+            y = 81.1,
+        },
+        finish = {
+            kind = "npc",
+            id = 257591,
+            name = {
+                enUS = "Ashe Amberhall",
+                zhCN = "艾什·安伯霍尔",
+            },
+            map = 2548,
+            x = 66.7,
+            y = 81.1,
+        },
+        summary = {
+            enUS = "Recover the Tome of Twilight.",
+            zhCN = "取回暮光宝典。",
+        },
+        objectives = {
+            enUS = { "Tome of Twilight" },
+            zhCN = { "暮光宝典" },
+        },
+        rewards = {
+            xp = 11044,
+            choices = {
+                {
+                    id = 279854,
+                    count = 1,
+                },
+                {
+                    id = 279855,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Brotherhood of the Horse",
+                        zhCN = "铁马兄弟会",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [94982] = {
+        name = {
+            enUS = "Eye of Mugg",
+            zhCN = "莫格之眼",
+        },
+        level = 45,
+        min = 40,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 257558,
+            name = {
+                enUS = "Demar Brant",
+                zhCN = "布兰特指挥官",
+            },
+            map = 2548,
+            x = 66.6,
+            y = 81.0,
+        },
+        finish = {
+            kind = "npc",
+            id = 257558,
+            name = {
+                enUS = "Demar Brant",
+                zhCN = "布兰特指挥官",
+            },
+            map = 2548,
+            x = 66.6,
+            y = 81.0,
+        },
+        summary = {
+            enUS = "Bring the Eye of Mugg to Demar Brant as proof of the Krol'dok leader's death.",
+            zhCN = "把莫格之眼交给布兰特指挥官，证明克罗多克的头目已死。",
+        },
+        objectives = {
+            enUS = { "Eye of Mugg" },
+            zhCN = { "莫格之眼" },
+        },
+        rewards = {
+            xp = 11519,
+            money = 13000,
+            choices = {
+                {
+                    id = 279852,
+                    count = 1,
+                },
+                {
+                    id = 279853,
+                    count = 1,
+                },
+                {
+                    id = 279480,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Brotherhood of the Horse",
+                        zhCN = "铁马兄弟会",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [94975] = {
+        name = {
+            enUS = "A Token of Vengeance",
+            zhCN = "复仇印记",
+        },
+        level = 42,
+        min = 38,
+        faction = "H",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 258570,
+            name = {
+                enUS = "Da'grosh",
+                zhCN = "达格罗什",
+            },
+            map = 2548,
+            x = 33.5,
+            y = 37.9,
+        },
+        finish = {
+            kind = "npc",
+            id = 258570,
+            name = {
+                enUS = "Da'grosh",
+                zhCN = "达格罗什",
+            },
+            map = 2548,
+            x = 33.5,
+            y = 37.9,
+        },
+        summary = {
+            enUS = "Collect fifteen cultist ears.",
+            zhCN = "收集十五只教徒的耳朵。",
+        },
+        objectives = {
+            enUS = { "Cultist Ear ×15" },
+            zhCN = { "教徒的耳朵 ×15" },
+        },
+        rewards = {
+            xp = 8194,
+            items = {
+                {
+                    id = 267090,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [94974] = {
+        name = {
+            enUS = "Key Ingredients",
+            zhCN = "关键耗材",
+        },
+        level = 41,
+        min = 38,
+        faction = "H",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 256657,
+            name = {
+                enUS = "Kreza Darkthorn",
+                zhCN = "克雷扎·暗棘",
+            },
+            map = 2548,
+            x = 59.8,
+            y = 46.0,
+        },
+        finish = {
+            kind = "npc",
+            id = 256657,
+            name = {
+                enUS = "Kreza Darkthorn",
+                zhCN = "克雷扎·暗棘",
+            },
+            map = 2548,
+            x = 59.8,
+            y = 46.0,
+        },
+        before = { 94973 },
+        summary = {
+            enUS = "Bring four Thick Leather and twelve Iron Bars to Kreza Darkthorn.",
+            zhCN = "把四张厚皮和十二块铁锭交给克雷扎·暗棘。",
+        },
+        objectives = {
+            enUS = { "Thick Leather ×4", "Iron Bar ×12" },
+            zhCN = { "厚皮 ×4", "铁锭 ×12" },
+        },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+            items = {
+                {
+                    id = 267089,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [94973] = {
+        name = {
+            enUS = "Krol'dok Moulding",
+            zhCN = "克罗多克铸件",
+        },
+        level = 41,
+        min = 38,
+        faction = "H",
+        instances = { "kroldok-stronghold" },
+        finish = {
+            kind = "npc",
+            id = 256657,
+            name = {
+                enUS = "Kreza Darkthorn",
+                zhCN = "克雷扎·暗棘",
+            },
+            map = 2548,
+            x = 59.8,
+            y = 46.0,
+        },
+        after = { 94974 },
+        summary = {
+            enUS = "Find someone at Rog'mar who recognizes the mould.",
+            zhCN = "在洛格玛营地找认得这块铸件的人。",
+        },
+        rewards = {
+            xp = 3300,
+            money = 5500,
+            items = {
+                {
+                    id = 267137,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [94972] = {
+        name = {
+            enUS = "Tome of Twilight",
+            zhCN = "暮光宝典",
+        },
+        level = 44,
+        min = 39,
+        faction = "H",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 256710,
+            name = {
+                enUS = "Tran'gul",
+                zhCN = "特兰古尔",
+            },
+            map = 2548,
+            x = 59.4,
+            y = 44.2,
+        },
+        finish = {
+            kind = "npc",
+            id = 256710,
+            name = {
+                enUS = "Tran'gul",
+                zhCN = "特兰古尔",
+            },
+            map = 2548,
+            x = 59.4,
+            y = 44.2,
+        },
+        summary = {
+            enUS = "Recover the Tome of Twilight.",
+            zhCN = "取回暮光宝典。",
+        },
+        objectives = {
+            enUS = { "Tome of Twilight" },
+            zhCN = { "暮光宝典" },
+        },
+        rewards = {
+            xp = 11044,
+            choices = {
+                {
+                    id = 279859,
+                    count = 1,
+                },
+                {
+                    id = 279860,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [94968] = {
+        name = {
+            enUS = "Eye of Mugg",
+            zhCN = "莫格之眼",
+        },
+        level = 45,
+        min = 40,
+        faction = "H",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 256418,
+            name = {
+                enUS = "Krom'rosh",
+                zhCN = "克罗姆罗什",
+            },
+            map = 2548,
+            x = 59.4,
+            y = 45.6,
+        },
+        finish = {
+            kind = "npc",
+            id = 256418,
+            name = {
+                enUS = "Krom'rosh",
+                zhCN = "克罗姆罗什",
+            },
+            map = 2548,
+            x = 59.4,
+            y = 45.6,
+        },
+        summary = {
+            enUS = "Bring the Eye of Mugg to Krom'rosh as proof of the Krol'dok leader's death.",
+            zhCN = "把莫格之眼交给克罗姆罗什，证明克罗多克的头目已死。",
+        },
+        objectives = {
+            enUS = { "Eye of Mugg" },
+            zhCN = { "莫格之眼" },
+        },
+        rewards = {
+            xp = 11519,
+            money = 13000,
+            choices = {
+                {
+                    id = 279852,
+                    count = 1,
+                },
+                {
+                    id = 279480,
+                    count = 1,
+                },
+                {
+                    id = 279853,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [96771] = {
+        name = {
+            enUS = "Vengeance of the Highborne",
+            zhCN = "上层精灵的复仇",
+        },
+        level = 45,
+        min = 37,
+        faction = "A",
+        instances = { "kroldok-stronghold" },
+        start = {
+            kind = "npc",
+            id = 268425,
+            name = {
+                enUS = "Ranath Nightstride",
+                zhCN = "拉纳斯·夜路",
+            },
+            map = 1416,
+            x = 17.8,
+            y = 66.0,
+        },
+        summary = {
+            enUS = "Defeat Zalfan Moonshadow in Krol’dok Stronghold.",
+            zhCN = "在克罗多克要塞击杀扎尔凡·月影。",
+        },
+        objectives = {
+            enUS = { "Zalfan Moonshadow slain" },
+            zhCN = { "击杀扎尔凡·月影" },
+        },
+        rewards = {
+            xp = 11519,
+            money = 6500,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Kirin Tor",
+                        zhCN = "肯瑞托",
+                    },
+                    value = 250,
+                },
+                {
+                    name = {
+                        enUS = "Brotherhood of the Horse",
+                        zhCN = "铁马兄弟会",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [95926] = {
+        name = {
+            enUS = "The Dark Crystal",
+            zhCN = "暗影水晶",
+        },
+        level = 60,
+        min = 55,
+        faction = "H",
+        instances = { "shapers-terrace" },
+        start = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.8,
+            y = 69.3,
+        },
+        finish = {
+            kind = "npc",
+            id = 2055,
+            name = {
+                enUS = "Master Apothecary Faranell",
+                zhCN = "大药剂师法拉尼尔",
+            },
+            map = 1458,
+            x = 48.4,
+            y = 68.0,
+        },
+        summary = {
+            enUS = "Recover the drained crystal shard.",
+            zhCN = "取回耗尽的水晶碎片。",
+        },
+        objectives = {
+            enUS = { "Drained Crystal Fragment" },
+            zhCN = { "耗尽的水晶碎片" },
+        },
+        rewards = {
+            xp = 17655,
+            choices = {
+                {
+                    id = 279908,
+                    count = 1,
+                },
+                {
+                    id = 279910,
+                    count = 1,
+                },
+                {
+                    id = 279912,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [95928] = {
+        name = {
+            enUS = "Crystalline Elements",
+            zhCN = "晶化元素",
+        },
+        level = 60,
+        min = 55,
+        faction = "H",
+        instances = { "shapers-terrace" },
+        start = {
+            kind = "npc",
+            id = 263445,
+            name = {
+                enUS = "Mayena Earthseeker",
+                zhCN = "玛耶娜·寻地者",
+            },
+            map = 1412,
+            x = 34.9,
+            y = 22.1,
+        },
+        finish = {
+            kind = "npc",
+            id = 263445,
+            name = {
+                enUS = "Mayena Earthseeker",
+                zhCN = "玛耶娜·寻地者",
+            },
+            map = 1412,
+            x = 34.9,
+            y = 22.1,
+        },
+        summary = {
+            enUS = "Bring Mayena Earthseeker a Fiery, Charged, Noxious and Moist Crystal from Shaper’s Terrace.",
+            zhCN = "前往塑造者之台，为玛耶娜·寻地者带回炽热、充能、有毒和潮湿的水晶各一块。",
+        },
+        objectives = {
+            enUS = { "Fiery Crystal", "Charged Crystal", "Noxious Crystal", "Moist Crystal" },
+            zhCN = { "炽热的水晶", "充能的水晶", "有毒的水晶", "潮湿的水晶" },
+        },
+        rewards = {
+            xp = 17655,
+            choices = {
+                {
+                    id = 279904,
+                    count = 1,
+                },
+                {
+                    id = 279906,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 50,
+                },
+                {
+                    name = {
+                        enUS = "Earthen Ring",
+                        zhCN = "大地之环",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [97049] = {
+        name = {
+            enUS = "Essence of Seeping Slimes",
+            zhCN = "渗漏的软泥怪精华",
+        },
+        level = 60,
+        min = 55,
+        faction = "H",
+        instances = { "shapers-terrace" },
+        summary = {
+            enUS = "Collect eight samples of seeping slime essence.",
+            zhCN = "收集八份渗漏的软泥怪精华。",
+        },
+        objectives = {
+            enUS = { "Seeping Slime Essence ×8" },
+            zhCN = { "渗漏的软泥怪精华 ×8" },
+        },
+        rewards = {
+            xp = 17655,
+            money = 9000,
+            choices = {
+                {
+                    id = 279932,
+                    count = 1,
+                },
+                {
+                    id = 279902,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 100,
+                },
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [96379] = {
+        name = {
+            enUS = "State Secrets",
+            zhCN = "国家机密",
+        },
+        level = 53,
+        min = 48,
+        instances = { "alcaz-prison" },
+        summary = {
+            enUS = "Find Mason Connery’s treasure.",
+            zhCN = "找到梅森·康纳利的宝物。",
+        },
+        objectives = {
+            enUS = { "Find Mason Connery's treasure" },
+            zhCN = { "找到梅森·康纳利的宝物" },
+        },
+        rewards = {
+            xp = 6550,
+        },
+    },
+    [96376] = {
+        name = {
+            enUS = "State Secrets",
+            zhCN = "国家机密",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        summary = {
+            enUS = "Find Mason Connery’s treasure.",
+            zhCN = "找到梅森·康纳利的宝物。",
+        },
+        objectives = {
+            enUS = { "Find Mason Connery's treasure" },
+            zhCN = { "找到梅森·康纳利的宝物" },
+        },
+        rewards = {
+            xp = 6550,
+        },
+    },
+    [96369] = {
+        name = {
+            enUS = "Bad News for Folkar",
+            zhCN = "给福尔卡的坏消息",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Commander Folkar",
+                zhCN = "指挥官福尔卡",
+            },
+        },
+        before = { 95454 },
+        after = { 95483 },
+        summary = {
+            enUS = "Report back to Commander Folkar with what you learned in the prison.",
+            zhCN = "回到指挥官福尔卡身边，报告你在监狱里查明的消息。",
+        },
+        rewards = {
+            xp = 2405,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [96334] = {
+        name = {
+            enUS = "Blood Red Bandanas",
+            zhCN = "血红头巾",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        summary = {
+            enUS = "Collect eight Blood Red Bandanas.",
+            zhCN = "收集八条血红头巾。",
+        },
+        objectives = {
+            enUS = { "Blood Red Bandana ×8" },
+            zhCN = { "血红头巾 ×8" },
+        },
+        rewards = {
+            xp = 9713,
+            choices = {
+                {
+                    id = 279448,
+                    count = 1,
+                },
+                {
+                    id = 279473,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 75,
+                },
+            },
+        },
+    },
+    [96332] = {
+        name = {
+            enUS = "A Little Payback",
+            zhCN = "有仇必报",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Sergeant Ulka",
+                zhCN = "乌尔卡中士",
+            },
+            map = 1445,
+            x = 70.3,
+            y = 19.0,
+        },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Sergeant Ulka",
+                zhCN = "乌尔卡中士",
+            },
+            map = 1445,
+            x = 70.3,
+            y = 19.0,
+        },
+        summary = {
+            enUS = "Kill fifteen Strashaz Soldiers and eight Strashaz Enchantresses, then bring Ca'zass's head to Sergeant Ulka.",
+            zhCN = "击杀十五名斯塔莎兹士兵和八名斯塔莎兹女巫，把海潮主母卡扎斯的徽记交给乌尔卡中士。",
+        },
+        objectives = {
+            enUS = { "Strashaz Soldier slain ×15", "Strashaz Enchantress slain ×8", "Ca'zass's Head" },
+            zhCN = { "击杀斯塔莎兹士兵 ×15", "击杀斯塔莎兹女巫 ×8", "卡扎斯的徽记" },
+        },
+        rewards = {
+            xp = 9713,
+            money = 8000,
+            choices = {
+                {
+                    id = 279824,
+                    count = 1,
+                },
+                {
+                    id = 279826,
+                    count = 1,
+                },
+                {
+                    id = 279829,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 75,
+                },
+            },
+        },
+    },
+    [95483] = {
+        name = {
+            enUS = "Thrall Needs to Know",
+            zhCN = "大酋长必须知情",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        finish = {
+            kind = "npc",
+            id = 4949,
+            name = {
+                enUS = "Thrall",
+                zhCN = "萨尔",
+            },
+            map = 1454,
+            x = 32.0,
+            y = 37.8,
+        },
+        before = { 96369 },
+        summary = {
+            enUS = "Bring word of Varian Wrynn's fate to Thrall in Orgrimmar.",
+            zhCN = "前往奥格瑞玛，把瓦里安·乌瑞恩的死讯呈报给萨尔。",
+        },
+        rewards = {
+            xp = 2405,
+            choices = {
+                {
+                    id = 279831,
+                    count = 1,
+                },
+                {
+                    id = 279833,
+                    count = 1,
+                },
+                {
+                    id = 279474,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [95454] = {
+        name = {
+            enUS = "The Honor of the Kor'kron",
+            zhCN = "库卡隆的荣耀",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        after = { 96369 },
+        summary = {
+            enUS = "Look for Varian Wrynn and read the note on the floor.",
+            zhCN = "寻找瓦里安·乌瑞恩，并阅读地上的便条。",
+        },
+        objectives = {
+            enUS = { "Find Varian Wrynn", "Read the note on the ground" },
+            zhCN = { "找到瓦里安·乌瑞恩", "阅读地上的便条" },
+        },
+        rewards = {
+            xp = 12118,
+            money = 13919,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [95309] = {
+        name = {
+            enUS = "No Orc Left Behind",
+            zhCN = "一个兽人都不能少",
+        },
+        level = 53,
+        min = 48,
+        faction = "H",
+        instances = { "alcaz-prison" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Sergeant Ulka",
+                zhCN = "乌尔卡中士",
+            },
+            map = 1445,
+            x = 70.3,
+            y = 19.0,
+        },
+        summary = {
+            enUS = "Find Commander Folkar.",
+            zhCN = "找到指挥官福尔卡。",
+        },
+        objectives = {
+            enUS = { "Find Commander Folkar" },
+            zhCN = { "找到指挥官福尔卡" },
+        },
+        rewards = {
+            xp = 12118,
+            money = 13919,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Orgrimmar",
+                        zhCN = "奥格瑞玛",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [95263] = {
+        name = {
+            enUS = "Somber News",
+            zhCN = "沉重的噩耗",
+        },
+        level = 53,
+        min = 48,
+        faction = "A",
+        instances = { "alcaz-prison" },
+        finish = {
+            kind = "npc",
+            name = {
+                enUS = "Sully McCleary",
+                zhCN = "萨利·麦克利里",
+            },
+            map = 1445,
+        },
+        before = { 95262, 96335 },
+        summary = {
+            enUS = "Return to Sully McCleary in Dustwallow Marsh with news of the king.",
+            zhCN = "回到尘泥沼泽，向萨利·麦克利里报告国王的消息。",
+        },
+        rewards = {
+            xp = 2860,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 75,
+                },
+            },
+        },
+    },
+    [95262] = {
+        name = {
+            enUS = "The Secret Prison",
+            zhCN = "秘密监狱",
+        },
+        level = 53,
+        min = 48,
+        faction = "A",
+        instances = { "alcaz-prison" },
+        start = {
+            kind = "npc",
+            name = {
+                enUS = "Sully McCleary",
+                zhCN = "萨利·麦克利里",
+            },
+            map = 1445,
+        },
+        after = { 95263 },
+        summary = {
+            enUS = "Explore Alcaz Prison and learn what happened to Varian Wrynn.",
+            zhCN = "探索奥卡兹监狱，了解瓦里安·乌瑞恩的下落。",
+        },
+        objectives = {
+            enUS = { "Explore Alcaz Prison", "Learn what became of Varian Wrynn" },
+            zhCN = { "探索奥卡兹监狱", "了解瓦里安·乌瑞恩的下落" },
+        },
+        rewards = {
+            xp = 14410,
+            money = 13919,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Stormwind",
+                        zhCN = "暴风城",
+                    },
+                    value = 150,
+                },
+            },
+        },
+    },
+    [4083] = {
+        name = {
+            enUS = "The Spectral Chalice",
+            zhCN = "鬼魂之杯",
+        },
+        level = 55,
+        min = 40,
+        instances = { "blackrock-depths" },
+        start = {
+            kind = "object",
+            id = 164869,
+            name = {
+                enUS = "Spectral Chalice",
+                zhCN = "鬼魂之杯",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "object",
+            id = 164869,
+            name = {
+                enUS = "Spectral Chalice",
+                zhCN = "鬼魂之杯",
+            },
+        },
+        summary = {
+            enUS = "Bring two Star Rubies, twenty Gold Bars and ten Truesilver Bars.",
+            zhCN = "带两颗星光红宝石、二十块金锭和十块真银锭。",
+        },
+        rewards = {
+            xp = 5650,
+            money = 13419,
+        },
+    },
+    [7604] = {
+        name = {
+            enUS = "A Binding Contract",
+            zhCN = "瑟银兄弟会契约",
+        },
+        level = 60,
+        min = 60,
+        instances = { "blackrock-depths" },
+        start = {
+            kind = "item",
+            id = 18628,
+            name = {
+                enUS = "Thorium Brotherhood Contract",
+                zhCN = "瑟银兄弟会契约",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 12944,
+            name = {
+                enUS = "Lokhtos Darkbargainer",
+                zhCN = "罗克图斯·暗契",
+            },
+        },
+        summary = {
+            enUS = "Deliver the Thorium Brotherhood contract with a Sulfuron Ingot.",
+            zhCN = "带上瑟银兄弟会契约，交付一块萨弗隆铁锭。",
+        },
+        objectives = {
+            enUS = { "Thorium Brotherhood Contract", "Sulfuron Ingot" },
+            zhCN = { "瑟银兄弟会契约", "萨弗隆铁锭" },
+        },
+        rewards = {
+            xp = 6600,
+            items = {
+                {
+                    id = 18592,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [4866] = {
+        name = {
+            enUS = "Mother's Milk",
+            zhCN = "蛛后的乳汁",
+        },
+        level = 60,
+        min = 55,
+        instances = { "blackrock-spire" },
+        sectionSlugs = { "upper" },
+        start = {
+            kind = "npc",
+            id = 9563,
+            name = {
+                enUS = "Ragged John",
+                zhCN = "狼狈不堪的约翰",
+            },
+            map = 1428,
+            x = 65.01,
+            y = 23.76,
+        },
+        finish = {
+            kind = "npc",
+            id = 9563,
+            name = {
+                enUS = "Ragged John",
+                zhCN = "狼狈不堪的约翰",
+            },
+            map = 1428,
+            x = 65.01,
+            y = 23.76,
+        },
+        summary = {
+            enUS = "Return to Ragged John with the effect from the spider queen still active.",
+            zhCN = "带着蛛后的效果回到狼狈不堪的约翰身边。",
+        },
+        rewards = {
+            xp = 18905,
+            money = 18000,
+            items = {
+                {
+                    id = 15873,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [4867] = {
+        name = {
+            enUS = "Urok Doomhowl",
+            zhCN = "乌洛克",
+        },
+        level = 60,
+        min = 55,
+        instances = { "blackrock-spire" },
+        sectionSlugs = { "lower" },
+        start = {
+            kind = "npc",
+            id = 10799,
+            name = {
+                enUS = "Warosh",
+                zhCN = "瓦罗什",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 10799,
+            name = {
+                enUS = "Warosh",
+                zhCN = "瓦罗什",
+            },
+        },
+        summary = {
+            enUS = "Defeat Urok and recover Warosh’s mojo.",
+            zhCN = "击败乌洛克，取回瓦罗什的魔精。",
+        },
+        rewards = {
+            xp = 18905,
+            items = {
+                {
+                    id = 15867,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [5047] = {
+        name = {
+            enUS = "Pip Quickwit, At Your Service!",
+            zhCN = "皮普·急智，为您效劳！",
+        },
+        level = 60,
+        min = 57,
+        instances = { "blackrock-spire" },
+        sectionSlugs = { "upper" },
+        start = {
+            kind = "npc",
+            id = 10776,
+            name = {
+                enUS = "Pip Quickwit",
+                zhCN = "皮普·急智",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 10637,
+            name = {
+                enUS = "Malyfous Darkhammer",
+                zhCN = "玛雷弗斯·暗锤",
+            },
+            map = 1452,
+            x = 60.99,
+            y = 38.78,
+        },
+        summary = {
+            enUS = "Recover a Glowing Hunk of the Beast’s Flesh.",
+            zhCN = "取回比斯巨兽的发光肉块。",
+        },
+        objectives = {
+            enUS = { "Glowing Hunk of the Beast's Flesh" },
+            zhCN = { "比斯巨兽的发光肉块" },
+        },
+        rewards = {
+            xp = 17655,
+            money = 19800,
+        },
+    },
+    [1193] = {
+        name = {
+            enUS = "A Broken Trap",
+            zhCN = "破碎的陷阱",
+        },
+        level = 60,
+        min = 56,
+        instances = { "dire-maul" },
+        sectionSlugs = { "north" },
+        start = {
+            kind = "object",
+            id = 179485,
+            name = {
+                enUS = "Broken Trap",
+                zhCN = "破碎的陷阱",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "object",
+            id = 179485,
+            name = {
+                enUS = "Broken Trap",
+                zhCN = "破碎的陷阱",
+            },
+        },
+        summary = {
+            enUS = "Repair the trap with a Thorium Widget and Frost Oil.",
+            zhCN = "用瑟银零件和冰霜之油修复陷阱。",
+        },
+        objectives = {
+            enUS = { "Thorium Widget", "Frost Oil" },
+            zhCN = { "瑟银零件", "冰霜之油" },
+        },
+    },
+    [1318] = {
+        name = {
+            enUS = "Unfinished Gordok Business",
+            zhCN = "戈多克食人魔的事务",
+        },
+        level = 60,
+        min = 56,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        summary = {
+            enUS = "Recover the Gauntlets of Gordok Might.",
+            zhCN = "取回戈多克力量护手。",
+        },
+        objectives = {
+            enUS = { "Gauntlet of Gordok Might" },
+            zhCN = { "戈多克力量护手" },
+        },
+        rewards = {
+            xp = 22202,
+            choices = {
+                {
+                    id = 18366,
+                    count = 1,
+                },
+                {
+                    id = 18367,
+                    count = 1,
+                },
+                {
+                    id = 18368,
+                    count = 1,
+                },
+                {
+                    id = 18369,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [5528] = {
+        name = {
+            enUS = "The Gordok Taste Test",
+            zhCN = "戈多克好酒",
+        },
+        level = 60,
+        min = 56,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 14322,
+            name = {
+                enUS = "Stomper Kreeg",
+                zhCN = "践踏者克雷格",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14322,
+            name = {
+                enUS = "Stomper Kreeg",
+                zhCN = "践踏者克雷格",
+            },
+        },
+        summary = {
+            enUS = "Speak with Stomper Kreeg for the taste test.",
+            zhCN = "和践踏者克雷格交谈，参加试饮。",
+        },
+        rewards = {
+            items = {
+                {
+                    id = 18269,
+                    count = 5,
+                },
+                {
+                    id = 18284,
+                    count = 5,
+                },
+            },
+        },
+    },
+    [7483] = {
+        name = {
+            enUS = "Libram of Rapidity",
+            zhCN = "急速圣典",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the libram, a Pristine Black Diamond, two Large Brilliant Shards and two portions of Blood of Heroes.",
+            zhCN = "带上急速圣典、原始黑钻石、两块大块魔光碎片和两份英雄之血。",
+        },
+        objectives = {
+            enUS = { "Libram of Rapidity", "Pristine Black Diamond", "Large Brilliant Shard ×2", "Blood of Heroes ×2" },
+            zhCN = { "急速圣典", "原始黑钻石", "大块魔光碎片 ×2", "英雄之血 ×2" },
+        },
+        rewards = {
+            xp = 3300,
+            items = {
+                {
+                    id = 18329,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7484] = {
+        name = {
+            enUS = "Libram of Focus",
+            zhCN = "专注圣典",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the libram, a Pristine Black Diamond, four Large Brilliant Shards and two Skins of Shadow.",
+            zhCN = "带上专注圣典、原始黑钻石、四块大块魔光碎片和两张暗影之皮。",
+        },
+        objectives = {
+            enUS = { "Libram of Focus", "Pristine Black Diamond", "Large Brilliant Shard ×4", "Skin of Shadow ×2" },
+            zhCN = { "专注圣典", "原始黑钻石", "大块魔光碎片 ×4", "暗影之皮 ×2" },
+        },
+        rewards = {
+            xp = 3300,
+            items = {
+                {
+                    id = 18330,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7485] = {
+        name = {
+            enUS = "Libram of Protection",
+            zhCN = "防护圣典",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the libram, a Pristine Black Diamond, two Large Brilliant Shards and one Frayed Abomination Stitching.",
+            zhCN = "带上防护圣典、原始黑钻石、两块大块魔光碎片和一份磨损的憎恶缝合线。",
+        },
+        objectives = {
+            enUS = { "Libram of Protection", "Pristine Black Diamond", "Large Brilliant Shard ×2", "Frayed Abomination Stitching" },
+            zhCN = { "防护圣典", "原始黑钻石", "大块魔光碎片 ×2", "磨损的憎恶缝合线" },
+        },
+        rewards = {
+            xp = 3300,
+            items = {
+                {
+                    id = 18331,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7498] = {
+        name = {
+            enUS = "Garona: A Study on Stealth and Treachery",
+            zhCN = "迦罗娜：潜行与诡计研究",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18356,
+            name = {
+                enUS = "Garona: A Study on Stealth and Treachery",
+                zhCN = "迦罗娜：潜行与诡计研究",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14383,
+            name = {
+                enUS = "Lorekeeper Kildrath",
+                zhCN = "博学者基尔达斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "Garona: A Study on Stealth and Treachery" },
+            zhCN = { "迦罗娜：潜行与诡计研究" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18465,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7499] = {
+        name = {
+            enUS = "Codex of Defense",
+            zhCN = "防御宝典",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18357,
+            name = {
+                enUS = "Codex of Defense",
+                zhCN = "防御宝典",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14383,
+            name = {
+                enUS = "Lorekeeper Kildrath",
+                zhCN = "博学者基尔达斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "Codex of Defense" },
+            zhCN = { "防御宝典" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18466,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7500] = {
+        name = {
+            enUS = "The Arcanist's Cookbook",
+            zhCN = "奥法师的食谱",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18358,
+            name = {
+                enUS = "The Arcanist's Cookbook",
+                zhCN = "奥法师的食谱",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14383,
+            name = {
+                enUS = "Lorekeeper Kildrath",
+                zhCN = "博学者基尔达斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "The Arcanist's Cookbook" },
+            zhCN = { "奥法师的食谱" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18468,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7501] = {
+        name = {
+            enUS = "The Light and How To Swing It",
+            zhCN = "圣光之力",
+        },
+        level = 60,
+        min = 54,
+        faction = "A",
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18359,
+            name = {
+                enUS = "The Light and How to Swing It",
+                zhCN = "圣光之力",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14382,
+            name = {
+                enUS = "Lorekeeper Mykos",
+                zhCN = "博学者麦库斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "The Light and How to Swing It" },
+            zhCN = { "圣光之力" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18472,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7502] = {
+        name = {
+            enUS = "Harnessing Shadows",
+            zhCN = "束缚之影",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18360,
+            name = {
+                enUS = "Harnessing Shadows",
+                zhCN = "束缚之影",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14382,
+            name = {
+                enUS = "Lorekeeper Mykos",
+                zhCN = "博学者麦库斯",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "Harnessing Shadows" },
+            zhCN = { "束缚之影" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18467,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7504] = {
+        name = {
+            enUS = "Holy Bologna: What the Light Won't Tell You",
+            zhCN = "光明不会告诉你的事情",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18362,
+            name = {
+                enUS = "Holy Bologna: What the Light Won't Tell You",
+                zhCN = "光明不会告诉你的事情",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14381,
+            name = {
+                enUS = "Lorekeeper Javon",
+                zhCN = "博学者亚沃",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "Holy Bologna: What the Light Won't Tell You" },
+            zhCN = { "光明不会告诉你的事情" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18469,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7505] = {
+        name = {
+            enUS = "Frost Shock and You",
+            zhCN = "你与冰霜震击",
+        },
+        level = 60,
+        min = 54,
+        faction = "H",
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18363,
+            name = {
+                enUS = "Frost Shock and You",
+                zhCN = "你与冰霜震击",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14381,
+            name = {
+                enUS = "Lorekeeper Javon",
+                zhCN = "博学者亚沃",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "Frost Shock and You" },
+            zhCN = { "你与冰霜震击" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18471,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7506] = {
+        name = {
+            enUS = "The Emerald Dream...",
+            zhCN = "翡翠梦境……",
+        },
+        level = 60,
+        min = 54,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18364,
+            name = {
+                enUS = "The Emerald Dream",
+                zhCN = "翡翠梦境",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14381,
+            name = {
+                enUS = "Lorekeeper Javon",
+                zhCN = "博学者亚沃",
+            },
+        },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "The Emerald Dream" },
+            zhCN = { "翡翠梦境" },
+        },
+        rewards = {
+            xp = 15675,
+            items = {
+                {
+                    id = 18470,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7507] = {
+        name = {
+            enUS = "Nostro's Compendium",
+            zhCN = "诺斯特罗的屠龙技术纲要",
+        },
+        level = 60,
+        min = 60,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18401,
+            name = {
+                enUS = "Nostro's Compendium of Dragon Slaying",
+                zhCN = "诺斯特罗的屠龙技术纲要",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        after = { 7508 },
+        summary = {
+            enUS = "Bring the book that starts the quest to the library in Dire Maul.",
+            zhCN = "把开启任务的书交到厄运之槌的图书馆。",
+        },
+        objectives = {
+            enUS = { "Nostro's Compendium of Dragon Slaying" },
+            zhCN = { "诺斯特罗的屠龙技术纲要" },
+        },
+        rewards = {
+            xp = 19900,
+            money = 29850,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Shen'dralar",
+                        zhCN = "辛德拉",
+                    },
+                    value = 200,
+                },
+            },
+        },
+    },
+    [7508] = {
+        name = {
+            enUS = "The Forging of Quel'Serrar",
+            zhCN = "铸造奎尔塞拉",
+        },
+        level = 60,
+        min = 60,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "item",
+            id = 18513,
+            name = {
+                enUS = "A Dull and Flat Elven Blade",
+                zhCN = "黯淡的精灵剑",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 14368,
+            name = {
+                enUS = "Lorekeeper Lydros",
+                zhCN = "博学者莱德罗斯",
+            },
+        },
+        before = { 7507 },
+        summary = {
+            enUS = "Bring the dull elven blade to the Shen’dralar.",
+            zhCN = "把黯淡的精灵剑带给辛德拉。",
+        },
+        objectives = {
+            enUS = { "A Dull and Flat Elven Blade" },
+            zhCN = { "黯淡的精灵剑" },
+        },
+    },
+    [8948] = {
+        name = {
+            enUS = "Anthion's Old Friend",
+            zhCN = "安泰恩的老朋友",
+        },
+        level = 60,
+        min = 58,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 16016,
+            name = {
+                enUS = "Anthion Harmon",
+                zhCN = "安泰恩·哈尔蒙",
+            },
+            map = 1423,
+            x = 26.11,
+            y = 11.3,
+        },
+        finish = {
+            kind = "npc",
+            id = 16032,
+            name = {
+                enUS = "Falrin Treeshaper",
+                zhCN = "法尔林·树影",
+            },
+        },
+        after = { 8949 },
+        summary = {
+            enUS = "Deliver the unfinished banner of provocation.",
+            zhCN = "交付未完成的挑衅之旗。",
+        },
+        objectives = {
+            enUS = { "Incomplete Banner of Provocation" },
+            zhCN = { "未完成的挑衅之旗" },
+        },
+        rewards = {
+            xp = 13200,
+            money = 19800,
+        },
+    },
+    [8949] = {
+        name = {
+            enUS = "Falrin's Vendetta",
+            zhCN = "法尔林的复仇",
+        },
+        level = 60,
+        min = 58,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 16032,
+            name = {
+                enUS = "Falrin Treeshaper",
+                zhCN = "法尔林·树影",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 16032,
+            name = {
+                enUS = "Falrin Treeshaper",
+                zhCN = "法尔林·树影",
+            },
+        },
+        before = { 8948 },
+        after = { 8950 },
+        summary = {
+            enUS = "Collect twenty-five Ogre Warbeads.",
+            zhCN = "收集二十五串食人魔珠串。",
+        },
+        objectives = {
+            enUS = { "Ogre Warbeads ×25" },
+            zhCN = { "食人魔珠串 ×25" },
+        },
+        rewards = {
+            xp = 13200,
+            choices = {
+                {
+                    id = 22150,
+                    count = 1,
+                },
+                {
+                    id = 22149,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [8950] = {
+        name = {
+            enUS = "The Instigator's Enchantment",
+            zhCN = "旗帜上的附魔",
+        },
+        level = 60,
+        min = 58,
+        instances = { "dire-maul" },
+        sectionSlugs = { "west" },
+        start = {
+            kind = "npc",
+            id = 16032,
+            name = {
+                enUS = "Falrin Treeshaper",
+                zhCN = "法尔林·树影",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 16032,
+            name = {
+                enUS = "Falrin Treeshaper",
+                zhCN = "法尔林·树影",
+            },
+        },
+        before = { 8949 },
+        after = { 9015 },
+        summary = {
+            enUS = "Bring the ghostly essence, four Dark Runes and eight Large Brilliant Shards.",
+            zhCN = "交付游荡鬼灵的精华、四枚黑暗符文和八块大块魔光碎片。",
+        },
+        objectives = {
+            enUS = { "Jeering Spectre's Essence", "Dark Rune ×4", "Large Brilliant Shard ×8" },
+            zhCN = { "游荡鬼灵的精华", "黑暗符文 ×4", "大块魔光碎片 ×8" },
+        },
+        rewards = {
+            xp = 13200,
+            money = 19800,
+        },
+    },
+    [2951] = {
+        name = {
+            enUS = "The Sparklematic 5200!",
+            zhCN = "超级清洁器5200型！",
+        },
+        level = 30,
+        min = 25,
+        instances = { "gnomeregan" },
+        start = {
+            kind = "object",
+            id = 142487,
+            name = {
+                enUS = "The Sparklematic 5200",
+                zhCN = "超级清洁器5200型",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "object",
+            id = 142487,
+            name = {
+                enUS = "The Sparklematic 5200",
+                zhCN = "超级清洁器5200型",
+            },
+        },
+        summary = {
+            enUS = "Bring a Grime-Encrusted Object to the Sparklematic.",
+            zhCN = "把脏兮兮的东西放入超级清洁器。",
+        },
+        objectives = {
+            enUS = { "Grime-Encrusted Object" },
+            zhCN = { "脏兮兮的东西" },
+        },
+    },
+    [2952] = {
+        name = {
+            enUS = "The Sparklematic 5200!",
+            zhCN = "超级清洁器5200型！",
+        },
+        level = 30,
+        min = 25,
+        instances = { "gnomeregan" },
+        start = {
+            kind = "object",
+            id = 142487,
+            name = {
+                enUS = "The Sparklematic 5200",
+                zhCN = "超级清洁器5200型",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "object",
+            id = 142487,
+            name = {
+                enUS = "The Sparklematic 5200",
+                zhCN = "超级清洁器5200型",
+            },
+        },
+        summary = {
+            enUS = "Use the Sparklematic in Gnomeregan.",
+            zhCN = "在诺莫瑞根使用超级清洁器。",
+        },
+        rewards = {
+            xp = 2450,
+            items = {
+                {
+                    id = 9363,
+                    count = 1,
+                },
+            },
+        },
+    },
+    [5529] = {
+        name = {
+            enUS = "Plagued Hatchlings",
+            zhCN = "瘟疫之龙",
+        },
+        level = 58,
+        min = 55,
+        instances = { "scholomance" },
+        start = {
+            kind = "npc",
+            id = 11035,
+            name = {
+                enUS = "Betina Bigglezink",
+                zhCN = "贝蒂娜·比格辛克",
+            },
+            map = 1423,
+            x = 71.66,
+            y = 49.94,
+        },
+        finish = {
+            kind = "npc",
+            id = 11035,
+            name = {
+                enUS = "Betina Bigglezink",
+                zhCN = "贝蒂娜·比格辛克",
+            },
+            map = 1423,
+            x = 71.66,
+            y = 49.94,
+        },
+        after = { 5582 },
+        summary = {
+            enUS = "Defeat twenty Plagued Hatchlings.",
+            zhCN = "击杀二十只瘟疫龙崽。",
+        },
+        rewards = {
+            xp = 14725,
+            money = 21175,
+            reputation = {
+                {
+                    name = {
+                        enUS = "Argent Dawn",
+                        zhCN = "银色黎明",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [5582] = {
+        name = {
+            enUS = "Healthy Dragon Scale",
+            zhCN = "健康的龙鳞",
+        },
+        level = 58,
+        min = 55,
+        instances = { "scholomance" },
+        start = {
+            kind = "item",
+            id = 13920,
+            name = {
+                enUS = "Healthy Dragon Scale",
+                zhCN = "健康的龙鳞",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "npc",
+            id = 11035,
+            name = {
+                enUS = "Betina Bigglezink",
+                zhCN = "贝蒂娜·比格辛克",
+            },
+            map = 1423,
+            x = 71.66,
+            y = 49.94,
+        },
+        before = { 5529 },
+        summary = {
+            enUS = "Turn in a Healthy Dragon Scale.",
+            zhCN = "交付一片健康的龙鳞。",
+        },
+        objectives = {
+            enUS = { "Healthy Dragon Scale" },
+            zhCN = { "健康的龙鳞" },
+        },
+        rewards = {
+            reputation = {
+                {
+                    name = {
+                        enUS = "Argent Dawn",
+                        zhCN = "银色黎明",
+                    },
+                    value = 50,
+                },
+            },
+        },
+    },
+    [5848] = {
+        name = {
+            enUS = "Of Love and Family",
+            zhCN = "爱与家庭",
+        },
+        level = 60,
+        min = 52,
+        instances = { "stratholme" },
+        sectionSlugs = { "service-gate" },
+        start = {
+            kind = "npc",
+            id = 11936,
+            name = {
+                enUS = "Artist Renfray",
+                zhCN = "画家瑞弗蕾",
+            },
+            map = 1422,
+            x = 65.77,
+            y = 75.37,
+        },
+        finish = {
+            kind = "npc",
+            id = 1855,
+            name = {
+                enUS = "Tirion Fordring",
+                zhCN = "提里奥·弗丁",
+            },
+            map = 1423,
+            x = 5.16,
+            y = 35.57,
+        },
+        summary = {
+            enUS = "Recover the painting Of Love and Family.",
+            zhCN = "取回画作《爱与家庭》。",
+        },
+        objectives = {
+            enUS = { "Of Love and Family" },
+            zhCN = { "爱与家庭" },
+        },
+        rewards = {
+            xp = 13860,
+            money = 19800,
+        },
+    },
+    [6163] = {
+        name = {
+            enUS = "Ramstein",
+            zhCN = "吞咽者拉姆斯登",
+        },
+        level = 60,
+        min = 56,
+        faction = "H",
+        instances = { "stratholme" },
+        sectionSlugs = { "service-gate" },
+        start = {
+            kind = "npc",
+            id = 11878,
+            name = {
+                enUS = "Nathanos Blightcaller",
+                zhCN = "纳萨诺斯·凋零者",
+            },
+            map = 1423,
+            x = 22.23,
+            y = 63.51,
+        },
+        finish = {
+            kind = "npc",
+            id = 11878,
+            name = {
+                enUS = "Nathanos Blightcaller",
+                zhCN = "纳萨诺斯·凋零者",
+            },
+            map = 1423,
+            x = 22.23,
+            y = 63.51,
+        },
+        summary = {
+            enUS = "Recover Ramstein’s head.",
+            zhCN = "取回吞咽者拉姆斯登的头颅。",
+        },
+        objectives = {
+            enUS = { "Head of Ramstein the Gorger" },
+            zhCN = { "吞咽者拉姆斯登的头颅" },
+        },
+        rewards = {
+            xp = 9900,
+            money = 18000,
+            items = {
+                {
+                    id = 18022,
+                    count = 1,
+                },
+                {
+                    id = 17001,
+                    count = 1,
+                },
+            },
+            reputation = {
+                {
+                    name = {
+                        enUS = "Undercity",
+                        zhCN = "幽暗城",
+                    },
+                    value = 100,
+                },
+            },
+        },
+    },
+    [2278] = {
+        name = {
+            enUS = "The Platinum Discs",
+            zhCN = "白金圆盘",
+        },
+        level = 47,
+        min = 40,
+        instances = { "uldaman" },
+        start = {
+            kind = "object",
+            id = 131474,
+            name = {
+                enUS = "The Discs of Norgannon",
+                zhCN = "诺甘农圆盘",
+            },
+        },
+        inside = true,
+        finish = {
+            kind = "object",
+            id = 131474,
+            name = {
+                enUS = "The Discs of Norgannon",
+                zhCN = "诺甘农圆盘",
+            },
+        },
+        after = { 2279, 2280 },
+        summary = {
+            enUS = "Consult the Discs of Norgannon inside Uldaman.",
+            zhCN = "在奥达曼读取诺甘农圆盘。",
+        },
+        rewards = {
+            xp = 8190,
         },
     },
     [1654] = {
@@ -17634,7 +22021,6 @@ ns.Data.quests = {
             },
         },
         before = { 207 },
-        after = { 95787, 95788 },
         extra = true,
         chainOnly = true,
     },
@@ -17649,107 +22035,6 @@ ns.Data.quests = {
         after = { 205 },
         extra = true,
         chainOnly = true,
-    },
-    [356] = {
-        level = 11,
-        min = 6,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 1495,
-            name = {
-                enUS = "Deathguard Linnea",
-            },
-        },
-        after = { 99156 },
-        rewards = {
-            xp = 660,
-        },
-        extra = true,
-        instances = { "ruins-of-lordaeron" },
-    },
-    [447] = {
-        level = 12,
-        min = 9,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 1937,
-            name = {
-                enUS = "Apothecary Renferrel",
-            },
-        },
-        after = { 450 },
-        rewards = {
-            xp = 910,
-            extraItems = {
-                {
-                    id = 3253,
-                },
-                {
-                    id = 3254,
-                },
-            },
-        },
-        extra = true,
-        instances = { "ruins-of-lordaeron" },
-    },
-    [450] = {
-        level = 15,
-        min = 9,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 2055,
-            name = {
-                enUS = "Master Apothecary Faranell",
-            },
-            map = 1458,
-            x = 48.4,
-            y = 69.4,
-        },
-        before = { 447 },
-        after = { 451 },
-        rewards = {
-            xp = 1350,
-            extraItems = {
-                {
-                    id = 3255,
-                },
-            },
-        },
-        extra = true,
-        instances = { "ruins-of-lordaeron" },
-    },
-    [451] = {
-        level = 18,
-        min = 9,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 1937,
-            name = {
-                enUS = "Apothecary Renferrel",
-            },
-        },
-        before = { 450 },
-        after = { 95216 },
-        rewards = {
-            xp = 2050,
-            extraItems = {
-                {
-                    id = 3256,
-                },
-                {
-                    id = 3257,
-                },
-                {
-                    id = 3258,
-                },
-            },
-        },
-        extra = true,
-        instances = { "ruins-of-lordaeron" },
     },
     [469] = {
         level = 18,
@@ -17856,18 +22141,6 @@ ns.Data.quests = {
         extra = true,
         instances = { "uldaman" },
     },
-    [1193] = {
-        min = 56,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "A Broken Trap",
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "north" },
-    },
     [1194] = {
         level = 29,
         start = {
@@ -17880,30 +22153,6 @@ ns.Data.quests = {
         after = { 1192 },
         extra = true,
         chainOnly = true,
-    },
-    [1318] = {
-        level = 60,
-        min = 56,
-        rewards = {
-            xp = 8300,
-            extraItems = {
-                {
-                    id = 18366,
-                },
-                {
-                    id = 18367,
-                },
-                {
-                    id = 18368,
-                },
-                {
-                    id = 18369,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
     },
     [1650] = {
         level = 20,
@@ -18033,21 +22282,6 @@ ns.Data.quests = {
         extra = true,
         chainOnly = true,
     },
-    [2278] = {
-        min = 40,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "The Discs of Norgannon",
-            },
-        },
-        after = { 2279, 2280 },
-        rewards = {
-            xp = 8200,
-        },
-        extra = true,
-        instances = { "uldaman" },
-    },
     [2769] = {
         level = 40,
         start = {
@@ -18096,46 +22330,6 @@ ns.Data.quests = {
         extra = true,
         chainOnly = true,
     },
-    [2951] = {
-        level = 30,
-        min = 25,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Super Cleaner 5200",
-            },
-        },
-        inside = true,
-        after = { 2952 },
-        rewards = {
-            xp = 2450,
-            money = 300,
-        },
-        extra = true,
-        instances = { "gnomeregan" },
-    },
-    [2952] = {
-        level = 30,
-        min = 25,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Super Cleaner 5200",
-            },
-        },
-        inside = true,
-        before = { 2951 },
-        rewards = {
-            xp = 2450,
-            extraItems = {
-                {
-                    id = 9363,
-                },
-            },
-        },
-        extra = true,
-        instances = { "gnomeregan" },
-    },
     [3445] = {
         min = 46,
         faction = "A",
@@ -18166,22 +22360,6 @@ ns.Data.quests = {
         before = { 3453 },
         extra = true,
         chainOnly = true,
-    },
-    [4083] = {
-        level = 55,
-        min = 40,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Senani Thunderheart",
-            },
-        },
-        inside = true,
-        rewards = {
-            xp = 5650,
-        },
-        extra = true,
-        instances = { "blackrock-depths" },
     },
     [4145] = {
         level = 47,
@@ -18251,55 +22429,6 @@ ns.Data.quests = {
         extra = true,
         chainOnly = true,
     },
-    [4866] = {
-        level = 60,
-        min = 55,
-        start = {
-            kind = "npc",
-            id = 9563,
-            name = {
-                enUS = "Ragged John",
-            },
-            map = 1428,
-            x = 65,
-            y = 23.6,
-        },
-        rewards = {
-            xp = 9950,
-            money = 18000,
-            extraItems = {
-                {
-                    id = 15873,
-                },
-            },
-        },
-        extra = true,
-        instances = { "blackrock-spire" },
-        sectionSlugs = { "upper" },
-    },
-    [4867] = {
-        level = 60,
-        min = 55,
-        start = {
-            kind = "npc",
-            id = 10799,
-            name = {
-                enUS = "Warosh",
-            },
-        },
-        inside = true,
-        rewards = {
-            xp = 9950,
-            extraItems = {
-                {
-                    id = 15867,
-                },
-            },
-        },
-        extra = true,
-        instances = { "blackrock-spire" },
-        sectionSlugs = { "lower" },
-    },
     [4907] = {
         level = 57,
         start = {
@@ -18312,24 +22441,6 @@ ns.Data.quests = {
         after = { 4734 },
         extra = true,
         chainOnly = true,
-    },
-    [5047] = {
-        level = 60,
-        min = 55,
-        start = {
-            kind = "npc",
-            id = 10776,
-            name = {
-                enUS = "Finkle Einhorn",
-            },
-        },
-        inside = true,
-        rewards = {
-            xp = 6600,
-        },
-        extra = true,
-        instances = { "blackrock-spire" },
-        sectionSlugs = { "upper" },
     },
     [5103] = {
         min = 56,
@@ -18418,67 +22529,6 @@ ns.Data.quests = {
         instances = { "stratholme" },
         sectionSlugs = { "service-gate" },
     },
-    [5528] = {
-        level = 60,
-        min = 57,
-        start = {
-            kind = "npc",
-            id = 14322,
-            name = {
-                enUS = "Trampler Craig",
-            },
-            map = 2557,
-            x = 47.2,
-            y = 38.8,
-        },
-        inside = true,
-        rewards = {
-            extraItems = {
-                {
-                    id = 18269,
-                },
-                {
-                    id = 18284,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [5529] = {
-        level = 58,
-        min = 55,
-        start = {
-            kind = "npc",
-            id = 11035,
-            name = {
-                enUS = "Betina Bigglezink",
-            },
-            map = 1423,
-            x = 81.4,
-            y = 59.4,
-        },
-        after = { 5582 },
-        rewards = {
-            xp = 6200,
-            money = 9000,
-        },
-        extra = true,
-        instances = { "scholomance" },
-    },
-    [5582] = {
-        min = 55,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Healthy Dragon Scale",
-            },
-        },
-        before = { 5529 },
-        extra = true,
-        instances = { "scholomance" },
-    },
     [5742] = {
         level = 52,
         start = {
@@ -18514,30 +22564,8 @@ ns.Data.quests = {
             },
         },
         before = { 5845 },
-        after = { 5848 },
         extra = true,
         chainOnly = true,
-    },
-    [5848] = {
-        level = 60,
-        min = 52,
-        start = {
-            kind = "npc",
-            id = 11936,
-            name = {
-                enUS = "Artist Renfray",
-            },
-            map = 1422,
-            x = 65.4,
-            y = 75.4,
-        },
-        before = { 5846 },
-        rewards = {
-            xp = 6600,
-        },
-        extra = true,
-        instances = { "stratholme" },
-        sectionSlugs = { "service-gate" },
     },
     [6133] = {
         level = 54,
@@ -18560,7 +22588,6 @@ ns.Data.quests = {
             },
         },
         before = { 6133 },
-        after = { 6163 },
         extra = true,
         chainOnly = true,
     },
@@ -18574,37 +22601,6 @@ ns.Data.quests = {
         },
         extra = true,
         chainOnly = true,
-    },
-    [6163] = {
-        level = 60,
-        min = 56,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 11878,
-            name = {
-                enUS = "Nathanos Blightcaller",
-            },
-            map = 1423,
-            x = 26.4,
-            y = 74.8,
-        },
-        before = { 6135 },
-        rewards = {
-            xp = 6600,
-            money = 18000,
-            extraItems = {
-                {
-                    id = 18022,
-                },
-                {
-                    id = 17001,
-                },
-            },
-        },
-        extra = true,
-        instances = { "stratholme" },
-        sectionSlugs = { "service-gate" },
     },
     [6402] = {
         level = 50,
@@ -18852,283 +22848,6 @@ ns.Data.quests = {
         instances = { "dire-maul" },
         sectionSlugs = { "east" },
     },
-    [7483] = {
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Lorekeeper Lydros",
-            },
-        },
-        before = { 7482 },
-        rewards = {
-            xp = 1650,
-            extraItems = {
-                {
-                    id = 18329,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7484] = {
-        min = 54,
-        start = {
-            kind = "npc",
-            id = 14368,
-            name = {
-                enUS = "The Tome of Defense",
-            },
-            map = 2557,
-            x = 24.7,
-            y = 64.7,
-        },
-        before = { 7482 },
-        rewards = {
-            xp = 3300,
-            extraItems = {
-                {
-                    id = 18330,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7485] = {
-        min = 54,
-        start = {
-            kind = "npc",
-            id = 14368,
-            name = {
-                enUS = "Lorekeeper Lydros",
-            },
-            map = 2557,
-            x = 24.7,
-            y = 64.7,
-        },
-        before = { 7482 },
-        rewards = {
-            xp = 1650,
-            extraItems = {
-                {
-                    id = 18331,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7498] = {
-        level = 60,
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Garona: A Study on Stealth and Treachery",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18465,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7499] = {
-        level = 60,
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "The Bound Shade",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18466,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7500] = {
-        level = 60,
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "The Arcanist's Cookbook",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18468,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7501] = {
-        level = 60,
-        min = 54,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "The Power of the Light",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18472,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7502] = {
-        level = 60,
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "You and Frost Shock",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18467,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7504] = {
-        level = 60,
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "What the Light Never Tells You",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18469,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7505] = {
-        level = 60,
-        min = 54,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "The Power of the Light",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18471,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7506] = {
-        level = 60,
-        min = 54,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "The Emerald Dream",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            money = 100,
-            extraItems = {
-                {
-                    id = 18470,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7507] = {
-        level = 60,
-        min = 60,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Lorekeeper Lydros",
-            },
-        },
-        after = { 7508 },
-        rewards = {
-            xp = 9950,
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [7508] = {
-        level = 60,
-        min = 60,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Starts from the item [Dull and Flat Elven Blade]",
-            },
-        },
-        inside = true,
-        before = { 7507 },
-        rewards = {
-            xp = 9950,
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
     [7581] = {
         min = 60,
         start = {
@@ -19147,26 +22866,6 @@ ns.Data.quests = {
         extra = true,
         instances = { "dire-maul" },
         sectionSlugs = { "east" },
-    },
-    [7604] = {
-        level = 60,
-        min = 60,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Lokhtos Darkbargainer",
-            },
-        },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 18592,
-                },
-            },
-        },
-        extra = true,
-        instances = { "blackrock-depths" },
     },
     [7621] = {
         level = 60,
@@ -19988,85 +23687,8 @@ ns.Data.quests = {
             },
         },
         before = { 8946 },
-        after = { 8948 },
         extra = true,
         chainOnly = true,
-    },
-    [8948] = {
-        level = 60,
-        min = 58,
-        start = {
-            kind = "npc",
-            id = 16016,
-            name = {
-                enUS = "Anthion Harmon",
-            },
-            map = 1415,
-            x = 55,
-            y = 17.4,
-        },
-        before = { 8947 },
-        after = { 8949 },
-        rewards = {
-            xp = 6600,
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [8949] = {
-        level = 60,
-        min = 58,
-        start = {
-            kind = "npc",
-            id = 16032,
-            name = {
-                enUS = "Falrin Treeshaper",
-            },
-            map = 2557,
-            x = 28.9,
-            y = 68,
-        },
-        inside = true,
-        before = { 8948 },
-        after = { 8950 },
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 22150,
-                },
-                {
-                    id = 22149,
-                },
-            },
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
-    },
-    [8950] = {
-        level = 60,
-        min = 58,
-        start = {
-            kind = "npc",
-            id = 16032,
-            name = {
-                enUS = "Falrin Treeshaper",
-            },
-            map = 2557,
-            x = 28.9,
-            y = 68,
-        },
-        inside = true,
-        before = { 8949 },
-        after = { 9015 },
-        rewards = {
-            xp = 6600,
-        },
-        extra = true,
-        instances = { "dire-maul" },
-        sectionSlugs = { "west" },
     },
     [8951] = {
         level = 58,
@@ -20611,75 +24233,6 @@ ns.Data.quests = {
         extra = true,
         chainOnly = true,
     },
-    [92066] = {
-        level = 55,
-        min = 47,
-        rewards = {
-            xp = 11300,
-            extraItems = {
-                {
-                    id = 279891,
-                },
-                {
-                    id = 279892,
-                },
-            },
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
-    },
-    [92069] = {
-        level = 58,
-        min = 45,
-        rewards = {
-            xp = 12400,
-            extraItems = {
-                {
-                    id = 260213,
-                },
-                {
-                    id = 260214,
-                },
-                {
-                    id = 260215,
-                },
-            },
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
-    },
-    [92343] = {
-        level = 55,
-        min = 45,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Nara Wildmane",
-            },
-        },
-        rewards = {
-            xp = 11300,
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
-    },
-    [92344] = {
-        level = 55,
-        min = 45,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Mathrengyl Bearwalker",
-            },
-        },
-        rewards = {
-            xp = 11300,
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
-    },
     [92459] = {
         level = 33,
         min = 24,
@@ -20751,247 +24304,8 @@ ns.Data.quests = {
                 enUS = "Krom'rosh",
             },
         },
-        after = { 94975 },
         rewards = {
             xp = 360,
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94968] = {
-        level = 45,
-        min = 40,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Krom'rosh",
-            },
-        },
-        rewards = {
-            xp = 11500,
-            money = 13000,
-            extraItems = {
-                {
-                    id = 279852,
-                },
-                {
-                    id = 279480,
-                },
-                {
-                    id = 279853,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94972] = {
-        level = 44,
-        min = 39,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Trangul",
-            },
-        },
-        rewards = {
-            xp = 11050,
-            extraItems = {
-                {
-                    id = 279859,
-                },
-                {
-                    id = 279860,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94973] = {
-        level = 41,
-        min = 38,
-        faction = "H",
-        inside = true,
-        after = { 94974 },
-        rewards = {
-            xp = 3300,
-            money = 5500,
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94974] = {
-        level = 41,
-        min = 38,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Kreza Darkthorn",
-            },
-        },
-        before = { 94973 },
-        rewards = {
-            xp = 3300,
-            money = 5500,
-            extraItems = {
-                {
-                    id = 267089,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94975] = {
-        level = 42,
-        min = 38,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Da'grosh",
-            },
-        },
-        before = { 94744 },
-        rewards = {
-            xp = 8200,
-            extraItems = {
-                {
-                    id = 267090,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94980] = {
-        level = 41,
-        min = 38,
-        faction = "A",
-        inside = true,
-        after = { 94981 },
-        rewards = {
-            xp = 3300,
-            money = 5500,
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94981] = {
-        level = 41,
-        min = 38,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Alphonse Dumas",
-            },
-        },
-        before = { 94980 },
-        rewards = {
-            xp = 3300,
-            money = 5500,
-            extraItems = {
-                {
-                    id = 267089,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94982] = {
-        level = 45,
-        min = 40,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Demar Brant",
-            },
-        },
-        rewards = {
-            xp = 11500,
-            money = 13000,
-            extraItems = {
-                {
-                    id = 279852,
-                },
-                {
-                    id = 279853,
-                },
-                {
-                    id = 279480,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94983] = {
-        level = 42,
-        min = 38,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Sergeant Riftan",
-            },
-        },
-        after = { 94998 },
-        rewards = {
-            xp = 10200,
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94984] = {
-        level = 44,
-        min = 39,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Ashe Amberhall",
-            },
-        },
-        rewards = {
-            xp = 11050,
-            extraItems = {
-                {
-                    id = 279854,
-                },
-                {
-                    id = 279855,
-                },
-            },
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [94998] = {
-        level = 42,
-        min = 38,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Ashe Amberhall",
-            },
-        },
-        before = { 94983 },
-        rewards = {
-            xp = 3450,
-            money = 5500,
-            extraItems = {
-                {
-                    id = 279850,
-                },
-            },
         },
         extra = true,
         instances = { "kroldok-stronghold" },
@@ -21020,27 +24334,6 @@ ns.Data.quests = {
         },
         rewards = {
             xp = 1300,
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
-    [95483] = {
-        level = 53,
-        min = 48,
-        faction = "H",
-        rewards = {
-            xp = 2400,
-            extraItems = {
-                {
-                    id = 279831,
-                },
-                {
-                    id = 279833,
-                },
-                {
-                    id = 279474,
-                },
-            },
         },
         extra = true,
         instances = { "alcaz-prison" },
@@ -21081,136 +24374,6 @@ ns.Data.quests = {
         before = { 95748 },
         extra = true,
         chainOnly = true,
-    },
-    [95775] = {
-        level = 40,
-        min = 30,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Kin'weelay",
-            },
-        },
-        rewards = {
-            xp = 8450,
-        },
-        extra = true,
-        instances = { "drowned-city" },
-    },
-    [95776] = {
-        level = 38,
-        min = 30,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Commander Aggro'gosh",
-            },
-        },
-        rewards = {
-            xp = 9500,
-            extraItems = {
-                {
-                    id = 279888,
-                },
-                {
-                    id = 279889,
-                },
-            },
-        },
-        extra = true,
-        instances = { "drowned-city" },
-    },
-    [95787] = {
-        level = 40,
-        min = 30,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Loremaster Dibbs",
-            },
-        },
-        before = { 205 },
-        after = { 95799 },
-        rewards = {
-            xp = 8450,
-        },
-        extra = true,
-        instances = { "drowned-city" },
-    },
-    [95788] = {
-        level = 40,
-        min = 30,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Loremaster Dibbs",
-            },
-        },
-        before = { 205 },
-        after = { 95798 },
-        rewards = {
-            xp = 8450,
-        },
-        extra = true,
-        instances = { "drowned-city" },
-    },
-    [95789] = {
-        level = 40,
-        min = 34,
-        start = {
-            kind = "npc",
-            id = 773,
-            name = {
-                enUS = "Crank Fizzlebub",
-            },
-            map = 1434,
-            x = 27,
-            y = 77.2,
-        },
-        rewards = {
-            xp = 10450,
-            extraItems = {
-                {
-                    id = 279882,
-                },
-                {
-                    id = 279930,
-                },
-            },
-        },
-        extra = true,
-        instances = { "drowned-city" },
-    },
-    [95791] = {
-        level = 40,
-        min = 34,
-        start = {
-            kind = "npc",
-            id = 773,
-            name = {
-                enUS = "Crank Fizzlebub",
-            },
-            map = 1434,
-            x = 27,
-            y = 77.2,
-        },
-        rewards = {
-            xp = 10450,
-            extraItems = {
-                {
-                    id = 279883,
-                },
-                {
-                    id = 279884,
-                },
-            },
-        },
-        extra = true,
-        instances = { "drowned-city" },
     },
     [95798] = {
         level = 40,
@@ -21263,91 +24426,6 @@ ns.Data.quests = {
         extra = true,
         instances = { "drowned-city" },
     },
-    [95924] = {
-        level = 60,
-        min = 55,
-        faction = "A",
-        rewards = {
-            xp = 17650,
-            money = 9000,
-            extraItems = {
-                {
-                    id = 279903,
-                },
-                {
-                    id = 279905,
-                },
-            },
-        },
-        extra = true,
-        instances = { "shapers-terrace" },
-    },
-    [95925] = {
-        level = 60,
-        min = 55,
-        faction = "A",
-        rewards = {
-            xp = 17650,
-            extraItems = {
-                {
-                    id = 279908,
-                },
-                {
-                    id = 279910,
-                },
-                {
-                    id = 279912,
-                },
-            },
-        },
-        extra = true,
-        instances = { "shapers-terrace" },
-    },
-    [95926] = {
-        level = 60,
-        min = 55,
-        faction = "H",
-        rewards = {
-            xp = 6600,
-            extraItems = {
-                {
-                    id = 279908,
-                },
-                {
-                    id = 279910,
-                },
-                {
-                    id = 279912,
-                },
-            },
-        },
-        extra = true,
-        instances = { "shapers-terrace" },
-    },
-    [95928] = {
-        level = 60,
-        min = 55,
-        faction = "H",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Mayena Earthseeker",
-            },
-        },
-        rewards = {
-            xp = 17650,
-            extraItems = {
-                {
-                    id = 279904,
-                },
-                {
-                    id = 279906,
-                },
-            },
-        },
-        extra = true,
-        instances = { "shapers-terrace" },
-    },
     [96264] = {
         level = 33,
         min = 30,
@@ -21366,108 +24444,6 @@ ns.Data.quests = {
         extra = true,
         instances = { "razorfen-kraul" },
     },
-    [96332] = {
-        level = 53,
-        min = 48,
-        faction = "H",
-        rewards = {
-            xp = 9700,
-            money = 8000,
-            extraItems = {
-                {
-                    id = 279824,
-                },
-                {
-                    id = 279826,
-                },
-                {
-                    id = 279829,
-                },
-            },
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
-    [96334] = {
-        level = 53,
-        min = 48,
-        faction = "H",
-        rewards = {
-            xp = 9700,
-            extraItems = {
-                {
-                    id = 279448,
-                },
-                {
-                    id = 279473,
-                },
-            },
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
-    [96335] = {
-        level = 53,
-        min = 48,
-        inside = true,
-        after = { 96337 },
-        rewards = {
-            xp = 2850,
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
-    [96337] = {
-        level = 53,
-        min = 48,
-        inside = true,
-        before = { 96335 },
-        rewards = {
-            xp = 11550,
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
-    [96377] = {
-        level = 53,
-        min = 48,
-        faction = "A",
-        inside = true,
-        rewards = {
-            xp = 6550,
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
-    [96381] = {
-        level = 53,
-        min = 48,
-        faction = "A",
-        start = {
-            kind = "npc",
-            id = 260146,
-            name = {
-                enUS = "Sully McCleary",
-            },
-        },
-        rewards = {
-            xp = 11550,
-            money = 8000,
-            extraItems = {
-                {
-                    id = 279825,
-                },
-                {
-                    id = 279826,
-                },
-                {
-                    id = 279829,
-                },
-            },
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
-    },
     [96770] = {
         level = 46,
         min = 39,
@@ -21478,41 +24454,6 @@ ns.Data.quests = {
         },
         extra = true,
         instances = { "zulfarrak" },
-    },
-    [96771] = {
-        level = 45,
-        min = 37,
-        faction = "A",
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Ranath Nightstride",
-            },
-        },
-        rewards = {
-            xp = 11500,
-            money = 6500,
-        },
-        extra = true,
-        instances = { "kroldok-stronghold" },
-    },
-    [96772] = {
-        level = 53,
-        min = 46,
-        faction = "A",
-        start = {
-            kind = "npc",
-            id = 20735,
-            name = {
-                enUS = "Archmage Lan'dalock",
-            },
-        },
-        rewards = {
-            xp = 14400,
-            money = 8000,
-        },
-        extra = true,
-        instances = { "alcaz-prison" },
     },
     [96773] = {
         level = 41,
@@ -21531,24 +24472,6 @@ ns.Data.quests = {
         },
         extra = true,
         instances = { "razorfen-downs" },
-    },
-    [96774] = {
-        level = 40,
-        min = 30,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 264074,
-            name = {
-                enUS = "Mazu'kon",
-            },
-        },
-        rewards = {
-            xp = 8800,
-            money = 10000,
-        },
-        extra = true,
-        instances = { "drowned-city" },
     },
     [96800] = {
         level = 38,
@@ -21580,53 +24503,6 @@ ns.Data.quests = {
         instances = { "scarlet-monastery" },
         sectionSlugs = { "library" },
     },
-    [97049] = {
-        level = 60,
-        min = 55,
-        faction = "H",
-        rewards = {
-            xp = 17650,
-            money = 9000,
-            extraItems = {
-                {
-                    id = 279932,
-                },
-                {
-                    id = 279902,
-                },
-            },
-        },
-        extra = true,
-        instances = { "shapers-terrace" },
-    },
-    [97130] = {
-        level = 40,
-        min = 34,
-        faction = "A",
-        start = {
-            kind = "npc",
-            id = 31439,
-            name = {
-                enUS = "Archmage Timear",
-            },
-        },
-        rewards = {
-            xp = 10450,
-        },
-        extra = true,
-        instances = { "drowned-city" },
-    },
-    [97173] = {
-        level = 59,
-        min = 52,
-        faction = "A",
-        rewards = {
-            xp = 12800,
-            money = 9000,
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
-    },
     [97196] = {
         level = 41,
         min = 34,
@@ -21644,17 +24520,6 @@ ns.Data.quests = {
         },
         extra = true,
         instances = { "razorfen-downs" },
-    },
-    [97198] = {
-        level = 59,
-        min = 52,
-        faction = "H",
-        rewards = {
-            xp = 16100,
-            money = 9000,
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
     },
     [97287] = {
         level = 33,
@@ -21676,97 +24541,5 @@ ns.Data.quests = {
         },
         extra = true,
         instances = { "city-of-dalaran" },
-    },
-    [97289] = {
-        level = 16,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Master Apothecary Faranell",
-            },
-        },
-        before = { 97288 },
-        after = { 97290 },
-        extra = true,
-        chainOnly = true,
-    },
-    [97290] = {
-        level = 16,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Unfinished Abomination",
-            },
-        },
-        before = { 97289 },
-        after = { 97291 },
-        extra = true,
-        chainOnly = true,
-    },
-    [97291] = {
-        level = 16,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Master Apothecary Faranell",
-            },
-        },
-        before = { 97290 },
-        after = { 97292 },
-        extra = true,
-        chainOnly = true,
-    },
-    [97292] = {
-        level = 16,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Master Apothecary Faranell",
-            },
-        },
-        before = { 97291 },
-        after = { 97288 },
-        extra = true,
-        chainOnly = true,
-    },
-    [97327] = {
-        level = 60,
-        min = 55,
-        start = {
-            kind = "npc",
-            name = {
-                enUS = "Ekkal",
-            },
-        },
-        rewards = {
-            xp = 13200,
-            money = 9000,
-        },
-        extra = true,
-        instances = { "blackmaw-hold" },
-    },
-    [99156] = {
-        level = 13,
-        min = 10,
-        faction = "H",
-        start = {
-            kind = "npc",
-            id = 1495,
-            name = {
-                enUS = "Deathguard Linnea",
-            },
-        },
-        before = { 356 },
-        after = { 92422 },
-        rewards = {
-            xp = 910,
-            extraItems = {
-                {
-                    id = 286326,
-                },
-            },
-        },
-        extra = true,
-        instances = { "ruins-of-lordaeron" },
     },
 }

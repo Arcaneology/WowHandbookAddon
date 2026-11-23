@@ -106,8 +106,28 @@ def acquisition_fields(entry: dict | None) -> dict:
     }
 
 
+FAVOR_SIDES = {"alliance": "A", "horde": "H"}
+
+
+def favor_offers(data: dict | None) -> dict:
+    """网站 merchants-favor.json 的“商人青睐”货物：{图纸物品 ID: {cost 商人青睐数量, standing 所需声望档（英文小写，空为不限）,
+    gold 另收的铜, side 只有一个阵营卖时 A / H, role 专业, skill 所需技能}}。"""
+    offers = {}
+    for offering in (data or {}).get("offerings") or []:
+        sides = [FAVOR_SIDES[side] for side in offering.get("sides") or [] if side in FAVOR_SIDES]
+        offers[int(offering["id"])] = {
+            "cost": offering.get("favor"),
+            "standing": offering.get("standing"),
+            "gold": offering.get("gold"),
+            "side": sides[0] if len(sides) == 1 else None,
+            "role": offering.get("role"),
+            "skill": offering.get("skill"),
+        }
+    return offers
+
+
 def build_recipes(profession: dict, acquisition: dict | None = None, cooldowns: dict | None = None,
-                  tools: dict | None = None) -> tuple[list, list]:
+                  tools: dict | None = None, favor: dict | None = None) -> tuple[list, list]:
     """配方（按变黄的技能点排序）与冲级推荐 [{from, to, picks: [技能 ID]}]。名称、图标运行时向客户端取。
     cooldowns（recipe-cooldowns.json）与 tools（recipe-tools.json）给了才带 cooldown / tools 字段。"""
     if profession["slug"] in GATHERING:
@@ -123,6 +143,8 @@ def build_recipes(profession: dict, acquisition: dict | None = None, cooldowns: 
             "reagents": [value for item, count in recipe.get("reagents") or [] for value in (item, count)],
             "learnedFrom": recipe.get("learnedFrom"),
             "new": True if recipe.get("new") else None,
+            "favor": ({key: value for key, value in favor[recipe["learnedFrom"]].items() if key not in ("role", "skill")}
+                      if favor and recipe.get("learnedFrom") in favor else None),
             **(acquisition_fields(acquisition.get(str(recipe["id"]))) if acquisition is not None else {}),
             **({"cooldown": cooldowns.get(str(recipe["id"]))} if cooldowns is not None else {}),
             **({"tools": tools.get(str(recipe["id"]))} if tools is not None else {}),
@@ -165,6 +187,16 @@ def handbook_routes(site: Path) -> dict:
         return {}
 
 
+def build_formulas(slug: str, recipes: list, favor: dict) -> list | None:
+    """商人青睐卖的图纸里，网站还没有对应配方的（只知道图纸物品）：[{item, favor, standing, skill, side}]。
+    工作台的配方页把它们列出来，名称向客户端读图纸物品。"""
+    known = {recipe["learnedFrom"] for recipe in recipes if recipe.get("learnedFrom")}
+    rows = [{"item": item, "favor": offer["cost"], "standing": offer["standing"], "skill": offer["skill"],
+             "side": offer["side"]}
+            for item, offer in sorted(favor.items()) if offer["role"] == slug and item not in known]
+    return rows or None
+
+
 def build(site: Path, routes: dict | None = None) -> list:
     generated = site / "src" / "data" / "generated"
     professions = load(generated / "professions.json")
@@ -178,9 +210,11 @@ def build(site: Path, routes: dict | None = None) -> list:
         return load(file).get("recipes", {}) if file.exists() else None
 
     cooldowns, tools = optional("recipe-cooldowns.json"), optional("recipe-tools.json")
+    favor_file = generated / "merchants-favor.json"
+    favor = favor_offers(load(favor_file) if favor_file.exists() else None)
     out = []
     for profession in professions.get("professions", []):
-        recipes, guide = build_recipes(profession, acquisition, cooldowns, tools)
+        recipes, guide = build_recipes(profession, acquisition, cooldowns, tools, favor)
         if not recipes:
             continue
         out.append({
@@ -192,6 +226,7 @@ def build(site: Path, routes: dict | None = None) -> list:
             "recipes": recipes,
             "guide": guide,
             "route": (routes or {}).get(profession["slug"]),
+            "formulas": build_formulas(profession["slug"], recipes, favor),
         })
     return out
 

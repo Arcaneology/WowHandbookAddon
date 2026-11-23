@@ -1,6 +1,6 @@
 local ADDON_NAME, ns = ...
 
--- 自绘控件：按钮、分段选择、搜索框、勾选框、细滚动条、滚动区域、虚拟列表、统计卡片。
+-- 自绘控件：按钮、分段选择、搜索框、勾选框、细滚动条、滚动区域、虚拟列表、统计卡片、走势图。
 -- 统一使用 ns.Theme 的颜色与字体；通过 WowHandbookAPI.UI 也提供给其他插件使用。
 local Theme = ns.Theme
 local C = Theme.colors
@@ -598,6 +598,9 @@ end
 
 --------------------------------------------------------------------------------
 -- 虚拟列表：只创建可见行。SetData({ { id, text, tags }, ... }, selectedID)
+-- 表格用法：list:SetColumns({ { title = "名称列标题" }, { title = "列标题", width = 宽 }, ... }) 在顶部加一行表头，
+-- 第一项是名字列（占剩下的宽度），后面各列靠右排、右对齐；条目用 columns = { "第 1 列", "第 2 列", ... } 代替 tags。
+-- 列带 sort = "键" 时表头可点：点击调用 list.onSort(键)；list:SetSortIndicator(键, 是否升序) 在该列表头画箭头
 --------------------------------------------------------------------------------
 
 function UI:List(parent, rowHeight, onSelect)
@@ -614,10 +617,12 @@ function UI:List(parent, rowHeight, onSelect)
     bar:SetPoint("TOPRIGHT", -2, -2)
     bar:SetPoint("BOTTOMRIGHT", -2, 2)
 
+    list.headerHeight = 0
+
     local function CreateRow(index)
         local row = CreateFrame("Button", nil, list)
         row:SetHeight(rowHeight)
-        row:SetPoint("TOPLEFT", 0, -(index - 1) * rowHeight)
+        row:SetPoint("TOPLEFT", 0, -list.headerHeight - (index - 1) * rowHeight)
         row:SetPoint("RIGHT", bar, "LEFT", -4, 0)
         row.background = row:CreateTexture(nil, "BACKGROUND")
         row.background:SetAllPoints()
@@ -665,7 +670,135 @@ function UI:List(parent, rowHeight, onSelect)
     end
 
     function list:VisibleRows()
-        return math.max(1, floor(self:GetHeight() / rowHeight))
+        return math.max(1, floor((self:GetHeight() - self.headerHeight) / rowHeight))
+    end
+
+    -- 各列的右边距：从右往左排，每列宽 width，列间 10
+    local function ColumnOffsets(columns)
+        local offsets, right = {}, -6
+        for index = #columns, 2, -1 do
+            offsets[index] = right
+            right = right - columns[index].width - 10
+        end
+        return offsets, right
+    end
+
+    -- 行里的各列文字：按列定义建好，名字的右边界接到最左一列
+    local function LayoutCells(row)
+        local columns = list.columns
+        if row.columnsLaidOut == columns then
+            return
+        end
+        row.columnsLaidOut = columns
+        row.cells = row.cells or {}
+        local offsets, nameRight = ColumnOffsets(columns)
+        for index = 2, #columns do
+            local cell = row.cells[index] or UI:Text(row, "Small")
+            row.cells[index] = cell
+            cell:ClearAllPoints()
+            cell:SetPoint("RIGHT", row, "RIGHT", offsets[index], 0)
+            cell:SetWidth(columns[index].width)
+            cell:SetJustifyH(columns[index].justify or "RIGHT")
+            cell:SetWordWrap(false)
+            cell:Show()
+        end
+        for index = #columns + 1, #row.cells do
+            row.cells[index]:Hide()
+        end
+        row.label:SetPoint("RIGHT", row, "RIGHT", nameRight + 2, 0)
+    end
+
+    -- 当前排序的列：表头文字用强调色，旁边一个箭头（向下为从大到小，向上为从小到大）
+    function list:SetSortIndicator(key, ascending)
+        self.sortKey, self.sortAscending = key, ascending and true or false
+        for _, cell in ipairs(self.header and self.header.cells or {}) do
+            cell.active = key ~= nil and cell.sortKey == key
+            cell.title:SetTextColor(unpack(C[cell.active and "gold" or "muted"]))
+            cell.arrow:SetShown(cell.active)
+            if cell.active then
+                cell.arrow:SetVertexColor(unpack(C.gold))
+                if ascending then
+                    cell.arrow:SetTexCoord(0, 1, 1, 0)
+                else
+                    cell.arrow:SetTexCoord(0, 1, 0, 1)
+                end
+            end
+        end
+    end
+
+    function list:SetColumns(columns)
+        self.columns = columns
+        if not self.header then
+            self.header = CreateFrame("Frame", nil, self)
+            self.header:SetPoint("TOPLEFT")
+            self.header:SetPoint("RIGHT", bar, "LEFT", -4, 0)
+            self.header.titles = {}
+            local line = self.header:CreateTexture(nil, "ARTWORK")
+            line:SetPoint("BOTTOMLEFT")
+            line:SetPoint("BOTTOMRIGHT")
+            line:SetHeight(1)
+            SetColor(line, "lineSoft")
+        end
+        self.headerHeight = rowHeight
+        self.header:SetHeight(rowHeight)
+        self.header.cells = self.header.cells or {}
+        local offsets, nameRight = ColumnOffsets(columns)
+        for index, column in ipairs(columns) do
+            -- 每个表头是一个按钮（可点的列悬停变亮），里面是标题文字与排序箭头
+            local cell = self.header.cells[index]
+            if not cell then
+                cell = CreateFrame("Button", nil, self.header)
+                cell.title = UI:Text(cell, "Muted")
+                cell.arrow = cell:CreateTexture(nil, "OVERLAY")
+                cell.arrow:SetSize(10, 10)
+                cell.arrow:SetTexture("Interface\\Buttons\\Arrow-Down-Up")
+                cell.arrow:Hide()
+                cell:SetScript("OnEnter", function(own)
+                    if own.sortKey then
+                        own.title:SetTextColor(unpack(C.text))
+                    end
+                end)
+                cell:SetScript("OnLeave", function(own)
+                    own.title:SetTextColor(unpack(C[own.active and "gold" or "muted"]))
+                end)
+                cell:SetScript("OnClick", function(own)
+                    if own.sortKey and list.onSort then
+                        list.onSort(own.sortKey)
+                    end
+                end)
+                self.header.cells[index] = cell
+            end
+            self.header.titles[index] = cell.title
+            cell.sortKey = column.sort
+            cell:EnableMouse(column.sort ~= nil)
+            cell:ClearAllPoints()
+            cell:SetHeight(rowHeight)
+            cell.title:ClearAllPoints()
+            cell.arrow:ClearAllPoints()
+            if index == 1 then
+                cell:SetPoint("LEFT", self.header, "LEFT", 0, 0)
+                cell:SetPoint("RIGHT", self.header, "RIGHT", nameRight, 0)
+                cell.title:SetPoint("LEFT", 10, 0)
+                cell.title:SetJustifyH("LEFT")
+                cell.arrow:SetPoint("LEFT", cell.title, "RIGHT", 3, 0)
+            else
+                cell:SetPoint("RIGHT", self.header, "RIGHT", offsets[index], 0)
+                cell:SetWidth(column.width)
+                cell.title:SetPoint("RIGHT", 0, 0)
+                cell.title:SetJustifyH(column.justify or "RIGHT")
+                cell.arrow:SetPoint("RIGHT", cell.title, "LEFT", -3, 0)
+            end
+            cell.title:SetText(column.title or "")
+            cell:Show()
+        end
+        for index = #columns + 1, #self.header.cells do
+            self.header.cells[index]:Hide()
+        end
+        self:SetSortIndicator(self.sortKey, self.sortAscending)
+        for index, row in ipairs(self.rows) do
+            row:SetPoint("TOPLEFT", 0, -self.headerHeight - (index - 1) * rowHeight)
+        end
+        self:Refresh()
     end
 
     function list:Refresh()
@@ -680,6 +813,12 @@ function UI:List(parent, rowHeight, onSelect)
                 row.entryID = entry.id
                 row.label:SetText(entry.text)
                 row.tags:SetText(entry.tags or "")
+                if self.columns then
+                    LayoutCells(row)
+                    for index = 2, #self.columns do
+                        row.cells[index]:SetText(entry.columns and entry.columns[index - 1] or "")
+                    end
+                end
                 row.line:SetShown(entry.divider and true or false)
                 row:SetEnabled(not entry.divider)
                 local selected = not entry.divider and entry.id == self.selectedID
@@ -702,6 +841,10 @@ function UI:List(parent, rowHeight, onSelect)
             self.rows[i]:Hide()
         end
         bar:SetRange(#self.data, visibleRows, self.offset)
+        -- 可选：list.onRefresh(list) 在每次重画后调用（比如按可见范围按需加载数据）
+        if self.onRefresh then
+            self.onRefresh(self)
+        end
     end
 
     function list:SetData(data, selectedID)
@@ -728,9 +871,12 @@ function UI:List(parent, rowHeight, onSelect)
         self.offset = 0
     end
 
-    -- 行底色每次刷新时现取颜色；配色方案变化时整表重刷
+    -- 行底色每次刷新时现取颜色；配色方案变化时整表重刷（表头的排序高亮也重画）
     Theme:Track(list, function(self)
         self:Refresh()
+        if self.header then
+            self:SetSortIndicator(self.sortKey, self.sortAscending)
+        end
     end)
 
     list:EnableMouseWheel(true)
@@ -946,7 +1092,8 @@ end
 --------------------------------------------------------------------------------
 -- 停靠面板：贴在某个游戏窗口右侧的面板（配方面板），可拖动，记住相对那个窗口右上角的偏移。
 -- UI:Dockable(panel, settings, defaultX)：settings 为模块设置（偏移存在 dockX / dockY），defaultX 为默认的横向间距。
--- panel:Dock(outer) 按偏移贴到 outer 右侧（高度与 outer 一致），panel:DockOffset() 返回当前偏移；
+-- panel:Dock(outer) 按偏移贴到 outer 右侧（高度与 outer 一致；设了 panel.dockHeight 时顶部对齐、用这个高度），
+-- panel:DockOffset() 返回当前偏移；
 -- 左键拖动面板空白处移动，松手后记下偏移；右键面板弹出菜单，里面可以复位到默认位置（不再一点就复位，避免误触）。
 --------------------------------------------------------------------------------
 
@@ -965,7 +1112,11 @@ function UI:Dockable(panel, settings, defaultX)
         local x, y = self:DockOffset()
         self:ClearAllPoints()
         self:SetPoint("TOPLEFT", outer, "TOPRIGHT", x, y)
-        self:SetPoint("BOTTOMLEFT", outer, "BOTTOMRIGHT", x, y)
+        if self.dockHeight then
+            self:SetHeight(self.dockHeight)
+        else
+            self:SetPoint("BOTTOMLEFT", outer, "BOTTOMRIGHT", x, y)
+        end
     end
 
     panel:SetScript("OnDragStart", function(self)
@@ -1540,4 +1691,162 @@ function UI:Card(parent)
         self.accent:SetColorTexture(r, g, b, 1)
     end
     return card
+end
+
+--------------------------------------------------------------------------------
+-- 走势图：按天（或任意数值横轴）的折线，几条序列共用一根纵轴。
+-- chart:SetSeries({ { color = "gold", points = { { x = 横轴值, y = 纵轴值 }, ... } }, ... }, format)
+--   format.x(值) / format.y(值) 返回刻度文字（可省略）；点按 x 从小到大传入。
+-- 线与点每次重画都现取 Theme.colors，配色方案变化时整张图重画；只有一个点的序列只画点。
+-- 横轴刻度取整数（如天），画在各自的真实位置，不重复；跨度不超过 6 时每个整数一格。
+-- leftMargin 为纵轴刻度文字留的宽度（默认 64）。
+-- chart:SetEmptyText(文字)：没有数据时居中显示
+--------------------------------------------------------------------------------
+
+function UI:TrendChart(parent, leftMargin)
+    local chart = UI:Panel(parent, "panel", "lineSoft")
+    local plot = CreateFrame("Frame", nil, chart)
+    plot:SetPoint("TOPLEFT", leftMargin or 64, -12)
+    plot:SetPoint("BOTTOMRIGHT", -14, 24)
+    chart.plot = plot
+    local GRID = 4
+    local grid, yLabels, xLabels = {}, {}, {}
+    for index = 0, GRID do
+        grid[index] = Theme:Fill(plot, "lineSoft", "BACKGROUND")
+        grid[index]:SetHeight(1)
+        yLabels[index] = UI:Text(chart, "Muted")
+        yLabels[index]:SetJustifyH("RIGHT")
+    end
+    chart.empty = UI:Text(chart, "Muted")
+    chart.empty:SetPoint("CENTER", plot, "CENTER")
+    local lines, dots = {}, {}
+    chart.lines, chart.dots = lines, dots -- 供测试使用
+
+    function chart:SetEmptyText(text)
+        self.emptyText = text
+        self:Redraw()
+    end
+
+    function chart:SetSeries(series, format)
+        self.series = series or {}
+        self.format = format or {}
+        self:Redraw()
+    end
+
+    function chart:Redraw()
+        local usedLines, usedDots = 0, 0
+        local minX, maxX, minY, maxY
+        for _, serie in ipairs(self.series or {}) do
+            for _, point in ipairs(serie.points or {}) do
+                minX, maxX = math.min(minX or point.x, point.x), math.max(maxX or point.x, point.x)
+                minY, maxY = math.min(minY or point.y, point.y), math.max(maxY or point.y, point.y)
+            end
+        end
+        local width, height = plot:GetWidth() or 0, plot:GetHeight() or 0
+        local hasData = minX ~= nil and width > 0 and height > 0
+        self.empty:SetText(minX == nil and (self.emptyText or "") or "")
+        if hasData then
+            if maxX == minX then
+                minX, maxX = minX - 1, maxX + 1
+            end
+            local pad = (maxY - minY) * 0.08
+            if pad == 0 then
+                pad = math.max(1, maxY * 0.1)
+            end
+            minY, maxY = math.max(0, minY - pad), maxY + pad
+        end
+        local formatX, formatY = self.format and self.format.x, self.format and self.format.y
+        for index = 0, GRID do
+            local ratio = index / GRID
+            grid[index]:ClearAllPoints()
+            grid[index]:SetPoint("BOTTOMLEFT", plot, "BOTTOMLEFT", 0, height * ratio)
+            grid[index]:SetPoint("BOTTOMRIGHT", plot, "BOTTOMRIGHT", 0, height * ratio)
+            yLabels[index]:ClearAllPoints()
+            yLabels[index]:SetPoint("RIGHT", plot, "BOTTOMLEFT", -6, height * ratio)
+            if hasData then
+                local yValue = minY + (maxY - minY) * ratio
+                yLabels[index]:SetText(formatY and formatY(yValue) or tostring(floor(yValue + 0.5)))
+            else
+                yLabels[index]:SetText("")
+            end
+        end
+        -- 横轴刻度：整数值，跨度小时逐个，跨度大时约 5 格；同一个值只标一次
+        local ticks = {}
+        if hasData then
+            local first, last = math.ceil(minX), floor(maxX)
+            local step = math.max(1, math.ceil((last - first) / GRID))
+            for value = first, last, step do
+                tinsert(ticks, value)
+            end
+            if ticks[#ticks] ~= last then
+                ticks[#ticks] = last
+            end
+        end
+        for index = 1, math.max(#ticks, #xLabels) do
+            local label = xLabels[index]
+            if not label and ticks[index] then
+                label = UI:Text(chart, "Muted")
+                xLabels[index] = label
+            end
+            if label then
+                local value = ticks[index]
+                if value then
+                    label:ClearAllPoints()
+                    label:SetPoint("TOP", plot, "BOTTOMLEFT", (value - minX) / (maxX - minX) * width, -6)
+                    label:SetText(formatX and formatX(value) or tostring(value))
+                    label:Show()
+                else
+                    label:Hide()
+                end
+            end
+        end
+        self.xTicks = ticks -- 供测试使用
+        if hasData then
+            local function Position(point)
+                return (point.x - minX) / (maxX - minX) * width, (point.y - minY) / (maxY - minY) * height
+            end
+            for _, serie in ipairs(self.series) do
+                local color = C[serie.color or "gold"] or C.gold
+                local previousX, previousY
+                for _, point in ipairs(serie.points or {}) do
+                    local x, y = Position(point)
+                    if previousX then
+                        usedLines = usedLines + 1
+                        local line = lines[usedLines] or plot:CreateLine(nil, "ARTWORK")
+                        lines[usedLines] = line
+                        line:SetThickness(2)
+                        line:SetColorTexture(color[1], color[2], color[3], 1)
+                        line:SetStartPoint("BOTTOMLEFT", plot, previousX, previousY)
+                        line:SetEndPoint("BOTTOMLEFT", plot, x, y)
+                        line:Show()
+                    end
+                    usedDots = usedDots + 1
+                    local dot = dots[usedDots] or plot:CreateTexture(nil, "OVERLAY")
+                    dots[usedDots] = dot
+                    dot:SetSize(5, 5)
+                    dot:ClearAllPoints()
+                    dot:SetPoint("CENTER", plot, "BOTTOMLEFT", x, y)
+                    dot:SetColorTexture(color[1], color[2], color[3], 1)
+                    dot:Show()
+                    previousX, previousY = x, y
+                end
+            end
+        end
+        for index = usedLines + 1, #lines do
+            lines[index]:Hide()
+        end
+        for index = usedDots + 1, #dots do
+            dots[index]:Hide()
+        end
+        self.drawnLines, self.drawnDots = usedLines, usedDots
+    end
+
+    plot:SetScript("OnSizeChanged", function()
+        chart:Redraw()
+    end)
+    -- 面板本身的底色已由 UI:Panel 登记在 chart 上，重画函数登记在绘图区上，免得互相覆盖
+    Theme:Track(plot, function()
+        chart:Redraw()
+    end)
+    return chart
 end

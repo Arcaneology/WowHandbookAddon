@@ -25,6 +25,16 @@ local function RaceAllowed(races)
     return false
 end
 
+-- 阵营技能（法师传送与传送门）：天裔两个阵营都能选，只看种族会两边都算能学，所以先看阵营。
+-- 对面阵营的阵营技能任何种族都学不到，技能书页也不列出
+local function FactionAllowed(spell)
+    return not spell.faction or UnitFactionGroup("player") == spell.faction
+end
+
+local function SpellAllowed(spell)
+    return FactionAllowed(spell) and RaceAllowed(spell.races)
+end
+
 -- 种族名：能从客户端取的（按客户端语言）优先，取不到或客户端没有的（如无限版新种族）用本地化表
 local RACE_IDS = { Human = 1, Orc = 2, Dwarf = 3, ["Night Elf"] = 4, Undead = 5, Tauren = 6, Gnome = 7, Troll = 8 }
 local function RaceName(race)
@@ -36,7 +46,12 @@ end
 -- 限定种族的技能的标签文字：整个阵营都能学的（法师传送）写阵营名，其余列出种族
 local ALLIANCE_RACES = { Human = true, Dwarf = true, ["Night Elf"] = true, Gnome = true }
 local HORDE_RACES = { Orc = true, Undead = true, Tauren = true, Troll = true }
-local function RaceLabel(races)
+local function RaceLabel(races, faction)
+    if faction == "Alliance" then
+        return FACTION_ALLIANCE or L["Alliance"]
+    elseif faction == "Horde" then
+        return FACTION_HORDE or L["Horde"]
+    end
     if #races > 3 then
         local alliance, horde = 0, 0
         for _, race in ipairs(races) do
@@ -189,7 +204,7 @@ local function Rows(petsOnly, allRaces)
                         status = status, book = rank.book, price = rank.price, pet = petName, id = rank.id })
                 end
             end
-        elseif not petsOnly and (allRaces or RaceAllowed(spell.races)) then
+        elseif not petsOnly and FactionAllowed(spell) and (allRaces or RaceAllowed(spell.races)) then
             local mine = RaceAllowed(spell.races)
             local key = (ns.Name(spell.name) or ""):lower()
             local entry = known[key]
@@ -216,7 +231,7 @@ local function Rows(petsOnly, allRaces)
                     status = "later"
                 end
                 tinsert(rows, { spell = spell, rank = rank.rank, rankNumber = rankNumber, level = rank.level, status = status,
-                    id = rank.id, races = spell.races, mine = mine })
+                    id = rank.id, races = spell.races, faction = spell.faction, mine = mine })
             end
         end
     end
@@ -298,7 +313,7 @@ local function ShowRowTooltip(row)
     end
     GameTooltip:AddLine((L["Learn at level %d"]):format(row.entry.level), 1, 1, 1)
     if row.entry.races then
-        local label = (L["Only for: %s"]):format(RaceLabel(row.entry.races))
+        local label = (L["Only for: %s"]):format(RaceLabel(row.entry.races, row.entry.faction))
         if row.entry.mine then
             GameTooltip:AddLine(label, 0.27, 0.75, 0.45)
         else
@@ -465,7 +480,7 @@ local function SpellCell(row)
     local text = Icon(row.spell, style.dim) .. ("|c%s%s|r"):format(style.name, ns.Name(row.spell.name) or "?")
     -- 限定种族的技能在名字后加种族标签：当前种族能学的绿色，其他种族的灰色
     if row.races then
-        text = text .. ("  |c%s[%s]|r"):format(row.mine and ns.Theme.hex.green or ns.Theme.hex.muted, RaceLabel(row.races))
+        text = text .. ("  |c%s[%s]|r"):format(row.mine and ns.Theme.hex.green or ns.Theme.hex.muted, RaceLabel(row.races, row.faction))
     end
     return text
 end
@@ -633,7 +648,7 @@ local function OnLevelUp(_, newLevel)
     local names = {}
     local grimoires = {}
     for _, spell in ipairs(ClassSpells()) do
-        if spell.pet or RaceAllowed(spell.races) then
+        if spell.pet or SpellAllowed(spell) then
             for _, rank in ipairs(spell.ranks) do
                 if rank.level == newLevel then
                     local text = (ns.Name(spell.name) or "?") .. (rank.rank ~= "" and (" " .. ns.RankNumber(rank.rank)) or "")

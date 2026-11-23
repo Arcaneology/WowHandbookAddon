@@ -16,6 +16,8 @@
 - ClassTrainers.lua：各职业训练师（网站 class-trainers.json：QuestieDB Forever 版加游戏内实测坐标与新训练师；
   猎人另有宠物训练师 kind = "pet"，法师另有传送门训练师 kind = "portal"；阵营、地图与坐标）
 - Transmogrifiers.lua：幻化师（用户 2026-10-07 提供的位置，写在本脚本的 TRANSMOGRIFIERS；阵营、地图与坐标）
+- RidingTrainers.lua：各种族的骑术训练师（写在本脚本的 RIDING_TRAINERS：QuestieDB Forever 版刷新点，采集插件记到的
+  以游戏内为准；天裔的吉恩·晴风是采集插件 2026-11-22 记到的；阵营、种族、地图与坐标）
 - TalentPlans.lua：网站推荐的天赋方案（src/data/builds.ts 与 buildCopy.ts，经 tools/dump_talent_plans.mjs 用网站自己的
   replayPlan 逐级重放）：每个方案从 10 级起每一级的分享码、洗天赋的等级、定位、方案名与一句话用途（中英）
 - BisGear.lua：网站 BiS 页的装备推荐（src/data/classLeveling.ts 的 classBands，经 tools/dump_bis_gear.mjs 调用）：
@@ -670,6 +672,29 @@ def rank_number(rank: str) -> int:
     return int(match.group()) if match else 0
 
 
+# 网站技能书里有、但 Forever 客户端里学不到的技能（用户 2026-11-18 游戏内确认）：不导出到插件
+UNLEARNABLE_SPELLS = {
+    ("paladin", "Hammer of the Righteous"),  # 网站标 40 级，训练师不教
+    ("mage", "Teleport: Dalaran"),           # 网站标 50 级，目前学不到
+}
+
+ALLIANCE_CORE_RACES = {"Human", "Dwarf", "Night Elf", "Gnome"}
+HORDE_CORE_RACES = {"Orc", "Undead", "Tauren", "Troll"}
+
+
+def spell_faction(races: list | None) -> str | None:
+    """限定种族里含一个阵营的全部原版种族、不含另一阵营的，是阵营技能（法师传送与传送门）。
+    天裔两个阵营都能选，出现在两边的种族表里，只看种族会让天裔两边都能学，所以另外标出阵营。"""
+    if not races:
+        return None
+    present = set(races)
+    if ALLIANCE_CORE_RACES <= present and not present & HORDE_CORE_RACES:
+        return "Alliance"
+    if HORDE_CORE_RACES <= present and not present & ALLIANCE_CORE_RACES:
+        return "Horde"
+    return None
+
+
 def build_spells(spellbook: dict, zh_spellbook: dict, grimoires: dict | None = None,
                  spell_ids: dict | None = None) -> dict:
     grimoires = grimoires or {}
@@ -682,6 +707,8 @@ def build_spells(spellbook: dict, zh_spellbook: dict, grimoires: dict | None = N
             zh_tab = zh_tabs[tab_index] if tab_index < len(zh_tabs) else {"name": None, "spells": []}
             for spell_index, spell in enumerate(tab["spells"]):
                 zh_spell = zh_tab["spells"][spell_index] if spell_index < len(zh_tab["spells"]) else {}
+                if (class_slug, spell["name"]) in UNLEARNABLE_SPELLS:
+                    continue
                 ranks = spell.get("ranks") or [{"rank": spell.get("rank", ""), "level": spell.get("level")}]
                 is_pet = bool(tab.get("pet"))
                 books = grimoires.get(spell["name"], {}) if is_pet else {}
@@ -708,6 +735,7 @@ def build_spells(spellbook: dict, zh_spellbook: dict, grimoires: dict | None = N
                     "pet": {"enUS": tab["name"], "zhCN": zh_tab.get("name")} if is_pet else None,
                     "icon": icon_name(spell.get("icon")),
                     "races": spell.get("races"),
+                    "faction": spell_faction(spell.get("races")),
                     "ranks": rank_rows,
                 })
         classes[class_slug] = spells
@@ -948,6 +976,49 @@ def starter_trainer_rank(rows: list) -> str | None:
     return min(ranked, key=TRAINER_RANKS.index)
 
 
+# 网站数据里训练师等级的数字写法（taught：采集插件在训练师窗口里看到他教的最高一档；addon：专业插件
+# 名单里他所在的最高一档），1 初级 … 4 大师级
+RANK_BY_NUMBER = {1: "apprentice", 2: "journeyman", 3: "expert", 4: "artisan"}
+# 副专业的高级、大师级不在训练师处学：kind 为 book（卖技能书的商人）或 quest（给晋级任务的 NPC）
+TRAINER_KINDS = ("book", "quest")
+NEUTRAL_SUFFIX = " (Neutral)"
+
+
+def trainer_rank(row: dict) -> str | None:
+    """训练师能教到的最高一档，与网站专业页同一顺序：游戏内训练师窗口实测（taught）> 专业插件名单（addon，
+    无限副本手册）> 头衔推出的（rank）。头衔规则在副专业上会出错：“Superior”头衔的钓鱼、烹饪训练师并不教大师级
+    （大师级是任务）。专精（specialization）只有头衔给得出，照用。"""
+    taught = RANK_BY_NUMBER.get(row.get("taught"))
+    if taught:
+        return taught
+    if row.get("rank") == "specialization":
+        return row["rank"]
+    addon = RANK_BY_NUMBER.get(row.get("addon"))
+    if addon:
+        return addon
+    return row.get("rank") if row.get("rank") in TRAINER_RANKS else None
+
+
+def merge_trainer_rows(rows: list) -> list:
+    """专业插件名单补进来的 NPC（负数 ID）名字带“ (Neutral)”时，与同名的真实 NPC 是同一个：
+    并进那一行（补上等级与 kind），不另列。"""
+    by_name = {row["name"]: row for row in rows if row.get("id", 0) > 0}
+    out = []
+    for row in rows:
+        name = row["name"]
+        if row.get("id", 0) < 0 and name.endswith(NEUTRAL_SUFFIX):
+            name = name[: -len(NEUTRAL_SUFFIX)]
+            target = by_name.get(name)
+            if target:
+                for key in ("addon", "kind"):
+                    if target.get(key) is None and row.get(key) is not None:
+                        target[key] = row[key]
+                continue
+            row = dict(row, name=name)
+        out.append(row)
+    return out
+
+
 def build_professions(professions: dict, zh_professions: dict, trainers: dict, skill_lines: dict | None = None) -> list:
     """专业列表（主专业在前，按网站顺序）与各专业训练师。没有坐标的训练师保留地图，x / y 为空。"""
     zh = {p["slug"]: p["name"] for p in zh_professions.get("professions", [])}
@@ -959,11 +1030,12 @@ def build_professions(professions: dict, zh_professions: dict, trainers: dict, s
             "id": row["id"],
             "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
             "faction": trainer_faction(row),
-            "rank": row.get("rank") if row.get("rank") in TRAINER_RANKS else None,
+            "rank": trainer_rank(row),
+            "kind": row.get("kind") if row.get("kind") in TRAINER_KINDS else None,
             "map": row.get("map"),
             "x": row.get("x"),
             "y": row.get("y"),
-        } for row in (trainers.get("professions") or {}).get(slug, [])]
+        } for row in merge_trainer_rows([dict(r) for r in (trainers.get("professions") or {}).get(slug, [])])]
         starter_rank = starter_trainer_rank(rows)
         for row in rows:
             if row["rank"] is None and row["map"] in STARTER_ISLAND_MAPS:
@@ -1012,6 +1084,45 @@ TRANSMOGRIFIERS = [
     {"name": "Mon'ye", "faction": "H", "map": 1454, "x": 46.2, "y": 53.6},
     {"name": "Spellweaver Thaldris", "faction": "A", "map": 1416, "x": 17.8, "y": 60.6},
 ]
+
+
+# 骑术训练师：网站数据没有，按用户 2026-11-22 加进插件。坐标取 QuestieDB Forever 1.0.11 的刷新点（AreaTable 区域
+# 换成 uiMapID，保留一位小数），采集插件在游戏里记到的（兰达尔·亨特、吉恩·晴风）以游戏内为准。中文名取采集插件
+# 或 AzerothCore 的 creature_template_locale。race 是客户端 UnitRace 的 raceFile：别的种族要先把该种族声望练到崇拜
+# （采集插件记到兰达尔·亨特对非人类的对话）；天裔两个阵营共用一位训练师。
+RIDING_TRAINERS = [
+    {"id": 4732, "name": "Randal Hunter", "nameZh": "兰达尔·亨特", "faction": "A", "race": "Human",
+     "map": 1429, "x": 84.3, "y": 65.0},
+    {"id": 4772, "name": "Ultham Ironhorn", "nameZh": "奥萨姆·铁角", "faction": "A", "race": "Dwarf",
+     "map": 1426, "x": 63.9, "y": 50.1},
+    {"id": 7954, "name": "Binjy Featherwhistle", "nameZh": "宾吉·羽哨", "faction": "A", "race": "Gnome",
+     "map": 1426, "x": 49.2, "y": 48.1},
+    {"id": 4753, "name": "Jartsam", "nameZh": "贾萨姆", "faction": "A", "race": "NightElf",
+     "map": 1457, "x": 38.7, "y": 15.8},
+    {"id": 4752, "name": "Kildar", "nameZh": "基尔达", "faction": "H", "race": "Orc",
+     "map": 1454, "x": 69.4, "y": 13.1},
+    {"id": 7953, "name": "Xar'Ti", "nameZh": "克萨尔迪", "faction": "H", "race": "Troll",
+     "map": 1411, "x": 55.3, "y": 75.5},
+    {"id": 3690, "name": "Kar Stormsinger", "nameZh": "卡尔·雷歌", "faction": "H", "race": "Tauren",
+     "map": 1412, "x": 46.8, "y": 62.0},
+    {"id": 4773, "name": "Velma Warnam", "nameZh": "维尔玛·瓦纳姆", "faction": "H", "race": "Scourge",
+     "map": 1420, "x": 60.1, "y": 52.6},
+    {"id": 265756, "name": "Genn Fairweather", "nameZh": "吉恩·晴风", "faction": "AH", "race": "Skyborne",
+     "map": 2521, "x": 53.8, "y": 81.3},
+]
+
+
+def build_riding_trainers(rows: list) -> list:
+    """[{id, name = {enUS, zhCN}, faction, race, map, x, y}]：按地图与坐标排序，输出稳定。"""
+    return [{
+        "id": row["id"],
+        "name": {"enUS": row["name"], "zhCN": row.get("nameZh")},
+        "faction": row["faction"],
+        "race": row["race"],
+        "map": row["map"],
+        "x": row["x"],
+        "y": row["y"],
+    } for row in sorted(rows, key=lambda r: (r["map"], r["x"], r["y"]))]
 
 
 def build_transmogrifiers(rows: list) -> list:
@@ -1381,11 +1492,17 @@ def bis_timeline(levels: list) -> list:
 
 
 def build_bis_gear(raw: dict, talents: dict, dungeons: list, professions: list, npc_zh: dict) -> dict:
-    """BiS 装备：{npcs = {NPC ID: 名字}, siteSets = 网站 BiS 页开放的组, classes = {职业: {default, specs}}}。
+    """BiS 装备：{npcs = {NPC ID: 名字}, siteSets = 网站 BiS 页开放的组, restricted = {物品 ID: 所需专业 slug},
+    classes = {职业: {default, specs}}}。
 
     每个天赋：timeline 是网站算法逐级（1–60）的首选装备变化，每项 {等级, 格子键, 阵营, 物品 ID（0 表示这格空出来）,
     获取途径, 参数…}，从这一级起生效，直到同一格子的下一项；bands 是网站原来的 10 级一段（range、alts 各栏备选，好的在前）；
     pvp 是 60 级 PvP 组（range、gear、alts）。gear / alts 每项是 {物品 ID, 装备栏, 阵营, 获取途径, 参数…}。
+    timeline 与 pvp.gear 不含专业装备（拾取绑定的制造装备、需要专业才能装备的物品）；professions 是学了某个或某两个
+    专业时的不同之处，键是排好序、用 + 连接的专业 slug，值 {cut = {格子键: 等级}, timeline = 这些格子从该等级起的变化,
+    pvp = 整组 PvP 首选（和基础组相同时省略）}：cut 里的格子在该等级之前用基础组的变化，从该等级起只用这里的。
+    两个专业的组合和把两个单专业合起来一样时不导出，插件合并两个单专业（这时它们改的格子不重叠）。
+    备选含全部专业装备，插件按 restricted 筛掉没学的专业。
     阵营 "" 两边都有，"A" 联盟，"H" 部落：两个阵营合在一个列表里，按阵营筛出来与各自的原列表一致。
     获取途径：drop 副本 slug 与首领英文名（插件按副本数据取本地化名字）、quest 任务 ID、vendor / mob NPC ID、
     trash 副本 slug、crafted 专业 slug 与配方技能 ID。物品名称、图标、属性一律运行时向客户端取。
@@ -1431,6 +1548,69 @@ def build_bis_gear(raw: dict, talents: dict, dungeons: list, professions: list, 
             out.append([level, key, side, pick["id"], *source(pick)] if pick else [level, key, side, 0])
         return out
 
+    def by_key(rows: list) -> dict:
+        grouped = {}
+        for row in rows:
+            grouped.setdefault(row[1], []).append(row)
+        return grouped
+
+    def variants(alliance: dict, horde: dict, base_timeline: list, base_pvp: list) -> dict:
+        """学了专业时的不同之处；某个阵营没有这个组合时，那个阵营就用基础组。"""
+        out = {}
+        base_keys = by_key(base_timeline)
+        def side_variant(side: dict, combo: str) -> dict:
+            # 没有这个组合：两个专业时（导出脚本对两个单专业都有的组合总会算），至多一个单专业有变化，用它；否则用基础组
+            found = side.get("variants") or {}
+            for key in [combo, *combo.split("+")]:
+                if key in found:
+                    return found[key]
+            return {"levels": side["levels"], "pvp": side["pvp"]["gear"]}
+
+        combos = set(alliance.get("variants") or {}) | set(horde.get("variants") or {})
+        singles = sorted(c for c in combos if "+" not in c)
+        # 两个单专业分属两个阵营时，导出脚本没算这一对，这里按各阵营自己的单专业结果补上
+        combos |= {f"{x}+{y}" for i, x in enumerate(singles) for y in singles[i + 1:]}
+        for combo in sorted(combos):
+            a, h = side_variant(alliance, combo), side_variant(horde, combo)
+            if any(slug not in profession_slugs for slug in combo.split("+")):
+                raise ValueError(f"BiS variant with unknown profession {combo}")
+            keys = by_key(timeline(a["levels"], h["levels"]))
+            changed = [row for key in sorted(keys) if keys[key] != base_keys.get(key) for row in keys[key]]
+            entry = {}
+            if changed:
+                entry["timeline"] = changed
+            pvp = merged(a["pvp"], h["pvp"])
+            if pvp != base_pvp:
+                entry["pvp"] = pvp
+            if entry or "+" in combo:
+                out[combo] = entry
+        # 两个专业的结果和把两个单专业合起来一样时（改的格子不重叠，PvP 最多一边有变化），不必另存，插件运行时合并
+        for combo in [c for c in out if "+" in c]:
+            parts = [out.get(slug) for slug in combo.split("+")]
+            if not all(parts):
+                continue
+            first, second = (by_key(part.get("timeline") or []) for part in parts)
+            pvps = [part["pvp"] for part in parts if "pvp" in part]
+            if set(first) & set(second) or len(pvps) > 1:
+                continue
+            union = {**first, **second}
+            if union == by_key(out[combo].get("timeline") or []) and (pvps[0] if pvps else None) == out[combo].get("pvp"):
+                del out[combo]
+        # 每个改了的格子只存从第一处不同的那一级起的变化：cut 记这一级，插件取基础组在它之前的变化
+        for entry in out.values():
+            rows = by_key(entry.pop("timeline", []))
+            cut, kept = {}, []
+            for key, own in rows.items():
+                base = base_keys.get(key, [])
+                levels = sorted({row[0] for row in own} | {row[0] for row in base})
+                at = next(lv for lv in levels if [r for r in own if r[0] == lv] != [r for r in base if r[0] == lv])
+                cut[key] = at
+                kept.extend(row for row in own if row[0] >= at)
+            if cut:
+                entry["cut"] = cut
+                entry["timeline"] = kept
+        return out
+
     for class_slug, entry in (raw.get("classes") or {}).items():
         trees = [tree["name"]["enUS"] for tree in (talents.get(class_slug) or {}).get("trees") or []]
         if not trees:
@@ -1442,22 +1622,33 @@ def build_bis_gear(raw: dict, talents: dict, dungeons: list, professions: list, 
             alliance, horde = spec["alliance"], spec["horde"]
             if [b["range"] for b in alliance["bands"]] != [b["range"] for b in horde["bands"]]:
                 raise ValueError(f"{class_slug} {spec['tree']}: faction bands differ")
-            specs.append({
+            base_timeline = timeline(alliance["levels"], horde["levels"])
+            base_pvp = merged(alliance["pvp"]["gear"], horde["pvp"]["gear"])
+            entry_spec = {
                 "tree": trees.index(spec["tree"]) + 1,
                 "slug": spec["slug"],
-                "timeline": timeline(alliance["levels"], horde["levels"]),
+                "timeline": base_timeline,
                 "bands": [{"range": a["range"], "alts": merged(a["alts"], h["alts"])}
                           for a, h in zip(alliance["bands"], horde["bands"])],
                 "pvp": {"range": alliance["pvp"]["range"],
-                        "gear": merged(alliance["pvp"]["gear"], horde["pvp"]["gear"]),
+                        "gear": base_pvp,
                         "alts": merged(alliance["pvp"]["alts"], horde["pvp"]["alts"])},
-            })
+            }
+            spec_variants = variants(alliance, horde, base_timeline, base_pvp)
+            if spec_variants:
+                entry_spec["professions"] = spec_variants
+            specs.append(entry_spec)
         default = entry.get("default")
         classes[class_slug] = {
             "default": trees.index(default) + 1 if default in trees else None,
             "specs": specs,
         }
-    return {"npcs": npcs, "siteSets": raw.get("siteSets") or [], "classes": classes}
+    restricted = {}
+    for item_id, slug in (raw.get("restricted") or {}).items():
+        if slug not in profession_slugs:
+            raise ValueError(f"BiS item {item_id} needs unknown profession {slug}")
+        restricted[int(item_id)] = slug
+    return {"npcs": npcs, "siteSets": raw.get("siteSets") or [], "restricted": restricted, "classes": classes}
 
 
 def export(site: Path) -> dict:
@@ -1488,6 +1679,7 @@ def export(site: Path) -> dict:
             "classTrainers": build_class_trainers(load(generated / "class-trainers.json"))
             if (generated / "class-trainers.json").exists() else {},
             "transmogrifiers": build_transmogrifiers(TRANSMOGRIFIERS),
+            "ridingTrainers": build_riding_trainers(RIDING_TRAINERS),
             "transport": build_transport(load(REPO_ROOT / "tools" / "data" / "transport.json")),
             "zonePaths": build_zone_paths(load(REPO_ROOT / "tools" / "data" / "zone-paths.json")),
             "gathering": build_gathering(load(generated / "gathering-nodes.json"))
@@ -1540,6 +1732,10 @@ def main() -> int:
               "Class trainer locations from QuestieDB (https://github.com/Questie/QuestieDB), "
               "the Questie project, GPL-3.0, with positions checked in WoW: Forever.")
     write_lua("Transmogrifiers.lua", "transmogrifiers", data["transmogrifiers"])
+    # 骑术训练师坐标主要来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
+    write_lua("RidingTrainers.lua", "ridingTrainers", data["ridingTrainers"],
+              "Riding trainer locations from QuestieDB (https://github.com/Questie/QuestieDB), "
+              "the Questie project, GPL-3.0, with positions checked in WoW: Forever.")
     # 飞艇塔位置来自 Questie 项目的 QuestieDB（GPL-3.0），按许可保留署名
     write_lua("Transport.lua", "transport", data["transport"],
               "Zeppelin tower locations from QuestieDB (https://github.com/Questie/QuestieDB), "
@@ -1571,6 +1767,7 @@ def main() -> int:
           f"（复活区域 {len(data['graveyardAreas'])} 张地图），"
           f"专业 {len(data['professions'])}（训练师 {sum(len(p['trainers']) for p in data['professions'])}），"
           f"职业训练师 {sum(len(v) for v in data['classTrainers'].values())} 个，幻化师 {len(data['transmogrifiers'])} 个，"
+          f"骑术训练师 {len(data['ridingTrainers'])} 个，"
           f"采集点 {sum(len(v) for m in data['gathering']['maps'].values() for v in m.values())} 处")
     if place_conflicts:
         ids = ", ".join(str(item["id"]) for item in place_conflicts[:10])

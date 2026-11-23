@@ -163,6 +163,9 @@ ns.Data.recipes = {
                 reagents = { 3355, 2, 785, 1, 3371, 1 },
                 learnedFrom = 250381,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 65,
                 via = { "vendor" },
             },
@@ -196,6 +199,9 @@ ns.Data.recipes = {
                 reagents = { 3356, 3, 3371, 1 },
                 learnedFrom = 250376,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -278,6 +284,9 @@ ns.Data.recipes = {
                 reagents = { 3356, 2, 3357, 2, 3372, 1 },
                 learnedFrom = 250367,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 95,
                 via = { "vendor" },
             },
@@ -288,6 +297,9 @@ ns.Data.recipes = {
                 reagents = { 3356, 3, 3372, 1 },
                 learnedFrom = 250388,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 95,
                 via = { "vendor" },
             },
@@ -331,6 +343,9 @@ ns.Data.recipes = {
                 reagents = { 3356, 4, 3372, 1 },
                 learnedFrom = 250378,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 120,
                 via = { "vendor" },
             },
@@ -390,6 +405,9 @@ ns.Data.recipes = {
                 reagents = { 3819, 2, 4625, 2, 3372, 1 },
                 learnedFrom = 250990,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 130,
                 via = { "vendor" },
             },
@@ -410,6 +428,9 @@ ns.Data.recipes = {
                 reagents = { 3355, 1, 3369, 1, 3371, 1 },
                 learnedFrom = 250978,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 135,
                 via = { "vendor" },
             },
@@ -449,6 +470,9 @@ ns.Data.recipes = {
                 reagents = { 3818, 2, 2450, 2, 3372, 1 },
                 learnedFrom = 250984,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
             },
@@ -542,6 +566,10 @@ ns.Data.recipes = {
                 reagents = { 8836, 3, 8831, 2, 8925, 1 },
                 learnedFrom = 250383,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -593,6 +621,10 @@ ns.Data.recipes = {
                 reagents = { 8839, 3, 8836, 2, 8925, 1 },
                 learnedFrom = 250377,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -710,6 +742,10 @@ ns.Data.recipes = {
                 reagents = { 8836, 3, 8831, 1, 8925, 1 },
                 learnedFrom = 250369,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -752,6 +788,10 @@ ns.Data.recipes = {
                 reagents = { 8838, 4, 8925, 1 },
                 learnedFrom = 250371,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 200,
                 via = { "vendor" },
             },
@@ -1057,6 +1097,10 @@ ns.Data.recipes = {
                 reagents = { 13465, 2, 4625, 2, 8925, 1 },
                 learnedFrom = 250997,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 245,
                 via = { "vendor" },
             },
@@ -1092,6 +1136,10 @@ ns.Data.recipes = {
                 reagents = { 13464, 2, 8838, 4, 8925, 1 },
                 learnedFrom = 250365,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -1197,6 +1245,10 @@ ns.Data.recipes = {
                 reagents = { 8845, 2, 3369, 2, 8925, 1 },
                 learnedFrom = 250995,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 265,
                 via = { "vendor" },
             },
@@ -1416,6 +1468,10 @@ ns.Data.recipes = {
                 reagents = { 13463, 3, 8846, 2, 8925, 1 },
                 learnedFrom = 250364,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 275,
                 via = { "vendor" },
             },
@@ -1426,6 +1482,10 @@ ns.Data.recipes = {
                 reagents = { 13463, 4, 13464, 2, 18256, 1 },
                 learnedFrom = 250374,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 275,
                 via = { "vendor" },
             },
@@ -1436,6 +1496,10 @@ ns.Data.recipes = {
                 reagents = { 13463, 3, 8846, 1, 8925, 1 },
                 learnedFrom = 250384,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 275,
                 via = { "vendor" },
             },
@@ -1446,6 +1510,10 @@ ns.Data.recipes = {
                 reagents = { 8846, 3, 8845, 1, 8925, 1 },
                 learnedFrom = 250386,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 275,
                 via = { "vendor" },
             },
@@ -1456,6 +1524,10 @@ ns.Data.recipes = {
                 reagents = { 8846, 3, 13466, 2, 8925, 1 },
                 learnedFrom = 250994,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 275,
                 via = { "vendor" },
             },
@@ -1475,6 +1547,10 @@ ns.Data.recipes = {
                 reagents = { 13463, 4, 13465, 2, 18256, 1 },
                 learnedFrom = 250373,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 280,
                 via = { "vendor" },
             },
@@ -1485,6 +1561,10 @@ ns.Data.recipes = {
                 reagents = { 13463, 3, 8838, 1, 18256, 1 },
                 learnedFrom = 250993,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 280,
                 via = { "vendor" },
             },
@@ -1495,6 +1575,10 @@ ns.Data.recipes = {
                 reagents = { 4625, 2, 3819, 2, 8925, 1 },
                 learnedFrom = 250998,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 280,
                 via = { "vendor" },
             },
@@ -1557,6 +1641,10 @@ ns.Data.recipes = {
                 reagents = { 13464, 3, 13463, 2, 8925, 1 },
                 learnedFrom = 250372,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 285,
                 via = { "vendor" },
             },
@@ -1567,6 +1655,10 @@ ns.Data.recipes = {
                 reagents = { 13464, 4, 8838, 2, 8925, 1 },
                 learnedFrom = 250379,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 285,
                 via = { "vendor" },
             },
@@ -1577,6 +1669,10 @@ ns.Data.recipes = {
                 reagents = { 13463, 2, 13465, 1, 18256, 1 },
                 learnedFrom = 250981,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 285,
                 via = { "vendor" },
             },
@@ -1605,6 +1701,10 @@ ns.Data.recipes = {
                 reagents = { 13466, 3, 8839, 2, 18256, 1 },
                 learnedFrom = 250987,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 290,
                 via = { "vendor" },
             },
@@ -1749,6 +1849,10 @@ ns.Data.recipes = {
                 reagents = { 8846, 3, 8839, 1, 8925, 1 },
                 learnedFrom = 250387,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
             },
@@ -2048,6 +2152,13 @@ ns.Data.recipes = {
                 from = 270,
                 to = 300,
                 crafts = 30,
+            },
+        },
+        formulas = {
+            {
+                item = 271621,
+                favor = 1000,
+                skill = 300,
             },
         },
     },
@@ -2705,6 +2816,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 12, 3470, 4, 249427, 2, 5498, 2 },
                 learnedFrom = 251365,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 45,
                 via = { "vendor" },
                 tools = {
@@ -2718,6 +2832,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 12, 3470, 4, 249427, 2, 1210, 2 },
                 learnedFrom = 251366,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 45,
                 via = { "vendor" },
                 tools = {
@@ -2731,6 +2848,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 12, 3470, 4, 249427, 2, 818, 2 },
                 learnedFrom = 251367,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 45,
                 via = { "vendor" },
                 tools = {
@@ -2744,6 +2864,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 12, 3470, 4, 249427, 2, 10940, 2 },
                 learnedFrom = 251368,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 45,
                 via = { "vendor" },
                 tools = {
@@ -2757,6 +2880,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 12, 3470, 4, 249427, 2, 10938, 2 },
                 learnedFrom = 251369,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 45,
                 via = { "vendor" },
                 tools = {
@@ -2903,6 +3029,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 10, 3470, 4, 249410, 2, 5498, 3 },
                 learnedFrom = 251360,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 80,
                 via = { "drop", "vendor" },
                 tools = {
@@ -2916,6 +3045,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 10, 3470, 4, 249410, 2, 1210, 3 },
                 learnedFrom = 251361,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 80,
                 via = { "drop", "vendor" },
                 tools = {
@@ -2929,6 +3061,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 10, 3470, 4, 249410, 2, 818, 3 },
                 learnedFrom = 251362,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 80,
                 via = { "drop", "vendor" },
                 tools = {
@@ -2942,6 +3077,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 10, 3470, 4, 249410, 2, 10940, 3 },
                 learnedFrom = 251363,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 80,
                 via = { "drop", "vendor" },
                 tools = {
@@ -2955,6 +3093,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 10, 3470, 4, 249410, 2, 10938, 3 },
                 learnedFrom = 251364,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 80,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3035,6 +3176,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 12, 3478, 2, 249427, 4, 5498, 5 },
                 learnedFrom = 251355,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
                 tools = {
@@ -3048,6 +3192,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 12, 3478, 2, 249427, 4, 1210, 5 },
                 learnedFrom = 251356,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
                 tools = {
@@ -3061,6 +3208,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 12, 3478, 2, 249427, 4, 818, 5 },
                 learnedFrom = 251357,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
                 tools = {
@@ -3074,6 +3224,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 12, 3478, 2, 249427, 4, 10940, 5 },
                 learnedFrom = 251358,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
                 tools = {
@@ -3087,6 +3240,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 12, 3478, 2, 249427, 4, 10938, 5 },
                 learnedFrom = 251359,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
                 tools = {
@@ -3182,6 +3338,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 15, 3478, 6, 2842, 4, 249427, 4, 5498, 6 },
                 learnedFrom = 251380,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 95,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3195,6 +3354,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 15, 3478, 6, 2842, 4, 249427, 4, 1210, 6 },
                 learnedFrom = 251381,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 95,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3208,6 +3370,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 15, 3478, 6, 2842, 4, 249427, 4, 818, 6 },
                 learnedFrom = 251382,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 95,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3221,6 +3386,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 15, 3478, 6, 2842, 4, 249427, 4, 10940, 6 },
                 learnedFrom = 251383,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 95,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3234,6 +3402,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 15, 3478, 6, 2842, 4, 249427, 4, 10938, 6 },
                 learnedFrom = 251384,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 95,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3485,6 +3656,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 6, 2842, 5, 249427, 6, 5498, 8 },
                 learnedFrom = 251370,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
                 tools = {
@@ -3498,6 +3672,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 6, 2842, 5, 249427, 6, 1210, 8 },
                 learnedFrom = 251371,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
                 tools = {
@@ -3511,6 +3688,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 6, 2842, 5, 249427, 6, 818, 8 },
                 learnedFrom = 251372,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
                 tools = {
@@ -3524,6 +3704,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 6, 2842, 5, 249427, 6, 10940, 8 },
                 learnedFrom = 251373,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
                 tools = {
@@ -3537,6 +3720,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 6, 2842, 5, 249427, 6, 10938, 8 },
                 learnedFrom = 251374,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
                 tools = {
@@ -3698,6 +3884,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 8, 2842, 6, 249427, 6, 5498, 8 },
                 learnedFrom = 251375,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3711,6 +3900,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 8, 2842, 6, 249427, 6, 1210, 8 },
                 learnedFrom = 251376,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3724,6 +3916,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 8, 2842, 6, 249427, 6, 818, 8 },
                 learnedFrom = 251377,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3737,6 +3932,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 8, 2842, 6, 249427, 6, 10940, 8 },
                 learnedFrom = 251378,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
                 tools = {
@@ -3750,6 +3948,9 @@ ns.Data.recipes = {
                 reagents = { 2841, 20, 3478, 8, 2842, 6, 249427, 6, 10938, 8 },
                 learnedFrom = 251379,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
                 tools = {
@@ -4478,6 +4679,10 @@ ns.Data.recipes = {
                 reagents = { 3859, 10, 3486, 4, 249432, 4, 249410, 2, 1529, 4 },
                 learnedFrom = 251418,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -4491,6 +4696,10 @@ ns.Data.recipes = {
                 reagents = { 3859, 10, 3486, 4, 249432, 4, 249410, 2, 8831, 4 },
                 learnedFrom = 251419,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -4504,6 +4713,10 @@ ns.Data.recipes = {
                 reagents = { 3859, 10, 3486, 4, 249432, 4, 249410, 2, 7971, 4 },
                 learnedFrom = 251420,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -4517,6 +4730,10 @@ ns.Data.recipes = {
                 reagents = { 3859, 10, 3486, 4, 249432, 4, 249410, 2, 13926, 4 },
                 learnedFrom = 251421,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -4530,6 +4747,10 @@ ns.Data.recipes = {
                 reagents = { 3859, 10, 3486, 4, 249432, 4, 249410, 2, 7079, 4 },
                 learnedFrom = 251422,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -4971,6 +5192,10 @@ ns.Data.recipes = {
                 reagents = { 3860, 20, 7966, 2, 249432, 6, 249410, 4, 1529, 8, 11139, 1 },
                 learnedFrom = 251428,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -4984,6 +5209,10 @@ ns.Data.recipes = {
                 reagents = { 3860, 20, 7966, 2, 249432, 6, 249410, 4, 8831, 8, 11139, 1 },
                 learnedFrom = 251429,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -4997,6 +5226,10 @@ ns.Data.recipes = {
                 reagents = { 3860, 20, 7966, 2, 249432, 6, 249410, 4, 7971, 8, 11139, 1 },
                 learnedFrom = 251430,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -5010,6 +5243,10 @@ ns.Data.recipes = {
                 reagents = { 3860, 20, 7966, 2, 249432, 6, 249410, 4, 13926, 8, 11139, 1 },
                 learnedFrom = 251431,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -5023,6 +5260,10 @@ ns.Data.recipes = {
                 reagents = { 3860, 20, 7966, 2, 249432, 6, 249410, 4, 7079, 8, 11139, 1 },
                 learnedFrom = 251432,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -5284,6 +5525,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 16, 7966, 2, 249432, 6, 249410, 4, 1529, 6, 11139, 1 },
                 learnedFrom = 251433,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -5297,6 +5542,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 16, 7966, 2, 249432, 6, 249410, 4, 8831, 6, 11139, 1 },
                 learnedFrom = 251434,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -5310,6 +5559,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 16, 7966, 2, 249432, 6, 249410, 4, 7971, 6, 11139, 1 },
                 learnedFrom = 251435,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -5323,6 +5576,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 16, 7966, 2, 249432, 6, 249410, 4, 13926, 6, 11139, 1 },
                 learnedFrom = 251436,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -5336,6 +5593,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 16, 7966, 2, 249432, 6, 249410, 4, 7079, 6, 11139, 1 },
                 learnedFrom = 251437,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -5499,6 +5760,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 20, 7966, 3, 249432, 4, 249410, 4, 1529, 6, 249427, 4 },
                 learnedFrom = 251413,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 240,
                 via = { "vendor" },
                 tools = {
@@ -5512,6 +5777,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 20, 7966, 3, 249432, 4, 249410, 4, 8831, 6, 249427, 4 },
                 learnedFrom = 251414,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 240,
                 via = { "vendor" },
                 tools = {
@@ -5525,6 +5794,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 20, 7966, 3, 249432, 4, 249410, 4, 7971, 6, 249427, 4 },
                 learnedFrom = 251415,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 240,
                 via = { "vendor" },
                 tools = {
@@ -5538,6 +5811,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 20, 7966, 3, 249432, 4, 249410, 4, 13926, 6, 249427, 4 },
                 learnedFrom = 251416,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 240,
                 via = { "vendor" },
                 tools = {
@@ -5551,6 +5828,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 20, 7966, 3, 249432, 4, 249410, 4, 7079, 6, 249427, 4 },
                 learnedFrom = 251417,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 240,
                 via = { "vendor" },
                 tools = {
@@ -5684,6 +5965,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 24, 7966, 4, 249432, 6, 249410, 6, 1529, 10 },
                 learnedFrom = 251423,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -5697,6 +5982,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 24, 7966, 4, 249432, 6, 249410, 6, 8831, 10 },
                 learnedFrom = 251424,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -5710,6 +5999,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 24, 7966, 4, 249432, 6, 249410, 6, 7971, 10 },
                 learnedFrom = 251425,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -5723,6 +6016,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 24, 7966, 4, 249432, 6, 249410, 6, 13926, 10 },
                 learnedFrom = 251426,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -5736,6 +6033,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 24, 7966, 4, 249432, 6, 249410, 6, 7079, 10 },
                 learnedFrom = 251427,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -5749,6 +6050,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 30, 251291, 4, 7076, 4, 249726, 10, 12644, 2 },
                 learnedFrom = 251465,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -5762,6 +6067,10 @@ ns.Data.recipes = {
                 reagents = { 12359, 20, 251291, 8, 7082, 4, 249726, 10, 12644, 1 },
                 learnedFrom = 251466,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -7244,6 +7553,10 @@ ns.Data.recipes = {
                 reagents = { 251290, 8, 251291, 24, 7082, 4, 7078, 4, 249726, 4 },
                 learnedFrom = 251447,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -7257,6 +7570,10 @@ ns.Data.recipes = {
                 reagents = { 251290, 10, 251291, 20, 7082, 6, 249726, 3 },
                 learnedFrom = 251448,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -7270,6 +7587,10 @@ ns.Data.recipes = {
                 reagents = { 251290, 6, 251291, 16, 7078, 6, 249726, 3 },
                 learnedFrom = 251449,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -7355,6 +7676,10 @@ ns.Data.recipes = {
                 reagents = { 251290, 15, 251291, 8, 249726, 10, 248820, 4, 248822, 1 },
                 learnedFrom = 251471,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -7813,6 +8138,13 @@ ns.Data.recipes = {
                 crafts = 29,
             },
         },
+        formulas = {
+            {
+                item = 271622,
+                favor = 1000,
+                skill = 300,
+            },
+        },
     },
     {
         slug = "enchanting",
@@ -8172,6 +8504,9 @@ ns.Data.recipes = {
                 reagents = { 11084, 4, 10978, 2, 11291, 4, 11082, 1, 10940, 5, 249391, 3 },
                 learnedFrom = 249482,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8185,6 +8520,9 @@ ns.Data.recipes = {
                 reagents = { 11084, 2, 10978, 1, 11291, 4, 11082, 1, 11083, 6, 1210, 2 },
                 learnedFrom = 249483,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8198,6 +8536,9 @@ ns.Data.recipes = {
                 reagents = { 10978, 2, 11082, 2, 10940, 5 },
                 learnedFrom = 249484,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8211,6 +8552,9 @@ ns.Data.recipes = {
                 reagents = { 10978, 2, 11082, 2, 11083, 2 },
                 learnedFrom = 249485,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8224,6 +8568,9 @@ ns.Data.recipes = {
                 reagents = { 10978, 1, 10939, 2, 10940, 5, 4605, 1 },
                 learnedFrom = 249476,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 130,
                 via = { "vendor" },
                 tools = {
@@ -8237,6 +8584,9 @@ ns.Data.recipes = {
                 reagents = { 11084, 1, 10939, 1, 10940, 2, 3013, 5 },
                 learnedFrom = 249477,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 130,
                 via = { "vendor" },
                 tools = {
@@ -8250,6 +8600,9 @@ ns.Data.recipes = {
                 reagents = { 11084, 1, 10939, 2, 10940, 3, 4470, 1 },
                 learnedFrom = 249478,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 130,
                 via = { "vendor" },
                 tools = {
@@ -8262,6 +8615,9 @@ ns.Data.recipes = {
                 reagents = { 10940, 10, 11084, 4, 11082, 4, 249391, 4, 249399, 4 },
                 learnedFrom = 249479,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8274,6 +8630,9 @@ ns.Data.recipes = {
                 reagents = { 11083, 6, 11084, 4, 11082, 6, 249391, 4, 2775, 4 },
                 learnedFrom = 249480,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8286,6 +8645,9 @@ ns.Data.recipes = {
                 reagents = { 11083, 8, 11084, 6, 11082, 2, 249409, 4, 249410, 4 },
                 learnedFrom = 249481,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 140,
                 via = { "vendor" },
                 tools = {
@@ -8845,6 +9207,10 @@ ns.Data.recipes = {
                 reagents = { 11178, 2, 11175, 4, 11176, 6, 249430, 2, 249409, 1, 11291, 1 },
                 learnedFrom = 249493,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8858,6 +9224,10 @@ ns.Data.recipes = {
                 reagents = { 11178, 3, 11175, 3, 11176, 4, 249430, 2, 249409, 1, 2289, 4 },
                 learnedFrom = 249494,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8871,6 +9241,10 @@ ns.Data.recipes = {
                 reagents = { 11178, 4, 11175, 2, 11176, 2, 249432, 4, 249410, 2, 11291, 2 },
                 learnedFrom = 249495,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8883,6 +9257,10 @@ ns.Data.recipes = {
                 reagents = { 11175, 4, 11178, 4, 11176, 10, 249410, 4, 249425, 4 },
                 learnedFrom = 249496,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8895,6 +9273,10 @@ ns.Data.recipes = {
                 reagents = { 11175, 5, 11178, 3, 11176, 8, 249409, 4, 249430, 4 },
                 learnedFrom = 249502,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8907,6 +9289,10 @@ ns.Data.recipes = {
                 reagents = { 11175, 3, 11178, 5, 11176, 4, 249391, 4, 249424, 4 },
                 learnedFrom = 249503,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8919,6 +9305,10 @@ ns.Data.recipes = {
                 reagents = { 11175, 2, 11178, 8, 11176, 6, 249410, 4, 249430, 4 },
                 learnedFrom = 249504,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8931,6 +9321,10 @@ ns.Data.recipes = {
                 reagents = { 11175, 8, 11178, 2, 11176, 2, 249409, 4, 249430, 4 },
                 learnedFrom = 249505,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
                 tools = {
@@ -8959,6 +9353,10 @@ ns.Data.recipes = {
                 },
                 learnedFrom = 249506,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 220,
                 via = { "vendor" },
                 tools = {
@@ -8987,6 +9385,10 @@ ns.Data.recipes = {
                 },
                 learnedFrom = 249507,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 220,
                 via = { "vendor" },
                 tools = {
@@ -9015,6 +9417,10 @@ ns.Data.recipes = {
                 },
                 learnedFrom = 249508,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 220,
                 via = { "vendor" },
                 tools = {
@@ -9028,6 +9434,10 @@ ns.Data.recipes = {
                 reagents = { 6037, 4, 11175, 12, 11135, 12, 249409, 1, 249430, 2 },
                 learnedFrom = 249509,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 220,
                 via = { "vendor" },
                 tools = {
@@ -9040,6 +9450,10 @@ ns.Data.recipes = {
                 reagents = { 11176, 10, 11175, 4, 11178, 2 },
                 learnedFrom = 249510,
                 new = true,
+                favor = {
+                    cost = 120,
+                    standing = "friendly",
+                },
                 learn = 220,
                 via = { "vendor" },
                 tools = {
@@ -10166,6 +10580,10 @@ ns.Data.recipes = {
                 reagents = { 248819, 4, 16203, 6, 7076, 4, 12808, 4, 20725, 4, 248820, 2 },
                 learnedFrom = 249525,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10178,6 +10596,10 @@ ns.Data.recipes = {
                 reagents = { 248819, 4, 16203, 6, 249726, 4, 249274, 4, 20725, 4, 248820, 4 },
                 learnedFrom = 249526,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10200,6 +10622,10 @@ ns.Data.recipes = {
                 reagents = { 20725, 2, 14344, 5, 248822, 4 },
                 learnedFrom = 249535,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10213,6 +10639,10 @@ ns.Data.recipes = {
                 reagents = { 16203, 1, 16204, 3, 14344, 2, 11291, 1 },
                 learnedFrom = 249537,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "honored",
+                },
                 learn = 275,
                 via = { "vendor" },
                 tools = {
@@ -10225,6 +10655,10 @@ ns.Data.recipes = {
                 reagents = { 16203, 10 },
                 learnedFrom = 249538,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10237,6 +10671,10 @@ ns.Data.recipes = {
                 reagents = { 14344, 3 },
                 learnedFrom = 249539,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10265,6 +10703,10 @@ ns.Data.recipes = {
                 },
                 learnedFrom = 249529,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10293,6 +10735,10 @@ ns.Data.recipes = {
                 },
                 learnedFrom = 249530,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10321,6 +10767,10 @@ ns.Data.recipes = {
                 },
                 learnedFrom = 249532,
                 new = true,
+                favor = {
+                    cost = 240,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -10500,6 +10950,55 @@ ns.Data.recipes = {
                 crafts = 5,
             },
         },
+        formulas = {
+            {
+                item = 249534,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+            {
+                item = 249536,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+            {
+                item = 271624,
+                favor = 1000,
+                skill = 300,
+            },
+            {
+                item = 274393,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+            {
+                item = 274394,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+            {
+                item = 274398,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+            {
+                item = 274399,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+            {
+                item = 274401,
+                favor = 240,
+                standing = "honored",
+                skill = 300,
+            },
+        },
     },
     {
         slug = "engineering",
@@ -10533,6 +11032,9 @@ ns.Data.recipes = {
                 reagents = { 2570, 1, 249409, 1 },
                 learnedFrom = 264201,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 25,
                 via = { "vendor" },
             },
@@ -10543,6 +11045,9 @@ ns.Data.recipes = {
                 reagents = { 4357, 2, 2589, 1 },
                 learnedFrom = 264202,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 25,
                 via = { "vendor" },
             },
@@ -10579,6 +11084,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 1, 4359, 1, 4357, 2, 2570, 1, 260784, 2 },
                 learnedFrom = 264203,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 55,
                 via = { "vendor" },
                 tools = {
@@ -10680,6 +11188,9 @@ ns.Data.recipes = {
                 reagents = { 4360, 20, 2318, 6, 4359, 4 },
                 learnedFrom = 285285,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -10701,6 +11212,9 @@ ns.Data.recipes = {
                 reagents = { 2592, 1, 249410, 1 },
                 learnedFrom = 264204,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -10954,6 +11468,9 @@ ns.Data.recipes = {
                 reagents = { 2840, 3, 4364, 4, 4404, 1, 260794, 1 },
                 learnedFrom = 264205,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 130,
                 via = { "vendor" },
                 tools = {
@@ -11042,6 +11559,9 @@ ns.Data.recipes = {
                 reagents = { 4234, 1, 249430, 1 },
                 learnedFrom = 264206,
                 new = true,
+                favor = {
+                    cost = 45,
+                },
                 learn = 145,
                 via = { "vendor" },
             },
@@ -11261,6 +11781,10 @@ ns.Data.recipes = {
                 reagents = { 4380, 20, 2319, 6, 4375, 1 },
                 learnedFrom = 285286,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -11390,6 +11914,10 @@ ns.Data.recipes = {
                 reagents = { 2841, 2, 249432, 1 },
                 learnedFrom = 264209,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -11446,6 +11974,10 @@ ns.Data.recipes = {
                 reagents = { 4382, 2, 4375, 1, 4305, 2 },
                 learnedFrom = 280321,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -11460,6 +11992,10 @@ ns.Data.recipes = {
                 reagents = { 4375, 2, 4382, 1, 2319, 4 },
                 learnedFrom = 280322,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -11474,6 +12010,10 @@ ns.Data.recipes = {
                 reagents = { 4371, 2, 4363, 1, 2319, 4 },
                 learnedFrom = 280323,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
                 tools = {
@@ -11559,6 +12099,10 @@ ns.Data.recipes = {
                 reagents = { 4404, 1, 249428, 1 },
                 learnedFrom = 264211,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 190,
                 via = { "vendor" },
                 tools = {
@@ -11778,6 +12322,10 @@ ns.Data.recipes = {
                 reagents = { 5507, 1, 4389, 1, 4339, 4 },
                 learnedFrom = 280325,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 200,
                 via = { "vendor" },
                 tools = {
@@ -11792,6 +12340,10 @@ ns.Data.recipes = {
                 reagents = { 5507, 1, 4389, 1, 4234, 8 },
                 learnedFrom = 280326,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 200,
                 via = { "vendor" },
                 tools = {
@@ -11806,6 +12358,10 @@ ns.Data.recipes = {
                 reagents = { 5507, 1, 4389, 1, 4234, 8 },
                 learnedFrom = 280327,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 200,
                 via = { "vendor" },
                 tools = {
@@ -11820,6 +12376,10 @@ ns.Data.recipes = {
                 reagents = { 5507, 1, 4389, 1, 3860, 2 },
                 learnedFrom = 280328,
                 new = true,
+                favor = {
+                    cost = 180,
+                    standing = "friendly",
+                },
                 learn = 200,
                 via = { "vendor" },
                 tools = {
@@ -12161,6 +12721,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 10, 10559, 10, 11175, 2, 10558, 1 },
                 learnedFrom = 264217,
                 new = true,
+                favor = {
+                    cost = 270,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -12224,6 +12788,10 @@ ns.Data.recipes = {
                 reagents = { 4394, 20, 4304, 6, 4389, 1 },
                 learnedFrom = 285287,
                 new = true,
+                favor = {
+                    cost = 270,
+                    standing = "honored",
+                },
                 learn = 230,
                 via = { "vendor" },
             },
@@ -12376,6 +12944,10 @@ ns.Data.recipes = {
                 reagents = { 4397, 1, 260804, 1 },
                 learnedFrom = 264216,
                 new = true,
+                favor = {
+                    cost = 270,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
                 tools = {
@@ -12467,6 +13039,9 @@ ns.Data.recipes = {
                 reagents = { 10561, 1, 10558, 1, 15994, 2 },
                 learnedFrom = 264221,
                 new = true,
+                favor = {
+                    cost = 270,
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -12617,6 +13192,10 @@ ns.Data.recipes = {
                 reagents = { 10518, 1, 260804, 1 },
                 learnedFrom = 264220,
                 new = true,
+                favor = {
+                    cost = 270,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
                 tools = {
@@ -12691,6 +13270,9 @@ ns.Data.recipes = {
                 reagents = { 12359, 5, 16203, 5 },
                 learnedFrom = 264222,
                 new = true,
+                favor = {
+                    cost = 270,
+                },
                 learn = 275,
                 via = { "vendor" },
                 tools = {
@@ -12938,6 +13520,10 @@ ns.Data.recipes = {
                 reagents = { 16005, 20, 8170, 6, 10560, 1 },
                 learnedFrom = 285288,
                 new = true,
+                favor = {
+                    cost = 270,
+                    standing = "honored",
+                },
                 learn = 285,
                 via = { "vendor" },
             },
@@ -13388,6 +13974,10 @@ ns.Data.recipes = {
                 reagents = { 249410, 2, 249426, 1, 249431, 1, 12359, 3, 3860, 1, 248822, 1 },
                 learnedFrom = 264232,
                 new = true,
+                favor = {
+                    cost = 360,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -13424,6 +14014,10 @@ ns.Data.recipes = {
                 reagents = { 16204, 10, 14344, 2, 249726, 2, 251290, 2 },
                 learnedFrom = 264234,
                 new = true,
+                favor = {
+                    cost = 360,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -13438,6 +14032,10 @@ ns.Data.recipes = {
                 reagents = { 249431, 2, 249726, 2, 249429, 8, 12359, 8 },
                 learnedFrom = 264235,
                 new = true,
+                favor = {
+                    cost = 360,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -13465,6 +14063,10 @@ ns.Data.recipes = {
                 reagents = { 7082, 6, 16204, 6, 248820, 2, 251290, 2, 248823, 4 },
                 learnedFrom = 264237,
                 new = true,
+                favor = {
+                    cost = 360,
+                    standing = "honored",
+                },
                 learn = 300,
                 via = { "vendor" },
                 tools = {
@@ -13680,6 +14282,13 @@ ns.Data.recipes = {
                 from = 285,
                 to = 300,
                 crafts = 20,
+            },
+        },
+        formulas = {
+            {
+                item = 271625,
+                favor = 1000,
+                skill = 300,
             },
         },
     },
@@ -14480,6 +15089,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 10, 4231, 2, 249427, 2, 2320, 1, 5498, 1 },
                 learnedFrom = 252770,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -14490,6 +15102,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 10, 4231, 2, 249427, 2, 2320, 1, 249409, 1 },
                 learnedFrom = 252769,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -14500,6 +15115,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 10, 4231, 2, 249427, 2, 2320, 1, 249410, 1 },
                 learnedFrom = 252768,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -14510,6 +15128,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 10, 4231, 2, 249427, 2, 2320, 1, 2458, 1 },
                 learnedFrom = 252767,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -14520,6 +15141,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 10, 4231, 2, 249427, 2, 2320, 1, 6470, 1 },
                 learnedFrom = 252766,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -14530,6 +15154,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 10, 4231, 2, 249427, 2, 2320, 1, 1210, 1 },
                 learnedFrom = 252765,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -14698,6 +15325,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 12, 4231, 3, 249427, 2, 2321, 1, 5498, 2 },
                 learnedFrom = 252782,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "drop", "vendor" },
             },
@@ -14708,6 +15338,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 12, 4231, 3, 249427, 2, 2321, 1, 249409, 2 },
                 learnedFrom = 252781,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "drop", "vendor" },
             },
@@ -14718,6 +15351,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 12, 4231, 3, 249427, 2, 2321, 1, 249410, 2 },
                 learnedFrom = 252780,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "drop", "vendor" },
             },
@@ -14728,6 +15364,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 12, 4231, 3, 249427, 2, 2321, 1, 2458, 2 },
                 learnedFrom = 252779,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "drop", "vendor" },
             },
@@ -14738,6 +15377,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 12, 4231, 3, 249427, 2, 2321, 1, 6470, 2 },
                 learnedFrom = 252778,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "drop", "vendor" },
             },
@@ -14748,6 +15390,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 12, 4231, 3, 249427, 2, 2321, 1, 1210, 2 },
                 learnedFrom = 252777,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "drop", "vendor" },
             },
@@ -14841,6 +15486,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 14, 4231, 4, 249427, 3, 2321, 1, 5498, 3 },
                 learnedFrom = 252791,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -14851,6 +15499,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 14, 4231, 4, 249427, 3, 2321, 1, 249409, 3 },
                 learnedFrom = 252790,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -14861,6 +15512,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 14, 4231, 4, 249427, 3, 2321, 1, 249410, 3 },
                 learnedFrom = 252789,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -14871,6 +15525,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 14, 4231, 4, 249427, 3, 2321, 1, 2458, 3 },
                 learnedFrom = 252788,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -14881,6 +15538,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 14, 4231, 4, 249427, 3, 2321, 1, 6470, 3 },
                 learnedFrom = 252787,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -14891,6 +15551,9 @@ ns.Data.recipes = {
                 reagents = { 2318, 14, 4231, 4, 249427, 3, 2321, 1, 1210, 3 },
                 learnedFrom = 252786,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -14993,6 +15656,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 8, 4233, 2, 249427, 4, 2321, 2, 5498, 4 },
                 learnedFrom = 252803,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "drop", "vendor" },
             },
@@ -15003,6 +15669,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 8, 4233, 2, 249427, 4, 2321, 2, 249409, 4 },
                 learnedFrom = 252802,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "drop", "vendor" },
             },
@@ -15013,6 +15682,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 8, 4233, 2, 249427, 4, 2321, 2, 249410, 4 },
                 learnedFrom = 252801,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "drop", "vendor" },
             },
@@ -15023,6 +15695,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 8, 4233, 2, 249427, 4, 2321, 2, 2458, 4 },
                 learnedFrom = 252800,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "drop", "vendor" },
             },
@@ -15033,6 +15708,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 8, 4233, 2, 249427, 4, 2321, 2, 6470, 4 },
                 learnedFrom = 252799,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "drop", "vendor" },
             },
@@ -15043,6 +15721,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 8, 4233, 2, 249427, 4, 2321, 2, 1210, 4 },
                 learnedFrom = 252798,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "drop", "vendor" },
             },
@@ -15173,6 +15854,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 10, 4233, 3, 249427, 6, 2321, 3, 5498, 6 },
                 learnedFrom = 252810,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -15183,6 +15867,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 10, 4233, 3, 249427, 6, 2321, 3, 249409, 6 },
                 learnedFrom = 252809,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -15193,6 +15880,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 10, 4233, 3, 249427, 6, 2321, 3, 249410, 6 },
                 learnedFrom = 252808,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -15203,6 +15893,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 10, 4233, 3, 249427, 6, 2321, 3, 2458, 6 },
                 learnedFrom = 252807,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -15213,6 +15906,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 10, 4233, 3, 249427, 6, 2321, 3, 6470, 6 },
                 learnedFrom = 252806,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -15223,6 +15919,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 10, 4233, 3, 249427, 6, 2321, 3, 1210, 6 },
                 learnedFrom = 252805,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -15340,6 +16039,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 12, 4233, 4, 249427, 8, 2321, 3, 5498, 8 },
                 learnedFrom = 252825,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
             },
@@ -15350,6 +16052,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 12, 4233, 4, 249427, 8, 2321, 3, 249409, 8 },
                 learnedFrom = 252824,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
             },
@@ -15360,6 +16065,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 12, 4233, 4, 249427, 8, 2321, 3, 249410, 8 },
                 learnedFrom = 252823,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
             },
@@ -15370,6 +16078,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 12, 4233, 4, 249427, 8, 2321, 3, 2458, 8 },
                 learnedFrom = 252822,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
             },
@@ -15380,6 +16091,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 12, 4233, 4, 249427, 8, 2321, 3, 6470, 8 },
                 learnedFrom = 252821,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
             },
@@ -15390,6 +16104,9 @@ ns.Data.recipes = {
                 reagents = { 2319, 12, 4233, 4, 249427, 8, 2321, 3, 1210, 8 },
                 learnedFrom = 252820,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "drop", "vendor" },
             },
@@ -16009,6 +16726,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 5500, 2, 249427, 1 },
                 learnedFrom = 252842,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16019,6 +16740,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 7070, 2, 249427, 1 },
                 learnedFrom = 252841,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16029,6 +16754,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 3864, 2, 249427, 1 },
                 learnedFrom = 252840,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16039,6 +16768,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 7067, 2, 249427, 1 },
                 learnedFrom = 252839,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16049,6 +16782,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 7069, 2, 249427, 1 },
                 learnedFrom = 252838,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16059,6 +16796,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 3182, 2, 249427, 1 },
                 learnedFrom = 252837,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16069,6 +16810,10 @@ ns.Data.recipes = {
                 reagents = { 4234, 16, 4236, 2, 249428, 2, 4291, 2, 1529, 2, 249427, 1 },
                 learnedFrom = 252836,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 175,
                 via = { "vendor" },
             },
@@ -16226,6 +16971,10 @@ ns.Data.recipes = {
                 reagents = { 8173, 1, 11137, 2, 3391, 2 },
                 learnedFrom = 252834,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 185,
                 via = { "vendor" },
             },
@@ -16346,6 +17095,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 5500, 4, 249427, 3 },
                 learnedFrom = 252907,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16356,6 +17109,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 3864, 4, 249427, 3 },
                 learnedFrom = 252906,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16366,6 +17123,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 7070, 4, 249427, 3 },
                 learnedFrom = 252905,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16376,6 +17137,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 7069, 4, 249427, 3 },
                 learnedFrom = 252904,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16386,6 +17151,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 5500, 3, 249427, 2 },
                 learnedFrom = 252903,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16396,6 +17165,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 3864, 3, 249427, 2 },
                 learnedFrom = 252902,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16406,6 +17179,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 7070, 3, 249427, 2 },
                 learnedFrom = 252901,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16416,6 +17193,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 7069, 3, 249427, 2 },
                 learnedFrom = 252900,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16510,6 +17291,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 5500, 3, 249427, 2 },
                 learnedFrom = 252852,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16520,6 +17305,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 7070, 3, 249427, 2 },
                 learnedFrom = 252851,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16530,6 +17319,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 7067, 3, 249427, 2 },
                 learnedFrom = 252850,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16540,6 +17333,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 3182, 3, 249427, 2 },
                 learnedFrom = 252849,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16550,6 +17347,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 10, 4236, 3, 249428, 4, 4291, 2, 1529, 3, 249427, 2 },
                 learnedFrom = 252848,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 210,
                 via = { "vendor" },
             },
@@ -16596,6 +17397,10 @@ ns.Data.recipes = {
                 reagents = { 15564, 1, 11176, 2, 13444, 2, 249429, 1, 248824, 1 },
                 learnedFrom = 252941,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16665,6 +17470,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 5500, 4, 249427, 3 },
                 learnedFrom = 252857,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16675,6 +17484,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 7070, 4, 249427, 3 },
                 learnedFrom = 252856,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16685,6 +17498,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 7067, 4, 249427, 3 },
                 learnedFrom = 252855,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16695,6 +17512,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 3182, 4, 249427, 3 },
                 learnedFrom = 252854,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16705,6 +17526,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 12, 4236, 4, 249428, 6, 8343, 2, 1529, 4, 249427, 3 },
                 learnedFrom = 252853,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 225,
                 via = { "vendor" },
             },
@@ -16827,6 +17652,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 5500, 6, 249427, 4 },
                 learnedFrom = 252913,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16837,6 +17666,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 3864, 6, 249427, 4 },
                 learnedFrom = 252912,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16847,6 +17680,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 7070, 6, 249427, 4 },
                 learnedFrom = 252911,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16857,6 +17694,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 7069, 6, 249427, 4 },
                 learnedFrom = 252910,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16912,6 +17753,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 5500, 6, 249427, 4 },
                 learnedFrom = 252864,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16922,6 +17767,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 7070, 6, 249427, 4 },
                 learnedFrom = 252863,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16932,6 +17781,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 7067, 6, 249427, 4 },
                 learnedFrom = 252862,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16942,6 +17795,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 3182, 6, 249427, 4 },
                 learnedFrom = 252861,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -16952,6 +17809,10 @@ ns.Data.recipes = {
                 reagents = { 4304, 16, 8172, 2, 249428, 8, 8343, 2, 1529, 6, 249427, 4 },
                 learnedFrom = 252860,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -17199,6 +18060,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 5500, 8, 249427, 5 },
                 learnedFrom = 252925,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17209,6 +18074,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 3864, 8, 249427, 5 },
                 learnedFrom = 252924,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17219,6 +18088,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 7070, 8, 249427, 5 },
                 learnedFrom = 252923,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17229,6 +18102,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 7069, 8, 249427, 5 },
                 learnedFrom = 252922,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17257,6 +18134,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 5500, 8, 249427, 5 },
                 learnedFrom = 252876,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17267,6 +18148,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 7070, 8, 249427, 5 },
                 learnedFrom = 252875,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17277,6 +18162,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 7067, 8, 249427, 5 },
                 learnedFrom = 252874,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17287,6 +18176,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 3182, 8, 249427, 5 },
                 learnedFrom = 252873,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -17297,6 +18190,10 @@ ns.Data.recipes = {
                 reagents = { 8170, 12, 8172, 4, 249428, 10, 8343, 2, 1529, 8, 249427, 5 },
                 learnedFrom = 252872,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },
@@ -19324,6 +20221,13 @@ ns.Data.recipes = {
                 crafts = 27,
             },
         },
+        formulas = {
+            {
+                item = 271626,
+                favor = 1000,
+                skill = 300,
+            },
+        },
     },
     {
         slug = "mining",
@@ -20133,6 +21037,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 8, 2321, 2, 249409, 2, 249427, 1 },
                 learnedFrom = 253890,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -20143,6 +21050,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 8, 2321, 2, 249409, 2, 3182, 1 },
                 learnedFrom = 253892,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -20153,6 +21063,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 8, 2321, 2, 249409, 2, 6371, 1 },
                 learnedFrom = 253894,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -20163,6 +21076,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 8, 2321, 2, 249409, 2, 1210, 1 },
                 learnedFrom = 253896,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -20173,6 +21089,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 8, 2321, 2, 249409, 2, 5498, 1 },
                 learnedFrom = 253898,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -20183,6 +21102,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 8, 2321, 2, 249409, 2, 249391, 1 },
                 learnedFrom = 253900,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 60,
                 via = { "vendor" },
             },
@@ -20258,6 +21180,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 6, 2321, 4, 249409, 3, 249427, 2 },
                 learnedFrom = 253914,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -20268,6 +21193,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 6, 2321, 4, 249409, 3, 3182, 2 },
                 learnedFrom = 253916,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -20278,6 +21206,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 6, 2321, 4, 249409, 3, 6371, 2 },
                 learnedFrom = 253918,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -20288,6 +21219,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 6, 2321, 4, 249409, 3, 1210, 2 },
                 learnedFrom = 253920,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -20298,6 +21232,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 6, 2321, 4, 249409, 3, 5498, 2 },
                 learnedFrom = 253922,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -20308,6 +21245,9 @@ ns.Data.recipes = {
                 reagents = { 2997, 6, 2321, 4, 249409, 3, 249391, 2 },
                 learnedFrom = 253924,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 75,
                 via = { "vendor" },
             },
@@ -20431,6 +21371,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 8, 2321, 4, 249409, 3, 249427, 3 },
                 learnedFrom = 253926,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -20441,6 +21384,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 8, 2321, 4, 249409, 3, 3182, 3 },
                 learnedFrom = 253928,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -20451,6 +21397,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 8, 2321, 4, 249409, 3, 6371, 3 },
                 learnedFrom = 253930,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -20461,6 +21410,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 8, 2321, 4, 249409, 3, 1210, 3 },
                 learnedFrom = 253932,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -20471,6 +21423,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 8, 2321, 4, 249409, 3, 5498, 3 },
                 learnedFrom = 253934,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -20481,6 +21436,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 8, 2321, 4, 249409, 3, 249391, 3 },
                 learnedFrom = 253936,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 85,
                 via = { "vendor" },
             },
@@ -20599,6 +21557,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 10, 4291, 2, 249409, 4, 249427, 4, 2842, 1, 11082, 2 },
                 learnedFrom = 253950,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -20609,6 +21570,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 10, 4291, 2, 249409, 4, 3182, 4, 2842, 1, 11082, 2 },
                 learnedFrom = 253952,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -20619,6 +21583,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 10, 4291, 2, 249409, 4, 6371, 4, 2842, 1, 11082, 2 },
                 learnedFrom = 253954,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -20629,6 +21596,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 10, 4291, 2, 249409, 4, 1210, 4, 2842, 1, 11082, 2 },
                 learnedFrom = 253956,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -20639,6 +21609,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 10, 4291, 2, 249409, 4, 5498, 4, 2842, 1, 11082, 2 },
                 learnedFrom = 253958,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -20649,6 +21622,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 10, 4291, 2, 249409, 4, 249391, 4, 2842, 1, 11082, 2 },
                 learnedFrom = 253960,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -20690,6 +21666,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 12, 4291, 2, 249409, 6, 249427, 6, 2842, 2, 11082, 2 },
                 learnedFrom = 253962,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -20700,6 +21679,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 12, 4291, 2, 249409, 6, 3182, 6, 2842, 2, 11082, 2 },
                 learnedFrom = 253964,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -20710,6 +21692,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 12, 4291, 2, 249409, 6, 6371, 6, 2842, 2, 11082, 2 },
                 learnedFrom = 253966,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -20720,6 +21705,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 12, 4291, 2, 249409, 6, 1210, 6, 2842, 2, 11082, 2 },
                 learnedFrom = 253968,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -20730,6 +21718,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 12, 4291, 2, 249409, 6, 5498, 6, 2842, 2, 11082, 2 },
                 learnedFrom = 253970,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -20740,6 +21731,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 12, 4291, 2, 249409, 6, 249391, 6, 2842, 2, 11082, 2 },
                 learnedFrom = 253972,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 110,
                 via = { "vendor" },
             },
@@ -20961,6 +21955,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 14, 2321, 3, 249409, 8, 249427, 8, 2842, 2, 11082, 3 },
                 learnedFrom = 253988,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -20971,6 +21968,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 14, 2321, 3, 249409, 8, 3182, 8, 2842, 2, 11082, 3 },
                 learnedFrom = 253990,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -20981,6 +21981,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 14, 2321, 3, 249409, 8, 6371, 8, 2842, 2, 11082, 3 },
                 learnedFrom = 253992,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -20991,6 +21994,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 14, 2321, 3, 249409, 8, 1210, 8, 2842, 2, 11082, 3 },
                 learnedFrom = 253994,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -21001,6 +22007,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 14, 2321, 3, 249409, 8, 5498, 8, 2842, 2, 11082, 3 },
                 learnedFrom = 253996,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -21011,6 +22020,9 @@ ns.Data.recipes = {
                 reagents = { 4305, 14, 2321, 3, 249409, 8, 249391, 8, 2842, 2, 11082, 3 },
                 learnedFrom = 253998,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -21450,6 +22462,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 12, 8343, 4, 249430, 2, 249409, 1, 7079, 4 },
                 learnedFrom = 254024,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -21460,6 +22476,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 12, 8343, 4, 249430, 2, 249409, 1, 7077, 4 },
                 learnedFrom = 254026,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -21470,6 +22490,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 12, 8343, 4, 249430, 2, 249409, 1, 7971, 4 },
                 learnedFrom = 254028,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -21480,6 +22504,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 12, 8343, 4, 249430, 2, 249409, 1, 13926, 4 },
                 learnedFrom = 254030,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -21490,6 +22518,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 12, 8343, 4, 249430, 2, 249409, 1, 11178, 4 },
                 learnedFrom = 254032,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 165,
                 via = { "vendor" },
             },
@@ -21883,6 +22915,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 4, 8343, 2, 249430, 1, 249409, 1 },
                 learnedFrom = 254036,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 190,
                 via = { "vendor" },
             },
@@ -21923,6 +22959,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 16, 8343, 3, 249430, 4, 249409, 3, 3577, 8, 11175, 2 },
                 learnedFrom = 254050,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -21933,6 +22973,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 16, 8343, 3, 249430, 4, 249409, 3, 7079, 8, 11175, 2 },
                 learnedFrom = 254052,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -21943,6 +22987,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 16, 8343, 3, 249430, 4, 249409, 3, 7077, 8, 11175, 2 },
                 learnedFrom = 254054,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -21953,6 +23001,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 16, 8343, 3, 249430, 4, 249409, 3, 7971, 8, 11175, 2 },
                 learnedFrom = 254056,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -21963,6 +23015,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 16, 8343, 3, 249430, 4, 249409, 3, 13926, 8, 11175, 2 },
                 learnedFrom = 254058,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -21973,6 +23029,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 16, 8343, 3, 249430, 4, 249409, 3, 11178, 8, 11175, 2 },
                 learnedFrom = 254060,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 195,
                 via = { "vendor" },
             },
@@ -22084,6 +23144,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 18, 8343, 3, 249430, 6, 249409, 4, 3577, 10, 11175, 4 },
                 learnedFrom = 254062,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 205,
                 via = { "vendor" },
             },
@@ -22094,6 +23158,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 18, 8343, 3, 249430, 6, 249409, 4, 7079, 10, 11175, 4 },
                 learnedFrom = 254064,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 205,
                 via = { "vendor" },
             },
@@ -22104,6 +23172,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 18, 8343, 3, 249430, 6, 249409, 4, 7077, 10, 11175, 4 },
                 learnedFrom = 254066,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 205,
                 via = { "vendor" },
             },
@@ -22114,6 +23186,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 18, 8343, 3, 249430, 6, 249409, 4, 7971, 10, 11175, 4 },
                 learnedFrom = 254068,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 205,
                 via = { "vendor" },
             },
@@ -22124,6 +23200,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 18, 8343, 3, 249430, 6, 249409, 4, 13926, 10, 11175, 4 },
                 learnedFrom = 254070,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 205,
                 via = { "vendor" },
             },
@@ -22134,6 +23214,10 @@ ns.Data.recipes = {
                 reagents = { 4339, 18, 8343, 3, 249430, 6, 249409, 4, 11178, 10, 11175, 4 },
                 learnedFrom = 254072,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 205,
                 via = { "vendor" },
             },
@@ -22274,6 +23358,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 5, 8170, 2, 14341, 1, 249431, 1 },
                 learnedFrom = 254080,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22284,6 +23372,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 8, 8343, 4, 249430, 8, 249409, 5, 3577, 12 },
                 learnedFrom = 254082,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22294,6 +23386,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 8, 8343, 4, 249430, 8, 249409, 5, 7079, 12 },
                 learnedFrom = 254084,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22304,6 +23400,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 8, 8343, 4, 249430, 8, 249409, 5, 7077, 12 },
                 learnedFrom = 254086,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22314,6 +23414,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 8, 8343, 4, 249430, 8, 249409, 5, 7971, 12 },
                 learnedFrom = 254088,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22324,6 +23428,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 8, 8343, 4, 249430, 8, 249409, 5, 13926, 12 },
                 learnedFrom = 254090,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22334,6 +23442,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 8, 8343, 4, 249430, 8, 249409, 5, 11178, 12 },
                 learnedFrom = 254092,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 215,
                 via = { "vendor" },
             },
@@ -22635,6 +23747,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 10, 8343, 4, 249430, 10, 249409, 6, 3577, 14, 249427, 4 },
                 learnedFrom = 254108,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -22645,6 +23761,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 10, 8343, 4, 249430, 10, 249409, 6, 7079, 14, 249427, 4 },
                 learnedFrom = 254110,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -22655,6 +23775,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 10, 8343, 4, 249430, 10, 249409, 6, 7077, 14, 249427, 4 },
                 learnedFrom = 254112,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -22665,6 +23789,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 10, 8343, 4, 249430, 10, 249409, 6, 7971, 14, 249427, 4 },
                 learnedFrom = 254114,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -22675,6 +23803,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 10, 8343, 4, 249430, 10, 249409, 6, 13926, 14, 249427, 4 },
                 learnedFrom = 254116,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -22685,6 +23817,10 @@ ns.Data.recipes = {
                 reagents = { 14048, 10, 8343, 4, 249430, 10, 249409, 6, 11178, 14, 249427, 4 },
                 learnedFrom = 254118,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 235,
                 via = { "vendor" },
             },
@@ -24002,6 +25138,13 @@ ns.Data.recipes = {
                 crafts = 17,
             },
         },
+        formulas = {
+            {
+                item = 271627,
+                favor = 1000,
+                skill = 300,
+            },
+        },
     },
     {
         slug = "cooking",
@@ -24049,6 +25192,9 @@ ns.Data.recipes = {
                 reagents = { 159, 1, 2678, 1, 1475, 1 },
                 learnedFrom = 249885,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 25,
                 via = { "vendor" },
             },
@@ -24454,6 +25600,9 @@ ns.Data.recipes = {
                 reagents = { 1179, 1, 2678, 2, 3174, 1 },
                 learnedFrom = 249886,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 100,
                 via = { "vendor" },
             },
@@ -24641,6 +25790,9 @@ ns.Data.recipes = {
                 reagents = { 1205, 1, 2692, 2, 1468, 1 },
                 learnedFrom = 249887,
                 new = true,
+                favor = {
+                    cost = 30,
+                },
                 learn = 125,
                 via = { "vendor" },
             },
@@ -24863,6 +26015,10 @@ ns.Data.recipes = {
                 reagents = { 1708, 1, 2692, 3, 5637, 1 },
                 learnedFrom = 249888,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 180,
                 via = { "vendor" },
             },
@@ -25134,6 +26290,10 @@ ns.Data.recipes = {
                 reagents = { 1645, 1, 3713, 3, 4402, 1 },
                 learnedFrom = 249889,
                 new = true,
+                favor = {
+                    cost = 60,
+                    standing = "friendly",
+                },
                 learn = 200,
                 via = { "vendor" },
             },
@@ -25231,6 +26391,10 @@ ns.Data.recipes = {
                 reagents = { 8766, 1, 3713, 4, 8146, 1 },
                 learnedFrom = 249890,
                 new = true,
+                favor = {
+                    cost = 90,
+                    standing = "honored",
+                },
                 learn = 250,
                 via = { "vendor" },
             },

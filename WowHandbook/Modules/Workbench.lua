@@ -1,23 +1,22 @@
 local ADDON_NAME, ns = ...
 local L = ns.L
 
--- 专业工作台：打开游戏专业窗口时贴在右侧，针对窗口里打开的那个专业回答三件事——
+-- 专业工作台（计算部分）：打开游戏专业窗口时，针对窗口里打开的那个专业算出——
 --   冲级路线：按拍卖行与商人价格算出的最省路线（Core/LevelingPlan.lua），成品按流通性估回收；
---             有攻略的专业可以换成手册路线（wowhandbook.com 专业攻略的固定顺序，不看价格，只按现在的价格计价）；
---             可选是否计入回收、是否买图纸；附魔可以逐个勾选哪些接代工（客人出材料）；
---             顶上四个数字（材料、图纸、回收、净花费），下面分段：步骤、要自己做的材料、要买的图纸、购物清单、
---             成品去向，每段标题可点击收起；
---   图纸：还没学的配方要多少技能、从哪来（训练师 / 商人 / 掉落 / 任务）、商人价与拍卖价，点一行在地图上标出商人；
---   利润：按现在的价格，做哪个最赚（材料成本、卖出能拿到的钱、利润、利润率、好不好卖），点表头排序。
--- 三个视图里的行都能点开看明细：每种材料的数量、单价与来源，成品的拍卖价、卖店价与流通判断的依据。
--- 可拖动、记住相对位置、右键复位，可收起成一个小按钮。主窗口 /wh 不再重复放这些内容。
+--             有攻略的专业可以换成手册路线（wowhandbook.com 专业攻略的固定顺序，只按现在的价格计价）；
+--   图纸：每个配方要多少技能、从哪来（训练师 / 商人 / 商人青睐 / 掉落 / 任务）、商人价与拍卖价、商人位置；
+--   利润：一次制作的材料成本（本专业能做的中间材料买与做取便宜的）、成品卖价、利润、利润率、好不好卖。
+-- 界面在 Modules/WorkbenchView.lua：左栏配方列表（冲级 / 图纸 / 赚钱三种视角），右栏选中配方的详情与路线总览。
+-- 本文件还负责配方与物品鼠标提示里的成本利润行、Shift 点击搜拍卖行、跟随专业窗口的事件。
+-- 两个文件之间的共用函数挂在模块表上（Recipes.xxx），界面文件加载时取成局部变量。
 -- 数据：Data/Recipes.lua（tools/export_recipe_data.py 从网站导出）；配方名称、图标运行时向客户端取。
 -- 已学配方：IsPlayerSpell，加上打开专业窗口时读到的（本次登录内有效，不存档）。
--- 设置存在模块设置里：panel（视图、收起、位置）、route（冲级路线选项）、profit（利润视图选项）。
+-- 设置存在模块设置里：panel（视角、收起、位置）、route（冲级路线选项）、profit（赚钱视角选项）、
+-- fishing（钓鱼视角）、recordFishing（记录自己的渔获，钓鱼视角见 Modules/WorkbenchFishing.lua）、
+-- fishingPopup（拿起鱼竿时显示渔获小窗，见 Modules/FishingPopup.lua）。
 -- 关闭模块后不注册事件、不建界面；已挂在专业窗口上的 OnShow / OnHide 钩子取消不了，只在模块开启时做事。
-
-local Module = ns:NewModule("Workbench", {})
-local UI, Theme = ns.UI, ns.Theme
+local Module = ns:NewModule("Workbench", { auctionSearch = true, recordFishing = true, fishingPopup = true })
+local Theme = ns.Theme
 local Prices = ns.Prices
 
 local Recipes = Module -- 供测试使用（ns.modules.Workbench）
@@ -32,6 +31,7 @@ local WINDOWS = {
 local function Color(text, name)
     return Theme:Color(text, name)
 end
+Recipes.Color = Color
 
 local function Settings(key, defaults)
     local store = ns:GetModuleSettings(Module)
@@ -44,6 +44,7 @@ local function Settings(key, defaults)
     end
     return settings
 end
+Recipes.Settings = Settings
 
 local function Name(names)
     if type(names) ~= "table" then
@@ -51,6 +52,7 @@ local function Name(names)
     end
     return names[ns.locale] or names.enUS
 end
+Recipes.Name = Name
 
 local function ItemLink(itemID)
     local _, link = C_Item.GetItemInfo(itemID)
@@ -59,42 +61,17 @@ local function ItemLink(itemID)
     end
     return link or ("#" .. itemID)
 end
+Recipes.ItemLink = ItemLink
 
 local function Professions()
     return ns.Data.recipes or {}
 end
+Recipes.Professions = Professions
 
--- 玩家已学的专业：{ [slug] = { rank, max } }。Forever 用 GetProfessions / GetProfessionInfo 按技能线 ID 对照，
--- 名字兜底；经典旧世客户端读技能列表
+-- 玩家已学的专业：{ [slug] = { rank, max } }。按专业数据（12 个，含草药学、剥皮、钓鱼等采集类）与配方数据的
+-- 技能线 ID、名字对照（ns.ProfessionSkills）。只看配方数据会漏掉采集类：它们没有配方，钓鱼会一直显示“未学”
 local function LearnedSkills()
-    local learned, byLine, byName = {}, {}, {}
-    for _, profession in ipairs(Professions()) do
-        for _, line in ipairs(profession.skillLines or {}) do
-            byLine[line] = profession.slug
-        end
-        for _, name in pairs(profession.name or {}) do
-            byName[name:lower()] = profession.slug
-        end
-    end
-    if GetProfessions and GetProfessionInfo then
-        for _, index in pairs({ GetProfessions() }) do
-            local name, _, rank, maxRank, _, _, skillLine = GetProfessionInfo(index)
-            local slug = byLine[skillLine] or (type(name) == "string" and byName[name:lower()])
-            if slug then
-                learned[slug] = { rank = rank or 0, max = maxRank or 0 }
-            end
-        end
-    end
-    if GetNumSkillLines and GetSkillLineInfo then
-        for index = 1, GetNumSkillLines() or 0 do
-            local name, header, _, rank, _, _, maxRank = GetSkillLineInfo(index)
-            local slug = not header and type(name) == "string" and byName[name:lower()]
-            if slug and not learned[slug] then
-                learned[slug] = { rank = rank or 0, max = maxRank or 0 }
-            end
-        end
-    end
-    return learned
+    return ns.ProfessionSkills(Professions())
 end
 Recipes.LearnedSkills = LearnedSkills
 
@@ -105,6 +82,7 @@ Recipes.LearnedSkills = LearnedSkills
 local function RecipeName(recipe)
     return C_Spell.GetSpellName(recipe.id) or ("#" .. recipe.id)
 end
+Recipes.RecipeName = RecipeName
 
 -- 有成品的用成品物品图标（与游戏专业窗口一致），附魔等没有成品的用技能图标
 local function RecipeIcon(recipe)
@@ -170,9 +148,11 @@ local function Difficulty(recipe, skill)
 end
 Recipes.Difficulty = Difficulty
 
--- 配方提示：游戏的技能提示（含材料），另加三档技能点与学习来源
-local function ShowRecipeTooltip(owner, recipe)
-    GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+local AddPriceLines -- 在利润计算之后定义：鼠标提示里追加成本、卖价与利润
+
+-- 配方提示：游戏的技能提示（含材料），另加三档技能点、学习来源与成本利润；anchor 默认 ANCHOR_RIGHT
+local function ShowRecipeTooltip(owner, recipe, anchor)
+    GameTooltip:SetOwner(owner, anchor or "ANCHOR_RIGHT")
     GameTooltip:SetSpellByID(recipe.id)
     if recipe.skill then
         GameTooltip:AddLine((L["Yellow at %d, green at %d, gray at %d"]):format(recipe.skill[1], recipe.skill[2],
@@ -184,287 +164,223 @@ local function ShowRecipeTooltip(owner, recipe)
     if recipe.learnedFrom then
         GameTooltip:AddLine((L["Learned from %s"]):format(ItemLink(recipe.learnedFrom)), 0.85, 0.8, 0.69)
     end
+    AddPriceLines(recipe)
     GameTooltip:Show()
 end
+Recipes.ShowRecipeTooltip = ShowRecipeTooltip
 
 --------------------------------------------------------------------------------
--- 工作台的表格（表头、分组标题、数据行；隔行底色）
+-- Shift 点击在拍卖行搜索（设置 auctionSearch，默认开）
+--   拍卖行开着、没有在聊天框里打字时：
+--   · 物品：Auctionator 的购物标签页开着时填进它的搜索栏并搜索（与它自己 Shift 点击物品的做法相同）；
+--           游戏的“购买”页开着时用游戏的搜索栏；拍卖行停在别的页时，装了 Auctionator 用它的公开接口
+--           （切到购物页搜这一件），没装就切到“购买”页再搜。
+--   · 配方：装了 Auctionator 时像它的“搜索材料”一样一次搜成品与全部材料（材料带每次制作的数量；
+--           没学的配方另加图纸），用公开接口 MultiSearchAdvanced；没装时用游戏的搜索栏搜成品
+--           （没有成品的搜图纸）。
+--   拍卖行没开时照旧把链接插进聊天框。物品名字没缓存时先请求，到齐了再搜。
 --------------------------------------------------------------------------------
 
-local bench, tab
-local STRATA_ABOVE = { BACKGROUND = "LOW", LOW = "MEDIUM", MEDIUM = "HIGH", HIGH = "DIALOG", DIALOG = "FULLSCREEN",
-    FULLSCREEN = "FULLSCREEN_DIALOG", FULLSCREEN_DIALOG = "TOOLTIP" }
-local Refresh
-local deferred = false -- 战斗中没算的路线，脱战后补上
-local ROW_HEIGHT = 22
-local CELLS = { "a", "b", "c", "d", "e", "f" }
-local COLUMNS = {
-    route = {
-        { key = "a", label = "Skill", width = 90 },
-        { key = "b", label = "Recipe", width = 290 },
-        { key = "c", label = "Crafts", width = 70 },
-        { key = "d", label = "Materials", width = 110 },
-        { key = "e", label = "Resale" },
-    },
-    pick = {
-        { key = "a", label = "Free at skill", width = 110 },
-        { key = "b", label = "Enchant", width = 330 },
-        { key = "c", label = "Materials per cast", width = 150 },
-        { key = "d", label = "" },
-    },
-    list = {
-        { key = "a", label = "Item", width = 380 },
-        { key = "b", label = "Count", width = 70 },
-        { key = "c", label = "Cost" },
-    },
-    sources = {
-        { key = "a", label = "Skill to learn", width = 80 },
-        { key = "b", label = "Recipe", width = 280 },
-        { key = "c", label = "Source", width = 160 },
-        { key = "d", label = "Price" },
-    },
-    profit = {
-        { key = "a", label = "Recipe", width = 260, sort = "name" },
-        { key = "b", label = "Cost", width = 90, sort = "cost" },
-        { key = "c", label = "Sells for", width = 90, sort = "value" },
-        { key = "d", label = "Profit", width = 100, sort = "profit" },
-        { key = "e", label = "Margin", width = 70, sort = "margin" },
-        { key = "f", label = "Sells", sort = "tier" },
-    },
-}
-local HEADING = { { key = "a" } }
+local function AuctionOpen()
+    return AuctionHouseFrame and AuctionHouseFrame.IsShown and AuctionHouseFrame:IsShown() or false
+end
+Recipes.AuctionOpen = AuctionOpen
 
-local function CreateRow(parent)
-    local row = CreateFrame("Button", nil, parent)
-    row:SetHeight(ROW_HEIGHT)
-    row.stripe = row:CreateTexture(nil, "BACKGROUND")
-    row.stripe:SetAllPoints()
-    row.stripe:SetColorTexture(unpack(Theme.colors.stripe))
-    row.highlight = row:CreateTexture(nil, "BORDER")
-    row.highlight:SetAllPoints()
-    row.highlight:SetColorTexture(unpack(Theme.colors.raised))
-    row.highlight:Hide()
-    row.cells, row.sorters = {}, {}
-    for _, key in ipairs(CELLS) do
-        local cell = UI:Text(row, "Small")
-        cell:SetJustifyH("LEFT")
-        cell:SetWordWrap(false)
-        row.cells[key] = cell
-    end
-    row:SetScript("OnEnter", function(self)
-        self.highlight:Show()
-        if self.recipe then
-            ShowRecipeTooltip(self, self.recipe)
-        elseif self.item then
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            GameTooltip:SetItemByID(self.item)
-            GameTooltip:Show()
-        end
-        if self.spot and GameTooltip:IsShown() then
-            GameTooltip:AddLine(L["Click to mark the vendor on the map"], 0.27, 0.75, 0.45)
-            GameTooltip:Show()
-        end
-    end)
-    row:SetScript("OnLeave", function(self)
-        self.highlight:Hide()
-        GameTooltip_Hide()
-    end)
-    -- Shift 点击：把成品链接发到聊天框；有商人位置的明细行点击在地图上标出；带 onClick 的行（分段标题、
-    -- 勾选行、操作行）调用它；其余的行点击展开或收起明细
-    row:SetScript("OnClick", function(self)
-        local recipe = self.recipe
-        if recipe and recipe.makes and IsModifiedClick and IsModifiedClick("CHATLINK") then
-            local _, link = C_Item.GetItemInfo(recipe.makes)
-            if link and ChatEdit_InsertLink then
-                ChatEdit_InsertLink(link)
-            end
-        elseif self.spot then
-            ns.Waypoints:ShowOnMap(self.spot[1], self.spot[2], self.spot[3], self.spot.title)
-        elseif self.onClick then
-            self.onClick()
-        elseif self.key then
-            bench.expanded[self.key] = not bench.expanded[self.key] or nil
-            Refresh()
-        end
-    end)
-    return row
+local function UsesAuctionator()
+    return type(Auctionator) == "table" and type(Auctionator.API) == "table"
+        and type(Auctionator.API.v1) == "table" or false
 end
 
--- 表头上的排序按钮：盖在表头单元格上，点击按这一列排序（再点一次反过来）
-local function Sorter(row, key)
-    local button = row.sorters[key]
-    if not button then
-        button = CreateFrame("Button", nil, row)
-        button:SetScript("OnClick", function(self)
-            if self.onSort then
-                self.onSort(self.sortKey)
-            end
-        end)
-        row.sorters[key] = button
+local function SearchEnabled()
+    return ns:GetModuleSettings(Module).auctionSearch ~= false
+end
+Recipes.SearchEnabled = SearchEnabled
+
+-- 正在聊天框里打字（光标在一个不是拍卖行搜索栏的输入框里）时，Shift 点击还是插入链接
+local function Typing()
+    local focus = GetCurrentKeyBoardFocus and GetCurrentKeyBoardFocus()
+    if not focus then
+        return false
     end
-    return button
+    local bar = AuctionHouseFrame and AuctionHouseFrame.SearchBar
+    return not (bar and focus == bar.SearchBox)
 end
 
--- 行首的勾选框（与 UI:Checkbox 同样的画法）：row.check 为 true / false 时显示，nil 时隐藏
-local function RowCheck(row)
-    if row.check == nil then
-        if row.box then
-            row.box:Hide()
+-- 物品名字都到了以后调用 done(名字表)；没缓存的先请求（每件最多等一次，没到的跳过）
+local function WithNames(itemIDs, done)
+    local missing = 0
+    local function Finish()
+        local names = {}
+        for _, itemID in ipairs(itemIDs) do
+            names[itemID] = C_Item.GetItemInfo(itemID)
         end
+        done(names)
+    end
+    for _, itemID in ipairs(itemIDs) do
+        if not C_Item.GetItemInfo(itemID) and Item and Item.CreateFromItemID then
+            local item = Item:CreateFromItemID(itemID)
+            if not item:IsItemEmpty() then
+                missing = missing + 1
+                item:ContinueOnItemLoad(function()
+                    missing = missing - 1
+                    if missing == 0 then
+                        Finish()
+                    end
+                end)
+            end
+        end
+    end
+    if missing == 0 then
+        Finish()
+    end
+end
+
+-- 游戏拍卖行的搜索栏：不在“购买”页时先切过去
+local function NativeSearch(name)
+    local frame = AuctionHouseFrame
+    local bar = frame and frame.SearchBar
+    if not (bar and name) then
+        return false
+    end
+    if not bar:IsVisible() then
+        if frame.BuyTab and frame.BuyTab.Click then
+            frame.BuyTab:Click()
+        elseif frame.SetDisplayMode and AuctionHouseFrameDisplayMode and AuctionHouseFrameDisplayMode.Buy then
+            frame:SetDisplayMode(AuctionHouseFrameDisplayMode.Buy)
+        end
+    end
+    if bar.SetSearchText then
+        bar:SetSearchText(name)
+    elseif bar.SearchBox and bar.SearchBox.SetText then
+        bar.SearchBox:SetText(name)
+    else
+        return false
+    end
+    if bar.StartSearch then
+        bar:StartSearch()
+    elseif bar.SearchButton and bar.SearchButton.Click then
+        bar.SearchButton:Click()
+    else
+        return false
+    end
+    return true
+end
+
+-- Auctionator 的公开接口：拍卖行没开等情况会报错，接住后改用游戏的搜索栏
+local function AuctionatorCall(method, terms)
+    local api = Auctionator.API.v1
+    if type(api[method]) ~= "function" then
+        return false
+    end
+    return pcall(api[method], L["Profession workbench"], terms)
+end
+
+-- Auctionator 购物页开着时填进它的搜索栏（与它自己 Shift 点击物品的做法相同，精确匹配）
+local function AuctionatorShoppingSearch(name)
+    local frame = AuctionatorShoppingFrame
+    if not (frame and frame.IsVisible and frame:IsVisible() and frame.DoSearch
+        and frame.SearchOptions and frame.SearchOptions.SetSearchTerm) then
+        return false
+    end
+    local term = "\"" .. name .. "\""
+    frame:DoSearch({ term }, {})
+    frame.SearchOptions:SetSearchTerm(term)
+    local recents = Auctionator.Shopping and Auctionator.Shopping.Recents
+    if recents and type(recents.Save) == "function" then
+        recents.Save(term)
+    end
+    return true
+end
+
+local function SearchItem(itemID)
+    WithNames({ itemID }, function(names)
+        local name = names[itemID]
+        if not (name and AuctionOpen()) then
+            return
+        end
+        if UsesAuctionator() then
+            if AuctionatorShoppingSearch(name) then
+                return
+            end
+            local bar = AuctionHouseFrame.SearchBar
+            if not (bar and bar:IsVisible()) and AuctionatorCall("MultiSearchExact", { name }) then
+                return
+            end
+        end
+        NativeSearch(name)
+    end)
+end
+
+-- 配方要搜的物品：没学的配方先放图纸，再放成品，再放材料（带每次制作的数量）
+local function RecipeTerms(recipe)
+    local ids, counts = {}, {}
+    if recipe.learnedFrom and not KnownRecipe(recipe) then
+        tinsert(ids, recipe.learnedFrom)
+    end
+    if recipe.makes then
+        tinsert(ids, recipe.makes)
+    end
+    local reagents = recipe.reagents or {}
+    for index = 1, #reagents, 2 do
+        tinsert(ids, reagents[index])
+        counts[reagents[index]] = reagents[index + 1]
+    end
+    return ids, counts
+end
+Recipes.RecipeTerms = RecipeTerms
+
+local function SearchRecipe(recipe)
+    local ids, counts = RecipeTerms(recipe)
+    if #ids == 0 then
         return
     end
-    if not row.box then
-        row.box = CreateFrame("Frame", nil, row, "BackdropTemplate")
-        row.box:SetSize(14, 14)
-        row.box:SetPoint("LEFT", 8, 0)
-        Theme:Skin(row.box, "panel", "line")
-        row.box.mark = row.box:CreateTexture(nil, "OVERLAY")
-        row.box.mark:SetPoint("TOPLEFT", 3, -3)
-        row.box.mark:SetPoint("BOTTOMRIGHT", -3, 3)
-        row.box.mark:SetColorTexture(unpack(Theme.colors.gold))
-    end
-    row.box:Show()
-    row.box.mark:SetShown(row.check)
-end
-
--- 按列宽摆放单元格；没有宽度的列占到行尾
-local function LayoutRow(row, columns, onSort)
-    for _, cell in pairs(row.cells) do
-        cell:Hide()
-    end
-    for _, button in pairs(row.sorters) do
-        button:Hide()
-    end
-    RowCheck(row)
-    local x = row.check ~= nil and 30 or 8
-    for index, column in ipairs(columns) do
-        local cell = row.cells[column.key]
-        cell:ClearAllPoints()
-        cell:SetPoint("LEFT", x, 0)
-        if column.width and index < #columns then
-            cell:SetWidth(column.width - 8)
-            x = x + column.width
-        else
-            cell:SetPoint("RIGHT", -8, 0)
+    WithNames(ids, function(names)
+        if not AuctionOpen() then
+            return
         end
-        cell:Show()
-        if onSort and column.sort then
-            local button = Sorter(row, column.key)
-            button.sortKey, button.onSort = column.sort, onSort
-            button:SetAllPoints(cell)
-            button:Show()
-        end
-    end
-end
-
-local function Table()
-    local child = bench.detail.child
-    local rows, used, y = bench.rows, 0, 0
-    local t = {}
-
-    local function NextRow(recipe, key, spot, item)
-        used = used + 1
-        local row = rows[used] or CreateRow(child)
-        rows[used] = row
-        row:ClearAllPoints()
-        row:SetPoint("TOPLEFT", 0, -y)
-        row:SetPoint("RIGHT", child, "RIGHT", 0, 0)
-        row:Show()
-        row.recipe, row.key, row.spot, row.item = recipe, key, spot, item
-        row.onClick, row.check = nil, nil
-        row:EnableMouse((recipe or key or spot or item) and true or false)
-        y = y + ROW_HEIGHT
-        return row
-    end
-
-    local function Fill(row, columns, cells, striped, onSort)
-        row.stripe:SetShown(striped and true or false)
-        for _, column in ipairs(columns) do
-            row.cells[column.key]:SetText(cells[column.key] or "")
-        end
-        LayoutRow(row, columns, onSort)
-    end
-
-    -- sort = { key, descending }：当前排序的那一列标上箭头；onSort(列的排序键) 在点击表头时调用
-    function t:Header(columns, sort, onSort)
-        local cells = {}
-        for _, column in ipairs(columns) do
-            local label = L[column.label]
-            if sort and column.sort == sort[1] then
-                label = label .. (sort[2] and " v" or " ^")
+        if UsesAuctionator() then
+            local terms, seen = {}, {}
+            for _, itemID in ipairs(ids) do
+                local name = names[itemID]
+                if name and not seen[name] and not name:find("[;^\"]") then
+                    seen[name] = true
+                    tinsert(terms, { searchString = name, isExact = true, quantity = counts[itemID] })
+                end
             end
-            cells[column.key] = Color(label, "gold")
+            if #terms > 0 and AuctionatorCall("MultiSearchAdvanced", terms) then
+                return
+            end
         end
-        Fill(NextRow(nil), columns, cells, false, onSort)
-    end
-
-    function t:Heading(text, gapBefore)
-        y = y + (gapBefore or 0)
-        Fill(NextRow(nil), HEADING, { a = text })
-    end
-
-    -- 数据行：key 不为空时可点击展开，第一列前面带 + / -；返回是否已展开。item 用于没有配方的行的鼠标提示
-    function t:Row(columns, recipe, cells, striped, key, item)
-        local open = key and bench.expanded[key] or false
-        if key then
-            local first = columns[1].key
-            cells[first] = Color(open and "- " or "+ ", "muted") .. (cells[first] or "")
-        end
-        Fill(NextRow(recipe, key, nil, item), columns, cells, striped)
-        return open
-    end
-
-    -- 展开后的明细行：缩进的一整行文字；spot = { 地图, x, y, title = 名字 } 时点击在地图上标出
-    function t:Detail(text, spot)
-        Fill(NextRow(nil, nil, spot), HEADING, { a = "        " .. text })
-    end
-
-    -- 分段标题：点击收起或展开这一段（默认展开，closed 为真时默认收起）；返回是否展开。
-    -- bench.collapsed[key]：true 收起、false 展开、nil 按默认
-    function t:Section(title, key, gapBefore, closed)
-        y = y + (gapBefore or 0)
-        local state = bench.collapsed[key]
-        local open
-        if state == nil then
-            open = not closed
-        else
-            open = not state
-        end
-        local row = NextRow(nil)
-        row.onClick = function()
-            bench.collapsed[key] = open
-            Refresh()
-        end
-        row:EnableMouse(true)
-        Fill(row, HEADING, { a = Color(open and "- " or "+ ", "muted") .. Color(title, "gold") })
-        return open
-    end
-
-    -- 带勾选框的行：点击调用 onClick
-    function t:Check(columns, recipe, cells, striped, checked, onClick)
-        local row = NextRow(recipe)
-        row.onClick, row.check = onClick, checked and true or false
-        row:EnableMouse(true)
-        Fill(row, columns, cells, striped)
-    end
-
-    -- 操作行：一行可点击的文字
-    function t:Action(text, onClick)
-        local row = NextRow(nil)
-        row.onClick = onClick
-        row:EnableMouse(true)
-        Fill(row, HEADING, { a = Color(text, "gold") })
-    end
-
-    function t:Finish()
-        for index = used + 1, #rows do
-            rows[index]:Hide()
-        end
-        bench.detail:SetContentHeight(y + 8)
-        return used
-    end
-    return t
+        NativeSearch(names[recipe.makes] or names[ids[1]])
+    end)
 end
+
+-- 行的 Shift 点击：拍卖行开着就搜索，返回 true；否则返回 false，由调用方插入聊天链接
+local function ShiftSearch(row)
+    if not (SearchEnabled() and AuctionOpen()) or Typing() then
+        return false
+    end
+    if row.item then
+        SearchItem(row.item)
+    elseif row.recipe then
+        SearchRecipe(row.recipe)
+    else
+        return false
+    end
+    return true
+end
+Recipes.ShiftSearch = ShiftSearch
+
+local function InsertChatLink(itemID)
+    if not itemID then
+        return
+    end
+    local _, link = C_Item.GetItemInfo(itemID)
+    if link and ChatEdit_InsertLink then
+        ChatEdit_InsertLink(link)
+    end
+end
+Recipes.InsertChatLink = InsertChatLink
 
 --------------------------------------------------------------------------------
 -- 冲级路线：按价格算（LevelingPlan.lua）
@@ -472,6 +388,7 @@ end
 
 -- commissionPicks = { [附魔的配方 ID] = true }：勾选了接代工的附魔
 -- mode = "live" 按价格算的最省路线 / "handbook" 手册路线（专业有 route 数据时才能选）
+local PROFIT_DEFAULTS = { unlearned = false, sort = "profit", descending = true }
 local ROUTE_DEFAULTS = { recovery = true, buyRecipes = true, mode = "live", priority = "balanced" }
 local Profit, ReagentCost, ProfessionOf
 local TARGETS = { 75, 150, 225, 300 }
@@ -487,6 +404,7 @@ local function Money(copper)
     end
     return GetMoneyString and GetMoneyString(copper) or tostring(copper)
 end
+Recipes.Money = Money
 
 -- 汇总数字用：一金以上不显示铜
 local function Brief(copper)
@@ -496,10 +414,12 @@ local function Brief(copper)
     end
     return Money(copper)
 end
+Recipes.Brief = Brief
 
 local function Count(value)
     return tostring(math.ceil(value - 1e-6))
 end
+Recipes.Count = Count
 
 local function IsReagent(itemID)
     if not reagentItems then
@@ -547,6 +467,7 @@ local function VendorSell(itemID)
     end
     return sellPrice
 end
+Recipes.VendorSell = VendorSell
 
 -- 商人卖价：本机在商人窗口记下的优先（带声望折扣），没记过的用数据里的商人价（Data/Recipes.lua 的 reagentVendorPrices）
 local function VendorBuy(item)
@@ -582,12 +503,14 @@ local function HasCommissions(profession)
     end
     return false
 end
+Recipes.HasCommissions = HasCommissions
 
 local function CommissionPicks()
     local settings = Settings("route", ROUTE_DEFAULTS)
     settings.commissionPicks = settings.commissionPicks or {}
     return settings.commissionPicks
 end
+Recipes.CommissionPicks = CommissionPicks
 
 -- 这个专业里勾选了接代工的附魔（配方 ID 列表）
 local function ChosenCommissions(profession)
@@ -620,17 +543,65 @@ local function RouteTarget(settings, from)
     end
     return target
 end
+Recipes.RouteTarget = RouteTarget
 
--- from / to 不给时按玩家技能与设置的目标；给了就算这一段（工作台用它算玩家已经走过的 1 到当前技能）
-local function BuildRoute(profession, skill, from, to)
+-- 锁定的练级路线：每个角色各自一份，存在角色存档 lockedRoutes[专业 slug] =
+-- { steps = 固定路线格式的步骤（LevelingPlan 的 fixed）, from, to, priority 锁定时的取向, at 锁定时间 }。
+-- 锁定后一直照这些配方、顺序与次数走（技能在一步中间时次数按剩下的点数折算），只按今天的价格计价，
+-- 价格波动不会换配方；手工解锁才回到按价格算
+local function Locks()
+    local db = ns.charDB
+    if not db then
+        return {}
+    end
+    db.lockedRoutes = db.lockedRoutes or {}
+    return db.lockedRoutes
+end
+
+function Recipes.LockedRoute(profession)
+    return profession and Locks()[profession.slug] or nil
+end
+
+-- 把算好的路线存成固定路线：备料（stock）步骤保留到用它的下一步做完为止
+function Recipes.LockRoute(profession, plan, from, to)
+    local steps, list = {}, plan.steps or {}
+    for index, step in ipairs(list) do
+        if not step.gap and step.recipe and (step.stock or step.to > step.from) then
+            local entry = { recipe = step.recipe.id, from = step.from, to = step.to, crafts = step.crafts,
+                stock = step.stock or nil, forced = step.forced or nil }
+            if step.stock then
+                for later = index + 1, #list do
+                    local following = list[later]
+                    if not following.gap and not following.stock then
+                        entry.keepBelow = following.to
+                        break
+                    end
+                end
+                entry.keepBelow = entry.keepBelow or to
+            end
+            tinsert(steps, entry)
+        end
+    end
+    Locks()[profession.slug] = { steps = steps, from = from, to = to,
+        priority = Settings("route", ROUTE_DEFAULTS).priority, at = time() }
+end
+
+function Recipes.UnlockRoute(profession)
+    Locks()[profession.slug] = nil
+end
+
+-- from / to 不给时按玩家技能与设置的目标；给了就算这一段（工作台用它算玩家已经走过的 1 到当前技能）。
+-- 按价格算的模式下这个专业锁定了路线时，照锁定的步骤计价、目标是锁定时的目标；live 为真时不管锁定
+local function BuildRoute(profession, skill, from, to, live)
     local settings = Settings("route", ROUTE_DEFAULTS)
+    local lock = not live and settings.mode ~= "handbook" and Recipes.LockedRoute(profession) or nil
     from = from or (skill and skill.rank or 1)
-    to = to or RouteTarget(settings, from)
+    to = to or (lock and math.max(from, lock.to)) or RouteTarget(settings, from)
     local faction = UnitFactionGroup and UnitFactionGroup("player")
     return ns.LevelingPlan.Build({
         recipes = profession.recipes or {}, from = from, to = to, faction = faction == "Horde" and "H" or "A",
         known = KnownRecipe, hasTool = HasTool, market = Market(),
-        fixed = settings.mode == "handbook" and profession.route or nil,
+        fixed = settings.mode == "handbook" and profession.route or (lock and lock.steps) or nil,
         options = { recovery = settings.recovery, buyRecipes = settings.buyRecipes, priority = settings.priority,
             commission = ChosenCommissions(profession) },
     }), from, to
@@ -650,6 +621,7 @@ local function Destination(product)
     end
     return table.concat(parts, " · ")
 end
+Recipes.Destination = Destination
 
 local TIER_LABEL = {
     high = { "Sells well", "green" }, mid = { "Sells okay", "text" }, low = { "Slow to sell", "red" },
@@ -661,79 +633,11 @@ local TIER_REASON = {
     gearReagent = "gear that a few recipes use as a material",
     class = "judged by the kind of item",
 }
+Recipes.TIER_LABEL, Recipes.TIER_REASON = TIER_LABEL, TIER_REASON
+Recipes.PROFIT_DEFAULTS, Recipes.ROUTE_DEFAULTS, Recipes.TARGETS = PROFIT_DEFAULTS, ROUTE_DEFAULTS, TARGETS
 
 -- 明细：每种材料的数量、单价与来源、小计（crafts 为制作次数）。
 -- deep 为真时（利润页）材料按 ReagentCost 计：本专业自己做更便宜的，写出自己做的单价、用到的下一层材料与买入价
-local function ReagentDetails(t, recipe, crafts, deep, unlearned)
-    local reagents = recipe.reagents or {}
-    for index = 1, #reagents, 2 do
-        local item, each = reagents[index], reagents[index + 1] or 1
-        local total = each * crafts
-        local price, source, via, buy
-        if deep then
-            price, source, via, buy = ReagentCost(ProfessionOf(recipe), item, unlearned)
-        else
-            price, source = Prices.BuyCost(item)
-        end
-        if via then
-            t:Detail(("%s x%s  ·  %s %s  =  %s"):format(ItemLink(item), Count(total), Money(price),
-                Color(L["made yourself"], "green"), Money(price * total)))
-            local made = via.count or 1
-            local parts = via.reagents or {}
-            for sub = 1, #parts, 2 do
-                local subPrice, subSource = Prices.BuyCost(parts[sub])
-                t:Detail("    " .. (L["from %s x%s at %s each, %s"]):format(ItemLink(parts[sub]),
-                    Count((parts[sub + 1] or 1) / made), Money(subPrice),
-                    Color(subSource == "vendor" and L["from a vendor"] or L["on the auction house"], "muted")))
-            end
-            t:Detail("    " .. Color(buy and (L["buying it instead: %s each"]):format(Money(buy))
-                or L["cannot be bought right now"], "muted"))
-        elseif price then
-            t:Detail(("%s x%s  ·  %s %s  =  %s"):format(ItemLink(item), Count(total), Money(price),
-                Color(source == "vendor" and L["from a vendor"] or L["on the auction house"], "muted"),
-                Money(price * total)))
-        else
-            t:Detail(("%s x%s  ·  %s"):format(ItemLink(item), Count(total), Color(L["no price yet"], "red")))
-        end
-    end
-end
-
--- 明细：回本率 = 一次制作的成品能卖的钱（拍卖价扣手续费与卖店价取高）÷ 一次制作的材料花费
-local function PaybackDetail(t, recipe)
-    local entry = recipe and Profit(recipe)
-    if not (entry and entry.cost > 0) then
-        return
-    end
-    local rate = entry.value / entry.cost
-    t:Detail(Color((L["Payback %d%%"]):format(floor(rate * 100 + 0.5)), rate >= 1 and "green" or "gold")
-        .. Color("  ·  " .. (L["materials %s per craft, the product sells for %s"]):format(Money(entry.cost),
-            Money(entry.value)), "muted"))
-end
-
--- 明细：成品卖多少钱、为什么算好卖或难卖；给了 recipe 时先列回本率
-local function SaleDetails(t, itemID, recipe)
-    PaybackDetail(t, recipe)
-    local prices = Prices
-    local auction = prices.Auction(itemID)
-    local vendor = VendorSell(itemID)
-    local parts = {}
-    if auction then
-        local listed = prices.Available and prices.Available(itemID)
-        tinsert(parts, (L["auction %s"]):format(Money(auction))
-            .. (listed and (" (" .. (L["%d listed"]):format(listed) .. ")") or ""))
-        tinsert(parts, (L["%s after the 5%% cut"]):format(Money(auction * (1 - ns.LevelingPlan.AH_CUT))))
-    else
-        tinsert(parts, Color(L["no auction price yet"], "muted"))
-    end
-    if vendor and vendor > 0 then
-        tinsert(parts, (L["vendor pays %s"]):format(Money(vendor)))
-    end
-    t:Detail(ItemLink(itemID) .. "  ·  " .. table.concat(parts, "  ·  "))
-    local tier, reason = Tier(itemID)
-    local label = TIER_LABEL[tier]
-    t:Detail(Color(L[label[1]], label[2]) .. Color("  ·  " .. L[TIER_REASON[reason]], "muted"))
-end
-
 -- 一次制作的材料按现在的买入价要多少钱；有材料没价格时返回 nil
 local function CastCost(recipe)
     local total = 0
@@ -747,6 +651,7 @@ local function CastCost(recipe)
     end
     return total
 end
+Recipes.CastCost = CastCost
 
 -- 每个专业里做出某件物品的配方：{ [专业] = { [物品 ID] = { 配方, ... } } }，配方归属哪个专业：{ [配方] = 专业 }
 local makersOf, professionOf = {}, nil
@@ -777,12 +682,170 @@ local function MakersOf(profession, itemID)
     return makers[itemID]
 end
 
--- 一件材料的单价：买（商人价与拍卖价取低）与用本专业的配方自己做取便宜的。
--- 自己做只往下看一层：做它的材料按买入价算，不再找更下一层；只用已学的配方（unlearned 为真时没学的也算），
--- 有冷却的配方（月布等）不算。返回 单价, 来源（"vendor" / "auction" / "craft"）, 自己做时用的配方, 买入单价；
--- 买不到也做不了时单价为 nil
+-- 中立拍卖行买一件：商人价与中立拍卖行价取低；都没有时为 nil
+local function NeutralBuy(itemID)
+    local vendor, neutral = Prices.Vendor(itemID), (Prices.Neutral(itemID))
+    if vendor and (not neutral or vendor <= neutral) then
+        return vendor
+    end
+    return neutral
+end
+
+-- 用某个配方自己做一件材料：做它的材料在本阵营（market = "faction"，商人与拍卖行取低）或中立拍卖行
+-- （"neutral"，商人与中立拍卖行取低）买。parts = { { item, each = 做一件要几个, unit = 单价或 nil }, ... }
+local function CraftWay(maker, market)
+    local per = maker.count or 1
+    local parts, total = {}, 0
+    local reagents = maker.reagents or {}
+    for index = 1, #reagents, 2 do
+        local item, count = reagents[index], reagents[index + 1] or 1
+        local unit
+        if market == "neutral" then
+            unit = NeutralBuy(item)
+        else
+            unit = Prices.BuyCost(item)
+        end
+        tinsert(parts, { item = item, each = count / per, unit = unit })
+        total = unit and total and total + unit * count or nil
+    end
+    return { key = "craft:" .. maker.id .. ":" .. market, kind = "craft", market = market, recipe = maker,
+        parts = parts, price = total and total / per }
+end
+
+-- 按单价从低到高排（没价格的在最后，同价按原来的顺序）
+local function ByPrice(list, field)
+    for index, entry in ipairs(list) do
+        entry.order = index
+    end
+    table.sort(list, function(a, b)
+        local x, y = a[field], b[field]
+        if (x ~= nil) ~= (y ~= nil) then
+            return x ~= nil
+        end
+        if x and x ~= y then
+            return x < y
+        end
+        return a.order < b.order
+    end)
+    return list
+end
+
+-- 一件材料的全部来源，工作台的成本表里并列列出、玩家点选：商人、本阵营拍卖行、做它的配方（材料在本阵营买），
+-- 再是中立拍卖行与做它的配方（材料在中立拍卖行买）——中立的只在有中立拍卖行记录时列出。
+-- 按单价从低到高排。每项 { key, kind = "vendor" / "auction" / "neutral" / "craft", market, price = 单价或 nil, recipe, parts }
+local function Ways(profession, itemID)
+    local list = {}
+    local vendor, auction = Prices.Vendor(itemID), (Prices.Auction(itemID))
+    if vendor then
+        tinsert(list, { key = "vendor", kind = "vendor", price = vendor })
+    end
+    if auction or not vendor then
+        tinsert(list, { key = "auction", kind = "auction", price = auction })
+    end
+    local makers = profession and MakersOf(profession, itemID) or {}
+    for _, maker in ipairs(makers) do
+        tinsert(list, CraftWay(maker, "faction"))
+    end
+    local neutral = Prices.Neutral(itemID)
+    if neutral then
+        tinsert(list, { key = "neutral", kind = "neutral", price = neutral })
+    end
+    for _, maker in ipairs(makers) do
+        local reagents, recorded = maker.reagents or {}, false
+        for index = 1, #reagents, 2 do
+            recorded = recorded or Prices.Neutral(reagents[index]) ~= nil
+        end
+        if recorded then
+            tinsert(list, CraftWay(maker, "neutral"))
+        end
+    end
+    return ByPrice(list, "price")
+end
+Recipes.Ways = Ways
+
+-- 玩家的选择，所有配方共用：sources = { [材料物品 ID] = Ways 里的 key }（没选时按最省的算），
+-- sales = { [成品物品 ID] = Outlets 里的 key }（没选时本阵营拍卖行与商人取高）
+local function Picks(kind)
+    local store = ns:GetModuleSettings(Module)
+    store[kind] = store[kind] or {}
+    return store[kind]
+end
+
+-- 选一项；再点已选的那项取消选择，回到默认。价格、成本与利润随之全部重算
+local function Toggle(kind, itemID, key)
+    local picks = Picks(kind)
+    if picks[itemID] == key then
+        picks[itemID] = nil
+    else
+        picks[itemID] = key
+    end
+end
+
+function Recipes.PickedSource(itemID)
+    return Picks("sources")[itemID]
+end
+
+function Recipes.PickSource(itemID, key)
+    Toggle("sources", itemID, key)
+end
+
+function Recipes.PickedSale(itemID)
+    return Picks("sales")[itemID]
+end
+
+function Recipes.PickSale(itemID, key)
+    Toggle("sales", itemID, key)
+end
+
+-- 成品的全部卖法，按到手单价从低到高：本阵营拍卖行（扣 5% 手续费）、商人、中立拍卖行（有记录时，扣 15%）。
+-- 每项 { key = "auction" / "vendor" / "neutral", unit = 到手单价, cut = 手续费比例 }
+local function Outlets(itemID)
+    local plan = ns.LevelingPlan
+    local list = {}
+    local auction, vendor, neutral = Prices.Auction(itemID), VendorSell(itemID), Prices.Neutral(itemID)
+    if auction then
+        tinsert(list, { key = "auction", unit = auction * (1 - plan.AH_CUT), cut = plan.AH_CUT })
+    end
+    if vendor and vendor > 0 then
+        tinsert(list, { key = "vendor", unit = vendor })
+    end
+    if neutral then
+        tinsert(list, { key = "neutral", unit = neutral * (1 - plan.NEUTRAL_CUT), cut = plan.NEUTRAL_CUT })
+    end
+    return ByPrice(list, "unit")
+end
+Recipes.Outlets = Outlets
+
+-- 计入利润的卖法：玩家选过且现在有价格时按它，否则本阵营拍卖行与商人取高。返回这一项与全部卖法；都没价格时为 nil
+local function SaleOutlet(itemID)
+    local list = Outlets(itemID)
+    local picked, best = Picks("sales")[itemID], nil
+    for _, outlet in ipairs(list) do
+        if outlet.key == picked then
+            return outlet, list
+        end
+        if outlet.key ~= "neutral" and (not best or outlet.unit > best.unit) then
+            best = outlet
+        end
+    end
+    return best, list
+end
+Recipes.SaleOutlet = SaleOutlet
+
+-- 一件材料的单价：玩家选了来源（且这个来源现在有价格）时按它；否则买（商人价与拍卖价取低）与用本专业的配方
+-- 自己做取便宜的。自己做只往下看一层：做它的材料按买入价算，不再找更下一层；只用已学的配方（unlearned 为真时
+-- 没学的也算），有冷却的配方（月布等）不算。返回 单价, 来源（"vendor" / "auction" / "neutral" / "craft"）,
+-- 自己做时用的配方, 买入单价, 用的来源 key；买不到也做不了时单价为 nil
 function ReagentCost(profession, itemID, unlearned)
     local buy, source = Prices.BuyCost(itemID)
+    local picked = Picks("sources")[itemID]
+    if picked then
+        for _, way in ipairs(Ways(profession, itemID)) do
+            if way.key == picked and way.price then
+                return way.price, way.kind, way.recipe, buy, way.key
+            end
+        end
+    end
     local best, from, via = buy, source, nil
     for _, maker in ipairs(profession and MakersOf(profession, itemID) or {}) do
         if unlearned or KnownRecipe(maker) then
@@ -793,287 +856,11 @@ function ReagentCost(profession, itemID, unlearned)
             end
         end
     end
-    return best, from, via, buy
+    return best, from, via, buy, via and ("craft:" .. via.id .. ":faction") or from
 end
 Recipes.ReagentCost = ReagentCost
-
--- 这一步的明细：买了什么（数量、均价、来源、小计）、用了前面做的什么、先自己做了什么
-local function StepDetails(t, step, byID)
-    for _, entry in ipairs(step.bought or {}) do
-        local item, count, cost = entry[1], entry[2], entry[3]
-        local _, source = Prices.BuyCost(item)
-        t:Detail(("%s x%s  ·  %s %s  =  %s"):format(ItemLink(item), Count(count), Money(cost / count),
-            Color(source == "vendor" and L["from a vendor"] or L["on the auction house"], "muted"), Money(cost)))
-    end
-    for _, entry in ipairs(step.used or {}) do
-        t:Detail(("%s x%s  ·  %s"):format(ItemLink(entry[1]), Count(entry[2]),
-            Color(L["made in an earlier step"], "green")))
-    end
-    for _, entry in ipairs(step.prepared or {}) do
-        local recipe = byID[entry[1]]
-        if recipe then
-            t:Detail((L["Make it yourself first: %s x%s"]):format(RecipeIcon(recipe) .. RecipeName(recipe),
-                Count(entry[2])))
-        end
-    end
-end
-
--- 路线的步骤行；prefix 区分展开状态的键（已走过的那段与当前的不混）
-local function RenderSteps(t, plan, byID, prefix)
-    for index, step in ipairs(plan.steps) do
-        local range = ("%d-%d"):format(step.from, step.to)
-        local recipe = step.recipe
-        if step.gap then
-            t:Row(COLUMNS.route, nil, { a = range, b = Color(L["No recipe with known prices pays here"], "muted") },
-                index % 2 == 1)
-        elseif step.forced or step.stock then
-            -- 不为涨点做的：先做一件工具（后面的配方要它在背包里），或给后面的步骤备料
-            local tool = step.forced
-            local open = t:Row(COLUMNS.route, recipe, {
-                a = Color(tool and L["Tool"] or L["Stock up"], "gold"),
-                b = RecipeIcon(recipe) .. RecipeName(recipe), c = Count(step.crafts),
-                d = step.unpriced and Color(L["no price yet"], "red") or Money(step.cash),
-                e = Color(tool and L["Keep it"] or L["For later steps"], "muted"),
-            }, index % 2 == 1, prefix .. index .. ":" .. recipe.id)
-            if open then
-                t:Detail(tool and L["Later recipes need this in your bags: make one and keep it"]
-                    or L["Makes materials for the steps after it; it gives no skill"])
-                StepDetails(t, step, byID)
-            end
-        else
-            local resale = ""
-            if recipe.makes and plan.options.recovery then
-                local label = TIER_LABEL[(Tier(recipe.makes))]
-                resale = Color(L[label[1]], label[2])
-            end
-            local open = t:Row(COLUMNS.route, recipe, {
-                a = range,
-                b = RecipeIcon(recipe)
-                    .. Color(RecipeName(recipe), Difficulty(recipe, { rank = step.from }) or "text"),
-                c = Count(step.crafts),
-                d = step.commission and Color(L["Customer's materials"], "green")
-                    or step.unpriced and Color(L["no price yet"], "red") or Money(step.cash),
-                e = resale,
-            }, index % 2 == 1, prefix .. step.from .. ":" .. recipe.id)
-            if open then
-                local first = ns.LevelingPlan.Chance(recipe, step.from)
-                local last = ns.LevelingPlan.Chance(recipe, step.to - 1)
-                t:Detail((L["Skill-up chance %d%% to %d%%, about %s crafts for %d points"]):format(
-                    floor(first * 100 + 0.5), floor(last * 100 + 0.5), Count(step.crafts), step.to - step.from))
-                if step.commission then
-                    t:Detail(Color(L["Enchant other players' gear with their materials: no cost to you"], "green"))
-                elseif step.unpriced then
-                    ReagentDetails(t, recipe, step.crafts)
-                else
-                    StepDetails(t, step, byID)
-                end
-                if recipe.makes then
-                    SaleDetails(t, recipe.makes, recipe)
-                end
-            end
-            for _, other in ipairs(step.alternatives or {}) do
-                t:Row(COLUMNS.route, other.recipe, {
-                    b = "    " .. Color(L["or"], "muted") .. " " .. RecipeIcon(other.recipe)
-                        .. Color(RecipeName(other.recipe), "muted"),
-                }, index % 2 == 1)
-            end
-        end
-    end
-end
-
-local function RenderRoute(t, profession, skill)
-    if not (Prices and ns.LevelingPlan) then
-        return { L["Price data is not available"] }, ""
-    end
-    if InCombatLockdown() then
-        deferred = true
-        return { L["The route is worked out after you leave combat"] }, ""
-    end
-    local plan, from, to = BuildRoute(profession, skill)
-    local byID = {}
-    for _, recipe in ipairs(profession.recipes or {}) do
-        byID[recipe.id] = recipe
-    end
-    local crafted, makers = false, {} -- makers：成品是路线里哪个配方做的（成品去向里算回本率用）
-    for _, step in ipairs(plan.steps) do
-        crafted = crafted or not step.gap
-        if step.recipe and step.recipe.makes then
-            makers[step.recipe.makes] = makers[step.recipe.makes] or step.recipe
-        end
-    end
-    plan.fixed = Settings("route", ROUTE_DEFAULTS).mode == "handbook" and profession.route ~= nil
-    -- 已经走过的 1 到当前技能：按现在的价格算一遍同样的路线，默认收起，展开时才算
-    if from > 1 and t:Section((L["Earlier steps, skill %d-%d"]):format(1, from), "earlier", 0, true) then
-        local earlier = BuildRoute(profession, skill, 1, from)
-        t:Header(COLUMNS.route)
-        RenderSteps(t, earlier, byID, "earlier:")
-        t:Detail(Color(L["Worked out with today's prices, for reference: these are the steps that would get you here"], "muted"))
-    end
-    if t:Section((L["Steps, skill %d-%d"]):format(from, to), "steps", from > 1 and 10 or 0) then
-        t:Header(COLUMNS.route)
-        RenderSteps(t, plan, byID, "route:")
-    end
-    if not crafted then
-        t:Heading(Color(L["Scan the auction house or visit vendors first: material prices are needed"], "muted"), 6)
-    end
-
-    if #plan.prepared > 0 and t:Section((L["Make these materials yourself (%d)"]):format(#plan.prepared), "make", 10) then
-        t:Header(COLUMNS.list)
-        for index, entry in ipairs(plan.prepared) do
-            local open = t:Row(COLUMNS.list, entry.recipe, {
-                a = RecipeIcon(entry.recipe) .. RecipeName(entry.recipe), b = Count(entry.crafts),
-            }, index % 2 == 1, "make:" .. entry.recipe.id)
-            if open then
-                ReagentDetails(t, entry.recipe, entry.crafts)
-            end
-        end
-    end
-    if #plan.recipesToBuy > 0
-        and t:Section((L["Recipe items to buy (%d)"]):format(#plan.recipesToBuy), "recipes", 10) then
-        t:Header(COLUMNS.list)
-        for index, entry in ipairs(plan.recipesToBuy) do
-            t:Row(COLUMNS.list, entry.recipe, {
-                a = ItemLink(entry.recipe.learnedFrom),
-                b = entry.source == "vendor" and L["Vendor"] or L["Auction"],
-                c = Money(entry.fee),
-            }, index % 2 == 1)
-        end
-    end
-    if #plan.shopping > 0 and t:Section((L["Shopping list (%d)"]):format(#plan.shopping), "shopping", 10) then
-        t:Header(COLUMNS.list)
-        for index, entry in ipairs(plan.shopping) do
-            local note = ""
-            if entry.short then
-                note = "  " .. Color((L["%s short on the auction house"]):format(Count(entry.short)), "red")
-            elseif entry.unknownDepth then
-                note = "  " .. Color(L["lowest price only"], "muted")
-            elseif entry.vendor then
-                note = "  " .. Color(L["from a vendor"], "muted")
-            end
-            local open = t:Row(COLUMNS.list, nil, {
-                a = ItemLink(entry.item), b = Count(entry.count), c = Money(entry.cost) .. note,
-            }, index % 2 == 1, "shop:" .. entry.item, entry.item)
-            if open then
-                local vendor = Prices.Vendor(entry.item)
-                if vendor then
-                    t:Detail((L["A vendor sells it for %s each, any amount"]):format(Money(vendor)))
-                end
-                local levels = Prices.Depth and Prices.Depth(entry.item)
-                for _, level in ipairs(levels or {}) do
-                    t:Detail((L["Auction house: %d at %s each"]):format(level[2], Money(level[1])))
-                end
-                if not levels then
-                    local auction = Prices.Auction(entry.item)
-                    t:Detail(auction and (L["Auction house lowest price %s; how many are listed is not known"]):format(
-                        Money(auction)) or Color(L["no auction price yet"], "muted"))
-                end
-            end
-        end
-    end
-    if #plan.products > 0
-        and t:Section((L["What to do with what you make (%d)"]):format(#plan.products), "products", 10) then
-        t:Header(COLUMNS.list)
-        for index, product in ipairs(plan.products) do
-            local open = t:Row(COLUMNS.list, nil, {
-                a = ItemLink(product.item) .. "  " .. Color(Destination(product), "muted"),
-                b = Count(product.made), c = product.value > 0 and ("+" .. Money(product.value)) or "",
-            }, index % 2 == 1, "made:" .. product.item, product.item)
-            if open then
-                SaleDetails(t, product.item, makers[product.item])
-            end
-        end
-    end
-
-    local hint = L["Click a row for the cost breakdown, a section title to fold it"]
-    if plan.fixed then
-        hint = L["Handbook route: the guide's fixed order at today's prices"] .. " · " .. hint
-    end
-    if plan.unpriced > 0 then
-        hint = (L["%d recipes left out: a material has no price yet"]):format(plan.unpriced) .. " · " .. hint
-    end
-    if plan.missing and #plan.missing > 0 then
-        local ranges = {}
-        for index = 1, math.min(3, #plan.missing) do
-            ranges[index] = ("%d-%d"):format(plan.missing[index][1], plan.missing[index][2])
-        end
-        local text = (L["Not counted, no prices: skill %s"]):format(table.concat(ranges, ", "))
-        if #plan.missing > 3 then
-            text = text .. (L[" and %d more"]):format(#plan.missing - 3)
-        end
-        hint = Color(text, "red") .. " · " .. hint
-    end
-    return {}, hint, plan
-end
-
--- 代工附魔的勾选表：当前技能到目标技能之间还能按代工算的附魔（学得到、还没变绿），点一行勾选或取消
-local function RenderPicker(t, profession, skill)
-    local settings = Settings("route", ROUTE_DEFAULTS)
-    local from = skill and skill.rank or 1
-    local to = RouteTarget(settings, from)
-    local picks = CommissionPicks()
-    -- 手册路线上只有路线里用到的附魔有意义（勾了就不论颜色都算客人出材料）
-    local onRoute
-    if settings.mode == "handbook" and profession.route then
-        onRoute = {}
-        for _, entry in ipairs(profession.route) do
-            if entry.to > from and entry.from < to then
-                onRoute[entry.recipe] = true
-            end
-        end
-    end
-    local list = {}
-    for _, recipe in ipairs(profession.recipes or {}) do
-        if recipe.skill and not recipe.makes and not recipe.nip then
-            local listed
-            if onRoute then
-                listed = onRoute[recipe.id]
-            else
-                listed = (recipe.learn or recipe.skill[1]) < to and recipe.skill[2] > from
-            end
-            if listed then
-                tinsert(list, recipe)
-            end
-        end
-    end
-    table.sort(list, function(a, b)
-        local la, lb = a.learn or a.skill[1], b.learn or b.skill[1]
-        if la ~= lb then
-            return la < lb
-        end
-        return a.id < b.id
-    end)
-    local function SetAll(value)
-        for _, recipe in ipairs(list) do
-            picks[recipe.id] = value
-        end
-        Refresh()
-    end
-    t:Heading(Color(L["Tick only the enchants people actually bring you materials for."], "muted"))
-    t:Heading(Color(onRoute and L["On the handbook route a ticked enchant is free for all its casts."]
-        or L["They count as free skill-ups while orange or yellow; every other enchant uses your own materials."],
-        "muted"))
-    t:Action(L["Tick all"], function() SetAll(true) end)
-    t:Action(L["Clear all"], function() SetAll(nil) end)
-    t:Header(COLUMNS.pick)
-    local chosen = 0
-    for index, recipe in ipairs(list) do
-        local checked = picks[recipe.id] and true or false
-        chosen = chosen + (checked and 1 or 0)
-        local cost = Prices and CastCost(recipe)
-        t:Check(COLUMNS.pick, recipe, {
-            a = ("%d-%d"):format(math.max(from, recipe.learn or recipe.skill[1]), recipe.skill[2]),
-            b = RecipeIcon(recipe) .. Color(RecipeName(recipe), Difficulty(recipe, { rank = from }) or "text"),
-            c = cost and Money(cost) or Color(L["no price yet"], "muted"),
-            d = KnownRecipe(recipe) and "" or Color(L["not learned"], "muted"),
-        }, index % 2 == 1, checked, function()
-            picks[recipe.id] = not checked or nil
-            Refresh()
-        end)
-    end
-    return { (L["Skill %d-%d"]):format(from, to), (L["%d of %d enchants ticked"]):format(chosen, #list) },
-        L["Click an enchant to tick it; go back to the route to see the new cost"]
-end
-
+Recipes.ProfessionOf = ProfessionOf
+Recipes.MakersOf = MakersOf
 --------------------------------------------------------------------------------
 -- 图纸：还没学的配方要多少技能、从哪来、多少钱
 --------------------------------------------------------------------------------
@@ -1084,6 +871,37 @@ local function Side()
     local faction = UnitFactionGroup and UnitFactionGroup("player")
     return faction == "Horde" and "H" or "A"
 end
+Recipes.Side = Side
+
+-- 商人青睐：数量与所需声望。声望档名与商会名取自客户端（没有时用英文档名）
+local FAVOR_STANDING = { friendly = 5, honored = 6, revered = 7, exalted = 8 }
+local FAVOR_FACTION = { A = 2586, H = 2587 }
+
+local function FavorStanding(favor, side)
+    local rank = favor.standing and FAVOR_STANDING[favor.standing]
+    if not rank then
+        return nil
+    end
+    local label = _G["FACTION_STANDING_LABEL" .. rank] or favor.standing:gsub("^%l", string.upper)
+    local id = FAVOR_FACTION[favor.side or side]
+    local name
+    if id and C_Reputation and C_Reputation.GetFactionDataByID then
+        local data = C_Reputation.GetFactionDataByID(id)
+        name = data and data.name
+    end
+    return name and ("%s (%s)"):format(label, name) or label
+end
+
+-- “45 商人青睐 · 尊敬”：数量与所需声望（不限声望时只有数量）
+local function FavorPrice(favor, side)
+    local text = ("%s %s"):format(favor.cost or "?", L["Merchant's Favor"])
+    local standing = FavorStanding(favor, side)
+    if favor.gold then
+        text = text .. " + " .. Money(favor.gold)
+    end
+    return standing and (text .. " · " .. standing) or text
+end
+Recipes.FavorPrice = FavorPrice
 
 -- 来源文字、价格文字、商人位置
 local function Source(recipe, side)
@@ -1091,6 +909,8 @@ local function Source(recipe, side)
         return Color(L["Comes with the rank"], "muted"), ""
     elseif not recipe.learnedFrom then
         return L["Trainer"], ""
+    elseif recipe.favor then
+        return Color(L["Merchant's Favor"], "gold"), FavorPrice(recipe.favor, side)
     end
     local labels = {}
     for _, via in ipairs(recipe.via or {}) do
@@ -1106,7 +926,7 @@ local function Source(recipe, side)
         tinsert(prices, (L["auction %s"]):format(Money(auction)))
     end
     local source = #labels > 0 and table.concat(labels, " / ")
-        or (auction and L["Auction"] or Color(L["Source unknown"], "muted"))
+        or (auction and L["Auction"] or Color(L["World drop"], "muted"))
     return source, table.concat(prices, " · "), recipe.spot and recipe.spot[side]
 end
 Recipes.Source = Source
@@ -1115,97 +935,14 @@ local function MapName(mapID)
     local info = C_Map and C_Map.GetMapInfo and C_Map.GetMapInfo(mapID)
     return info and info.name or ("#" .. mapID)
 end
-
-local function SourceDetails(t, recipe, side)
-    if recipe.learn then
-        t:Detail((L["Needs skill %d to learn"]):format(recipe.learn))
-    end
-    if recipe.auto then
-        t:Detail(L["Comes with the rank"])
-        return
-    elseif not recipe.learnedFrom then
-        t:Detail(L["Taught by a profession trainer"])
-        return
-    end
-    local item = recipe.learnedFrom
-    local vendor = recipe.buy and recipe.buy[side]
-    local spot = recipe.spot and recipe.spot[side]
-    if vendor then
-        local where = spot and ("%s %.1f, %.1f"):format(MapName(spot[1]), spot[2], spot[3]) or L["place unknown"]
-        t:Detail(("%s  ·  %s %s  ·  %s"):format(ItemLink(item), L["Vendor"], Money(vendor), where),
-            spot and { spot[1], spot[2], spot[3], title = RecipeName(recipe) } or nil)
-    else
-        t:Detail(ItemLink(item))
-    end
-    local auction = Prices and Prices.Auction(item)
-    if auction then
-        local listed = Prices.Available and Prices.Available(item)
-        t:Detail((L["auction %s"]):format(Money(auction))
-            .. (listed and (" (" .. (L["%d listed"]):format(listed) .. ")") or ""))
-    end
-    for _, via in ipairs(recipe.via or {}) do
-        if via == "drop" then
-            t:Detail(L["Drops from creatures: check the auction house first"])
-        elseif via == "quest" then
-            t:Detail(L["A quest rewards it"])
-        end
-    end
-    if #(recipe.via or {}) == 0 and not auction then
-        t:Detail(Color(L["Source unknown"], "muted"))
-    end
-end
-
-local function RenderSources(t, profession, skill)
-    local rank = skill and skill.rank or 0
-    local side = Side()
-    local now, later = {}, {}
-    for _, recipe in ipairs(profession.recipes or {}) do
-        if recipe.skill and not recipe.nip and not KnownRecipe(recipe) then
-            local learn = recipe.auto and 1 or recipe.learn
-            tinsert((learn and learn <= rank) and now or later, recipe)
-        end
-    end
-    local function Order(a, b)
-        local la, lb = a.learn or 999, b.learn or 999
-        if la ~= lb then
-            return la < lb
-        end
-        return a.id < b.id
-    end
-    local function Section(title, list, gap)
-        if #list == 0 then
-            return
-        end
-        table.sort(list, Order)
-        t:Heading(Color(title, "gold"), gap)
-        t:Header(COLUMNS.sources)
-        for index, recipe in ipairs(list) do
-            local source, price = Source(recipe, side)
-            local open = t:Row(COLUMNS.sources, recipe, {
-                a = recipe.learn and tostring(recipe.learn) or Color("?", "muted"),
-                b = RecipeIcon(recipe) .. Color(RecipeName(recipe), Difficulty(recipe, skill) or "text"),
-                c = source, d = price,
-            }, index % 2 == 1, "src:" .. recipe.id)
-            if open then
-                SourceDetails(t, recipe, side)
-            end
-        end
-    end
-    Section(L["You can learn these now"], now)
-    Section(L["Learnable later"], later, #now > 0 and 10 or 0)
-    return { (L["%d not learned · %d learnable now"]):format(#now + #later, #now) },
-        L["Click a row for where to get it; click the vendor line to mark it on the map"]
-end
+Recipes.MapName = MapName
 
 --------------------------------------------------------------------------------
 -- 利润：按现在的价格，做哪个最赚
 --------------------------------------------------------------------------------
 
-local PROFIT_ROWS = 150
-local TIER_ORDER = { high = 3, mid = 2, low = 1, none = 0 }
-local PROFIT_DEFAULTS = { unlearned = false, sort = "profit", descending = true }
 
--- 一次制作的材料成本、卖出能拿到的钱（拍卖价扣手续费与卖店价取高）、利润、利润率（利润 ÷ 成本）、流通档；
+-- 一次制作的材料成本、卖出能拿到的钱（按 SaleOutlet：玩家选的卖法，没选时拍卖价扣手续费与卖店价取高）、利润、利润率（利润 ÷ 成本）、流通档；
 -- 材料按 ReagentCost 计（本专业能做的中间材料，买与自己做取便宜的），crafted 为其中自己做的种数；
 -- 材料或成品没价格时返回 nil
 function Profit(recipe)
@@ -1227,103 +964,135 @@ function Profit(recipe)
         end
         cost = cost + price * (reagents[index + 1] or 1)
     end
-    local auction = prices.Auction(recipe.makes)
-    local unit = math.max(VendorSell(recipe.makes) or 0, auction and auction * (1 - ns.LevelingPlan.AH_CUT) or 0)
-    if unit <= 0 then
+    local outlet = SaleOutlet(recipe.makes)
+    if not (outlet and outlet.unit > 0) then
         return nil
     end
-    local value = unit * (recipe.count or 1)
+    local value = outlet.unit * (recipe.count or 1)
     return { recipe = recipe, cost = cost, value = value, profit = value - cost, crafted = crafted,
         margin = cost > 0 and (value - cost) / cost or 0, tier = (Tier(recipe.makes)) }
 end
 Recipes.Profit = Profit
 
-local function SortProfit(list, key, descending)
-    local function Value(entry)
-        if key == "name" then
-            return RecipeName(entry.recipe)
-        elseif key == "tier" then
-            return TIER_ORDER[entry.tier]
-        end
-        return entry[key]
+-- 配方鼠标提示里的价格：材料成本、成品卖价、利润与回本率；成品没价格时只给能算出的成本
+function AddPriceLines(recipe, tooltip)
+    if not Prices then
+        return
     end
-    table.sort(list, function(a, b)
-        local va, vb = Value(a), Value(b)
-        if va ~= vb then
-            if descending then
-                return va > vb
-            end
-            return va < vb
-        end
-        return a.recipe.id < b.recipe.id
-    end)
+    tooltip = tooltip or GameTooltip
+    local entry = Profit(recipe)
+    local cost = entry and entry.cost or CastCost(recipe)
+    if not cost or not recipe.reagents or #recipe.reagents == 0 then
+        return
+    end
+    tooltip:AddLine(" ")
+    tooltip:AddDoubleLine(L["Cost"], Money(cost), 0.88, 0.71, 0.35, 1, 1, 1)
+    if not entry then
+        return
+    end
+    tooltip:AddDoubleLine(L["Sells for"], Money(entry.value), 0.88, 0.71, 0.35, 1, 1, 1)
+    local gain = entry.profit >= 0
+    tooltip:AddDoubleLine(L["Profit"], (gain and "+" or "-") .. Money(math.abs(entry.profit)), 0.88, 0.71, 0.35,
+        gain and 0.27 or 0.9, gain and 0.75 or 0.3, gain and 0.45 or 0.3)
+    if entry.cost > 0 then
+        local rate = entry.value / entry.cost
+        tooltip:AddLine((L["Payback %d%%"]):format(floor(rate * 100 + 0.5)), 0.7, 0.7, 0.7)
+    end
 end
 
-local function RenderProfit(t, profession)
-    local settings = Settings("profit", PROFIT_DEFAULTS)
-    local list, unpriced = {}, 0
-    for _, recipe in ipairs(profession.recipes or {}) do
-        if recipe.makes and recipe.skill and not recipe.nip and (settings.unlearned or KnownRecipe(recipe)) then
-            local entry = Profit(recipe)
-            if entry and entry.tier ~= "none" then
-                tinsert(list, entry)
-            elseif not entry then
-                unpriced = unpriced + 1
+-- 物品鼠标提示（背包、拍卖行、聊天链接等）：能用专业配方做出的物品追加制作成本与利润。
+-- 同一物品有多个配方时取成本最低的；物品到配方的索引第一次悬停时建好。战斗中不算。
+local makerByItem, itemHooked
+local itemShown = setmetatable({}, { __mode = "k" })
+
+local function MakerOfItem(itemID)
+    if not makerByItem then
+        makerByItem = {}
+        for _, profession in ipairs(Professions()) do
+            for _, recipe in ipairs(profession.recipes or {}) do
+                if recipe.makes and recipe.skill and not recipe.cooldown and not recipe.nip
+                    and recipe.reagents and #recipe.reagents > 0 then
+                    makerByItem[recipe.makes] = makerByItem[recipe.makes] or {}
+                    tinsert(makerByItem[recipe.makes], recipe)
+                end
             end
         end
     end
-    SortProfit(list, settings.sort, settings.descending)
-    -- 点表头排序：同一列再点一次反过来；换列时数字列从大到小、名字从小到大
-    t:Header(COLUMNS.profit, { settings.sort, settings.descending }, function(key)
-        if settings.sort == key then
-            settings.descending = not settings.descending
-        else
-            settings.sort, settings.descending = key, key ~= "name"
-        end
-        Refresh()
-    end)
-    local gains = 0
-    for index, entry in ipairs(list) do
-        if entry.profit > 0 then
-            gains = gains + 1
-        end
-        if index <= PROFIT_ROWS then
-            local recipe = entry.recipe
-            local label = TIER_LABEL[entry.tier]
-            local color = entry.profit >= 0 and "green" or "red"
-            local open = t:Row(COLUMNS.profit, recipe, {
-                a = RecipeIcon(recipe) .. RecipeName(recipe)
-                    .. (KnownRecipe(recipe) and "" or ("  " .. Color(L["not learned"], "muted"))),
-                b = Money(entry.cost), c = Money(entry.value),
-                d = Color((entry.profit >= 0 and "+" or "-") .. Money(math.abs(entry.profit)), color),
-                e = Color(("%+d%%"):format(floor(entry.margin * 100 + 0.5)), color),
-                f = Color(L[label[1]], label[2]),
-            }, index % 2 == 1, "profit:" .. recipe.id)
-            if open then
-                ReagentDetails(t, recipe, 1, true, settings.unlearned)
-                SaleDetails(t, recipe.makes)
-            end
+    local list = makerByItem[itemID]
+    if not list then
+        return nil
+    end
+    local best, bestCost
+    for _, recipe in ipairs(list) do
+        local entry = Profit(recipe)
+        local cost = entry and entry.cost or CastCost(recipe)
+        if cost and (not bestCost or cost < bestCost) then
+            best, bestCost = recipe, cost
         end
     end
-    if #list == 0 then
-        t:Heading(Color(L["Scan the auction house or visit vendors first: material prices are needed"], "muted"), 6)
-    end
-    local hint = L["Per craft. Click a column to sort, a row for the cost breakdown"]
-    if unpriced > 0 then
-        hint = (L["%d recipes left out: a material has no price yet"]):format(unpriced) .. " · " .. hint
-    end
-    return { (L["%d recipes priced · %d make a profit"]):format(#list, gains) }, hint
+    return best
 end
 
-local RENDER = { route = RenderRoute, sources = RenderSources, profit = RenderProfit }
+local function OnItemTooltip(tooltip, data)
+    if not Module.enabled or not tooltip or not tooltip.AddLine or InCombatLockdown() then
+        return
+    end
+    local itemID = data and data.id
+    if ns.IsSecret(itemID) then
+        return
+    end
+    if not itemID and tooltip.GetItem then
+        local _, link = tooltip:GetItem()
+        itemID = type(link) == "string" and tonumber(link:match("item:(%d+)"))
+    end
+    if not itemID then
+        return
+    end
+    local token = data and data.dataInstanceID or itemID
+    if itemShown[tooltip] == token then
+        return
+    end
+    local recipe = MakerOfItem(itemID)
+    if not recipe then
+        return
+    end
+    itemShown[tooltip] = token
+    AddPriceLines(recipe, tooltip)
+    if tooltip.Show then
+        tooltip:Show()
+    end
+end
 
+local function HookItemTooltips()
+    if itemHooked then
+        return
+    end
+    if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall
+        and Enum and Enum.TooltipDataType and Enum.TooltipDataType.Item then
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnItemTooltip)
+        itemHooked = true
+    elseif GameTooltip and GameTooltip.HookScript then
+        GameTooltip:HookScript("OnTooltipSetItem", OnItemTooltip)
+        itemHooked = true
+    end
+    if itemHooked and GameTooltip and GameTooltip.HookScript then
+        GameTooltip:HookScript("OnTooltipCleared", function(tooltip)
+            itemShown[tooltip] = nil
+        end)
+    end
+end
 --------------------------------------------------------------------------------
 -- 工作台：跟随游戏专业窗口
 --------------------------------------------------------------------------------
 
-local BENCH_WIDTH = 760
-local TILE_GAP = 8
 local hooked = {}
+-- 界面（WorkbenchView.lua）提供：UpdatePanel 跟随专业窗口显示或隐藏工作台；HidePanel 关闭模块时收起；
+-- Invalidate 价格或已学配方变了，下次刷新重算路线与列表；AttachForm 挂上专业窗口的配方表单（选中配方时跟着切）
+local function Update()
+    if Recipes.UpdatePanel then
+        Recipes.UpdatePanel()
+    end
+end
 
 local function OpenWindow()
     for _, window in ipairs(WINDOWS) do
@@ -1333,6 +1102,7 @@ local function OpenWindow()
         end
     end
 end
+Recipes.OpenWindow = OpenWindow
 
 -- 专业窗口里打开的是哪个专业：新版接口按技能线 ID，旧版按名字
 local function CurrentProfession(frame)
@@ -1363,297 +1133,13 @@ local function CurrentProfession(frame)
 end
 Recipes.CurrentProfession = CurrentProfession
 
-
-function Refresh()
-    if not (bench and bench:IsVisible()) then
-        return
+-- 专业窗口每次打开：工作台展开（不沿用上次收起的状态），并跟着窗口里的专业
+local function OnWindowShown()
+    if Module.enabled and Recipes.WindowShown then
+        Recipes.WindowShown()
     end
-    local settings = Settings("panel", { view = "route" })
-    local profession = CurrentProfession(OpenWindow())
-    local view = RENDER[settings.view] and settings.view or "route"
-    bench.views:Select(view)
-    local picking = view == "route" and profession ~= nil and bench.picking and HasCommissions(profession)
-    bench.picking = picking or nil
-    bench.routeOptions:SetShown(view == "route" and profession ~= nil)
-    bench.unlearned:SetShown(view == "profit" and profession ~= nil)
-    bench.empty:SetShown(profession == nil)
-    local t = Table()
-    if not profession then
-        bench.title:SetText(L["Profession workbench"])
-        bench.summary:SetText("")
-        bench.hint:SetText("")
-        bench:ShowTotals(nil)
-        t:Finish()
-        return
-    end
-    local skill = LearnedSkills()[profession.slug]
-    bench.title:SetText(Name(profession.name) or profession.slug)
-    if view == "route" then
-        local route = Settings("route", ROUTE_DEFAULTS)
-        bench.target:SetValue(RouteTarget(route, skill and skill.rank or 1))
-        local handbook = profession.route ~= nil
-        if not handbook then
-            route.mode = "live"
-        end
-        bench.mode:SetItems(handbook and bench.modeItems.all or bench.modeItems.calculated)
-        local priority = ns.LevelingPlan.PRIORITY[route.priority or ""] and route.priority or "balanced"
-        bench.mode:SetValue(route.mode == "handbook" and "handbook" or priority)
-        bench.target:ClearAllPoints()
-        bench.target:SetPoint("LEFT", bench.mode, "RIGHT", 8, 0)
-        bench.buyRecipes:SetShown(route.mode ~= "handbook")
-        bench.recovery:ClearAllPoints()
-        bench.recovery:SetPoint("LEFT", bench.target, "RIGHT", 12, 0)
-        bench.recovery:SetChecked(route.recovery)
-        bench.buyRecipes:SetChecked(route.buyRecipes)
-        bench.commission:SetShown(HasCommissions(profession))
-        bench.commission:SetPoint("LEFT", route.mode == "handbook" and bench.recovery or bench.buyRecipes, "RIGHT", 14, 0)
-        bench.commission:SetSelected(picking)
-        bench.commission:SetLabel(picking and L["Back to the route"]
-            or (L["Customer enchants: %d"]):format(#ChosenCommissions(profession)))
-    elseif view == "profit" then
-        bench.unlearned:SetChecked(Settings("profit", PROFIT_DEFAULTS).unlearned)
-    end
-    local parts, hint, plan = (picking and RenderPicker or RENDER[view])(t, profession, skill)
-    t:Finish()
-    bench:ShowTotals(plan)
-    if skill then
-        tinsert(parts, 1, (L["Your skill %d/%d"]):format(skill.rank, skill.max))
-    end
-    bench.summary:SetText(table.concat(parts, "  ·  "))
-    bench.hint:SetText(Color(hint or "", "muted"))
-end
-Recipes.Refresh = Refresh
-
-local Update
-
-local function SetCollapsed(collapsed)
-    Settings("panel").collapsed = collapsed
     Update()
 end
-
-local function CreateBench()
-    local settings = Settings("panel", { view = "route" })
-    bench = UI:Panel(UIParent, "panel", "line")
-    bench:SetWidth(BENCH_WIDTH)
-    bench:Hide()
-    UI:Dockable(bench, settings, 2)
-    bench.title = UI:Text(bench, "Heading", L["Profession workbench"])
-    bench.title:SetPoint("TOPLEFT", 14, -12)
-    bench.summary = UI:Text(bench, "Muted")
-    bench.summary:SetPoint("TOPLEFT", bench.title, "BOTTOMLEFT", 0, -4)
-    bench.summary:SetPoint("RIGHT", -14, 0)
-    bench.summary:SetJustifyH("LEFT")
-    bench.summary:SetWordWrap(false)
-    bench.close = UI:CloseButton(bench, function()
-        SetCollapsed(true)
-    end)
-    bench.close:SetPoint("TOPRIGHT", -8, -8)
-
-    bench.views = UI:Segmented(bench, {
-        { id = "route", label = L["Leveling route"] },
-        { id = "sources", label = L["Recipe sources"] },
-        { id = "profit", label = L["Profit"] },
-    }, function(view)
-        settings.view = view
-        Refresh()
-    end, 130)
-    bench.views:SetPoint("TOPLEFT", 14, -54)
-
-    -- 冲级路线的选项：目标技能、是否计入回收、是否买图纸；附魔专业另有按钮打开代工附魔的勾选表
-    local route = Settings("route", ROUTE_DEFAULTS)
-    local options = CreateFrame("Frame", nil, bench)
-    options:SetPoint("TOPLEFT", 14, -86)
-    options:SetPoint("RIGHT", -14, 0)
-    options:SetHeight(24)
-    bench.routeOptions = options
-    local targets = {}
-    for _, value in ipairs(TARGETS) do
-        tinsert(targets, { id = value, label = (L["To skill %d"]):format(value) })
-    end
-    bench.target = UI:Dropdown(options, targets, function(value)
-        route.target = value
-        Refresh()
-    end, 100)
-    bench.target:SetItems(targets)
-    bench.target:SetPoint("LEFT", 0, 0)
-    -- 路线下拉框：三种计算取向（效率优先 / 均衡 / 省钱优先）与手册路线放在一起，切到手册路线后也能直接切回来。
-    -- 有手册路线的专业才列出“手册路线”（Refresh 里按专业换列表）
-    local modes = {
-        { id = "speed", label = L["Fastest"], tip = L["Each craft counts as 30 silver, more at higher skill: fewer crafts usually win"] },
-        { id = "balanced", label = L["Balanced"],
-            tip = L["Each extra craft counts as a little money: a sure point is worth paying a bit for"] },
-        { id = "saving", label = L["Cheapest"], tip = L["Money only: the cheapest way, even if it takes many more crafts"] },
-        { id = "handbook", label = L["Handbook route"],
-            tip = L["The fixed order from the wowhandbook.com guide, priced at today's prices"] },
-    }
-    bench.modeItems = { all = modes, calculated = { modes[1], modes[2], modes[3] } }
-    bench.mode = UI:Dropdown(options, modes, function(value)
-        if value == "handbook" then
-            route.mode = "handbook"
-        else
-            route.mode, route.priority = "live", value
-        end
-        Refresh()
-    end, 110)
-    bench.mode:SetItems(modes)
-    bench.mode:SetPoint("LEFT", 0, 0)
-    bench.mode:HookScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:SetText(L["How the route picks recipes"])
-        for _, item in ipairs(self.items or modes) do
-            GameTooltip:AddDoubleLine(item.label, item.tip, 0.88, 0.71, 0.35, 1, 1, 1)
-        end
-        GameTooltip:Show()
-    end)
-    bench.mode:HookScript("OnLeave", GameTooltip_Hide)
-    local function Option(key, label, anchor)
-        local check = UI:Checkbox(options, label, function(checked)
-            route[key] = checked
-            Refresh()
-        end)
-        check:SetPoint("LEFT", anchor, "RIGHT", 12, 0)
-        return check
-    end
-    bench.recovery = Option("recovery", L["Count resale"], bench.target)
-    bench.buyRecipes = Option("buyRecipes", L["Buy recipe items"], bench.recovery)
-    bench.commission = UI:Button(options, "", 150, 22)
-    bench.commission:SetPoint("LEFT", bench.buyRecipes, "RIGHT", 14, 0)
-    bench.commission:SetScript("OnClick", function()
-        bench.picking = not bench.picking or nil
-        Refresh()
-    end)
-
-    bench.unlearned = UI:Checkbox(bench, L["Include recipes not learned yet"], function(checked)
-        Settings("profit").unlearned = checked
-        Refresh()
-    end)
-    bench.unlearned:SetPoint("TOPLEFT", 14, -88)
-
-    -- 冲级路线的四个数字：材料、图纸、成品回收、净花费（算不出路线或在勾选代工附魔时不显示）
-    local totals = CreateFrame("Frame", nil, bench)
-    totals:SetPoint("TOPLEFT", 10, -116)
-    totals:SetPoint("RIGHT", -10, 0)
-    totals:SetHeight(58)
-    bench.totals, bench.tiles = totals, {}
-    local tileWidth = (BENCH_WIDTH - 20 - 3 * TILE_GAP) / 4
-    for index, key in ipairs({ "materials", "recipes", "resale", "net" }) do
-        local tile = UI:StatTile(totals, "")
-        tile:SetWidth(tileWidth)
-        tile:SetPoint("TOPLEFT", (index - 1) * (tileWidth + TILE_GAP), 0)
-        bench.tiles[key] = tile
-    end
-
-    local panel = UI:Panel(bench, "panel", "lineSoft")
-    panel:SetPoint("BOTTOMRIGHT", -10, 30)
-    function bench:ShowTotals(plan)
-        totals:SetShown(plan ~= nil)
-        panel:SetPoint("TOPLEFT", 10, plan and -(116 + 58 + TILE_GAP) or -116)
-        if not plan then
-            return
-        end
-        local tiles = self.tiles
-        tiles.materials.title:SetText(L["Materials"])
-        tiles.materials:Set(Brief(plan.materials))
-        tiles.recipes.title:SetText(L["Recipe items"])
-        tiles.recipes:Set(Brief(plan.recipeCost))
-        tiles.resale.title:SetText(plan.recovery > 0
-            and (L["Resale, at least %s"]):format(Brief(plan.safeRecovery)) or L["Resale value"])
-        tiles.resale:Set(Brief(plan.recovery))
-        -- 有断档或缺价的路线只是部分预算：标题说明只算了能算的部分，缺的区间写在底部提示里
-        local partial = plan.missing and #plan.missing > 0
-        tiles.net.title:SetText(plan.net >= 0 and (partial and L["Net cost, priced part"] or L["Net cost"])
-            or (partial and L["Net profit, priced part"] or L["Net profit"]))
-        tiles.net:Set(plan.net >= 0 and Brief(plan.net) or Color("+" .. Brief(-plan.net), "green"))
-    end
-    bench:ShowTotals(nil)
-    bench.detail = UI:ScrollArea(panel)
-    bench.detail:SetPoint("TOPLEFT", 6, -6)
-    bench.detail:SetPoint("BOTTOMRIGHT", -14, 6)
-    bench.rows, bench.expanded, bench.collapsed = {}, {}, {}
-    bench.hint = UI:Text(bench, "Small")
-    bench.hint:SetPoint("BOTTOMLEFT", 14, 10)
-    bench.hint:SetPoint("RIGHT", -14, 0)
-    bench.hint:SetJustifyH("LEFT")
-    bench.hint:SetWordWrap(false)
-    bench.empty = UI:Text(bench, "Muted", L["This profession levels by gathering; it has no recipes to craft."])
-    bench.empty:SetPoint("TOPLEFT", panel, "TOPLEFT", 12, -12)
-    bench.empty:SetWidth(BENCH_WIDTH - 48)
-    bench.empty:SetJustifyH("LEFT")
-
-    -- 收起后在工作台左上角的位置留一个小按钮，点一下重新展开。按钮与工作台共用一个偏移（dockX / dockY，相对专业窗口右上角）：
-    -- 拖动按钮后展开，工作台左上角就在按钮处；拖动工作台后收起，按钮就出现在工作台左上角。右键两者一起还原
-    settings.tabX, settings.tabY = nil, nil -- 旧版按钮单独记的偏移，不再使用
-    tab = UI:Button(UIParent, L["Workbench"], 80, 24, "primary")
-    tab:Hide()
-    tab:SetMovable(true)
-    tab:SetClampedToScreen(true)
-    tab:RegisterForDrag("LeftButton")
-    tab:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-    tab:SetScript("OnDragStart", function(self)
-        self:StartMoving()
-    end)
-    tab:SetScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-        self.draggedAt = GetTime()
-        local window = OpenWindow()
-        local left, top = self:GetLeft(), self:GetTop()
-        if window and left and top and window:GetRight() and window:GetTop() then
-            local ratio = window:GetEffectiveScale() / self:GetEffectiveScale()
-            settings.dockX = math.floor(left - window:GetRight() * ratio + 0.5)
-            settings.dockY = math.floor(top - window:GetTop() * ratio + 0.5)
-        end
-        Update()
-    end)
-    tab:SetScript("OnClick", function(self, button)
-        if button == "RightButton" then
-            settings.dockX, settings.dockY = nil, nil
-            Update()
-            return
-        end
-        -- 拖动松手时不当成点击
-        if self.draggedAt and GetTime() - self.draggedAt < 0.3 then
-            return
-        end
-        SetCollapsed(false)
-    end)
-    tab:HookScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(L["Workbench"])
-        GameTooltip:AddLine(L["Click to open. Drag to move; right-click to put it back."], 1, 1, 1, true)
-        GameTooltip:Show()
-    end)
-    tab:HookScript("OnLeave", GameTooltip_Hide)
-    Recipes.bench, Recipes.tab = bench, tab -- 供测试使用
-end
-
-function Update()
-    local window = Module.enabled and OpenWindow()
-    if not window then
-        if bench then
-            bench:Hide()
-            tab:Hide()
-        end
-        return
-    end
-    if not bench then
-        CreateBench()
-    end
-    bench:Dock(window)
-    local x, y = bench:DockOffset()
-    tab:ClearAllPoints()
-    tab:SetPoint("TOPLEFT", window, "TOPRIGHT", x, y)
-    -- 工作台永远在专业窗口之上：层级（strata）比专业窗口高一档，不受窗口被点击提到最前时层内等级变化的影响
-    local strata = STRATA_ABOVE[window:GetFrameStrata()] or "DIALOG"
-    for _, frame in ipairs({ bench, tab }) do
-        frame:SetFrameStrata(strata)
-        frame:SetFrameLevel(20)
-    end
-    local collapsed = Settings("panel").collapsed
-    bench:SetShown(not collapsed)
-    tab:SetShown(collapsed and true or false)
-    Refresh()
-end
-Recipes.UpdatePanel = Update
 
 -- 暴雪专业窗口按需加载：已加载就挂上，否则等它加载
 local function Attach()
@@ -1661,9 +1147,12 @@ local function Attach()
         local frame = _G[window.frame]
         if frame and not hooked[frame] then
             hooked[frame] = true
-            frame:HookScript("OnShow", Update)
+            frame:HookScript("OnShow", OnWindowShown)
             frame:HookScript("OnHide", Update)
         end
+    end
+    if Recipes.AttachForm then
+        Recipes.AttachForm()
     end
 end
 
@@ -1675,28 +1164,53 @@ local function OnAddonLoaded(_, name)
     end
 end
 
--- 打开或切换专业、学会新配方、技能提升、价格变化：先读已学配方，再刷新（合并 0.5 秒内的多次变化；窗口没开时不做事）
+-- 打开或切换专业、学会新配方、技能提升、价格变化：先读已学配方（专业窗口开着时），再刷新
+-- （合并 0.5 秒内的多次变化；专业窗口没开、工作台也没单独开着时不做事）
 local pending = false
+local function Showing()
+    return OpenWindow() or (Recipes.PanelShown and Recipes.PanelShown())
+end
+
 local function OnChange()
-    if pending or not (Module.enabled and OpenWindow()) then
+    if pending or not (Module.enabled and Showing()) then
         return
     end
     pending = true
     C_Timer.After(0.5, function()
         pending = false
-        if Module.enabled and OpenWindow() then
-            RecordKnownRecipes()
+        if Module.enabled and Showing() then
+            if OpenWindow() then
+                RecordKnownRecipes()
+            end
+            if Recipes.Invalidate then
+                Recipes.Invalidate()
+            end
             Update()
         end
     end)
 end
 
--- 战斗中不算路线（Refresh 里记下），脱战后补算一次
+-- 战斗中不算路线（界面刷新时记下 Recipes.deferred），脱战后补算一次
 local function OnRegenEnabled()
-    if deferred then
-        deferred = false
+    if Recipes.deferred then
+        Recipes.deferred = false
         OnChange()
     end
+end
+
+-- 背包变化（BAG_UPDATE_DELAYED 已是一批一次）：0.3 秒内合并，只让界面重画购物清单
+local bagsPending = false
+local function OnBags()
+    if bagsPending or not (Module.enabled and Recipes.PanelShown and Recipes.PanelShown()) then
+        return
+    end
+    bagsPending = true
+    C_Timer.After(0.3, function()
+        bagsPending = false
+        if Module.enabled and Recipes.BagsChanged then
+            Recipes.BagsChanged()
+        end
+    end)
 end
 
 local CHANGE_EVENTS = { "TRADE_SKILL_SHOW", "TRADE_SKILL_LIST_UPDATE", "TRADE_SKILL_DATA_SOURCE_CHANGED",
@@ -1710,11 +1224,26 @@ function Module:OnEnable()
     for _, event in ipairs(CHANGE_EVENTS) do
         ns:RegisterEvent(event, OnChange)
     end
+    ns:RegisterEvent("BAG_UPDATE_DELAYED", OnBags)
     if not listening and Prices and Prices.OnChange then
         listening = true
         Prices.OnChange(OnChange)
     end
+    HookItemTooltips()
+    if Recipes.StartFishingLog then
+        Recipes.StartFishingLog()
+    end
+    if Recipes.StartFishingPopup then
+        Recipes.StartFishingPopup()
+    end
     Attach()
+    -- 主窗口导航里的“专业”：直接单独打开专业工作台（可以看任意专业）
+    ns.MainFrame:RegisterTab({ id = "professions", title = L["Professions"], order = 30, action = function()
+        if Module.enabled and Recipes.OpenStandalone then
+            ns.MainFrame:Hide()
+            Recipes.OpenStandalone()
+        end
+    end })
     Update()
 end
 
@@ -1724,8 +1253,14 @@ function Module:OnDisable()
     for _, event in ipairs(CHANGE_EVENTS) do
         ns:UnregisterEvent(event, OnChange)
     end
-    if bench then
-        bench:Hide()
-        tab:Hide()
+    ns:UnregisterEvent("BAG_UPDATE_DELAYED", OnBags)
+    if Recipes.StopFishingLog then
+        Recipes.StopFishingLog()
+    end
+    if Recipes.StopFishingPopup then
+        Recipes.StopFishingPopup()
+    end
+    if Recipes.HidePanel then
+        Recipes.HidePanel()
     end
 end

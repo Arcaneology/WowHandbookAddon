@@ -82,20 +82,64 @@ local function IsSiteSet(id)
     return false
 end
 
--- 所选等级的装备组：{ level, pvp, id（网站上对应的组）, site, gear, alts }。
+-- 专业装备（拾取绑定的制造装备、需要专业才能装备的物品）只推荐给学了那个专业的角色，技能还没练到也算。
+-- 基础组不含专业装备；spec.professions 是学了某个或某两个专业时的不同之处（键是排好序、用 + 连接的专业 slug）：
+-- cut 里的格子在该等级之前用基础组，从该等级起用 timeline 的变化；pvp 是整组 PvP 首选。
+-- 两个专业的组合数据里没有时，把两个单专业合起来（导出时保证这时它们改的格子不重叠，PvP 最多一边有变化）。
+local function ProfessionVariant(spec, learned)
+    local mine = {}
+    for slug in pairs(learned) do
+        if spec.professions and spec.professions[slug] then
+            tinsert(mine, slug)
+        end
+    end
+    if #mine == 0 then
+        return nil
+    end
+    table.sort(mine)
+    if #mine == 1 then
+        return spec.professions[mine[1]]
+    end
+    local pair = spec.professions[mine[1] .. "+" .. mine[2]]
+    if pair then
+        return pair
+    end
+    local merged = { cut = {}, timeline = {} }
+    for i = 1, 2 do
+        local part = spec.professions[mine[i]]
+        for key, level in pairs(part.cut or {}) do
+            merged.cut[key] = level
+        end
+        for _, row in ipairs(part.timeline or {}) do
+            tinsert(merged.timeline, row)
+        end
+        merged.pvp = merged.pvp or part.pvp
+    end
+    return merged
+end
+
+-- 所选等级的装备组：{ level, pvp, id（网站上对应的组）, site, gear, alts, learned（已学专业）}。
 -- 逐级推荐取每个格子在这一级及以下最近的一次变化（物品 ID 为 0 表示这格空了）；备选取这一级所在的网站 10 级段
 local function CurrentSet(spec)
     if not spec then
         return nil
     end
+    local learned = ns.ProfessionSkills()
+    local variant = ProfessionVariant(spec, learned)
     if state.pvp then
         local pvp = spec.pvp
         return { level = MAX_LEVEL, pvp = true, id = MAX_LEVEL .. "-pvp", site = IsSiteSet(MAX_LEVEL .. "-pvp"),
-            gear = pvp.gear, alts = pvp.alts }
+            gear = variant and variant.pvp or pvp.gear, alts = pvp.alts, learned = learned }
     end
     local level, faction = SelectedLevel(), ns.PlayerFaction()
+    local cut = variant and variant.cut or {}
     local latest = {}
     for _, row in ipairs(spec.timeline) do
+        if row[1] <= level and (row[3] == "" or row[3] == faction) and row[1] < (cut[row[2]] or math.huge) then
+            latest[row[2]] = row
+        end
+    end
+    for _, row in ipairs(variant and variant.timeline or {}) do
         if row[1] <= level and (row[3] == "" or row[3] == faction) then
             latest[row[2]] = row
         end
@@ -115,7 +159,8 @@ local function CurrentSet(spec)
         end
     end
     local id = tostring(band and band.range[2] or level)
-    return { level = level, pvp = false, id = id, site = IsSiteSet(id), gear = gear, alts = band and band.alts or {} }
+    return { level = level, pvp = false, id = id, site = IsSiteSet(id), gear = gear, alts = band and band.alts or {},
+        learned = learned }
 end
 Module.CurrentSet = function() -- 供测试使用
     return CurrentSet(CurrentSpec())
@@ -147,15 +192,17 @@ local function Assign(set)
 end
 Module.Assign = Assign
 
--- 一个装备栏的备选：网站这一段的备选里，除去已经是首选的，以及所选等级还穿不上的（需求等级向客户端取，
--- 还没缓存的先不列，数据到了刷新时补上）
+-- 一个装备栏的备选：网站这一段的备选里，除去已经是首选的、要没学的专业才能拿到的，以及所选等级还穿不上的
+-- （需求等级向客户端取，还没缓存的先不列，数据到了刷新时补上）
 local function Alternatives(set, gearSlot)
     local out, picked = {}, {}
     for _, entry in ipairs(set and set.gear or {}) do
         picked[entry[1]] = true
     end
+    local restricted, learned = ns.Data.bisGear.restricted or {}, set and set.learned or {}
     for _, entry in ipairs(ForFaction(set and set.alts)) do
-        if entry[2] == gearSlot and not picked[entry[1]] then
+        local needs = restricted[entry[1]]
+        if entry[2] == gearSlot and not picked[entry[1]] and (not needs or learned[needs]) then
             local _, _, _, _, minLevel = C_Item.GetItemInfo(entry[1])
             if minLevel == nil then
                 ns.RequestItem(entry[1])
@@ -166,6 +213,7 @@ local function Alternatives(set, gearSlot)
     end
     return out
 end
+Module.Alternatives = Alternatives -- 供测试使用
 
 local function SpecName(spec)
     local trees = ns.Data.talents and ns.Data.talents[ns.PlayerClass() or ""]

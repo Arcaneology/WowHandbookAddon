@@ -35,6 +35,7 @@ local max, min, huge = math.max, math.min, math.huge
 local insert = table.insert
 
 Plan.AH_CUT = 0.05 -- 拍卖行手续费
+Plan.NEUTRAL_CUT = 0.15 -- 中立拍卖行手续费
 Plan.TIERS = {
     high = { factor = 1, cap = huge },
     mid = { factor = 1, cap = 10 },

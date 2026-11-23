@@ -1,6 +1,6 @@
 # WoW Handbook
 
-An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.9.0.
+An all-in-one companion addon for **World of Warcraft: Forever** (client 1.60.x). Version 0.10.0.
 
 ## Summary
 
@@ -21,14 +21,16 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ### Secrets
 
-- **Secrets helper**: a small window for the long hidden quest chains, the Cozy Sleeping Bag and Dawn Waker. It follows your quests, bags, bank and gear, ticks off the steps you have done and tells you what to do next. Missing items show in red; click a location to mark it on the map. The Secrets page in the handbook lays out every step in full.
+- **Secrets helper**: a small window for the long hidden quest chains, the Cozy Sleeping Bag and Dawn Waker. It follows your quests, bags, bank and gear, ticks off the steps you have done and tells you what to do next. Missing items show in red; click a location to mark it on the map. It also follows the classic epic quest lines: the Onyxia attunement for your faction, In Dreams, the Battle of Darrowshire, Linken's Adventure and the Missing Diplomat. The Secrets page in the handbook lays out every step in full.
 - **Library books**: all 40 books for the library, with where each one can be found (track it on the map with one click), which ones you already carry or have donated, where to hand them in, and the rewards at each stage.
 
 ### Auction house and professions
 
-- **Auction prices**: prices are recorded as you search the auction house, and a "Scan auction house" button in its bottom right corner scans everything at once. Item tooltips show the auction price and how old it is. Already using Auctionator? Tick "Use Auctionator prices" and the handbook reads its prices instead.
+- **Auction prices**: prices are recorded as you search the auction house, and a "Scan auction house" button in its bottom right corner scans everything at once. The neutral (goblin) auction house is kept apart from your faction's, and item tooltips show both prices and how old they are. A handful of listings far below everyone else's, the bait that tricks people into underpricing, are skipped when the lowest price is recorded. Prices are kept day by day for as long as you choose in Settings (7, 30 or 180 days, or your own number). With Auctionator installed, its prices fill in whatever you have not recorded yourself.
+- **Auction workbench**: a window of its own that opens with the auction house and puts the neutral and your faction's auction house side by side. By default it lists what is cheaper at the neutral house, to resell where buyers are plentiful; switch to the reverse or to every item. Each item shows both prices, the profit per item after the sale cut (5% at your faction's house, 15% at the neutral one) and the margin; click a column header to sort. Pick an item to see how many are listed, how often it turns up in your scans and a daily price trend over 7, 30 or 180 days. Collapse it to a small button while you trade; `/wh auction` opens it any time.
 - **Profit per craft**: the crafting page of the profession window works out each recipe as a simple sum: sale price, minus the auction house cut, minus materials, equals profit, with a one-line verdict. When a material can be made with one of your own recipes (Bolt of Woolen Cloth from Wool Cloth), it compares buying with crafting and shows the most profitable plan; hover to compare every plan. The sale uses the vendor price whenever a vendor pays more than the auction house.
-- **Profession workbench**: opening a profession docks a workbench beside the window with three views. *Leveling route* works out the cheapest way from your skill to the next cap at today's auction and vendor prices, counting what you can sell the results for (bags and materials sell well, gear mostly goes to a vendor); pick Fastest, Balanced or Cheapest, or follow the handbook's fixed route priced at today's prices. You get the steps, a shopping list, the recipes to buy and where each product goes. Enchanters can tick which enchants to do for customers. *Recipe sources* lists the recipes you have not learned, the skill they need and where they come from; click a vendor to mark it on the map. *Profit* ranks every recipe by profit and margin. Collapse it to a small button and drag it wherever you like.
+- **Profession workbench**: opening a profession docks a two-column workbench beside the window. On the left, one list with four lenses and a shared search (recipe, pattern, product or material names): *Leveling* lays out the cheapest route from your skill to the next cap at today's auction and vendor prices, counting what you can sell the results for (bags and materials sell well, gear mostly goes to a vendor), with Fastest, Balanced, Cheapest or the handbook's fixed route; *Trainers* groups your faction's trainers by the rank they teach, the one you need next first (pick one to see where they stand, what they teach and the recipes you can learn from them now); *Recipe sources* groups every recipe into learned, learnable now and later, with the skill it needs and where it comes from; *Make money* ranks recipes by profit, margin, cost or how well they sell. On the right, the selected recipe in full: a skill bar from learnable to gray, a cost breakdown with each material's share (and the cheaper make-it-yourself option), the sale price, profit and payback, its step on the leveling route, and where to learn it, with buttons to search the auction house, open it in the professions window or mark the vendor on the map. The route overview adds the totals, shopping list, recipes to buy, where each product goes and, for enchanters, which enchants to do for customers. Choose where each material comes from (a vendor, either auction house or crafting it yourself) and the cost and profit follow at once; the shopping list is split by vendor and auction house and counts what is already in your bags, and you can lock a leveling route so price swings do not change what you buy. Picking a recipe in the professions window brings it up in the workbench. It opens expanded every time you open the professions window; collapse it to a small button and drag it wherever you like. Pick any of the 12 professions from the row of icons at the top, learned or not, gathering ones included, and open it on its own from Professions in the main window. Your professions' trainers also appear on the world map.
+- **Fishing**: the workbench's fishing views list every fishing zone and its waters with the chance of each catch, side by side with your own catch rates. Equip a fishing pole and a small window shows this trip's catches, the standard chances for these waters next to yours, and your past trips; `/wh fishing` opens it any time.
 - **Enchant all**: when enchanting gear, one button enchants once per click and shows how many casts are left; the "replace enchant" prompt is confirmed for you.
 - **Waylaid crates**: the tooltip of an identified crate lists every kind of goods it takes and what filling it costs at auction prices, with the cheapest one in green.
 
@@ -42,11 +44,11 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 - **Talent plans**: a Talent plans tab inside the game's own talent window shows your class's three trees. Left-click adds a point, right-click removes one, and the game's own rules apply: 51 points, five points per row, prerequisites first. One button copies a link that opens the same build in the talent calculator on wowhandbook.com. It only simulates; your character's real talents are never touched. Choose a recommended build and drag the level slider to follow it from level 10 to 60.
 - **Spells by level**: every spell your class learns at each level, with a reminder when new ranks are waiting. Race-only spells are tagged with their race: green for yours, grey for the others. Warlocks get demon abilities and grimoires in clear groups.
+- **Spell DPS and DPM**: tooltips of damaging spells that cost mana add damage per second and damage per point of mana, with the numbers behind them.
 - **Action bar upgrades**: new ranks replace lower ranks on your bars, and new active spells go into empty slots.
 - **Out of range in red**: when your target is out of range, the whole action button turns red, not just the small hotkey number.
 - **Class trainers on the map**, with how many spells you can train right now.
 - **Rare pets** (hunters): every rare beast you can tame, filtered by what you can tame now, what needs more levels and what you already have. Each one shows its attack speed, special abilities and where it roams; click to mark it on the map. Tamed pets are checked off automatically.
-- **Professions page**: every trainer for all 12 professions, for your faction, with the rank they teach and where they stand. The trainer you need next is highlighted; click one to mark it on the map. Your professions' trainers also appear on the world map.
 
 ### World map and minimap
 
@@ -55,6 +57,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 - **Zeppelins and boats**: every zeppelin tower and boat landing on the world map and minimap, one icon per berth, using the game's own travel icon in your faction's color (blue for the Alliance, red for the Horde, gold for neutral boats). The tooltip names the route, for example "Auberdine → Stormwind (boat)", and the next two stops for the Menethil Harbor, Southshore and Auberdine loop. Includes the Zephras Isle airships to Dalaran and Thunder Bluff.
 - **Zone paths**: arrows on the world map mark where one zone connects to the next (for example Ashenvale to Stonetalon Mountains) and the entrances to the capitals. Each arrow points toward the zone it leads to, and the tooltip names it.
 - **Transmogrifiers** on the world map and minimap, for your faction, with a click to set a waypoint.
+- **Riding trainers** on the world map and minimap: every race's trainer for your faction plus the Skyborne trainer both factions share, with your own race's trainer marked.
 - **Resurrection areas**: along with the spirit healers for your faction, gold lines on the world map show which healer you return to when you die in each part of the zone.
 - Zone level ranges, flight points (grey when not yet discovered), dungeon entrances, spirit healers, the full map including unexplored areas, and map scaling.
 
@@ -78,6 +81,8 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 - `/wh` or `/wowhandbook`: open or close the handbook.
 - `/wh home`, `/wh dungeons`, `/wh spellbook`, `/wh professions`, `/wh pets`, `/wh settings`: open that page.
 - `/wh secrets`: show or hide the secrets helper.
+- `/wh auction`: open or close the auction workbench.
+- `/wh fishing`: show or hide the catch window.
 - `/wh reset`: move the handbook back to the center of the screen.
 - `/wh quests`: show or hide the dungeon helper.
 - `/wh test`: preview the dungeon helper with a sample dungeon.
@@ -86,7 +91,7 @@ WoW Handbook answers the questions you ask yourself every play session in World 
 
 ## 简体中文
 
-为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.9.0。
+为《魔兽世界：无限》（客户端 1.60.x）打造的一站式游戏助手。当前版本 0.10.0。
 
 ### 简介
 
@@ -107,14 +112,16 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 #### 解谜
 
-- **解谜助手**：为“舒适的睡袋”“黎明唤醒者”这两条隐藏长任务链准备的小窗。它跟着你的任务、背包、银行与装备自动勾掉已完成的步骤，并告诉你下一步做什么；缺的物品标红，点地点就在地图上标出。手册里的“解谜”页完整展开每一步。
+- **解谜助手**：为“舒适的睡袋”“黎明唤醒者”这两条隐藏长任务链准备的小窗。它跟着你的任务、背包、银行与装备自动勾掉已完成的步骤，并告诉你下一步做什么；缺的物品标红，点地点就在地图上标出。也跟进经典史诗长线任务：本阵营的奥妮克希亚开门任务、爱与家庭、达隆郡之战、林克的冒险与失踪的使节。手册里的“解谜”页完整展开每一步。
 - **图书馆藏书**：列出图书馆要收的全部 40 本书，每本书在哪里能找到（一键在地图上追踪）、哪些已经在包里或已经捐过、交给谁，以及各阶段的奖励。
 
 #### 拍卖行与专业
 
-- **拍卖价格**：搜索拍卖行时自动记下价格，拍卖行右下角的“扫描拍卖行”按钮一次扫描全部。物品鼠标提示显示拍卖价格与记录时间。已经在用 Auctionator？勾选“使用 Auctionator 价格”，手册直接读取它的价格。
+- **拍卖价格**：搜索拍卖行时自动记下价格，拍卖行右下角的“扫描拍卖行”按钮一次扫描全部。中立拍卖行（地精拍卖行）与本阵营拍卖行分开记，物品鼠标提示同时显示两边的价格与记录时间。零星几件挂得远低于行情的诱饵低价不会被当成最低价。价格按天保存，保留多久在设置里选（7、30、180 天或自定义）。装了 Auctionator 时，自己没记到的物品自动用它的价格补上。
+- **拍卖行工作台**：独立窗口，随拍卖行一起打开，把中立拍卖行与本阵营拍卖行并排对比。默认列出中立更便宜、适合买来回本阵营卖的物品，也可以切到反过来或全部物品。每件物品写两边的价格、扣掉卖出手续费（本阵营 5%、中立 15%）后的每件利润与利润率，点表头排序。选中一件可以看在售数量、在扫描里出现的频率，以及 7、30、180 天的每日价格走势。交易时可收成小按钮，`/wh auction` 随时打开。
 - **每次制作的利润**：专业窗口的制作页把每个配方算成一道算式：成品卖价减去拍卖行手续费、减去材料，就是利润，再用一句话给出结论。材料能用你自己的配方做出来时（毛布卷用毛料做），会比较直接买与自己做，显示利润最高的方案，悬停可对比全部方案。商人收购价高于拍卖行时按卖给商人算。
-- **专业工作台**：打开专业窗口时，右侧贴出工作台，分三个视图。“冲级路线”按现在的拍卖与商人价格，算出从当前技能到下一档的最省路线，并计入成品能卖回的钱（背包、材料好卖，装备多半卖给商人）；可选效率优先、均衡、省钱优先，或按手册的固定路线以现价计价；列出步骤、购物清单、要买的图纸与每件成品的去向。附魔师可以逐个勾选接代工的附魔。“图纸”列出还没学的配方、所需技能与来源，点商人一行即在地图上标出。“利润”按利润与利润率给全部配方排序。工作台可收起成小按钮，拖到任意位置。
+- **专业工作台**：打开专业窗口时，右侧贴出两栏工作台。左栏是一张列表，有四种视角，搜索框四种视角共用（配方、图纸、成品、材料的名字都能搜）。“练级”按现在的拍卖与商人价格，算出从当前技能到下一档的最省路线，并计入成品能卖回的钱（背包、材料好卖，装备多半卖给商人），路线可选效率优先、均衡、省钱优先，或手册的固定路线；“训练师”按能教到的等级列出本阵营的训练师，下一档该找的排最前（点一位就能看到他在哪、教到哪一档、现在能跟他学哪些配方）；“图纸”把全部配方按已学、现在可学、以后可学分组，列出所需技能与来源；“赚钱”可以按利润、利润率、成本或好不好卖给配方排序。右栏展开选中的配方：从学习到变灰的难度色条；成本构成，标出每种材料占多少，自己做更便宜时一并列出；卖价、每次利润与回本率；它在练级路线里的那一步；学习来源。底部按钮可以在拍卖行搜索、在专业窗口打开配方，或在地图上标出商人。路线总览汇总花费，列出购物清单、要买的图纸和每件成品的去向；附魔师可以在这里勾选接代工的附魔。每种材料可以自己选来源（商人、两个拍卖行或自己做），成本与利润立即跟着变；购物清单按商人与拍卖行分开，并扣掉背包里已有的；练级路线可以锁定，拍卖行价格波动不再改变要买的东西。在专业窗口里选中配方，工作台会跟着切过去。每次打开专业窗口，工作台都会展开；也可以收起成小按钮，拖到任意位置。顶栏的一排专业图标可以换成 12 个专业里的任意一个，没学的、采集类的都能看；点主窗口里的“专业”可以直接单独打开工作台。已学专业的训练师也显示在大地图上。
+- **钓鱼**：工作台的钓鱼视角列出全部钓鱼地区与水域、每种渔获的几率，旁边并排你自己的几率。换上鱼竿时浮出渔获小窗：本次钓到的东西、这片水域的标准几率与你的几率，以及历次钓鱼；`/wh fishing` 随时打开。
 - **全部附魔**：附魔到装备时，每点一次附魔一次，按钮显示剩余次数；“替换附魔”的确认框自动确认。
 - **遭劫的板条箱**：已辨认的板条箱鼠标提示列出可装的每种货物与装满所需的拍卖行价格，最便宜的一种标绿。
 
@@ -128,11 +135,11 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 
 - **天赋方案**：游戏天赋窗口里多一个“天赋方案”标签，显示本职业的三棵天赋树。左键加点、右键减点，规则与游戏一致：共 51 点，每层 5 点，前置天赋先点满。一键复制链接即可在 wowhandbook.com 的天赋模拟器里打开同一套加点。只做模拟，不会改动角色的真实天赋。可选推荐方案，拖动等级条从 10 级看到 60 级。
 - **按等级技能书**：列出职业每一级能学的全部技能，有新等级可学时提醒；种族专属技能带种族标签，本种族绿色、其他种族灰色；术士的恶魔技能与魔典分类清楚。
+- **技能 DPS 与 DPM**：耗法力的伤害技能在鼠标提示里加上每秒伤害与每点法力伤害，并写明计算依据。
 - **动作条自动升级**：学会高等级技能后替换动作条上的低等级版本，新的主动技能放进空位。
 - **超距染红**：目标超出技能距离时，整个动作条按钮染红，不再只是右上角的小数字变红。
 - **职业训练师地图标记**：显示本职业训练师，并提示现在可学几个技能。
 - **稀有宠物**（猎人）：列出全部可驯服的稀有野兽，按现在能抓、等级不够、已抓到筛选；每只显示攻击速度、特殊技能与出没位置，点一下标到地图；驯服后自动打勾。
-- **专业页**：12 个专业的本阵营训练师、能教到的等级与位置，高亮你下一步要找的训练师，点一下标到地图；已学专业的训练师也显示在大地图上。
 
 #### 大地图与小地图
 
@@ -164,6 +171,8 @@ WoW 手册帮你解决每次上线都会遇到的问题：去哪升级、学什�
 - `/wh` 或 `/wowhandbook`：打开或关闭手册。
 - `/wh home`、`/wh dungeons`、`/wh spellbook`、`/wh professions`、`/wh pets`、`/wh settings`：直接打开对应页面。
 - `/wh secrets`：显示或隐藏解谜助手小窗。
+- `/wh auction`：打开或关闭拍卖行工作台。
+- `/wh fishing`：显示或隐藏渔获小窗。
 - `/wh reset`：把手册窗口放回屏幕中央。
 - `/wh quests`：显示或隐藏副本助手小窗。
 - `/wh test`：用示例副本预览副本助手小窗。
@@ -183,7 +192,7 @@ WoW Handbook is an addon: it runs inside the World of Warcraft: Forever client, 
 
 ## Credits
 
-Zeppelin tower locations also come from QuestieDB. Class trainer, profession trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). Hunter pet locations come from QuestieDB as well. The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
+Zeppelin tower locations also come from QuestieDB. Class trainer, profession trainer, riding trainer, herb and mining node locations come from [QuestieDB](https://github.com/Questie/QuestieDB) (the Questie project, GPL-3.0), with positions checked in WoW: Forever. Spirit healer locations come from [Questie](https://github.com/Questie/Questie) (GPL-3.0). Hunter pet locations come from QuestieDB as well. The title wordmark is set in Metamorphous by Sorkin Type (SIL Open Font License 1.1).
 
 ## Author
 

@@ -24,7 +24,7 @@ class RecipeGuideTest(unittest.TestCase):
             {"id": 7, "skill": [20, 25, 30], "creates": [500, 2], "reagents": [[765, 1], [3371, 1]],
              "learnedFrom": 900, "new": True}]})
         self.assertEqual(recipes[0], {"id": 7, "skill": [20, 25, 30], "makes": 500, "count": 2,
-                                      "reagents": [765, 1, 3371, 1], "learnedFrom": 900, "new": True})
+                                      "reagents": [765, 1, 3371, 1], "learnedFrom": 900, "new": True, "favor": None})
         self.assertEqual(guide, [{"from": 1, "to": 75, "picks": [7]}])
 
     def test_acquisition_adds_learn_skill_and_recipe_item_price(self) -> None:
@@ -48,6 +48,19 @@ class RecipeGuideTest(unittest.TestCase):
         self.assertEqual((by_id[8]["learn"], by_id[8]["via"], by_id[8]["buy"]), (35, None, None))
         self.assertEqual((by_id[9]["auto"], by_id[9]["nip"], by_id[9]["learn"]), (True, True, None))
         self.assertIsNone(by_id[10]["learn"])
+
+    def test_merchant_favor_offers_mark_recipes_and_list_unmatched_formulas(self) -> None:
+        favor = recipe_export.favor_offers({"offerings": [
+            {"id": 900, "role": "alchemy", "favor": 45, "gold": None, "standing": "honored", "skill": 20,
+             "sides": ["alliance", "horde"]},
+            {"id": 901, "role": "alchemy", "favor": 60, "gold": None, "standing": None, "skill": 300,
+             "sides": ["horde"]}]})
+        recipes, _ = recipe_export.build_recipes({"slug": "alchemy", "recipes": [
+            {"id": 7, "skill": [20, 25, 30], "reagents": [], "learnedFrom": 900}]}, None, None, None, favor)
+        self.assertEqual(recipes[0]["favor"], {"cost": 45, "standing": "honored", "gold": None, "side": None})
+        self.assertEqual(recipe_export.build_formulas("alchemy", recipes, favor),
+                         [{"item": 901, "favor": 60, "standing": None, "skill": 300, "side": "H"}])
+        self.assertIsNone(recipe_export.build_formulas("tailoring", recipes, favor))
 
     def test_cooldowns_and_tools_are_added_when_given(self) -> None:
         recipes, _ = recipe_export.build_recipes({"slug": "alchemy", "recipes": [

@@ -1886,24 +1886,6 @@ ns.Data.spells = {
         },
         {
             name = {
-                enUS = "Hammer of the Righteous",
-                zhCN = "正义之锤",
-            },
-            tab = {
-                enUS = "Protection",
-                zhCN = "防护",
-            },
-            icon = "ability_paladin_hammeroftherighteous",
-            ranks = {
-                {
-                    rank = "",
-                    level = 40,
-                    id = 407632,
-                },
-            },
-        },
-        {
-            name = {
                 enUS = "Blessing of Sacrifice",
                 zhCN = "牺牲祝福",
             },
@@ -4161,7 +4143,7 @@ ns.Data.spells = {
         {
             name = {
                 enUS = "Mind-numbing Poison",
-                zhCN = "麻痹毒药",
+                zhCN = "麻痹药膏",
             },
             tab = {
                 enUS = "Poisons",
@@ -7796,6 +7778,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_teleportironforge",
             races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
+            faction = "Alliance",
             ranks = {
                 {
                     rank = "",
@@ -7815,6 +7798,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_teleportorgrimmar",
             races = { "Orc", "Skyborne", "Tauren", "Troll", "Undead" },
+            faction = "Horde",
             ranks = {
                 {
                     rank = "",
@@ -7834,6 +7818,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_teleportstormwind",
             races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
+            faction = "Alliance",
             ranks = {
                 {
                     rank = "",
@@ -7853,6 +7838,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_teleportundercity",
             races = { "Orc", "Skyborne", "Tauren", "Troll", "Undead" },
+            faction = "Horde",
             ranks = {
                 {
                     rank = "",
@@ -7908,6 +7894,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_teleportdarnassus",
             races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
+            faction = "Alliance",
             ranks = {
                 {
                     rank = "",
@@ -7927,6 +7914,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_teleportthunderbluff",
             races = { "Orc", "Skyborne", "Tauren", "Troll", "Undead" },
+            faction = "Horde",
             ranks = {
                 {
                     rank = "",
@@ -7992,6 +7980,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_portalironforge",
             races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
+            faction = "Alliance",
             ranks = {
                 {
                     rank = "",
@@ -8011,6 +8000,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_portalorgrimmar",
             races = { "Orc", "Skyborne", "Tauren", "Troll", "Undead" },
+            faction = "Horde",
             ranks = {
                 {
                     rank = "",
@@ -8030,6 +8020,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_portalstormwind",
             races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
+            faction = "Alliance",
             ranks = {
                 {
                     rank = "",
@@ -8049,6 +8040,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_portalundercity",
             races = { "Orc", "Skyborne", "Tauren", "Troll", "Undead" },
+            faction = "Horde",
             ranks = {
                 {
                     rank = "",
@@ -8086,6 +8078,7 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_portaldarnassus",
             races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
+            faction = "Alliance",
             ranks = {
                 {
                     rank = "",
@@ -8105,30 +8098,12 @@ ns.Data.spells = {
             },
             icon = "spell_arcane_portalthunderbluff",
             races = { "Orc", "Skyborne", "Tauren", "Troll", "Undead" },
+            faction = "Horde",
             ranks = {
                 {
                     rank = "",
                     level = 50,
                     id = 11420,
-                },
-            },
-        },
-        {
-            name = {
-                enUS = "Teleport: Dalaran",
-                zhCN = "传送：达拉然",
-            },
-            tab = {
-                enUS = "Arcane",
-                zhCN = "奥术",
-            },
-            icon = "spell_arcane_teleporthalloftheguardian",
-            races = { "Dwarf", "Gnome", "Human", "Night Elf", "Skyborne" },
-            ranks = {
-                {
-                    rank = "",
-                    level = 50,
-                    id = 1297659,
                 },
             },
         },

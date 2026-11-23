@@ -174,6 +174,23 @@ class SpellRanksTest(unittest.TestCase):
         self.assertEqual([r["level"] for r in spells[0]["ranks"]], [6, 14])
 
 
+    def test_faction_spells_and_unlearnable(self) -> None:
+        alliance = ["Dwarf", "Gnome", "Human", "Night Elf", "Skyborne"]
+        horde = ["Orc", "Skyborne", "Tauren", "Troll", "Undead"]
+        spellbook = {"classes": {"mage": {"tabs": [{"name": "Arcane", "spells": [
+            {"name": "Teleport: Stormwind", "races": alliance, "ranks": [{"rank": "", "level": 20}]},
+            {"name": "Teleport: Orgrimmar", "races": horde, "ranks": [{"rank": "", "level": 20}]},
+            {"name": "Teleport: Dalaran", "races": alliance, "ranks": [{"rank": "", "level": 50}]},
+            {"name": "Arcane Intellect", "ranks": [{"rank": "Rank 1", "level": 1}]},
+        ]}]}}}
+        zh = {"classes": {"mage": {"tabs": [{"name": "奥术", "spells": []}]}}}
+        spells = exporter.build_spells(spellbook, zh)["mage"]
+        self.assertEqual([s["name"]["enUS"] for s in spells],
+                         ["Teleport: Stormwind", "Teleport: Orgrimmar", "Arcane Intellect"])
+        self.assertEqual([s["faction"] for s in spells], ["Alliance", "Horde", None])
+        self.assertIsNone(exporter.spell_faction(["Orc", "Troll"]))
+
+
 class StartsInsideTest(unittest.TestCase):
     def test_locations(self) -> None:
         inside = exporter.starts_inside
@@ -539,6 +556,35 @@ class GraveyardsTest(unittest.TestCase):
             {"professions": {"alchemy": [{"id": 257019, "name": "Nyassa Swiftdraught", "map": 2521}]}})
         self.assertEqual(professions[0]["trainers"][0]["faction"], "A")
 
+    def test_trainer_rank_sources_and_book_and_quest_npcs(self) -> None:
+        professions = {"professions": [{"slug": "fishing", "name": "Fishing"}, {"slug": "mining", "name": "Mining"}]}
+        trainers = {"professions": {
+            "fishing": [
+                {"id": 5941, "name": "Lau'Tiki", "rank": None, "addon": 2, "map": 1411},
+                {"id": -1019, "name": "Old Man Heming", "rank": None, "addon": 3, "kind": "book", "map": 1434},
+                {"id": -1020, "name": "Nat Pagle", "rank": None, "addon": 4, "kind": "quest", "map": 1445},
+                # 训练师窗口实测优先；专业插件名单优先于头衔（“Superior”头衔的钓鱼训练师不教大师级）
+                {"id": 7, "name": "Seen", "rank": "artisan", "taught": 2, "map": 1411},
+                {"id": 2834, "name": "Myizz Luckycatch", "rank": "artisan", "addon": 2, "map": 1434},
+            ],
+            "mining": [
+                {"id": 4258, "name": "Pikkle", "rank": None, "map": 1446},
+                {"id": -1008, "name": "Pikkle (Neutral)", "rank": None, "addon": 4, "map": 1446},
+                {"id": -1009, "name": "Grungle (Neutral)", "rank": None, "addon": 4, "map": 2548},
+            ],
+        }}
+        fishing, mining = exporter.build_professions(professions, {"professions": []}, trainers)
+        rows = {row["id"]: row for row in fishing["trainers"]}
+        self.assertEqual(rows[5941]["rank"], "journeyman")
+        self.assertEqual((rows[-1019]["rank"], rows[-1019]["kind"]), ("expert", "book"))
+        self.assertEqual((rows[-1020]["rank"], rows[-1020]["kind"]), ("artisan", "quest"))
+        self.assertIsNone(rows[5941]["kind"])
+        self.assertEqual(rows[7]["rank"], "journeyman")
+        self.assertEqual(rows[2834]["rank"], "journeyman")
+        # “ (Neutral)”的重复行并进同名 NPC；没有同名的去掉后缀保留
+        self.assertEqual([(row["id"], row["name"]["enUS"], row["rank"]) for row in mining["trainers"]],
+                         [(4258, "Pikkle", "artisan"), (-1009, "Grungle", "artisan")])
+
     def test_starter_island_trainers_get_the_lowest_rank_of_their_profession(self) -> None:
         def trainer(npc_id, rank, map_id):
             return {"id": npc_id, "name": f"T{npc_id}", "rank": rank, "map": map_id, "x": 1.0, "y": 1.0}
@@ -680,6 +726,50 @@ class BisGearTest(unittest.TestCase):
         self.assertEqual(data["npcs"], {7: {"enUS": "Vendor Bob", "zhCN": "商人鲍勃"}})
         self.assertEqual(data["siteSets"], ["20"])
 
+    def test_profession_variants_keep_only_changed_slots(self) -> None:
+        hat = self.pick(1, "Head", "drop", "deadmines", "Mr. Smite")
+        goggles = self.pick(6, "Head", "crafted", "tailoring", 556)
+        staff = self.pick(2, "Weapon", "quest", 100)
+        alliance = self.faction([[hat, staff], [hat, staff]], pvp=[hat])
+        alliance["variants"] = {"tailoring": {"levels": [[hat, staff], [goggles, staff]], "pvp": [goggles]}}
+        horde = self.faction([[hat, staff], [hat, staff]], pvp=[hat])
+        raw = self.raw(alliance, horde)
+        raw["restricted"] = {"6": "tailoring"}
+        data = self.build(raw)
+        spec = data["classes"]["mage"]["specs"][0]
+        self.assertEqual(data["restricted"], {6: "tailoring"})
+        self.assertEqual(spec["timeline"], [
+            [1, "Head", "", 1, "drop", "deadmines", "Mr. Smite"],
+            [1, "Weapon", "", 2, "quest", 100],
+        ])
+        # Only Head changes, from level 2; horde has no tailoring variant, so it keeps the base hat.
+        self.assertEqual(spec["professions"], {"tailoring": {
+            "cut": {"Head": 2},
+            "timeline": [[2, "Head", "A", 6, "crafted", "tailoring", 556]],
+            "pvp": [[6, "Head", "A", "crafted", "tailoring", 556], [1, "Head", "H", "drop", "deadmines", "Mr. Smite"]],
+        }})
+        raw["restricted"] = {"6": "alchemy"}
+        with self.assertRaises(ValueError):
+            self.build(raw)
+
+    def test_profession_pairs_are_dropped_when_the_singles_add_up(self) -> None:
+        hat, staff = self.pick(1, "Head", "quest", 1), self.pick(2, "Weapon", "quest", 2)
+        cap, rod = self.pick(3, "Head", "crafted", "tailoring", 3), self.pick(4, "Weapon", "crafted", "engineering", 4)
+        side = self.faction([[hat, staff]], pvp=[hat])
+        side["variants"] = {
+            "tailoring": {"levels": [[cap, staff]], "pvp": [hat]},
+            "engineering": {"levels": [[hat, rod]], "pvp": [hat]},
+            "engineering+tailoring": {"levels": [[cap, rod]], "pvp": [hat]},
+        }
+        self.PROFESSIONS = [{"slug": "tailoring"}, {"slug": "engineering"}]
+        spec = self.build(self.raw(side, side))["classes"]["mage"]["specs"][0]
+        self.assertEqual(sorted(spec["professions"]), ["engineering", "tailoring"])
+        # A pair that beats both singles in one slot (a set bonus, say) stays.
+        side["variants"]["engineering+tailoring"]["levels"] = [[cap, staff]]
+        spec = self.build(self.raw(side, side))["classes"]["mage"]["specs"][0]
+        self.assertEqual(spec["professions"]["engineering+tailoring"],
+                         {"cut": {"Head": 1}, "timeline": [[1, "Head", "", 3, "crafted", "tailoring", 3]]})
+
     def test_emptied_slot_is_recorded(self) -> None:
         two_hand, main, off = self.pick(1, "Weapon", "quest", 1), self.pick(2, "Weapon", "quest", 2), \
             self.pick(3, "Off Hand", "quest", 3)
@@ -765,3 +855,18 @@ class HunterPetsTest(unittest.TestCase):
 
     def test_missing_source(self):
         self.assertEqual(exporter.build_hunter_pets({}), {"families": [], "beasts": {}})
+
+
+class RidingTrainersTest(unittest.TestCase):
+    def test_every_race_has_one_trainer_and_skyborne_serves_both(self):
+        rows = exporter.build_riding_trainers(exporter.RIDING_TRAINERS)
+        races = [row["race"] for row in rows]
+        self.assertEqual(sorted(races), sorted(["Human", "Dwarf", "Gnome", "NightElf", "Orc", "Troll", "Tauren",
+                                                "Scourge", "Skyborne"]))
+        for row in rows:
+            self.assertIn(row["faction"], ("A", "H", "AH"))
+            self.assertTrue(row["name"]["enUS"] and row["name"]["zhCN"])
+            self.assertTrue(0 <= row["x"] <= 100 and 0 <= row["y"] <= 100)
+        skyborne = next(row for row in rows if row["race"] == "Skyborne")
+        self.assertEqual((skyborne["id"], skyborne["faction"], skyborne["map"]), (265756, "AH", 2521))
+        self.assertEqual(rows, sorted(rows, key=lambda r: (r["map"], r["x"], r["y"])))

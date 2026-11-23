@@ -29,8 +29,8 @@ local SECTIONS = {
         { key = "levelUpNotice", quick = true, icon = "INV_Misc_Book_11", label = "Level-up reminder",
             tip = "Tell me which spells to train when I level up" },
     } },
-    { module = "Professions", category = "professions", title = "Professions",
-        note = "Profession trainers for your faction, one click to mark them on the map", options = {} },
+    { module = "SpellEfficiency", category = "spells", title = "Spell DPS and DPM",
+        note = "Damaging mana spells show damage per second and per mana in their tooltips", options = {} },
     { module = "Talents", category = "spells", title = "Talent plans",
         note = "Plan talent builds and follow the recommended leveling builds level by level", options = {} },
     { module = "HunterPets", category = "spells", title = "Rare pets",
@@ -85,21 +85,42 @@ local SECTIONS = {
             tip = "Sell gray items automatically when I open a vendor" },
     } },
     { module = "AuctionHouse", category = "general", title = "Auction house",
-        note = "Remembers auction prices and adds a scan tab to the auction house", options = {
+        note = "Remembers auction prices and adds a scan button; prices Auctionator knows fill in the gaps automatically", options = {
         { key = "recordSearches", quick = true, icon = "INV_Misc_Coin_02", label = "Record searches",
             tip = "Remember the prices I see when I search the auction house" },
         { key = "tooltip", quick = true, icon = "INV_Misc_Coin_03", label = "Prices in tooltips",
             tip = "Show the recorded auction price in item tooltips" },
-        { key = "useAuctionator", quick = true, icon = "INV_Misc_Coin_04", label = "Use Auctionator prices",
-            tip = "Use Auctionator's prices when newer and let it do the scanning (hides my scan button)",
-            set = function(on) ns.modules.AuctionHouse.SetUseAuctionator(on) end },
+        { key = "auctionatorScan", quick = true, icon = "INV_Misc_Coin_04", label = "Let Auctionator scan",
+            tip = "With Auctionator installed, hide my scan button and scan with Auctionator instead",
+            set = function(on) ns.modules.AuctionHouse.SetAuctionatorScan(on) end },
+    } },
+    { module = "AuctionBench", category = "general", title = "Auction workbench",
+        note = "Compares the neutral and your faction's auction house side by side: "
+            .. "price gaps, profit after the cut and daily price trends",
+        options = {
+        { key = "autoOpen", quick = true, icon = "INV_Misc_Coin_05", label = "Open with the auction house",
+            tip = "Open this window when I open the auction house (or its small button, if I collapsed it)" },
     } },
     { module = "MerchantCrates", category = "professions", title = "Waylaid crates",
         note = "Shows what each waylaid crate takes and what it costs to fill at auction prices", options = {} },
     { module = "CraftingCost", category = "professions", title = "Crafting cost",
         note = "Profit per craft in the professions window: sale price minus the auction cut and materials", options = {} },
     { module = "Workbench", category = "professions", title = "Profession workbench",
-        note = "A workbench beside the professions window: leveling route, recipe sources and profit", options = {} },
+        note = "Beside the professions window: pick a recipe on the left, see its cost, profit, leveling step and source",
+        options = {
+        { key = "auctionSearch", quick = true, icon = "INV_Misc_Spyglass_02", label = "Shift-click searches",
+            tip = "With the auction house open, shift-click an item to search for it, or a recipe for its product and materials" },
+        { key = "recordFishing", icon = "Trade_Fishing", label = "Record my catches",
+            tip = "Count every fishing catch by zone and water, so the workbench can show your own rates next to the standard ones" },
+        { key = "fishingPopup", icon = "INV_Fishingpole_02", label = "Catch window",
+            tip = "Pops up when you equip a fishing pole: this trip's catches, these waters' standard chances next to yours, "
+                .. "and your past trips. /wh fishing opens it any time",
+            set = function()
+                if ns.modules.Workbench.UpdateFishingPopup then
+                    ns.modules.Workbench.UpdateFishingPopup()
+                end
+            end },
+    } },
     { module = "Enchanting", category = "professions", title = "Enchant all",
         note = "Enchant several times in a row from the professions window", options = {
         { key = "autoReplace", quick = true, icon = "Trade_Engraving", label = "Replace enchants without asking",
@@ -129,6 +150,8 @@ local SECTIONS = {
         } },
         { key = "transmogPins", quick = true, icon = "INV_Shirt_White_01", label = "Transmogrifiers",
             tip = "Show transmogrifiers on the map" },
+        { key = "ridingTrainerPins", quick = true, icon = "Ability_Mount_RidingHorse", label = "Riding trainers",
+            tip = "Show my faction's riding trainers on the map" },
         { key = "transportPins", quick = true, icon = "INV_Misc_Map02", label = "Zeppelins and boats",
             tip = "Show zeppelin towers and boat landings on the map, with where they go" },
         { key = "pathPins", quick = true, icon = "INV_Misc_Map_01", label = "Zone paths",
@@ -419,6 +442,60 @@ local function AddSection(list, y, width, section)
         value:SetPoint("RIGHT", slider, "LEFT", -10, 0)
         ShowScale()
         block.mapScaleSlider = slider -- 供测试使用
+        y = y + ROW_HEIGHT
+    elseif section.module == "AuctionHouse" then
+        -- 价格走势保留多久：7 / 30 / 180 天或自定义（自定义时用滑条选 1–365 天）；超过的按天记录滚动删掉
+        local Prices = ns.Prices
+        local minDays, maxDays = Prices.HistoryLimits()
+        local presets = { 7, 30, 180 }
+        local row = OptionRow(block, y, width, ns.SettingIcon({ icon = "INV_Misc_PocketWatch_01" }, 16) .. L["Keep price history"],
+            { label = "Keep price history",
+                tip = "How long to keep the daily prices from my own scans, for price trends. Older days roll off; "
+                    .. "each item keeps its latest day. Longer history makes the saved data larger" })
+        local value = UI:Text(row, "Body")
+        local slider
+        local dropdown
+        local function IsPreset(days)
+            for _, preset in ipairs(presets) do
+                if preset == days then
+                    return true
+                end
+            end
+            return false
+        end
+        local function Show()
+            local days = Prices.HistoryDays()
+            local custom = ns.db.auctionHistoryCustom or not IsPreset(days)
+            dropdown:SetValue(custom and "custom" or tostring(days))
+            slider:SetShown(custom)
+            value:SetShown(custom)
+            value:SetText((L["%d days"]):format(days))
+            slider:SetLevel(days)
+        end
+        local items = {}
+        for _, preset in ipairs(presets) do
+            tinsert(items, { id = tostring(preset), label = (L["%d days"]):format(preset) })
+        end
+        tinsert(items, { id = "custom", label = L["Custom"] })
+        dropdown = UI:Dropdown(row, items, function(id)
+            if id == "custom" then
+                ns.db.auctionHistoryCustom = true
+            else
+                ns.db.auctionHistoryCustom = nil
+                Prices.SetHistoryDays(tonumber(id))
+            end
+            Show()
+        end, 110)
+        dropdown:SetPoint("RIGHT", -12, 0)
+        slider = UI:Slider(row, SLIDER_WIDTH, function(days)
+            Prices.SetHistoryDays(days)
+            value:SetText((L["%d days"]):format(Prices.HistoryDays()))
+        end)
+        slider:SetRange(minDays, maxDays)
+        slider:SetPoint("RIGHT", dropdown, "LEFT", -12, 0)
+        value:SetPoint("RIGHT", slider, "LEFT", -10, 0)
+        Show()
+        block.historyDropdown, block.historySlider = dropdown, slider -- 供测试使用
         y = y + ROW_HEIGHT
     elseif section.module == "ActionBars" then
         -- 整条动作条一次升级到最高等级，以及撤销最近一次改动（自动或手动）

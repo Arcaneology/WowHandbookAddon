@@ -447,6 +447,10 @@ ns.Data.dungeons = {
             95216,
             95250,
             97288,
+            97289,
+            97290,
+            97291,
+            97292,
             99156,
         },
     },
@@ -3950,7 +3954,7 @@ ns.Data.dungeons = {
         levelMax = 40,
         name = {
             enUS = "Drowned City",
-            zhCN = "淹没之城",
+            zhCN = "沉没之城",
         },
         entrance = {
             map = 1434,
@@ -3960,30 +3964,218 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Zul'Alai",
                 },
+                displayID = 270882,
+                items = {
+                    {
+                        id = 274600,
+                        rate = 67,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274598,
+                        rate = 17,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274599,
+                        rate = 17,
+                        newInForever = true,
+                    },
+                    {
+                        id = 271718,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Var'Taka",
+                },
+                displayID = 270883,
+                items = {
+                    {
+                        id = 274601,
+                        rate = 50,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274602,
+                        rate = 50,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274613,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Captain Dreadrise",
                 },
+                displayID = 270884,
+                items = {
+                    {
+                        id = 274605,
+                        rate = 60,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274603,
+                        rate = 20,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274604,
+                        rate = 20,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Deathless Marrow",
                 },
+                displayID = 270885,
             },
             {
                 name = {
                     enUS = "Primeval Elemental",
                 },
+                displayID = 270887,
+                items = {
+                    {
+                        id = 274615,
+                        rate = 50,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274612,
+                        rate = 50,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274611,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Min'loth the Serpent",
+                },
+                displayID = 270886,
+                items = {
+                    {
+                        id = 274608,
+                        rate = 67,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274609,
+                        rate = 33,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274610,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Gill",
+                },
+                displayID = 270888,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 286649,
+                        newInForever = true,
+                    },
+                    {
+                        id = 286646,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Umbra",
+                },
+                displayID = 264172,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 286662,
+                        newInForever = true,
+                    },
+                    {
+                        id = 286658,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Pyromancer Braxton",
+                },
+                displayID = 260468,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 286651,
+                        rate = 100,
+                        newInForever = true,
+                    },
+                    {
+                        id = 286650,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Deathless Guardians",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 274607,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274606,
+                        newInForever = true,
+                    },
+                    {
+                        id = 274614,
+                        newInForever = true,
+                    },
+                    {
+                        id = 271718,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Trash mobs",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 287002,
+                        newInForever = true,
+                    },
+                    {
+                        id = 286997,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287005,
+                        newInForever = true,
+                    },
                 },
             },
         },
@@ -5032,31 +5224,181 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Slavecrusher Grox",
                 },
+                displayID = 258966,
+                items = {
+                    {
+                        id = 274996,
+                    },
+                    {
+                        id = 274997,
+                    },
+                    {
+                        id = 274995,
+                    },
+                    {
+                        id = 273101,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Twilight Commander Zarmok",
+                },
+                displayID = 258972,
+                items = {
+                    {
+                        id = 274999,
+                    },
+                    {
+                        id = 274998,
+                    },
+                    {
+                        id = 275000,
+                    },
+                    {
+                        id = 267091,
+                        newInForever = true,
+                    },
+                    {
+                        id = 267234,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Handler Ashka",
                 },
+                displayID = 259281,
+                items = {
+                    {
+                        id = 275001,
+                    },
+                    {
+                        id = 275002,
+                    },
+                    {
+                        id = 275003,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Nar'gurk",
+                },
+                displayID = 258964,
+                items = {
+                    {
+                        id = 275004,
+                    },
+                    {
+                        id = 275005,
+                    },
+                    {
+                        id = 275006,
+                    },
+                    {
+                        id = 267104,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Overseer Mugg",
                 },
+                displayID = 258968,
+                items = {
+                    {
+                        id = 275008,
+                    },
+                    {
+                        id = 275009,
+                    },
+                    {
+                        id = 275010,
+                    },
+                    {
+                        id = 275007,
+                    },
+                    {
+                        id = 267086,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Bossman Toof",
+                },
+                displayID = 264773,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 286429,
+                    },
+                    {
+                        id = 286428,
+                    },
+                    {
+                        id = 286430,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Kroog",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 279863,
+                        newInForever = true,
+                    },
+                    {
+                        id = 279857,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Trash mobs",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 287008,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287012,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287013,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287014,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287010,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287007,
+                        newInForever = true,
+                    },
+                },
             },
         },
         quests = {
             94744,
             94968,
+            94969,
             94972,
             94973,
             94974,
@@ -5066,6 +5408,7 @@ ns.Data.dungeons = {
             94982,
             94983,
             94984,
+            94997,
             94998,
             96771,
         },
@@ -6556,7 +6899,7 @@ ns.Data.dungeons = {
         levelMax = 53,
         name = {
             enUS = "Alcaz Prison",
-            zhCN = "阿尔卡兹监狱",
+            zhCN = "奥卡兹监狱",
         },
         entrance = {
             map = 1445,
@@ -6566,29 +6909,157 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Overseer Wrex",
                 },
+                displayID = 255391,
+                items = {
+                    {
+                        id = 276734,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276733,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276732,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Tidemistress Ca'zass",
+                },
+                displayID = 255997,
+                items = {
+                    {
+                        id = 273883,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276736,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276735,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276737,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Katerina the Cleaner",
                 },
+                displayID = 257016,
+                items = {
+                    {
+                        id = 276739,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276738,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276740,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "The Questioner",
+                },
+                displayID = 256236,
+                items = {
+                    {
+                        id = 274029,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276742,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276743,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276741,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Blazeroar",
                 },
+                displayID = 255702,
+                items = {
+                    {
+                        id = 276890,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276744,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276745,
+                        newInForever = true,
+                    },
+                    {
+                        id = 276746,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Trash mobs",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 287021,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287019,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287018,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287020,
+                        newInForever = true,
+                    },
+                },
             },
         },
-        quests = { 95194, 95483, 96332, 96334, 96335, 96337, 96377, 96381, 96772 },
+        quests = {
+            95194,
+            95262,
+            95263,
+            95309,
+            95454,
+            95483,
+            96332,
+            96334,
+            96335,
+            96337,
+            96369,
+            96376,
+            96377,
+            96379,
+            96381,
+            96772,
+        },
     },
     {
         slug = "blackrock-depths",
@@ -8652,39 +9123,259 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Withermaw",
                 },
+                displayID = 247195,
+                items = {
+                    {
+                        id = 249697,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280062,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280063,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280064,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Impaan the Imprisoner",
+                },
+                displayID = 247206,
+                items = {
+                    {
+                        id = 280056,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280057,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280058,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Elder Shaman Bloodmane",
                 },
+                displayID = 247209,
+                items = {
+                    {
+                        id = 276893,
+                        newInForever = true,
+                    },
+                    {
+                        id = 286415,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280068,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280069,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280070,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Bonesnout the Unbroken",
+                },
+                displayID = 247198,
+                items = {
+                    {
+                        id = 249696,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280059,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280060,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280061,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Varrox Bleakhoof",
                 },
+                displayID = 247234,
+                items = {
+                    {
+                        id = 272027,
+                        newInForever = true,
+                    },
+                    {
+                        id = 249692,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280074,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280075,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280076,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Blackmaw Behemoth",
+                },
+                displayID = 247207,
+                items = {
+                    {
+                        id = 280065,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280066,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280067,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Unbound Spirit",
                 },
+                displayID = 247231,
+                items = {
+                    {
+                        id = 280071,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280072,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280073,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Moontouched Wanderer",
+                },
+                displayID = 269104,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 280080,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280079,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Gortek the Apprentice",
+                },
+                displayID = 269111,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 280077,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280078,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Tunnelweb Matriarch",
+                },
+                displayID = 250034,
+                lootOnly = true,
+                items = {
+                    {
+                        id = 280085,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280086,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Trash mobs",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 287032,
+                        newInForever = true,
+                    },
+                    {
+                        id = 251453,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287034,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287036,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287028,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287029,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287030,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287033,
+                        newInForever = true,
+                    },
+                },
             },
         },
-        quests = { 92066, 92069, 92343, 92344, 97173, 97198, 97327 },
+        quests = { 92065, 92066, 92069, 92070, 92343, 92344, 97173, 97198, 97327 },
     },
     {
         slug = "blackrock-spire-lower",
@@ -12574,7 +13265,7 @@ ns.Data.dungeons = {
         levelMax = 60,
         name = {
             enUS = "Shaper's Terrace",
-            zhCN = "塑形者平台",
+            zhCN = "塑造者之台",
         },
         entrance = {
             map = 1449,
@@ -12584,55 +13275,234 @@ ns.Data.dungeons = {
                 name = {
                     enUS = "Titanosaur",
                 },
+                displayID = 253201,
+                items = {
+                    {
+                        id = 280010,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280009,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280011,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Ravasaur Hunters",
+                },
+                displayID = 261811,
+                items = {
+                    {
+                        id = 280014,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280013,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280012,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Thunderhoof",
                 },
+                displayID = 261812,
+                items = {
+                    {
+                        id = 280018,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280020,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280019,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Venomridge",
+                },
+                displayID = 261813,
+                items = {
+                    {
+                        id = 280016,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280017,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280015,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Direhorn Matriarch",
                 },
+                displayID = 262127,
+                items = {
+                    {
+                        id = 280022,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280021,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280045,
+                        newInForever = true,
+                    },
+                    {
+                        id = 285951,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Cinder",
+                },
+                displayID = 261974,
+                items = {
+                    {
+                        id = 280028,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280029,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "King Op",
                 },
+                displayID = 261993,
             },
             {
                 name = {
                     enUS = "Snowtalon",
+                },
+                displayID = 262297,
+                items = {
+                    {
+                        id = 280027,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280026,
+                        newInForever = true,
+                    },
                 },
             },
             {
                 name = {
                     enUS = "Bolt",
                 },
+                displayID = 262081,
+                items = {
+                    {
+                        id = 280031,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280032,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Vitrix",
                 },
+                displayID = 272561,
+                items = {
+                    {
+                        id = 280026,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280027,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280032,
+                        newInForever = true,
+                    },
+                },
             },
             {
                 name = {
                     enUS = "Nanaya",
+                },
+                displayID = 261809,
+                items = {
+                    {
+                        id = 273128,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280023,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280024,
+                        newInForever = true,
+                    },
+                    {
+                        id = 280025,
+                        newInForever = true,
+                    },
+                    {
+                        id = 272028,
+                        newInForever = true,
+                    },
+                    {
+                        id = 285952,
+                        newInForever = true,
+                    },
+                    {
+                        id = 273116,
+                        newInForever = true,
+                    },
+                },
+            },
+            {
+                name = {
+                    enUS = "Trash mobs",
+                },
+                lootOnly = true,
+                items = {
+                    {
+                        id = 287037,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287044,
+                        newInForever = true,
+                    },
+                    {
+                        id = 287045,
+                        newInForever = true,
+                    },
                 },
             },
         },

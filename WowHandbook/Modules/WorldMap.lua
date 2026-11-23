@@ -20,12 +20,13 @@ local L = ns.L
 -- · 职业训练师：显示你职业的训练师（本阵营与中立；猎人另有宠物训练师、法师另有传送门训练师），可关闭；
 --   悬停看名字与现在可学的技能数，有可学技能时不透明、没有时半透明；点击设为导航。
 -- · 幻化师：显示本阵营的幻化师（暴风城、奥格瑞玛、奥特兰克山脉的达拉然），可关闭；点击设为导航。
+-- · 骑术训练师：显示本阵营各种族的骑术训练师与两个阵营共用的天裔训练师，自己种族的标出来，可关闭；点击设为导航。
 -- · 专业训练师：默认显示你学了的专业的训练师（本阵营与中立），可改为全部专业或不显示；下一步该找的那一档
 --   不透明，其余半透明；悬停看名字、专业与能教到的等级，点击设为导航。
 local Module = ns:NewModule("WorldMap", { levelLabel = true, flightPins = true, revealMap = true, mapScale = 1,
     dungeonPins = true, spiritHealers = "dead", graveyardAreas = true, herbPins = "auto", orePins = "auto", minimapGather = true,
     recordGather = true, minimapGatherStyle = "icon", trainerPins = "mine", classTrainerPins = true,
-    transmogPins = true, transportPins = true, pathPins = true })
+    transmogPins = true, ridingTrainerPins = true, transportPins = true, pathPins = true })
 
 local PIN_TEMPLATE = "WowHandbookFlightPinTemplate"
 local BLIZZARD_PIN_TEMPLATE = "FlightPointPinTemplate"
@@ -328,6 +329,7 @@ local GATHER_PIN = "WowHandbookGatherPinTemplate"
 local TRAINER_PIN = "WowHandbookTrainerPinTemplate"
 local CLASS_TRAINER_PIN = "WowHandbookClassTrainerPinTemplate"
 local TRANSMOG_PIN = "WowHandbookTransmogPinTemplate"
+local RIDING_PIN = "WowHandbookRidingTrainerPinTemplate"
 local TRANSPORT_PIN = "WowHandbookTransportPinTemplate"
 local PATH_PIN = "WowHandbookPathPinTemplate"
 local TRANSMOG_ICON = "Interface\\Icons\\INV_Shirt_White_01" -- 小地图共用
@@ -344,6 +346,9 @@ local ICONS = {
         size = 20, round = true },
     -- 幻化师：衬衫图标做成圆形徽章
     transmog = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = TRANSMOG_ICON, size = 20, round = true },
+    -- 骑术训练师：马的图标做成圆形徽章
+    riding = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\Icons\\Ability_Mount_RidingHorse",
+        size = 20, round = true },
     -- 飞艇与船：飞艇塔用飞艇、码头用船，颜色按阵营（Media/Transport*，tools/make_transport_icons.py 生成）；
     -- 实际贴图在放置时由 Transport.IconTexture 换成，提示里写去向
     transport = { level = "PIN_FRAME_LEVEL_AREA_POI", texture = "Interface\\AddOns\\WowHandbook\\Media\\TransportShipGold",
@@ -853,7 +858,7 @@ local function TrainersForMap(mapID)
     for _, profession in ipairs(ns.Data.professions or {}) do
         local skill = skills[profession.slug]
         if mode == "all" or skill then
-            -- 该找的一档与专业页一致（Core/Util.lua 的 ns.TargetTrainerRank），按本阵营能用的训练师算
+            -- 该找的一档与专业工作台的训练师一致（Core/Util.lua 的 ns.TargetTrainerRank），按本阵营能用的训练师算
             local usable = {}
             for _, trainer in ipairs(profession.trainers or {}) do
                 if not trainer.faction or trainer.faction == "AH" or not faction or trainer.faction == faction then
@@ -1049,6 +1054,65 @@ local function CreateTransmogProvider()
 end
 
 --------------------------------------------------------------------------------
+-- 骑术训练师：ridingTrainerPins 开关（默认开）；本阵营的（天裔的训练师两个阵营共用）。
+-- 自己种族的训练师标出来；别的种族要先把那个种族的声望练到崇拜（天裔的训练师没有核实过，不写）
+--------------------------------------------------------------------------------
+
+Module.RIDING_ICON = ICONS.riding.texture
+
+local function RidingTrainersForMap(mapID)
+    if Settings().ridingTrainerPins == false then
+        return {}
+    end
+    local faction = ns.PlayerFaction()
+    local list = {}
+    for _, npc in ipairs(ns.Data.ridingTrainers or {}) do
+        if npc.map == mapID and npc.x and (npc.faction == "AH" or not faction or npc.faction == faction) then
+            tinsert(list, npc)
+        end
+    end
+    return list
+end
+Module.RidingTrainersForMap = RidingTrainersForMap -- 小地图共用
+
+-- 提示行：名字、骑术训练师、是不是自己种族的
+function Module.RidingTrainerLines(npc)
+    local lines = { ns.Name(npc.name) or "?", L["Riding trainer"] }
+    local _, raceFile = UnitRace("player")
+    if npc.race == raceFile then
+        tinsert(lines, ns.Theme:Color(L["Your race's riding trainer"], "gold"))
+    elseif npc.race ~= "Skyborne" then
+        tinsert(lines, ns.Theme:Color(L["Other races need Exalted reputation with this race first"], "muted"))
+    end
+    return lines
+end
+
+local ridingProvider
+
+local function CreateRidingProvider()
+    ridingProvider = CreateFromMixins(MapCanvasDataProviderMixin)
+    function ridingProvider:RemoveAllData()
+        self:GetMap():RemoveAllPinsByTemplate(RIDING_PIN)
+    end
+    function ridingProvider:RefreshAllData()
+        self:RemoveAllData()
+        local map = self:GetMap()
+        local mapID = map:GetMapID()
+        for _, npc in ipairs(mapID and RidingTrainersForMap(mapID) or {}) do
+            local pin = map:AcquirePin(RIDING_PIN)
+            SetupPin(pin, "riding")
+            local lines = Module.RidingTrainerLines(npc)
+            tinsert(lines, L["Click to set a waypoint here."])
+            SetPinBehavior(pin, lines, function()
+                ns.Waypoints:Set(mapID, npc.x, npc.y, lines[1])
+            end)
+            pin:SetPosition(npc.x / 100, npc.y / 100)
+        end
+    end
+    return ridingProvider
+end
+
+--------------------------------------------------------------------------------
 -- 飞艇与船：transportPins 开关（默认开）。双向航线只提示下一站，环线提示接下来的两站。
 --------------------------------------------------------------------------------
 
@@ -1156,7 +1220,7 @@ end
 
 function Module:Refresh()
     for _, dataProvider in ipairs({ provider, revealProvider, dungeonProvider, graveyardProvider, gatherProvider,
-        trainerProvider, classTrainerProvider, transmogProvider, transportProvider, pathProvider }) do
+        trainerProvider, classTrainerProvider, transmogProvider, transportProvider, pathProvider, ridingProvider }) do
         if dataProvider and dataProvider.GetMap and dataProvider:GetMap() then
             dataProvider:RefreshAllData()
         end
@@ -1179,6 +1243,7 @@ local function Attach()
     WorldMapFrame:AddDataProvider(CreateTransmogProvider())
     WorldMapFrame:AddDataProvider(CreateTransportProvider())
     WorldMapFrame:AddDataProvider(CreatePathProvider())
+    WorldMapFrame:AddDataProvider(CreateRidingProvider())
     local label = FindAreaLabel()
     if label then
         HookAreaLabel(label)

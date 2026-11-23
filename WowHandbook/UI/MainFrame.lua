@@ -23,11 +23,13 @@ local selectedID
 
 -- definition = { id = "唯一 ID", title = "导航文字"（或 titleKey = 本地化键，显示时按当前界面语言翻译），order = 数字（小的在前），
 --                create = function(parent) return 页面框架 end, onShow = function(page) end（可选），
---                bottom = true（可选，固定在导航底部，如“设置”） }
+--                bottom = true（可选，固定在导航底部，如“设置”），
+--                action = function() end（可选，代替 create：导航上点它不切页面，而是调用 action，例如“专业”打开专业工作台） }
 -- 导航按 order 的十位分组，组与组之间画一条细线：0 首页，10–19 副本与解谜，20–29 角色（技能、天赋、宠物），
 -- 30–39 专业，100 以上（其他插件加的页面）归为一组
 function MainFrame:RegisterTab(definition)
-    assert(type(definition.id) == "string" and type(definition.create) == "function", "invalid tab definition")
+    assert(type(definition.id) == "string"
+        and (type(definition.create) == "function" or type(definition.action) == "function"), "invalid tab definition")
     if tabsByID[definition.id] then
         return
     end
@@ -250,6 +252,10 @@ end
 
 function MainFrame:SelectTab(id)
     local definition = tabsByID[id] or tabs[1]
+    if definition.action then
+        definition.action()
+        return
+    end
     selectedID = definition.id
     for _, button in ipairs(frame.navButtons) do
         PaintNav(button)
@@ -306,6 +312,11 @@ end
 
 -- 打开窗口并切到指定页面
 function MainFrame:Open(id)
+    local definition = tabsByID[id]
+    if definition and definition.action then
+        definition.action()
+        return
+    end
     Ensure()
     frame:Show()
     self:SelectTab(id)

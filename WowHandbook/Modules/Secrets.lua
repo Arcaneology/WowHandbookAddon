@@ -116,6 +116,16 @@ local function RawDone(chain, step)
     return step.manual and ManualDone(chain, step) or false
 end
 
+-- 一步合并了一串任务时，中间的任务（step.quests）在日志里也算这一步进行中
+local function OnMiddleQuest(step)
+    for _, id in ipairs(step.quests or {}) do
+        if OnQuest(id) then
+            return true
+        end
+    end
+    return false
+end
+
 -- 整条链的状态：{ chain, rows = { { step, state, questID } }, byID, done, total, next = { [步骤 id] = true }, first }
 -- state：done 已完成、ready 任务目标已完成待交、active 任务进行中、todo 还没做
 local function Evaluate(chain)
@@ -149,6 +159,8 @@ local function Evaluate(chain)
             row.state = "done"
         elseif row.questID and OnQuest(row.questID) then
             row.state = (C_QuestLog.IsComplete and C_QuestLog.IsComplete(row.questID)) and "ready" or "active"
+        elseif OnMiddleQuest(row.step) then
+            row.state = "active"
         else
             row.state = "todo"
         end
@@ -212,6 +224,9 @@ local function QuestTitle(questID)
 end
 
 local function StepTitle(row)
+    if row.step.ownTitle then
+        return L[row.step.title]
+    end
     return row.questID and QuestTitle(row.questID) or L[row.step.title or "?"]
 end
 
@@ -285,6 +300,9 @@ local function ChainQuests(chain)
             ids[quest] = true
         end
         for _, id in ipairs(step.doneQuests or {}) do
+            ids[id] = true
+        end
+        for _, id in ipairs(step.quests or {}) do
             ids[id] = true
         end
     end
